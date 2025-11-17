@@ -7,10 +7,10 @@
 Please visit the wiki pages that constitute the [WAVEWATCH IV portal ](https://github.com/NOAA-EMC/WW4/wiki/Home.md) for detailed information on this software package. 
 
 The documentation files residing in the repository https://github.com/NOAA-EMC/WW4 are limited to this README.md file and required documentation defining the Intellectual Property Protection of WW4. These files are 
-[INTENT.md](https://github.com/NOAA-EMC/WW4/INTENT.md) describing the intent of the IP protection, 
-[LICENSE.md](https://github.com/NOAA-EMC/WW4/LICENSE.md) providing the licensing information for WW4, 
-[CONTRIBUTORS.md](https://github.com/NOAA-EMC/WW4/CONTRIBUTORS.md) identifying those who have made significant contributions to WW4, 
-and [TRADEMARK.md](https://github.com/NOAA-EMC/WW4/TRADEMARK.md) documenting the Trademark Status of WW4. 
+[INTENT.md](./INTENT.md) describing the intent of the IP protection, 
+[LICENSE.md](./LICENSE.md) providing the licensing information for WW4, 
+[CONTRIBUTORS.md](./CONTRIBUTORS.md) identifying those who have made significant contributions to WW4, 
+and [TRADEMARK.md](./TRADEMARK.md) documenting the Trademark Status of WW4. 
 
 The only other file that could be construed as  “documentation” in the home directory of the repository is the  [VERSION](https://github.com/NOAA-EMC/WW4/VERSION) file.
 
