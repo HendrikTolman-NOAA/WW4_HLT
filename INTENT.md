@@ -1,0 +1,20 @@
+<p align="center">
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/WW4_banner.jpg" alt="WW4 banner" height="100">
+</p>
+
+# Licensing Intent
+
+The intent is that this software and documentation ("Project") should be treated as if it is licensed under the license associated with the Project ("License") in the [LICENSE.md](https://github.com/NOAA-EMC/WW4/LICENSE.md) file. However, because we are part of the United States (U.S.) Federal Government, it is not that simple.
+
+The portions of this Project written by U.S. government employees within the scope of their federal employment are ineligible for copyright protection in the United States.
+
+In countries where copyright protection is available, contributions made by U.S. government employees are released under the License. Merged contributions from non-government employee contributors are released under the License
+
+Note that the National Weather Service (NWS) owns the copyright to WAVEWATCH III (WW3). Since this Project is an update to WW3, some of this Project may be subject to the WW3 copyright.
+
+# 
+<p align="right">
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/noaa_logo.gif" alt="NOAA Logo" height="50" ; width="55">  
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/nws.jpg" alt="NWS Logo" height="50" width="50">  
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/ncep_logo.gif" alt="NCEP Logo" height="50" width="75"> 
+ </p>
