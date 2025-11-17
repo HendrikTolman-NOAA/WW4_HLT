@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/HendrikTolman-NOAA/sandbox_WW4/wiki/images/WW4_banner.jpg" alt="WW4 banner" height="100">
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/WW4_banner.jpg" alt="WW4 banner" height="100">
 </p>
 
 # <p align="center"> Welcome to the WAVEWATCH IV <sup>TM</sup> (WW4) repository! </p>
@@ -16,7 +16,7 @@ The only other file that could be construed as  “documentation” in the home 
 
 # 
 <p align="right">
-  <img src="https://github.com/HendrikTolman-NOAA/sandbox_WW4/wiki/images/noaa_logo.gif" alt="NOAA Logo" height="50" ; width="55">  
-  <img src="https://github.com/HendrikTolman-NOAA/sandbox_WW4/wiki/images/nws.jpg" alt="NWS Logo" height="50" width="50">  
-  <img src="https://github.com/HendrikTolman-NOAA/sandbox_WW4/wiki/images/ncep_logo.gif" alt="NCEP Logo" height="50" width="75"> 
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/noaa_logo.gif" alt="NOAA Logo" height="50" ; width="55">  
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/nws.jpg" alt="NWS Logo" height="50" width="50">  
+  <img src="https://github.com/NOAA-EMC/WW4/wiki/images/ncep_logo.gif" alt="NCEP Logo" height="50" width="75"> 
  </p>
