@@ -4,7 +4,7 @@
 
 # WAVEWATCH IV Software License
 
-© 2025 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government (in countries where recognized). WAVEWATCH IV and WW4 are trademarks of the National Weather Service (see also [CONTRIBUTORS.md](./CONTRIBUTORS.md) and [TRADEMARK.md](./TRADEMARK.md)).
+© 2025 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government (in countries where recognized). WAVEWATCH IV and WW4 are trademarks of the National Weather Service (see also [INTENT.md](./INTENT.md), [CONTRIBUTORS.md](./CONTRIBUTORS.md) and [TRADEMARK.md](./TRADEMARK.md)).
 
 GNU LESSER GENERAL PUBLIC LICENSE
 Version 3.0, 29 June 2007 <https://opensource.org/license/lgpl-3-0>
