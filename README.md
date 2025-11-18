@@ -2,7 +2,7 @@
   <img src="https://github.com/NOAA-EMC/WW4/wiki/images/WW4_banner.jpg" alt="WW4 banner" height="100">
 </p>
 
-# <p align="center"> Welcome to the WAVEWATCH IV <sup>TM</sup> (WW4) repository! </p>
+# <p align="center"> Welcome to the WAVEWATCH IV<sup> TM</sup> (WW4<sup> TM</sup>) repository! </p>
 
 Please visit the wiki pages that constitute the [WAVEWATCH IV portal ](https://github.com/NOAA-EMC/WW4/wiki) for detailed information on this software package. 
 
