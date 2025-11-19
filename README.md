@@ -12,7 +12,7 @@ The documentation files residing in the repository https://github.com/NOAA-EMC/W
 [CONTRIBUTORS.md](./CONTRIBUTORS.md) identifying those who have made significant contributions to WW4, 
 and [TRADEMARK.md](./TRADEMARK.md) documenting the Trademark Status of WW4. 
 
-The only other file that could be construed as  “documentation” in the home directory of the repository is the  [VERSION](https://github.com/NOAA-EMC/WW4/VERSION) file.
+The only other file that could be construed as  “documentation” in the home directory of the repository is the  VERSION file.
 
 # 
 <p align="right">
