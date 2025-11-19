@@ -4,7 +4,7 @@
 
 # <p align="center"> Welcome to the WAVEWATCH IV<sup> TM</sup> (WW4<sup> TM</sup>) repository! </p>
 
-Please visit the wiki pages that constitute the [WAVEWATCH IV portal ](https://github.com/NOAA-EMC/WW4/wiki) for detailed information on this software package. 
+Please visit the wiki pages that constitute the [WAVEWATCH IV portal ](https://github.com/NOAA-EMC/WW4/wiki) for more information on this software package. 
 
 The documentation files residing in the repository https://github.com/NOAA-EMC/WW4 are limited to this README.md file and required documentation defining the Intellectual Property Protection of WW4. These files are 
 [INTENT.md](./INTENT.md) describing the intent of the IP protection, 
