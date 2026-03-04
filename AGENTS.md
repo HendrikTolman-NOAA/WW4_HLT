@@ -22,7 +22,7 @@ Architect high-performance, memory-safe systems that balance four competing goal
 * **Doxygen Format:** EVERY class, struct, and method must have a docstring using standard Doxygen syntax (`///` or `/** ... */`).
 * **Tags:** Strictly use `@brief`, `@details`, `@param`, `@return`, and `@pre`/`@post` for contracts.
 * **Tags:** Strictly use `@author` and `@date` to document the time history of files.
-* **Tags:** When converting WW3 Fortran routines to WW4 C++, document the original WW3 name and WW3 authors.
+* **Tags:** When converting WW3 Fortran routines to WW4 C++, document the original WW3 name and explicitly state that the author is the original author in WW3.
 * **Headers:** Follow the Rule of Zero, Rule of Three, or Rule of Five. Group `#include` directives logically (Local, Library, System).
 * **Namespaces:** Wrap all library code in a clearly defined namespace (no `using namespace std;` in headers).
 * **Copyright:** Add the copyright statement associated with the repository to each new file, using the present year only (no year range).
