@@ -59,7 +59,7 @@ using DateArray = std::array<int, 8>;
 /**
  * @class TimeManagement
  * @brief Routines for management of date and time, converted from WW3
- * w3timemd.F90.
+ * w4timemd.F90.
  * @details Provides static methods for time arithmetic, calendar conversions,
  *          and high-precision profiling. Supports multiple calendar systems:
  *          Standard (Gregorian), NoLeap (365-day), and ThreeSixtyDay.
@@ -148,7 +148,7 @@ public:
    * @brief Captures the present date and time.
    * @details Fills a DateArray with the current UTC system time.
    *          Matches Fortran's DATE_AND_TIME behavior.
-   *          Converted from WW3 routine W3DATE.
+   *          Converted from WW3 routine W4DATE.
    * @note Original author: Hendrik L. Tolman.
    * @param[out] dateArray Date array to be filled.
    * @post dateArray contains the current UTC system time.
@@ -161,7 +161,7 @@ public:
    * @brief Calculates the elapsed time since a reference date.
    * @details Computes the difference in seconds between the current system
    *          time and the provided reference date.
-   *          Converted from WW3 routine W3DTIM.
+   *          Converted from WW3 routine W4DTIM.
    * @note Original author: Hendrik L. Tolman.
    * @param[in] referenceDate Reference date array (DATE_AND_TIME format).
    * @param[out] elapsedTime Elapsed time in seconds.
