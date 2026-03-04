@@ -262,9 +262,7 @@ public:
     const int jd = 365 * jc + static_cast<int>(0.25 * jc);
     const int je = static_cast<int>(static_cast<double>(jb - jd) / 30.6001);
     day = jb - jd - static_cast<int>(30.6001 * je);
-    month = je - 1;
-    if (month > 12)
-      month -= 12;
+    month = (je < 14) ? (je - 1) : (je - 13);
     year = jc - 4715;
     if (month > 2)
       year--;
