@@ -59,7 +59,7 @@ using DateArray = std::array<int, 8>;
 /**
  * @class TimeManagement
  * @brief Routines for management of date and time, converted from WW3
- * w3timemd.F90.
+ * w4timemd.F90.
  * @details Provides static methods for time arithmetic, calendar conversions,
  *          and high-precision profiling. Supports multiple calendar systems:
  *          Standard (Gregorian), NoLeap (365-day), and ThreeSixtyDay.
@@ -100,7 +100,7 @@ public:
    * @details Updates the DateTime structure by adding a specified number of
    * seconds, handling day and month rollovers according to the active calendar.
    *          Converted from WW3 routine TICK21.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[in,out] time Current date and time.
    * @param[in] dtime Time step in seconds.
    * @post time is updated by dtime.
@@ -111,7 +111,7 @@ public:
    * @brief Increment date in YYYYMMDD format by +/- 1 day.
    * @details Adjusts the date by one day forward or backward.
    *          Converted from WW3 function IYMD21.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param ymd Old date in YYYYMMDD format.
    * @param adjustment +/- 1 (Day adjustment).
    * @return New date in YYYYMMDD format.
@@ -124,7 +124,7 @@ public:
    * structures.
    * @details Computes time2 - time1 in seconds, accounting for calendar
    * differences. Converted from WW3 function DSEC21.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param time1 First date/time.
    * @param time2 Second date/time.
    * @return Difference (time2 - time1) in seconds.
@@ -136,7 +136,7 @@ public:
    * @brief Calculate the difference in seconds between two date/time arrays.
    * @details Computes t2 - t1 in seconds for arrays in DATE_AND_TIME format.
    *          Converted from WW3 function TDIFF.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param t1 First date/time array (DATE_AND_TIME format).
    * @param t2 Second date/time array (DATE_AND_TIME format).
    * @return Difference (t2 - t1) in seconds.
@@ -148,8 +148,8 @@ public:
    * @brief Captures the present date and time.
    * @details Fills a DateArray with the current UTC system time.
    *          Matches Fortran's DATE_AND_TIME behavior.
-   *          Converted from WW3 routine W3DATE.
-   * @note Original author: Hendrik L. Tolman.
+   *          Converted from WW3 routine W4DATE.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[out] dateArray Date array to be filled.
    * @post dateArray contains the current UTC system time.
    * @author Aldgisl, Hendrik L. Tolman (Initial, 2026)
@@ -161,8 +161,8 @@ public:
    * @brief Calculates the elapsed time since a reference date.
    * @details Computes the difference in seconds between the current system
    *          time and the provided reference date.
-   *          Converted from WW3 routine W3DTIM.
-   * @note Original author: Hendrik L. Tolman.
+   *          Converted from WW3 routine W4DTIM.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[in] referenceDate Reference date array (DATE_AND_TIME format).
    * @param[out] elapsedTime Elapsed time in seconds.
    * @post elapsedTime contains the difference in seconds.
@@ -185,7 +185,7 @@ public:
    * @brief Convert date in YYYYMMDD format to Julian day within the year.
    * @details Returns the ordinal day of the year (1-365 or 1-366).
    *          Converted from WW3 function MYMD21.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param ymd Date in YYYYMMDD format.
    * @return Julian day (1-366).
    */
@@ -195,7 +195,7 @@ public:
    * @brief Converts numerical time to a readable string.
    * @details Formats the DateTime as "YYYY/MM/DD HH:MM:SS UTC".
    *          Converted from WW3 function STME21.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param time Date and time.
    * @return Readable string.
    */
@@ -205,7 +205,7 @@ public:
    * @brief Calculate the Julian day from a given date.
    * @details Computes the Julian Day Number for the Gregorian/Julian calendar.
    *          Converted from WW3 function JULDAY.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param day Day of month.
    * @param month Month.
    * @param year Year.
@@ -239,7 +239,7 @@ public:
    * @brief Transform Julian day to date.
    * @details Reverses the Julian Day calculation to retrieve day, month, and
    * year. Converted from WW3 routine CALDAT.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[in] julian Julian day.
    * @param[out] day Day of month.
    * @param[out] month Month.
@@ -274,7 +274,7 @@ public:
    * @brief Initialize profiling.
    * @details Captures the current steady clock time for high-precision
    * measurement. Converted from WW3 routine PRINIT.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @post m_profilingInitialized is true.
    */
   static void initializeProfiling() noexcept;
@@ -283,7 +283,7 @@ public:
    * @brief Get profiling wall-clock time in seconds.
    * @details Calculates the elapsed time since initializeProfiling() was
    * called. Converted from WW3 function PRTIME.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @return Time since initializeProfiling() in seconds, or -1.0 if not
    * initialized.
    */
@@ -293,7 +293,7 @@ public:
    * @brief Convert DateTime to DateArray.
    * @details Decomposes DateTime into an 8-integer array.
    *          Converted from WW3 routine T2D.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[in] time Date and time.
    * @param[out] dateArray Date array.
    * @param[out] errorCode Error code (0 for success).
@@ -307,7 +307,7 @@ public:
    * @brief Convert DateArray to DateTime.
    * @details Reconstructs DateTime from an 8-integer array.
    *          Converted from WW3 routine D2T.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[in] dateArray Date array.
    * @param[out] time Date and time.
    * @param[out] errorCode Error code (0 for success).
@@ -320,7 +320,7 @@ public:
    * @brief Convert DateArray to Julian Day.
    * @details Computes Julian Day from an 8-integer array.
    *          Converted from WW3 routine D2J.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[in] dateArray Date array.
    * @param[out] julian Julian day.
    * @param[out] errorCode Error code (0 for success, -1/1 for errors).
@@ -333,7 +333,7 @@ public:
    * @brief Convert Julian Day to DateArray.
    * @details Decomposes Julian Day into an 8-integer array.
    *          Converted from WW3 routine J2D.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param[in] julian Julian day.
    * @param[out] dateArray Date array.
    * @param[out] errorCode Error code (0 for success).
@@ -347,7 +347,7 @@ public:
    * @brief Calculate the difference in days between two DateArrays.
    * @details Computes t2 - t1 in days, supporting different calendars.
    *          Converted from WW3 function TSUB.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param t1 First date array.
    * @param t2 Second date array.
    * @return Difference (t2 - t1) in days.
@@ -359,7 +359,7 @@ public:
    * @brief Convert time units attribute to DateArray.
    * @details Parses a string like "seconds since 1970-01-01 00:00:00" into a
    * DateArray. Converted from WW3 routine U2D.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param units Units attribute.
    * @param[out] dateArray Date array.
    * @param[out] errorCode Error code (0 for success, 1 for error).
@@ -373,7 +373,7 @@ public:
    * @brief Convert DateTime to ISO8601 time string.
    * @details Formats as "YYYY-MM-DDTHH:MM:SS".
    *          Converted from WW3 function T2ISO.
-   * @note Original author: Hendrik L. Tolman.
+   * @note Original author in WW3: Hendrik L. Tolman.
    * @param time Date and time.
    * @return ISO8601 string.
    */
