@@ -25,7 +25,7 @@ To generate the documentation:
     *Note: If a `Doxyfile` is not present, you can generate a default one using `doxygen -g` or use the one provided in the repository.*
 
 3.  **View the documentation:**
-    Once generated, open `doxygen/html/index.html` in your web browser.
+    Once generated, open `docs/html/index.html` in your web browser.
 
 ## Running Doxygen Automatically
 
