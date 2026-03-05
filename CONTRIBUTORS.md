@@ -8,8 +8,8 @@
 
 ## Signed-off-by
 
-- Copyright 2025 National Oceanic and Atmospheric Administration (NOAA), National Weather Service (NWS)
-- Copyright 2025 Hendrik L. Tolman Hendrik.Tolman@NOAA.gov
+- Copyright 2025-2026 National Oceanic and Atmospheric Administration (NOAA), National Weather Service (NWS)
+- Copyright 2025-2026 Hendrik L. Tolman Hendrik.Tolman@NOAA.gov
 - _Add the copyright date, your name, and email address here. (PLEASE KEEP THIS LINE)_
 
 ## Note for U.S. Federal Employees
