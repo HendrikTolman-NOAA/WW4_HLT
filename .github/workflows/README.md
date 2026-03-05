@@ -6,9 +6,6 @@
 
 This directory contains the GitHub Actions workflow configurations for the WAVEWATCH IV project. These workflows ensure code quality, documentation integrity, and system stability.
 
-## Doxygen Documentation
-
-The Doxygen workflow automatically generates and updates the technical documentation. For more details on how Doxygen is used in this project, please refer to the [Doxygen README](../../doxygen/README.md).
 
 ## Unit and Integration Tests
 
