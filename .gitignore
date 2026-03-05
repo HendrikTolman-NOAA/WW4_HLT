@@ -4,8 +4,6 @@ verify_ww4.py
 test_format
 test_format.cpp
 
-# Doxygen and Externals
-docs/*
-!docs/README.md
+# Externals
 externals/*
 !externals/README.md
