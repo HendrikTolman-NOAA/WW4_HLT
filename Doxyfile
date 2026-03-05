@@ -1,5 +1,5 @@
 PROJECT_NAME           = "WW4_Utils"
-OUTPUT_DIRECTORY       = doxygen
+OUTPUT_DIRECTORY       = docs
 GENERATE_LATEX         = NO
 GENERATE_HTML          = YES
 INPUT                  = include src

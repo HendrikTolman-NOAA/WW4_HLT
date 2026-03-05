@@ -5,7 +5,7 @@ test_format
 test_format.cpp
 
 # Doxygen and Externals
-doxygen/*
-!doxygen/README.md
+docs/*
+!docs/README.md
 externals/*
 !externals/README.md
