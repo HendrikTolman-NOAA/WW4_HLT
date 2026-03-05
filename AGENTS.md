@@ -18,6 +18,7 @@ Architect high-performance, memory-safe systems that balance four competing goal
 * **Parallel Algorithms:** Prefer `std::transform`, `std::reduce`, and `std::for_each` with execution policies over raw `for` loops when processing large datasets.
 
 **2. CODE STYLE & DOCUMENTATION (Doxygen)**
+* **CAPITALIZATION:** WAVEWATCH is an acronym and should therefore always be capitalized.
 * **Linting:** Use Clang linter for all C++ code development and refactoring.
 * **Doxygen Format:** EVERY class, struct, and method must have a docstring using standard Doxygen syntax (`///` or `/** ... */`).
 * **Tags:** Strictly use `@brief`, `@details`, `@param`, `@return`, and `@pre`/`@post` for contracts.
