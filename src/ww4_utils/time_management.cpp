@@ -57,9 +57,8 @@ void TimeManagement::incrementDateTime(DateTime &time,
   const double seconds = hms - static_cast<double>(hours) * 10000.0 -
                          static_cast<double>(minutes) * 100.0;
 
-  double total_seconds =
-      static_cast<double>(hours) * 3600.0 +
-      static_cast<double>(minutes) * 60.0 + seconds + dtime;
+  double total_seconds = static_cast<double>(hours) * 3600.0 +
+                         static_cast<double>(minutes) * 60.0 + seconds + dtime;
 
   while (total_seconds >= 86400.0) {
     total_seconds -= 86400.0;
@@ -138,16 +137,16 @@ double TimeManagement::differenceInSeconds(const DateTime &time1,
   const int h1 = static_cast<int>(time1.hms) / 10000;
   const int m1 = (static_cast<int>(time1.hms) % 10000) / 100;
   const double s1 = std::fmod(time1.hms, 100.0);
-  const double ns1 = static_cast<double>(h1) * 3600.0 +
-                     static_cast<double>(m1) * 60.0 + s1;
+  const double ns1 =
+      static_cast<double>(h1) * 3600.0 + static_cast<double>(m1) * 60.0 + s1;
 
   const int ny2 = time2.ymd / 10000;
   const int nd2 = getDayOfYear(time2.ymd);
   const int h2 = static_cast<int>(time2.hms) / 10000;
   const int m2 = (static_cast<int>(time2.hms) % 10000) / 100;
   const double s2 = std::fmod(time2.hms, 100.0);
-  const double ns2 = static_cast<double>(h2) * 3600.0 +
-                     static_cast<double>(m2) * 60.0 + s2;
+  const double ns2 =
+      static_cast<double>(h2) * 3600.0 + static_cast<double>(m2) * 60.0 + s2;
 
   const int nd_init = nd2 - nd1;
   int nd = nd_init;
@@ -234,10 +233,10 @@ void TimeManagement::dateArrayToDateTime(
     const std::span<const int, 8> dateArray, DateTime &time,
     int &errorCode) noexcept {
   const int ymd_val = dateArray[0] * 10000 + dateArray[1] * 100 + dateArray[2];
-  const double hms_val =
-      static_cast<double>(dateArray[4]) * 10000.0 +
-      static_cast<double>(dateArray[5]) * 100.0 +
-      static_cast<double>(dateArray[6]) + dateArray[7] / 1000.0;
+  const double hms_val = static_cast<double>(dateArray[4]) * 10000.0 +
+                         static_cast<double>(dateArray[5]) * 100.0 +
+                         static_cast<double>(dateArray[6]) +
+                         dateArray[7] / 1000.0;
   time.ymd = ymd_val;
   time.hms = hms_val;
   errorCode = 0;
