@@ -14,7 +14,7 @@
  * Weather Service.
  * @author Hendrik L. Tolman (Initial, 2026)
  * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026)
- * @date 2026-02-27
+ * @date 2026-03-11
  */
 
 #ifndef WW4_UTILS_TIME_MANAGEMENT_HPP
@@ -153,7 +153,7 @@ public:
    * @param[out] dateArray Date array to be filled.
    * @post dateArray contains the current UTC system time.
    * @author Aldgisl, Hendrik L. Tolman (Initial, 2026)
-   * @date 2026-02-27
+   * @date 2026-03-11
    */
   static void getSystemDateArray(const std::span<int, 8> dateArray) noexcept;
 
@@ -167,7 +167,7 @@ public:
    * @param[out] elapsedTime Elapsed time in seconds.
    * @post elapsedTime contains the difference in seconds.
    * @author Aldgisl, Hendrik L. Tolman (Initial, 2026)
-   * @date 2026-02-27
+   * @date 2026-03-11
    */
   static void getElapsedTimeSince(const std::span<const int, 8> referenceDate,
                                   double &elapsedTime) noexcept;
@@ -177,7 +177,7 @@ public:
    * @details Retrieves the current UTC system time.
    * @return Current date and time in DateTime format.
    * @author Aldgisl, Hendrik L. Tolman (Initial, 2026)
-   * @date 2026-02-27
+   * @date 2026-03-11
    */
   static DateTime getPresentDateTime() noexcept;
 
