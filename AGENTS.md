@@ -24,7 +24,7 @@ Architect high-performance, memory-safe systems that balance four competing goal
 * **Concepts over `enable_if`:** Use C++20 Concepts to constrain template parameters and generate readable compiler errors.
 * **Parallel Algorithms:** In C++ prefer `std::transform`, `std::reduce`, and `std::for_each` with execution policies over raw `for` loops when processing large datasets.
 
-**1.2 for C++**
+**1.2 for Python**
 
 * **Language**: Use Python3
 *  **Backend Agnostic:** Write functions that accept generic `xr.DataArray` inputs. Do not assume the data is Dask-backed or NumPy-backed.
@@ -42,9 +42,9 @@ Architect high-performance, memory-safe systems that balance four competing goal
 * **Copyright:** Add the copyright statement associated with the repository to each new file, using the present year only (no year range).
 * **Copyright:** For files already in the repository that are updated, check if the copyright year is the present year, or if the present year is in the year range of the copyright. If not, update the copyright to become a year range from the original year in the file to the present year.
 * **Linting:** Use Clang linter for all C++ code development and refactoring.
-* **Linting:** Use XXX linter for all Python  code development and refactoring.
+* **Linting:** Use Ruff linter for all Python  code development and refactoring.
 
-**2.2 ** for C++**
+**2.2 for C++**
 
 * **Doxygen Format:** EVERY class, struct, and method must have a docstring using standard Doxygen syntax (`///` or `/** ... */`).
 * **Tags:** Strictly use `@brief`, `@details`, `@param`, `@return`, and `@pre`/`@post` for contracts.
@@ -53,7 +53,7 @@ Architect high-performance, memory-safe systems that balance four competing goal
 * **Headers:** Follow the Rule of Zero, Rule of Three, or Rule of Five. Group `#include` directives logically (Local, Library, System).
 * **Namespaces:** Wrap all library code in a clearly defined namespace (no `using namespace std;` in headers).
 
-**2.3 ** for Python**
+**2.3 for Python**
 
 * **NumPy Docstrings:** EVERY function must have a docstring following the NumPy format (Parameters, Returns, Examples).
 * **Type Hinting:** Use `xarray.DataArray` or `xarray.Dataset` types, never specific backend types like `dask.array`.
