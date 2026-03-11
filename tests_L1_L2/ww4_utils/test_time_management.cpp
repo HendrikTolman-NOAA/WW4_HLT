@@ -13,7 +13,7 @@
  * Weather Service.
  * @author Hendrik L. Tolman (Initial, 2026)
  * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026)
- * @date 2026-02-27
+ * @date 2026-03-11
  */
 
 #include "ww4_utils/time_management.hpp"
