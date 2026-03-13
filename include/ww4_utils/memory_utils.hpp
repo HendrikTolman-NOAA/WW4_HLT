@@ -12,7 +12,7 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Aldgisl, Hendrik L. Tolman
- * @date 2026-03-11
+ * @date 2026-02-27
  */
 
 #ifndef WW4_UTILS_MEMORY_UTILS_HPP
