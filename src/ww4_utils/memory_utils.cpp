@@ -36,7 +36,7 @@ std::optional<MemoryUsage> MemoryUtils::captureMemoryUsage() noexcept {
   while (std::getline(statusFile, line)) {
     const std::string_view lineView(line);
 
-    auto parseLine = [&](const std::string_view key, long &member) {
+    const auto parseLine = [&](const std::string_view key, long &member) {
       if (lineView.starts_with(key)) {
         const size_t pos = lineView.find_first_of("0123456789");
         if (pos != std::string_view::npos) {

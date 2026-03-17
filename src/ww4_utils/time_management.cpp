@@ -13,7 +13,7 @@
  * Weather Service.
  * @author Hendrik L. Tolman (Initial, 2026)
  * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026)
- * @date 2026-02-27
+ * @date 2026-03-11
  */
 
 #include "ww4_utils/time_management.hpp"
@@ -43,7 +43,8 @@ TimeManagement::CalendarType TimeManagement::getCalendarType() noexcept {
 
 void TimeManagement::incrementDateTime(DateTime &time,
                                        const double dtime) noexcept {
-  int nymd = time.ymd;
+  const int nymd_init = time.ymd;
+  int nymd = nymd_init;
   const double hms = time.hms;
 
   if (dtime == 0.0) {
@@ -53,9 +54,11 @@ void TimeManagement::incrementDateTime(DateTime &time,
 
   const int hours = static_cast<int>(hms) / 10000;
   const int minutes = (static_cast<int>(hms) % 10000) / 100;
-  const double seconds = hms - hours * 10000 - minutes * 100;
+  const double seconds = hms - static_cast<double>(hours) * 10000.0 -
+                         static_cast<double>(minutes) * 100.0;
 
-  double total_seconds = hours * 3600.0 + minutes * 60.0 + seconds + dtime;
+  double total_seconds = static_cast<double>(hours) * 3600.0 +
+                         static_cast<double>(minutes) * 60.0 + seconds + dtime;
 
   while (total_seconds >= 86400.0) {
     total_seconds -= 86400.0;
@@ -72,17 +75,20 @@ void TimeManagement::incrementDateTime(DateTime &time,
   const double f_seconds = std::fmod(total_seconds, 60.0);
 
   time.ymd = nymd;
-  time.hms = f_hours * 10000 + f_minutes * 100 + f_seconds;
+  time.hms = static_cast<double>(f_hours) * 10000.0 +
+             static_cast<double>(f_minutes) * 100.0 + f_seconds;
 }
 
 int TimeManagement::incrementDateByDay(const int ymd,
                                        const int adjustment) noexcept {
-  int ny = ymd / 10000;
-  int nm = (ymd % 10000) / 100;
-  nm = std::clamp(nm, 1, 12);
-  int nd = (ymd % 100) + adjustment;
+  const int ny_init = ymd / 10000;
+  int ny = ny_init;
+  const int nm_init = (ymd % 10000) / 100;
+  int nm = std::clamp(nm_init, 1, 12);
+  const int nd_init = (ymd % 100) + adjustment;
+  int nd = nd_init;
 
-  std::array<int, 12> ndpm;
+  std::array<int, 12> ndpm{};
   if (m_calendarType == CalendarType::ThreeSixtyDay) {
     ndpm.fill(30);
   } else {
@@ -131,16 +137,19 @@ double TimeManagement::differenceInSeconds(const DateTime &time1,
   const int h1 = static_cast<int>(time1.hms) / 10000;
   const int m1 = (static_cast<int>(time1.hms) % 10000) / 100;
   const double s1 = std::fmod(time1.hms, 100.0);
-  const double ns1 = h1 * 3600.0 + m1 * 60.0 + s1;
+  const double ns1 =
+      static_cast<double>(h1) * 3600.0 + static_cast<double>(m1) * 60.0 + s1;
 
   const int ny2 = time2.ymd / 10000;
   const int nd2 = getDayOfYear(time2.ymd);
   const int h2 = static_cast<int>(time2.hms) / 10000;
   const int m2 = (static_cast<int>(time2.hms) % 10000) / 100;
   const double s2 = std::fmod(time2.hms, 100.0);
-  const double ns2 = h2 * 3600.0 + m2 * 60.0 + s2;
+  const double ns2 =
+      static_cast<double>(h2) * 3600.0 + static_cast<double>(m2) * 60.0 + s2;
 
-  int nd = nd2 - nd1;
+  const int nd_init = nd2 - nd1;
+  int nd = nd_init;
 
   if (ny1 != ny2) {
     const int nst = (ny2 > ny1) ? 1 : -1;
@@ -178,8 +187,10 @@ double TimeManagement::differenceInSeconds(const DateTime &time1,
 
 int TimeManagement::getDayOfYear(const int ymd) noexcept {
   const int ny = ymd / 10000;
-  int nm = (ymd % 10000) / 100;
-  int nd = ymd % 100;
+  const int nm_init = (ymd % 10000) / 100;
+  int nm = nm_init;
+  const int nd_init = ymd % 100;
+  int nd = nd_init;
 
   static constexpr std::array<int, 12> standard_ndpm = {31, 28, 31, 30, 31, 30,
                                                         31, 31, 30, 31, 30, 31};
@@ -221,9 +232,13 @@ void TimeManagement::dateTimeToDateArray(const DateTime &time,
 void TimeManagement::dateArrayToDateTime(
     const std::span<const int, 8> dateArray, DateTime &time,
     int &errorCode) noexcept {
-  time.ymd = dateArray[0] * 10000 + dateArray[1] * 100 + dateArray[2];
-  time.hms = dateArray[4] * 10000 + dateArray[5] * 100 + dateArray[6] +
-             dateArray[7] / 1000.0;
+  const int ymd_val = dateArray[0] * 10000 + dateArray[1] * 100 + dateArray[2];
+  const double hms_val = static_cast<double>(dateArray[4]) * 10000.0 +
+                         static_cast<double>(dateArray[5]) * 100.0 +
+                         static_cast<double>(dateArray[6]) +
+                         dateArray[7] / 1000.0;
+  time.ymd = ymd_val;
+  time.hms = hms_val;
   errorCode = 0;
 }
 
@@ -270,7 +285,8 @@ void TimeManagement::julianDayToDateArray(const double julian,
 
   const int ijul_init = static_cast<int>(std::floor(julian));
   int ijul = ijul_init;
-  double second = (julian - static_cast<double>(ijul)) * 86400.0;
+  const double second_init = (julian - static_cast<double>(ijul)) * 86400.0;
+  double second = second_init;
   const int tz = 0; // UTC
 
   if (m_calendarType == CalendarType::Standard) {
@@ -292,11 +308,11 @@ void TimeManagement::julianDayToDateArray(const double julian,
   const int hour = minute_init / 60;
   const int minute = minute_init % 60;
 
-  int year, month, day;
+  int year_val, month_val, day_val;
   if (m_calendarType == CalendarType::ThreeSixtyDay) {
-    year = static_cast<int>(julian / 360.0) + 1800;
-    month = (static_cast<int>(julian / 30.0) % 12) + 1;
-    day = (static_cast<int>(julian) % 30) + 1;
+    year_val = static_cast<int>(julian / 360.0) + 1800;
+    month_val = (static_cast<int>(julian / 30.0) % 12) + 1;
+    day_val = (static_cast<int>(julian) % 30) + 1;
   } else {
     const int jalpha = static_cast<int>(
         (static_cast<double>(ijul - 1867216) - 0.25) / 36524.25);
@@ -306,20 +322,20 @@ void TimeManagement::julianDayToDateArray(const double julian,
         6680.0 + (static_cast<double>(jb - 2439870) - 122.1) / 365.25);
     const int jd = 365 * jc + static_cast<int>(0.25 * jc);
     const int je = static_cast<int>(static_cast<double>(jb - jd) / 30.6001);
-    day = jb - jd - static_cast<int>(30.6001 * je);
-    month = je - 1;
-    if (month > 12)
-      month -= 12;
-    year = jc - 4715;
-    if (month > 2)
-      year--;
-    if (year <= 0)
-      year--;
+    day_val = jb - jd - static_cast<int>(30.6001 * je);
+    month_val = je - 1;
+    if (month_val > 12)
+      month_val -= 12;
+    year_val = jc - 4715;
+    if (month_val > 2)
+      year_val--;
+    if (year_val <= 0)
+      year_val--;
   }
 
-  dateArray[0] = year;
-  dateArray[1] = month;
-  dateArray[2] = day;
+  dateArray[0] = year_val;
+  dateArray[1] = month_val;
+  dateArray[2] = day_val;
   dateArray[3] = tz;
   dateArray[4] = hour;
   dateArray[5] = minute;
@@ -395,68 +411,70 @@ void TimeManagement::parseUnitsToDateArray(const std::string_view units,
     return s.substr(consumed);
   };
 
-  int y = 0, m = 0, d = 0;
+  int y_val = 0, m_val = 0, d_val = 0;
   std::string_view remaining = date_part;
-  remaining = parse_int(remaining, y);
-  remaining = parse_int(remaining, m);
-  remaining = parse_int(remaining, d);
+  remaining = parse_int(remaining, y_val);
+  remaining = parse_int(remaining, m_val);
+  remaining = parse_int(remaining, d_val);
 
-  if (y != 0 && m != 0 && d != 0) {
-    dateArray[0] = y;
-    dateArray[1] = m;
-    dateArray[2] = d;
+  if (y_val != 0 && m_val != 0 && d_val != 0) {
+    dateArray[0] = y_val;
+    dateArray[1] = m_val;
+    dateArray[2] = d_val;
     errorCode = 0;
 
-    int h = 0, mi = 0, s = 0;
-    remaining = parse_int(remaining, h);
-    remaining = parse_int(remaining, mi);
-    remaining = parse_int(remaining, s);
+    int h_val = 0, mi_val = 0, s_val = 0;
+    remaining = parse_int(remaining, h_val);
+    remaining = parse_int(remaining, mi_val);
+    remaining = parse_int(remaining, s_val);
 
-    dateArray[4] = h;
-    dateArray[5] = mi;
-    dateArray[6] = s;
+    dateArray[4] = h_val;
+    dateArray[5] = mi_val;
+    dateArray[6] = s_val;
   }
 }
 
 double
 TimeManagement::differenceInSeconds(const std::span<const int, 8> t1,
                                     const std::span<const int, 8> t2) noexcept {
-  return 86400.0 * differenceInDays(t1, t2);
+  const double diff_s = 86400.0 * differenceInDays(t1, t2);
+  return diff_s;
 }
 
 void TimeManagement::getSystemDateArray(
     const std::span<int, 8> dateArray) noexcept {
   const auto now = std::chrono::system_clock::now();
   const auto dp = std::chrono::floor<std::chrono::days>(now);
-  const std::chrono::year_month_day ymd{dp};
+  const std::chrono::year_month_day ymd_sys{dp};
   const auto time_duration = now - dp;
-  const std::chrono::hh_mm_ss hms{
+  const std::chrono::hh_mm_ss hms_sys{
       std::chrono::floor<std::chrono::milliseconds>(time_duration)};
 
-  dateArray[0] = static_cast<int>(ymd.year());
-  dateArray[1] = static_cast<unsigned>(ymd.month());
-  dateArray[2] = static_cast<unsigned>(ymd.day());
+  dateArray[0] = static_cast<int>(ymd_sys.year());
+  dateArray[1] = static_cast<int>(static_cast<unsigned>(ymd_sys.month()));
+  dateArray[2] = static_cast<int>(static_cast<unsigned>(ymd_sys.day()));
   dateArray[3] = 0; // UTC
-  dateArray[4] = static_cast<int>(hms.hours().count());
-  dateArray[5] = static_cast<int>(hms.minutes().count());
-  dateArray[6] = static_cast<int>(hms.seconds().count());
-  dateArray[7] = static_cast<int>(hms.subseconds().count());
+  dateArray[4] = static_cast<int>(hms_sys.hours().count());
+  dateArray[5] = static_cast<int>(hms_sys.minutes().count());
+  dateArray[6] = static_cast<int>(hms_sys.seconds().count());
+  dateArray[7] = static_cast<int>(hms_sys.subseconds().count());
 }
 
 void TimeManagement::getElapsedTimeSince(
     const std::span<const int, 8> referenceDate, double &elapsedTime) noexcept {
   DateArray now_dat{};
   getSystemDateArray(now_dat);
-  elapsedTime = differenceInSeconds(referenceDate, now_dat);
+  const double elapsed_val = differenceInSeconds(referenceDate, now_dat);
+  elapsedTime = elapsed_val;
 }
 
 DateTime TimeManagement::getPresentDateTime() noexcept {
-  DateArray dateArray{};
-  getSystemDateArray(dateArray);
-  DateTime dt{};
-  int errorCode;
-  dateArrayToDateTime(dateArray, dt, errorCode);
-  return dt;
+  DateArray dat_arr{};
+  getSystemDateArray(dat_arr);
+  DateTime dt_val{};
+  int err_code;
+  dateArrayToDateTime(dat_arr, dt_val, err_code);
+  return dt_val;
 }
 
 double
@@ -503,9 +521,9 @@ void TimeManagement::initializeProfiling() noexcept {
 double TimeManagement::getProfilingTime() noexcept {
   if (!m_profilingInitialized)
     return -1.0;
-  const auto now = std::chrono::steady_clock::now();
-  const std::chrono::duration<double> diff = now - m_steadyBase;
-  return diff.count();
+  const auto now_prof = std::chrono::steady_clock::now();
+  const std::chrono::duration<double> diff_prof = now_prof - m_steadyBase;
+  return diff_prof.count();
 }
 
 } // namespace ww4_utils
