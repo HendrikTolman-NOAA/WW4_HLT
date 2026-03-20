@@ -5,9 +5,34 @@
 
 @file ww4_compile.py
 @brief A CMake-based compile tool for WAVEWATCH IV (WW4).
-@details This tool uses the ww4_compile_config.yml file in the repository root
-         directory to define the compiler and the compile options, and invokes
-         CMake to build the project.
+@details This tool uses the ww4_compile_config.yml file to define the compiler
+         and the compile options, and invokes CMake to build the project.
+
+Usage
+-----
+1.  Copy the template configuration file to the repository root:
+    cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
+
+2.  Edit ww4_compile_config.yml to specify your compiler and preferred options:
+    compiler:
+      name: "g++"
+      options: "-O3 -Wall -Wextra -std=c++20"
+
+3.  Run the compile tool from the repository root:
+    python3 tools/ww4_compile.py
+
+4.  Optionally specify a custom build directory or clean the previous build:
+    python3 tools/ww4_compile.py --build-dir my_build --clean
+
+Search Logic
+------------
+The tool searches for the configuration file in the following order:
+1.  The directory from which the tool is called (current working directory).
+2.  The root directory of the repository clone.
+
+If a relative path is provided via --config, it is checked in these two
+locations. If an absolute path is provided, it is used directly.
+
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
