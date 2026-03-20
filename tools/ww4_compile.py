@@ -36,9 +36,7 @@ locations. If an absolute path is provided, it is used directly.
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
-@author Aldgisl (Initial, 2026-03-20)
-@author Aldgisl (Last Update, 2026-03-20)
-@date 2026-03-20
+@author Aldgisl, Hendrik Tolman (Initial, 2026-03-20)
 """
 
 import argparse
