@@ -1,7 +1,7 @@
 # @file ww4_compile_config.yml
 # @brief YAML template for WAVEWATCH IV (WW4) compilation configuration.
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
-# @author Aldgisl (Principal Architect, 2026-03-20)
+# @author Aldgisl, Hendrik Tolman 
 # @date 2026-03-20
 #
 # @details This file provides a template for configuring the compiler and
