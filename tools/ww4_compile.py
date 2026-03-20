@@ -11,7 +11,9 @@
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
-@author Aldgisl, Hendrik L. Tolman (Initial, 2026-03-20)
+@author Aldgisl (Initial, 2026-03-20)
+@author Aldgisl (Last Update, 2026-03-20)
+@date 2026-03-20
 """
 
 import argparse
@@ -113,9 +115,27 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    cwd = Path.cwd()
     root_dir = Path(__file__).parent.parent.resolve()
-    config_path = root_dir / args.config
-    build_dir = root_dir / args.build_dir
+
+    config_path = Path(args.config)
+    if not config_path.is_absolute():
+        # Try current working directory first
+        cwd_config = cwd / config_path
+        # Try repository root directory second
+        root_config = root_dir / config_path
+
+        if cwd_config.exists():
+            config_path = cwd_config
+        elif root_config.exists():
+            config_path = root_config
+        else:
+            # If neither exists, fall back to cwd_config for the error message in load_config
+            config_path = cwd_config
+
+    build_dir = Path(args.build_dir)
+    if not build_dir.is_absolute():
+        build_dir = root_dir / build_dir
 
     # Load configuration
     config = load_config(config_path)
