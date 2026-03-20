@@ -1,0 +1,62 @@
+#!/bin/bash
+#      +--------------------------------------------------------+
+#      | WAVEWATCH IV, open source, code management by NOAA/NWS |
+#      +--------------------------------------------------------+
+#
+# @file ww4_compile
+# @brief Shell wrapper for the WAVEWATCH IV (WW4) compile tool.
+# @details This script reads the active repository clone path from
+#          ~/.ww4_config.yml and executes the underlying Python
+#          compile tool.
+#
+# Usage
+# -----
+# 1. Define the active WAVEWATCH IV repository clone in your home directory:
+#    echo "active_clone: /path/to/your/ww4/clone" > ~/.ww4_config.yml
+#
+# 2. Run the compile tool from any directory:
+#    ww4_compile [options]
+#
+# Options:
+#   --config CONFIG       Path to the compiler configuration YAML file.
+#   --build-dir BUILD_DIR Build directory (relative to repository root).
+#   --clean               Clean the build directory before building.
+#
+# @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
+#               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
+#               of the National Weather Service.
+# @author Aldgisl, Henrik Tolman (Initial, 2026-03-24)
+
+CONFIG_FILE="$HOME/.ww4_config.yml"
+
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Error: Configuration file $CONFIG_FILE not found."
+    echo "Please ensure the active clone is configured."
+    exit 1
+fi
+
+# Extract active_clone path using python3 to handle YAML safely
+ACTIVE_CLONE=$(python3 -c "import yaml
+with open('$CONFIG_FILE', 'r') as f:
+    config = yaml.safe_load(f)
+    if config and 'active_clone' in config:
+        print(config['active_clone'])" 2>/dev/null)
+
+if [ -z "$ACTIVE_CLONE" ]; then
+    echo "Error: 'active_clone' not defined in $CONFIG_FILE"
+    exit 1
+fi
+
+if [ ! -d "$ACTIVE_CLONE" ]; then
+    echo "Error: Active clone directory $ACTIVE_CLONE does not exist."
+    exit 1
+fi
+
+COMPILE_TOOL="$ACTIVE_CLONE/tools/ww4_compile.py"
+
+if [ ! -f "$COMPILE_TOOL" ]; then
+    echo "Error: Compile tool not found at $COMPILE_TOOL"
+    exit 1
+fi
+
+python3 "$COMPILE_TOOL" "$@"
