@@ -4,6 +4,9 @@ verify_ww4.py
 test_format
 test_format.cpp
 
+# User-specific configuration
+/ww4_compile_config.yml
+
 # Externals
 externals/*
 !externals/README.md
