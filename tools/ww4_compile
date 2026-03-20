@@ -9,6 +9,19 @@
 #          ~/.ww4_config.yml and executes the underlying Python
 #          compile tool.
 #
+# Usage
+# -----
+# 1. Define the active WAVEWATCH IV repository clone in your home directory:
+#    echo "active_clone: /path/to/your/ww4/clone" > ~/.ww4_config.yml
+#
+# 2. Run the compile tool from any directory:
+#    ww4_compile [options]
+#
+# Options:
+#   --config CONFIG       Path to the compiler configuration YAML file.
+#   --build-dir BUILD_DIR Build directory (relative to repository root).
+#   --clean               Clean the build directory before building.
+#
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
 #               of the National Weather Service.
