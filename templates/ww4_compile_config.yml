@@ -7,6 +7,9 @@
 #          compilation options for WAVEWATCH IV. Users should copy this file
 #          to the root directory and modify it according to their environment.
 
+# Name or path of the CMake executable (e.g., cmake, cmake3)
+cmake: "cmake"
+
 compiler:
   # Name of the C++ compiler (e.g., g++, clang++, icpx, cl, CC)
   name: "g++"

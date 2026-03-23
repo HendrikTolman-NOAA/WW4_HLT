@@ -40,6 +40,7 @@ locations. If an absolute path is provided, it is used directly.
 """
 
 import argparse
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -164,17 +165,22 @@ def main() -> None:
     config = load_config(config_path)
     compiler_name = config["compiler"].get("name", "g++")
     compiler_options = config["compiler"].get("options", "")
+    cmake_executable = config.get("cmake", "cmake")
+
+    # Verify CMake executable exists
+    if not shutil.which(cmake_executable):
+        print(f"Error: CMake executable '{cmake_executable}' not found in PATH.")
+        print("Please run 'tools/ww4_setup.py' to configure the correct CMake path.")
+        sys.exit(1)
 
     # Clean if requested
     if args.clean and build_dir.exists():
-        import shutil
-
         print(f"Cleaning build directory: {build_dir}")
         shutil.rmtree(build_dir)
 
     # Configure
     configure_cmd = [
-        "cmake",
+        cmake_executable,
         "-B",
         str(build_dir),
         "-S",
@@ -185,7 +191,7 @@ def main() -> None:
     run_command(configure_cmd)
 
     # Build
-    build_cmd = ["cmake", "--build", str(build_dir)]
+    build_cmd = [cmake_executable, "--build", str(build_dir)]
     run_command(build_cmd)
 
     print("\nBuild complete!")
