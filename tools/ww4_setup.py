@@ -280,7 +280,7 @@ def setup_compiler(clone_path: Path) -> None:
     config["compiler"]["name"] = selected_compiler
     config["compiler"]["options"] = flags
 
-    header = "# @file ww4_compile_config.yml\n# @brief WAVEWATCH IV compilation configuration.\n# @author Aldgisl, Hendrik Tolman\n\n"
+    header = "# @file ww4_compile_config.yml\n# @brief WAVEWATCH IV compilation configuration.\n\n"
     save_config(compile_config_file, config, header=header)
 
     print(
