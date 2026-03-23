@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set the output directory for executables
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/exe)
+
 # Strict warnings and sanitizers (if not overridden by CMAKE_CXX_FLAGS)
 if(NOT CMAKE_CXX_FLAGS)
     if(MSVC)

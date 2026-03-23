@@ -171,11 +171,35 @@ def setup_active_clone() -> Path:
         print("Invalid choice. Please try again.")
 
     # Update ~/.ww4_config.yml non-destructively
-    config["active_clone"] = str(selected_clone.resolve())
+    resolved_clone = selected_clone.resolve()
+    config["active_clone"] = str(resolved_clone)
     save_config(config_file, config)
-    print(f"Updated {config_file} with active clone: {selected_clone}")
+    print(f"Updated {config_file} with active clone: {resolved_clone}")
 
-    return selected_clone
+    # Add tools and exe directories to shell PATH
+    tools_dir = resolved_clone / "tools"
+    exe_dir = resolved_clone / "exe"
+
+    bashrc = Path.home() / ".bashrc"
+    if bashrc.exists():
+        with open(bashrc, "r") as f:
+            content = f.read()
+
+        path_updates = []
+        for d in [tools_dir, exe_dir]:
+            export_line = f'export PATH="{d}:$PATH"'
+            if export_line not in content:
+                path_updates.append(export_line)
+
+        if path_updates:
+            with open(bashrc, "a") as f:
+                f.write("\n# WAVEWATCH IV paths\n")
+                for line in path_updates:
+                    f.write(f"{line}\n")
+            print(f"Updated {bashrc} with WAVEWATCH IV paths.")
+            print("Please run 'source ~/.bashrc' to update your current session.")
+
+    return resolved_clone
 
 
 def setup_compiler(clone_path: Path) -> None:
