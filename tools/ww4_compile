@@ -25,7 +25,8 @@
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
 #               of the National Weather Service.
-# @author Aldgisl, Henrik Tolman (Initial, 2026-03-24)
+# @author Aldgisl, Hendrik L. Tolman (Initial, 2026-03-21)
+# @author Hendrik L. Tolman (Most recent, 2026-03-24)
 
 CONFIG_FILE="$HOME/.ww4_config.yml"
 
