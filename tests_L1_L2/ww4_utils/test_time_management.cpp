@@ -215,3 +215,94 @@ TEST_F(TimeManagementTest, SystemTimeRoutines) {
   const DateTime dt = TimeManagement::getPresentDateTime();
   EXPECT_GE(dt.ymd, 20200101);
 }
+
+/**
+ * @test Verify calendar type getter and setter.
+ */
+TEST_F(TimeManagementTest, CalendarState) {
+  // Check default (set to Standard in fixture SetUp)
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::Standard);
+
+  // Check manual setting
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::NoLeap);
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::NoLeap);
+
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::ThreeSixtyDay);
+
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::Standard);
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::Standard);
+}
+
+/**
+ * @test Verify day of year calculations.
+ */
+TEST_F(TimeManagementTest, DayOfYear) {
+  // Standard calendar
+  EXPECT_EQ(TimeManagement::getDayOfYear(20230101), 1);
+  EXPECT_EQ(TimeManagement::getDayOfYear(20230301), 60); // 31 + 28 + 1
+  EXPECT_EQ(TimeManagement::getDayOfYear(20240301), 61); // 31 + 29 + 1 (Leap)
+
+  // 360-day calendar
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
+  EXPECT_EQ(TimeManagement::getDayOfYear(20240230), 60);  // 30 + 30
+  EXPECT_EQ(TimeManagement::getDayOfYear(20241230), 360); // 12 * 30
+}
+
+/**
+ * @test Verify advanced Julian day conversions.
+ */
+TEST_F(TimeManagementTest, AdvancedJulianConversions) {
+  // Standard calendar
+  DateArray dat = {2000, 1, 1, 0, 12, 0, 0, 0};
+  double julian;
+  int errorCode;
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  EXPECT_NEAR(julian, 2451545.0, 1e-6);
+
+  // Round trip conversion
+  DateArray dat2{};
+  TimeManagement::julianDayToDateArray(julian, dat2, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  for (size_t i = 0; i < 8; ++i) {
+    if (i == 3)
+      continue; // Skip timezone
+    EXPECT_EQ(dat[i], dat2[i]);
+  }
+
+  // Error handling for year 0
+  dat[0] = 0;
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, -1);
+
+  // 360-day calendar
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
+  dat = {1800, 1, 1, 0, 0, 0, 0, 0};
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  EXPECT_NEAR(julian, 0.0, 1e-6);
+
+  // Round trip
+  TimeManagement::julianDayToDateArray(0.0, dat2, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  for (size_t i = 0; i < 8; ++i) {
+    if (i == 3)
+      continue;
+    EXPECT_EQ(dat[i], dat2[i]);
+  }
+}
+
+/**
+ * @test Verify time2hours conversions.
+ */
+TEST_F(TimeManagementTest, Time2Hours) {
+  const DateTime dt = {20000101, 120000.0};
+  const double hours = TimeManagement::time2hours(dt);
+  // Julian day for 2000-01-01 is 2451545. 24 * 2451545 + 12 = 58837092.
+  EXPECT_NEAR(hours, 58837092.0, 1e-6);
+}
