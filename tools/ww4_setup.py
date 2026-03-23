@@ -14,7 +14,6 @@
 @author Aldgisl, Hendrik Tolman (Initial, 2026-03-24)
 """
 
-import os
 import shutil
 import subprocess
 import sys
