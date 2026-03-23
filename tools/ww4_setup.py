@@ -198,7 +198,7 @@ def setup_compiler(clone_path: Path) -> None:
     print(f"\nSetting up compiler for clone: {clone_path}")
 
     # Detect available compilers
-    known_compilers = ["g++", "clang++", "icpx"]
+    known_compilers = ["g++", "clang++", "icpx", "cl", "CC"]
     available = [c for c in known_compilers if shutil.which(c)]
 
     # Add a manual input option
