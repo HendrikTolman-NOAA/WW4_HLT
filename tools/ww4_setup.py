@@ -301,73 +301,6 @@ def setup_compiler(clone_path: Path) -> None:
     )
 
 
-def setup_cmake(clone_path: Path) -> None:
-    """
-    Identify and set the CMake executable in <clone>/ww4_compile_config.yml.
-
-    Parameters
-    ----------
-    clone_path : Path
-        The path to the active WW4 clone.
-    """
-    compile_config_file = clone_path / "ww4_compile_config.yml"
-    config = load_config(compile_config_file)
-
-    current_cmake = config.get("cmake", "cmake")
-    print(f"\nSetting up CMake for clone: {clone_path}")
-
-    # Detect available CMake executables
-    known_cmakes = ["cmake", "cmake3"]
-    available = [c for c in known_cmakes if shutil.which(c)]
-
-    # Add a manual input option
-    available.append("Manual input")
-
-    print("Available CMake executables on this machine:")
-    default_idx = 0
-    for i, cm in enumerate(available):
-        suffix = ""
-        if cm == current_cmake:
-            suffix = " (currently set)"
-            default_idx = i
-        print(f"[{i}] {cm}{suffix}")
-
-    while True:
-        try:
-            prompt = f"Select a CMake executable [0-{len(available)-1}] [{default_idx}]: "
-            choice = input(prompt).strip()
-            if choice == "":
-                selected_cmake = available[default_idx]
-            else:
-                idx = int(choice)
-                if 0 <= idx < len(available):
-                    selected_cmake = available[idx]
-                else:
-                    raise ValueError
-
-            if selected_cmake == "Manual input":
-                selected_cmake = input("Enter the CMake executable name or path: ").strip()
-                if not selected_cmake:
-                    print("CMake name cannot be empty.")
-                    continue
-                if not shutil.which(selected_cmake):
-                    print(f"Warning: '{selected_cmake}' not found in PATH.")
-                    confirm = input("Are you sure you want to use this? (y/n) [n]: ").lower().strip()
-                    if confirm != "y":
-                        continue
-            break
-        except (ValueError, IndexError):
-            print("Invalid choice. Please try again.")
-
-    # Update ww4_compile_config.yml non-destructively
-    config["cmake"] = selected_cmake
-
-    header = "# @file ww4_compile_config.yml\n# @brief WAVEWATCH IV compilation configuration.\n\n"
-    save_config(compile_config_file, config, header=header)
-
-    print(f"Updated {compile_config_file} with CMake executable: {selected_cmake}")
-
-
 def main() -> None:
     """
     Main entry point for the WW4 setup tool.
@@ -379,7 +312,6 @@ def main() -> None:
 
     active_clone = setup_active_clone()
     setup_compiler(active_clone)
-    setup_cmake(active_clone)
 
     print("\nSetup complete! You can now run 'ww4_compile' to build WAVEWATCH IV.")
 

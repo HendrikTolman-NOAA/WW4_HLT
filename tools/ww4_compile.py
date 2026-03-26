@@ -165,12 +165,11 @@ def main() -> None:
     config = load_config(config_path)
     compiler_name = config["compiler"].get("name", "g++")
     compiler_options = config["compiler"].get("options", "")
-    cmake_executable = config.get("cmake", "cmake")
 
-    # Verify CMake executable exists
-    if not shutil.which(cmake_executable):
-        print(f"Error: CMake executable '{cmake_executable}' not found in PATH.")
-        print("Please run 'tools/ww4_setup.py' to configure the correct CMake path.")
+    # Verify 'cmake' is available in the PATH
+    if not shutil.which("cmake"):
+        print("Error: 'cmake' not found in PATH.")
+        print("Please install CMake and ensure it is in your PATH.")
         sys.exit(1)
 
     # Clean if requested
@@ -180,7 +179,7 @@ def main() -> None:
 
     # Configure
     configure_cmd = [
-        cmake_executable,
+        "cmake",
         "-B",
         str(build_dir),
         "-S",
@@ -191,7 +190,7 @@ def main() -> None:
     run_command(configure_cmd)
 
     # Build
-    build_cmd = [cmake_executable, "--build", str(build_dir)]
+    build_cmd = ["cmake", "--build", str(build_dir)]
     run_command(build_cmd)
 
     print("\nBuild complete!")
