@@ -8,6 +8,11 @@ test_format.cpp
 # User-specific configuration
 /ww4_compile_config.yml
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
 # Externals
 externals/*
 !externals/README.md

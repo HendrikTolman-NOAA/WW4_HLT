@@ -40,6 +40,7 @@ locations. If an absolute path is provided, it is used directly.
 """
 
 import argparse
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -165,10 +166,14 @@ def main() -> None:
     compiler_name = config["compiler"].get("name", "g++")
     compiler_options = config["compiler"].get("options", "")
 
+    # Verify 'cmake' is available in the PATH
+    if not shutil.which("cmake"):
+        print("Error: 'cmake' not found in PATH.")
+        print("Please install CMake and ensure it is in your PATH.")
+        sys.exit(1)
+
     # Clean if requested
     if args.clean and build_dir.exists():
-        import shutil
-
         print(f"Cleaning build directory: {build_dir}")
         shutil.rmtree(build_dir)
 
