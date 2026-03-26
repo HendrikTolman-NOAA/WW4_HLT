@@ -24,14 +24,20 @@ Usage
 4.  Optionally specify a custom build directory or clean the previous build:
     python3 tools/ww4_compile.py --build-dir my_build --clean
 
+5.  Compile using a preset configuration from the templates directory:
+    python3 tools/ww4_compile.py --preset PRESET_CONFIG
+
 Search Logic
 ------------
 The tool searches for the configuration file in the following order:
-1.  The directory from which the tool is called (current working directory).
-2.  The root directory of the repository clone.
+1.  If --preset <PRESET> is provided, the tool uses the file
+    templates/ww4_compile_config.<PRESET>.yml from the repository root.
+2.  Otherwise, the directory from which the tool is called (current working directory)
+    is searched for the --config file (default: ww4_compile_config.yml).
+3.  The root directory of the repository clone is searched for the --config file.
 
-If a relative path is provided via --config, it is checked in these two
-locations. If an absolute path is provided, it is used directly.
+If a relative path is provided via --config, it is checked in locations 2 and 3.
+If an absolute path is provided, it is used directly.
 
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
@@ -136,26 +142,38 @@ def main() -> None:
     parser.add_argument(
         "--clean", action="store_true", help="Clean the build directory before building"
     )
+    parser.add_argument(
+        "--preset",
+        type=str,
+        help="Name of the preset configuration in templates/ "
+        "(e.g., 'test' for templates/ww4_compile_config.test.yml)",
+    )
 
     args = parser.parse_args()
 
     cwd = Path.cwd()
     root_dir = Path(__file__).parent.parent.resolve()
 
-    config_path = Path(args.config)
-    if not config_path.is_absolute():
-        # Try current working directory first
-        cwd_config = cwd / config_path
-        # Try repository root directory second
-        root_config = root_dir / config_path
+    if args.preset:
+        config_path = root_dir / "templates" / f"ww4_compile_config.{args.preset}.yml"
+        if not config_path.exists():
+            print(f"Error: Preset configuration file not found at {config_path}")
+            sys.exit(1)
+    else:
+        config_path = Path(args.config)
+        if not config_path.is_absolute():
+            # Try current working directory first
+            cwd_config = cwd / config_path
+            # Try repository root directory second
+            root_config = root_dir / config_path
 
-        if cwd_config.exists():
-            config_path = cwd_config
-        elif root_config.exists():
-            config_path = root_config
-        else:
-            # If neither exists, fall back to cwd_config for the error message in load_config
-            config_path = cwd_config
+            if cwd_config.exists():
+                config_path = cwd_config
+            elif root_config.exists():
+                config_path = root_config
+            else:
+                # If neither exists, fall back to cwd_config for the error message in load_config
+                config_path = cwd_config
 
     build_dir = Path(args.build_dir)
     if not build_dir.is_absolute():

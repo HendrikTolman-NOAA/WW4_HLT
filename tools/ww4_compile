@@ -21,6 +21,7 @@
 #   --config CONFIG       Path to the compiler configuration YAML file.
 #   --build-dir BUILD_DIR Build directory (relative to repository root).
 #   --clean               Clean the build directory before building.
+#   --preset PRESET       Use a preset configuration from the templates directory.
 #
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
@@ -28,24 +29,38 @@
 # @author Aldgisl, Hendrik L. Tolman (Initial, 2026-03-21)
 # @author Hendrik L. Tolman (Most recent, 2026-03-24)
 
-CONFIG_FILE="$HOME/.ww4_config.yml"
+# Check if --preset is among the arguments
+HAS_PRESET=false
+for arg in "$@"; do
+    if [ "$arg" == "--preset" ]; then
+        HAS_PRESET=true
+        break
+    fi
+done
 
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Error: Configuration file $CONFIG_FILE not found."
-    echo "Please ensure the active clone is configured."
-    exit 1
-fi
+if [ "$HAS_PRESET" = true ]; then
+    # Use the clone from which the script is called
+    ACTIVE_CLONE=$(cd "$(dirname "$0")"/.. && pwd)
+else
+    CONFIG_FILE="$HOME/.ww4_config.yml"
 
-# Extract active_clone path using python3 to handle YAML safely
-ACTIVE_CLONE=$(python3 -c "import yaml
+    if [ ! -f "$CONFIG_FILE" ]; then
+        echo "Error: Configuration file $CONFIG_FILE not found."
+        echo "Please ensure the active clone is configured."
+        exit 1
+    fi
+
+    # Extract active_clone path using python3 to handle YAML safely
+    ACTIVE_CLONE=$(python3 -c "import yaml
 with open('$CONFIG_FILE', 'r') as f:
     config = yaml.safe_load(f)
     if config and 'active_clone' in config:
         print(config['active_clone'])" 2>/dev/null)
 
-if [ -z "$ACTIVE_CLONE" ]; then
-    echo "Error: 'active_clone' not defined in $CONFIG_FILE"
-    exit 1
+    if [ -z "$ACTIVE_CLONE" ]; then
+        echo "Error: 'active_clone' not defined in $CONFIG_FILE"
+        exit 1
+    fi
 fi
 
 if [ ! -d "$ACTIVE_CLONE" ]; then
