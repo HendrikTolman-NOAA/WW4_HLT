@@ -62,6 +62,25 @@ The `--preset` option allows for compilation with a single command without the n
 ```
 Available presets can be found in the `templates/` directory (e.g., `templates/ww4_compile_config.test.yml` corresponds to `--preset test`).
 
+## Developer Tools
+
+WAVEWATCH IV provides additional tools to support developers during the coding process.
+
+### Unit Test Availability Check
+
+To check if unit tests are available for a specific file and its identified routines:
+
+```bash
+./ww4_unit_test_check --file <filename>
+```
+*Note: The filename should be provided without extension (e.g., `time_management`).*
+
+This tool will:
+- Identify source files in `src/` and `include/`.
+- Isolate user-defined routines (functions and methods).
+- Check the `tests_L1_L2/` directory for corresponding unit tests.
+- Report the test coverage status for each identified routine.
+
 #
 <p align="right">
   <img src="https://github.com/NOAA-EMC/WW4/wiki/images/noaa_logo.gif" alt="NOAA Logo" style="height: 50px; width:55px;"/>
