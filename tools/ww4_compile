@@ -34,7 +34,7 @@
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
 #               of the National Weather Service.
 # @author Aldgisl, Hendrik L. Tolman (Initial, 2026-03-21)
-# @author Hendrik L. Tolman (Most recent, 2026-03-24)
+# @author Aldgisl, Hendrik L. Tolman (Most recent, 2026-03-27)
 
 # Check if --preset is among the arguments
 HAS_PRESET=false
