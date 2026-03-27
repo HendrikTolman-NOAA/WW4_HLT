@@ -3,7 +3,7 @@
       | WAVEWATCH IV, open source, code management by NOAA/NWS |
       +--------------------------------------------------------+
 
-@file ww4_test_check.py
+@file ww4_unit_test_check.py
 @brief A tool to check if unit tests are available for a specific file.
 @details This tool searches for source files in src/ and include/ matching a
          given name, identifies user-defined routines, and checks if
@@ -12,14 +12,14 @@
 Usage
 -----
 Run the tool from the repository root or provide the file name:
-    python3 tools/ww4_test_check.py --file filename
+    python3 tools/ww4_unit_test_check.py --file filename
 
 The filename should be provided without extension.
 
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
-@author Aldgisl, Jules (Initial, 2026-03-27)
+@author Aldgisl, Hendrik Tolman (Initial, 2026-03-27)
 @date 2026-03-27
 """
 
@@ -166,7 +166,7 @@ def main() -> None:
     """
     Main entry point for the test check tool.
     """
-    parser = argparse.ArgumentParser(description="WAVEWATCH IV Test Check Tool")
+    parser = argparse.ArgumentParser(description="WAVEWATCH IV Unit Test Check Tool")
     parser.add_argument(
         "--file",
         type=str,

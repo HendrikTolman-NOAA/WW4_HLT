@@ -66,12 +66,12 @@ Available presets can be found in the `templates/` directory (e.g., `templates/w
 
 WAVEWATCH IV provides additional tools to support developers during the coding process.
 
-### Test Availability Check
+### Unit Test Availability Check
 
 To check if unit tests are available for a specific file and its identified routines:
 
 ```bash
-./ww4_test_check --file <filename>
+./ww4_unit_test_check --file <filename>
 ```
 *Note: The filename should be provided without extension (e.g., `time_management`).*
 
