@@ -5,7 +5,9 @@
 #
 # @file ww4_setup
 # @brief Shell wrapper for the WAVEWATCH IV (WW4) setup tool.
-# @details This script executes the underlying Python setup tool.
+# @details This script executes the underlying Python setup tool,
+#          providing the recommended way to interactively configure
+#          the active WW4 clone and compiler settings.
 #
 # Usage
 # -----
@@ -15,6 +17,7 @@
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
 #               of the National Weather Service.
 # @author Aldgisl, Hendrik Tolman (Initial, 2026-03-24)
+# @author Aldgisl, Hendrik Tolman (Most recent, 2026-03-27)
 
 # Get the directory of this script
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
