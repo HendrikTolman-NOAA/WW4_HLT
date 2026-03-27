@@ -10,21 +10,21 @@
 
 Usage
 -----
-1.  Copy the template configuration file to the repository root:
+1.  Configure the build environment using the recommended setup tool:
+    python3 tools/ww4_setup.py
+
+    Alternatively, configure manually by copying the template:
     cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
+    (And then edit the file to specify your compiler and options.)
 
-2.  Edit ww4_compile_config.yml to specify your compiler and preferred options:
-    compiler:
-      name: "g++"
-      options: "-O3 -Wall -Wextra -std=c++20"
-
-3.  Run the compile tool from the repository root:
+2.  Run the compile tool from the repository root:
     python3 tools/ww4_compile.py
 
-4.  Optionally specify a custom build directory or clean the previous build:
+3.  Optionally specify a custom build directory or clean the previous build:
     python3 tools/ww4_compile.py --build-dir my_build --clean
 
-5.  Compile using a preset configuration from the templates directory:
+4.  Compile immediately using a preset configuration from the templates directory
+    (this bypasses the need for a local config file):
     python3 tools/ww4_compile.py --preset PRESET_CONFIG
 
 Search Logic

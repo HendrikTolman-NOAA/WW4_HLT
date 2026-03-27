@@ -5,7 +5,9 @@
 #
 # @file ww4_setup
 # @brief Shell wrapper for the WAVEWATCH IV (WW4) setup tool.
-# @details This script executes the underlying Python setup tool.
+# @details This script executes the underlying Python setup tool,
+#          providing the recommended way to interactively configure
+#          the active WW4 clone and compiler settings.
 #
 # Usage
 # -----

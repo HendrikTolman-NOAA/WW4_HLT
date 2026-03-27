@@ -5,8 +5,9 @@
 
 @file ww4_setup.py
 @brief Configuration tool for WAVEWATCH IV (WW4).
-@details This tool helps users configure their active WW4 clone and compiler
-         settings for compilation.
+@details This tool provides the recommended way to interactively configure
+         the active WW4 clone and compiler settings. For manual setup,
+         refer to the templates/ directory.
 
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks

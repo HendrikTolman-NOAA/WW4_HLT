@@ -10,13 +10,14 @@ The tools gathered here are documented in the [WW4 Tools](https://github.com/NOA
 
 # Usage
 
-## Interactive Usage
+WAVEWATCH IV provides multiple ways to set up and build the project, ranging from interactive tools to manual configuration.
 
-WAVEWATCH IV provides interactive tools to help you set up and build the project.
+## Interactive Usage (Recommended)
+
+Run the setup tool to interactively configure your active clone and compiler settings:
 
 ### 1. Setup
 
-Run the setup tool to configure your active clone and compiler settings:
 ```bash
 ./ww4_setup
 ```
@@ -32,6 +33,34 @@ Once configured, you can compile WAVEWATCH IV using:
 ./ww4_compile
 ```
 This tool uses the settings from `ww4_compile_config.yml` and invokes CMake to build the project.
+
+## Manual Usage
+
+If you prefer to configure the tools manually, follow these steps:
+
+### 1. Setup
+
+Copy the template configuration file to the repository root:
+```bash
+cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
+```
+Then, edit `ww4_compile_config.yml` to specify your compiler and preferred options.
+
+### 2. Compilation
+
+Run the compile tool from the repository root:
+```bash
+python3 tools/ww4_compile.py
+```
+
+## Quick Start with Presets
+
+The `--preset` option allows for compilation with a single command without the need for additional configuration. This bypasses the need for a local `ww4_compile_config.yml` file by using pre-defined templates.
+
+```bash
+./ww4_compile --preset <PRESET_NAME>
+```
+Available presets can be found in the `templates/` directory (e.g., `templates/ww4_compile_config.test.yml` corresponds to `--preset test`).
 
 #
 <p align="right">

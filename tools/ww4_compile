@@ -11,11 +11,18 @@
 #
 # Usage
 # -----
-# 1. Define the active WAVEWATCH IV repository clone in your home directory:
+# 1. Configure the build environment using the recommended setup tool:
+#    ww4_setup
+#
+#    Alternatively, configure manually by defining the active clone:
 #    echo "active_clone: /path/to/your/ww4/clone" > ~/.ww4_config.yml
 #
 # 2. Run the compile tool from any directory:
 #    ww4_compile [options]
+#
+# 3. Quick Start: compile immediately using a preset configuration
+#    (this bypasses the need for local configuration):
+#    ww4_compile --preset <PRESET_NAME>
 #
 # Options:
 #   --config CONFIG       Path to the compiler configuration YAML file.
