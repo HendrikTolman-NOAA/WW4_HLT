@@ -43,7 +43,7 @@ If an absolute path is provided, it is used directly.
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
 @author Aldgisl, Hendrik Tolman (Initial, 2026-03-20)
-@author Aldgisl, Hendrik Tolman (Most recent, 2026-03-27)
+@author Aldgisl, Hendrik Tolman (Last Update, 2026-03-30)
 """
 
 import argparse

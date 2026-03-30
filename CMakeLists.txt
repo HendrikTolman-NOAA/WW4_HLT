@@ -1,3 +1,19 @@
+#      +--------------------------------------------------------+
+#      | WAVEWATCH IV, open source, code management by NOAA/NWS |
+#      +--------------------------------------------------------+
+#
+# @file CMakeLists.txt
+# @brief CMake build configuration for WAVEWATCH IV (WW4) Utilities.
+# @details This file defines the project structure, dependencies (GTest),
+#          and build targets for the WW4_Utils library and its tests.
+#
+# @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
+#               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
+#               of the National Weather Service.
+# @author Aldgisl, Hendrik L. Tolman (Initial, 2026-03-20)
+# @author Aldgisl, Hendrik L. Tolman (Last Update, 2026-03-30)
+# @date 2026-03-30
+
 cmake_minimum_required(VERSION 3.20)
 project(WW4_Utils VERSION 1.0.0 LANGUAGES CXX)
 
