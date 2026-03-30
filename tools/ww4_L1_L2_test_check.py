@@ -20,7 +20,6 @@ The filename should be provided without extension.
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
 @author Aldgisl, Hendrik Tolman (Initial, 2026-03-30)
-@date 2026-03-30
 """
 
 import argparse
