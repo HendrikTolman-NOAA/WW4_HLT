@@ -86,7 +86,7 @@ This tool will:
 To remove intermediate files created during compilation:
 
 ```bash
-./ww4_Clean
+./ww4_clean
 ```
 
 To remove all compilation output, including executables and libraries:

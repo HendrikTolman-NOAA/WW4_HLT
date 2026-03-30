@@ -3,7 +3,7 @@
       | WAVEWATCH IV, open source, code management by NOAA/NWS |
       +--------------------------------------------------------+
 
-@file ww4_Clean.py
+@file ww4_clean.py
 @brief A tool to remove intermediate files created by compilation.
 @details This tool removes the 'build' directory in the repository root.
 
