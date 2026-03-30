@@ -44,7 +44,6 @@ If an absolute path is provided, it is used directly.
                of the National Weather Service.
 @author Aldgisl, Hendrik Tolman (Initial, 2026-03-20)
 @author Aldgisl, Hendrik Tolman (Last Update, 2026-03-30)
-@date 2026-03-30
 """
 
 import argparse
