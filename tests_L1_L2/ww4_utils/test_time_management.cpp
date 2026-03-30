@@ -306,3 +306,87 @@ TEST_F(TimeManagementTest, Time2Hours) {
   // Julian day for 2000-01-01 is 2451545. 24 * 2451545 + 12 = 58837092.
   EXPECT_NEAR(hours, 58837092.0, 1e-6);
 }
+
+/**
+ * @test Verify NoLeap calendar behavior.
+ */
+TEST_F(TimeManagementTest, NoLeapCalendar) {
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::NoLeap);
+
+  // 2024 is a leap year in Standard, but not in NoLeap
+  EXPECT_EQ(TimeManagement::incrementDateByDay(20240228, 1), 20240301);
+  EXPECT_EQ(TimeManagement::getDayOfYear(20240301), 60); // 31 + 28 + 1
+}
+
+/**
+ * @test Verify incrementDateTime with negative time steps.
+ */
+TEST_F(TimeManagementTest, NegativeIncrements) {
+  DateTime dt = {20240101, 0.0};
+  TimeManagement::incrementDateTime(dt, -1.0);
+  EXPECT_EQ(dt.ymd, 20231231);
+  EXPECT_NEAR(dt.hms, 235959.0, 1e-6);
+
+  TimeManagement::incrementDateTime(dt, -86400.0);
+  EXPECT_EQ(dt.ymd, 20231230);
+  EXPECT_NEAR(dt.hms, 235959.0, 1e-6);
+}
+
+/**
+ * @test Verify handling of Year 0 and other boundary years.
+ */
+TEST_F(TimeManagementTest, YearZeroHandling) {
+  EXPECT_EQ(TimeManagement::computeJulianDay(1, 1, 0), -1);
+
+  DateArray dat = {0, 1, 1, 0, 0, 0, 0, 0};
+  double julian;
+  int errorCode;
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, -1);
+}
+
+/**
+ * @test Verify behavior for uninitialized/unset date and time.
+ */
+TEST_F(TimeManagementTest, NotSetDateTime) {
+  const DateTime dt = {-1, 0.0};
+  EXPECT_EQ(TimeManagement::toFormattedString(dt), " date and time not set.");
+}
+
+/**
+ * @test Verify differenceInSeconds with reverse time order.
+ */
+TEST_F(TimeManagementTest, DifferenceInSecondsReverse) {
+  const DateTime dt1 = {20240101, 120000.0};
+  const DateTime dt2 = {20240101, 115959.0};
+  EXPECT_NEAR(TimeManagement::differenceInSeconds(dt1, dt2), -1.0, 1e-6);
+
+  const DateTime dt_midnight = {20240101, 0.0};
+  const DateTime dt_prev_day = {20231231, 235959.0};
+  EXPECT_NEAR(TimeManagement::differenceInSeconds(dt_midnight, dt_prev_day),
+              -1.0, 1e-6);
+}
+
+/**
+ * @test Verify error handling for Julian day conversions.
+ */
+TEST_F(TimeManagementTest, JulianErrorHandling) {
+  DateArray dat{};
+  int errorCode;
+  // Standard calendar does not support negative Julian days
+  TimeManagement::julianDayToDateArray(-1.0, dat, errorCode);
+  EXPECT_EQ(errorCode, 1);
+}
+
+/**
+ * @test Verify error handling for units parsing.
+ */
+TEST_F(TimeManagementTest, UnitsParsingErrors) {
+  DateArray dat{};
+  int errorCode;
+  TimeManagement::parseUnitsToDateArray("invalid units", dat, errorCode);
+  EXPECT_EQ(errorCode, 1);
+
+  TimeManagement::parseUnitsToDateArray("seconds since ", dat, errorCode);
+  EXPECT_EQ(errorCode, 1);
+}
