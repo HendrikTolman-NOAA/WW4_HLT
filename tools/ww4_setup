@@ -17,7 +17,8 @@
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
 #               of the National Weather Service.
 # @author Aldgisl, Hendrik Tolman (Initial, 2026-03-24)
-# @author Aldgisl, Hendrik Tolman (Most recent, 2026-03-27)
+# @author Aldgisl, Hendrik Tolman (Last Update, 2026-03-30)
+# @date 2026-03-30
 
 # Get the directory of this script
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
