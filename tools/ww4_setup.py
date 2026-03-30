@@ -184,7 +184,7 @@ def update_shell_config(clone_path: Path) -> None:
             for line in path_updates:
                 f.write(f"{line}\n")
         print(f"Updated {config_path} with WAVEWATCH IV paths.")
-        print(f"Note: These changes will take effect in all NEW shell sessions.")
+        print("Note: These changes will take effect in all NEW shell sessions.")
         print(f"To update your CURRENT session, please run: source ~/{config_path.name}")
 
 
