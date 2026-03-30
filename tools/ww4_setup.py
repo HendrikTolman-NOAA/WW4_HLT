@@ -16,6 +16,7 @@
 @author Aldgisl, Hendrik Tolman (Most recent, 2026-03-27)
 """
 
+import os
 import shutil
 import subprocess
 import sys
@@ -131,9 +132,9 @@ def save_config(path: Path, data: Dict[str, Any], header: Optional[str] = None) 
         yaml.dump(data, f, default_flow_style=False)
 
 
-def update_bashrc(clone_path: Path) -> None:
+def update_shell_config(clone_path: Path) -> None:
     """
-    Add the tools and exe directories of the clone to the user's .bashrc.
+    Add the tools and exe directories of the clone to the user's shell configuration.
 
     Parameters
     ----------
@@ -143,24 +144,48 @@ def update_bashrc(clone_path: Path) -> None:
     tools_dir = clone_path / "tools"
     exe_dir = clone_path / "exe"
 
-    bashrc = Path.home() / ".bashrc"
-    if bashrc.exists():
-        with open(bashrc, "r") as f:
-            content = f.read()
+    # Detect the current shell
+    shell_path = os.environ.get("SHELL", "")
+    shell_name = Path(shell_path).name
 
-        path_updates = []
-        for d in [tools_dir, exe_dir]:
-            export_line = f'export PATH="{d}:$PATH"'
-            if export_line not in content:
-                path_updates.append(export_line)
+    # Mapping of shell to its common configuration file
+    shell_configs = {
+        "bash": ".bashrc",
+        "zsh": ".zshrc",
+        "ksh": ".kshrc",
+        "sh": ".profile",
+    }
 
-        if path_updates:
-            with open(bashrc, "a") as f:
-                f.write("\n# WAVEWATCH IV paths\n")
-                for line in path_updates:
-                    f.write(f"{line}\n")
-            print(f"Updated {bashrc} with WAVEWATCH IV paths.")
-            print("Please run 'source ~/.bashrc' to update your current session.")
+    config_filename = shell_configs.get(shell_name, ".bashrc")
+    config_path = Path.home() / config_filename
+
+    # If the detected config doesn't exist, fallback to .bashrc or .profile
+    if not config_path.exists():
+        if (Path.home() / ".bashrc").exists():
+            config_path = Path.home() / ".bashrc"
+        elif (Path.home() / ".profile").exists():
+            config_path = Path.home() / ".profile"
+        else:
+            print(f"Warning: Could not find a suitable shell configuration file (tried {config_filename}, .bashrc, .profile).")
+            return
+
+    with open(config_path, "r") as f:
+        content = f.read()
+
+    path_updates = []
+    for d in [tools_dir, exe_dir]:
+        export_line = f'export PATH="{d}:$PATH"'
+        if export_line not in content:
+            path_updates.append(export_line)
+
+    if path_updates:
+        with open(config_path, "a") as f:
+            f.write("\n# WAVEWATCH IV paths\n")
+            for line in path_updates:
+                f.write(f"{line}\n")
+        print(f"Updated {config_path} with WAVEWATCH IV paths.")
+        print("Note: These changes will take effect in all NEW shell sessions.")
+        print(f"To update your CURRENT session, please run: source ~/{config_path.name}")
 
 
 def setup_active_clone() -> Path:
@@ -181,7 +206,7 @@ def setup_active_clone() -> Path:
         print(f"Current active clone found: {active_clone}")
         use_current = input("Do you want to use this clone? (y/n) [y]: ").lower().strip()
         if use_current == "" or use_current == "y":
-            update_bashrc(active_clone)
+            update_shell_config(active_clone)
             return active_clone
 
     clones = find_clones()
@@ -212,7 +237,7 @@ def setup_active_clone() -> Path:
     print(f"Updated {config_file} with active clone: {resolved_clone}")
 
     # Add tools and exe directories to shell PATH
-    update_bashrc(resolved_clone)
+    update_shell_config(resolved_clone)
 
     return resolved_clone
 

@@ -66,12 +66,12 @@ Available presets can be found in the `templates/` directory (e.g., `templates/w
 
 WAVEWATCH IV provides additional tools to support developers during the coding process.
 
-### Unit Test Availability Check
+### L1/L2 Test Availability Check
 
 To check if unit tests are available for a specific file and its identified routines:
 
 ```bash
-./ww4_unit_test_check --file <filename>
+./ww4_L1_L2_test_check --file <filename>
 ```
 *Note: The filename should be provided without extension (e.g., `time_management`).*
 
@@ -80,6 +80,20 @@ This tool will:
 - Isolate user-defined routines (functions and methods).
 - Check the `tests_L1_L2/` directory for corresponding unit tests.
 - Report the test coverage status for each identified routine.
+
+### Clean Tools
+
+To remove intermediate files created during compilation:
+
+```bash
+./ww4_clean
+```
+
+To remove all compilation output, including executables and libraries:
+
+```bash
+./ww4_clean_all
+```
 
 #
 <p align="right">
