@@ -22,6 +22,17 @@
 namespace ww4_utils {
 
 /**
+ * @test Verify that MemoryUsage struct initializes fields to zero.
+ */
+TEST(MemoryUtilsTest, DefaultInitialization) {
+  const MemoryUsage usage{};
+  EXPECT_EQ(usage.vmPeak, 0);
+  EXPECT_EQ(usage.vmSize, 0);
+  EXPECT_EQ(usage.vmHWM, 0);
+  EXPECT_EQ(usage.vmRSS, 0);
+}
+
+/**
  * @test Verify that captureMemoryUsage returns valid non-zero metrics.
  */
 TEST(MemoryUtilsTest, CaptureMemoryUsage) {
