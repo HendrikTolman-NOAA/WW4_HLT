@@ -5,7 +5,7 @@
 #
 # @file ww4_clean_all
 # @brief A tool to remove all compilation output, including executables and libraries.
-# @details This script removes the 'build' directory and all files in 'exe' (except README.md).
+# @details This script removes the 'build' and 'exe' directories in the repository root.
 #
 # Usage
 # -----
@@ -39,23 +39,15 @@ else
     echo "No build directory found."
 fi
 
-# Clean contents of exe directory (except README.md)
+# Remove exe directory
 if [ -d "$EXE_DIR" ]; then
-    echo "Cleaning executables in: $EXE_DIR"
-    # Iterate over files in exe directory
-    for item in "$EXE_DIR"/*; do
-        # Handle case where directory is empty (glob remains literal)
-        [ -e "$item" ] || continue
-
-        filename=$(basename "$item")
-        if [ "$filename" != "README.md" ]; then
-            rm -rf "$item"
-            if [ $? -ne 0 ]; then
-                echo "Error removing $item"
-            fi
-        fi
-    done
-    echo "Executable directory cleaned."
+    echo "Removing executable directory: $EXE_DIR"
+    rm -rf "$EXE_DIR"
+    if [ $? -eq 0 ]; then
+        echo "Executable directory removed."
+    else
+        echo "Error removing executable directory."
+    fi
 else
     echo "No executable directory found."
 fi
