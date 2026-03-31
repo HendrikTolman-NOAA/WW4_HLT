@@ -17,7 +17,6 @@
 #               of the National Weather Service.
 # @author Aldgisl, Hendrik Tolman (Initial, 2026-03-30)
 # @author Aldgisl, Hendrik Tolman (Last Update, 2026-03-31)
-# @date 2026-03-31
 
 # Identify the repository root (parent of the directory containing this script)
 TOOLS_DIR=$(cd "$(dirname "$0")" && pwd)
