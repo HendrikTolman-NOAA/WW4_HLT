@@ -1,8 +1,17 @@
 build/
+exe/
 *.o
 verify_ww4.py
 test_format
 test_format.cpp
+
+# User-specific configuration
+/ww4_compile_config.yml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 
 # Externals
 externals/*

@@ -16,7 +16,6 @@ The only other file in this format is  [AGENTS.md](./AGENTS.md), which contains 
 
 The only other file that could be construed as  “documentation” in the home directory of the repository is the  VERSION file.
 
-
 # 
 <p align="right">
   <img src="https://github.com/NOAA-EMC/WW4/wiki/images/noaa_logo.gif" alt="NOAA Logo" height="50" ; width="55">  
