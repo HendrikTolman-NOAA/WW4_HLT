@@ -22,7 +22,7 @@ The filename should be provided without extension.
 @author Main Author(s): Aldgisl (AI Persona), Hendrik Tolman
 @author Contributors: Jules (Agentic AI)
 @date Initial, 2026-03-30
-@date Last Update, 2026-03-30
+@date Last Update, 2026-03-31
 """
 
 import argparse
@@ -83,19 +83,55 @@ def extract_routines(file_path: Path) -> Set[str]:
 
     # Simple regex to find C++ function/method definitions or declarations
     # Matches: Type [Class::]Name(args) [const] [noexcept] [{ or ;]
-    # We want to capture the 'Name' part.
+    # Group 1: Return type
+    # Group 2: Optional class/namespace
+    # Group 3: Function/Method name
+    # Group 4: Opening brace or semicolon
     pattern = re.compile(
-        r"(?:[a-zA-Z_][a-zA-Z0-9_<>, \t*&]*\s+)"  # Return type (improved for templates/pointers)
-        r"(?:[a-zA-Z_][a-zA-Z0-9_]*::)?"    # Optional class/namespace
-        r"([a-zA-Z_][a-zA-Z0-9_]*)"         # Function/Method name (Capture Group 1)
-        r"\s*\([^)]*\)\s*(?:const)?\s*(?:noexcept)?\s*(?:\[\[[^\]]+\]\]\s*)?[;{]"
+        r"([a-zA-Z_][a-zA-Z0-9_<>, \t*&:]*)\s+"  # Return type
+        r"(?:([a-zA-Z_][a-zA-Z0-9_]*)::)?"  # Optional class/namespace
+        r"([a-zA-Z_][a-zA-Z0-9_]*)"  # Function/Method name
+        r"\s*\([^)]*\)\s*(?:const)?\s*(?:noexcept)?\s*(?:\[\[[^\]]+\]\]\s*)?([;{])"
     )
 
+    is_header = file_path.suffix in {".hpp", ".h"}
+
     for match in pattern.finditer(content):
-        name = match.group(1)
-        # Filter out common C++ keywords that might be misidentified
-        if name not in {"if", "for", "while", "switch", "return", "catch"}:
-            routines.add(name)
+        ret_type = match.group(1).strip()
+        namespace = match.group(2)
+        name = match.group(3)
+        end_char = match.group(4)
+
+        # Filter out common C++ keywords that might be misidentified as return type
+        if ret_type in {"if", "for", "while", "switch", "return", "catch", "case"}:
+            continue
+
+        # Filter out matches in the std namespace (e.g., std::format)
+        if namespace == "std":
+            continue
+
+        # Filter out common C++ keywords identified as routine name
+        if name in {
+            "if",
+            "for",
+            "while",
+            "switch",
+            "return",
+            "catch",
+            "format",
+            "string_view",
+            "span",
+            "vector",
+            "array",
+        }:
+            continue
+
+        # In .cpp files, we only care about definitions (ending with {)
+        # to avoid capturing variable declarations or function calls.
+        if not is_header and end_char == ";":
+            continue
+
+        routines.add(name)
 
     return routines
 
