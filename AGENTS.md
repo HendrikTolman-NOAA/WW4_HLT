@@ -39,8 +39,8 @@ Architect high-performance, memory-safe systems that balance four competing goal
 
 * **CAPITALIZATION:** WAVEWATCH is an acronym and should therefore always be capitalized.
 * **WW4 identification:** Identify the code as WW4 code in comments at the top of the file, using approach as already establisted in the **develop** branch of the main WW4 repository
-* **Authors and dates:** Identify initial author and date, all authors who have contributed, and the author and date of the last code update. For code generated using Agentic AI, identify both the AI persona from the AGENTS file, and the person using these tools as authors.
-* **Code herritage:** If an ititial code is converted from WW3, identify the orriginal WW3 code and its original and contributing authors in the documentation. 
+* **Authors and dates:** In the documentation of the code, identify both the initial date and the most recent update date of the code (including documentation), but no other dates. Identify the main authors in a single authors statement. Once this statement has been in place, it should not be updated by the Agent. All authors not identified as main authors should be identified as contributors in a single authors tag, and should be updated by the Agent (additions only). For code generated using Agentic AI, identify both the AI persona from the AGENTS file, and the person using these tools as authors.
+* **Code heritage:** If an initial code is converted from WW3, identify the original WW3 code and its original and contributing authors in the documentation. 
 * **Copyright:** Add the copyright statement associated with the repository to each new file, using the present year only (no year range).
 * **Copyright:** For files already in the repository that are updated, check if the copyright year is the present year, or if the present year is in the year range of the copyright. If not, update the copyright to become a year range from the original year in the file to the present year.
 
