@@ -4,9 +4,96 @@
 
 # <p align="center"> WW4 tools directory </p>
 
-Copies of tools created for  WW4 are gathered here in the WW4/bin directory. These are the ‘microtools` to work the repository.  ‘Macrotools’ to help develop WW4 applications, for instance to manipulate grids, are gathered in their own repositories.
+Copies of tools created for  WW4 are gathered here in the tools/ directory. These are the ‘microtools` to work the repository.  ‘Macrotools’ to help develop WW4 applications, for instance to manipulate grids, are gathered in their own repositories.
 
 The tools gathered here are documented in the [WW4 Tools](https://github.com/NOAA-EMC/WW4/wiki/Tools.md)  page of the WW4 wiki page.
+
+# Usage
+
+WAVEWATCH IV provides multiple ways to set up and build the project, ranging from interactive tools to manual configuration.
+
+## Interactive Usage (Recommended)
+
+Run the setup tool to interactively configure your active clone and compiler settings:
+
+### 1. Setup
+
+```bash
+./ww4_setup
+```
+This tool will:
+- Identify and set the active WAVEWATCH IV clone in `~/.ww4_config.yml`.
+- Detect available C++ compilers on your system.
+- Configure compilation flags for either development or maximum optimization in `ww4_compile_config.yml`.
+
+### 2. Compilation
+
+Once configured, you can compile WAVEWATCH IV using:
+```bash
+./ww4_compile
+```
+This tool uses the settings from `ww4_compile_config.yml` and invokes CMake to build the project.
+
+## Manual Usage
+
+If you prefer to configure the tools manually, follow these steps:
+
+### 1. Setup
+
+Copy the template configuration file to the repository root:
+```bash
+cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
+```
+Then, edit `ww4_compile_config.yml` to specify your compiler and preferred options.
+
+### 2. Compilation
+
+Run the compile tool from the repository root:
+```bash
+python3 tools/ww4_compile.py
+```
+
+## Quick Start with Presets
+
+The `--preset` option allows for compilation with a single command without the need for additional configuration. This bypasses the need for a local `ww4_compile_config.yml` file by using pre-defined templates.
+
+```bash
+./ww4_compile --preset <PRESET_NAME>
+```
+Available presets can be found in the `templates/` directory (e.g., `templates/ww4_compile_config.test.yml` corresponds to `--preset test`).
+
+## Developer Tools
+
+WAVEWATCH IV provides additional tools to support developers during the coding process.
+
+### L1/L2 Test Availability Check
+
+To check if unit tests are available for a specific file and its identified routines:
+
+```bash
+./ww4_L1_L2_test_check --file <filename>
+```
+*Note: The filename should be provided without extension (e.g., `time_management`).*
+
+This tool will:
+- Identify source files in `src/` and `include/`.
+- Isolate user-defined routines (functions and methods).
+- Check the `tests_L1_L2/` directory for corresponding unit tests.
+- Report the test coverage status for each identified routine.
+
+### Clean Tools
+
+To remove intermediate files created during compilation:
+
+```bash
+./ww4_clean
+```
+
+To remove all compilation output, including executables and libraries:
+
+```bash
+./ww4_clean_all
+```
 
 #
 <p align="right">
