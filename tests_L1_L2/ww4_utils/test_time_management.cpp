@@ -11,9 +11,9 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-02-27)
- * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
- *         (Last Update, 2026-03-30)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ *         (Initial, 2026-02-27)
+ * @author Contributors: Jules (Agentic AI) (Last Update, 2026-03-30)
  */
 
 #include "ww4_utils/time_management.hpp"
