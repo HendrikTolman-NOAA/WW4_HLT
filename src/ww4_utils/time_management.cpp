@@ -12,10 +12,11 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-03-11)
- * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI) (Last Update, 2026-03-31)
+ * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
+ *         (Last Update, 2026-03-31)
  *
- * @note This file is converted from WAVEWATCH III (WW3) source file w3timemd.F90.
- *       Original author in WW3: Hendrik L. Tolman.
+ * @note This file is converted from WAVEWATCH III (WW3) source file
+ *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
  */
 
 #include "ww4_utils/time_management.hpp"

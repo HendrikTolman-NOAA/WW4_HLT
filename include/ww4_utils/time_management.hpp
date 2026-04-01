@@ -13,10 +13,11 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-03-11)
- * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI) (Last Update, 2026-03-31)
+ * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
+ *         (Last Update, 2026-03-31)
  *
- * @note This file is converted from WAVEWATCH III (WW3) source file w3timemd.F90.
- *       Original author in WW3: Hendrik L. Tolman.
+ * @note This file is converted from WAVEWATCH III (WW3) source file
+ *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
  */
 
 #ifndef WW4_UTILS_TIME_MANAGEMENT_HPP
@@ -41,7 +42,8 @@ namespace ww4_utils {
  * @brief Numerical representation of date and time.
  * @details Stores date as YYYYMMDD and time as HHMMSS.ssssss.
  * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-03-11)
- * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI) (Last Update, 2026-03-30)
+ * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
+ *         (Last Update, 2026-03-30)
  */
 struct DateTime {
   int ymd;    ///< Current date in YYYYMMDD format.
@@ -66,7 +68,8 @@ using DateArray = std::array<int, 8>;
  *          and high-precision profiling. Supports multiple calendar systems:
  *          Standard (Gregorian), NoLeap (365-day), and ThreeSixtyDay.
  * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-03-11)
- * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI) (Last Update, 2026-03-30)
+ * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
+ *         (Last Update, 2026-03-30)
  */
 class TimeManagement {
 public:
@@ -155,7 +158,8 @@ public:
    * @param[out] dateArray Date array to be filled.
    * @post dateArray contains the current UTC system time.
    * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-03-11)
-   * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI) (Last Update, 2026-03-30)
+   * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
+   *         (Last Update, 2026-03-30)
    */
   static void getSystemDateArray(const std::span<int, 8> dateArray) noexcept;
 
@@ -169,7 +173,8 @@ public:
    * @param[out] elapsedTime Elapsed time in seconds.
    * @post elapsedTime contains the difference in seconds.
    * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-03-11)
-   * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI) (Last Update, 2026-03-30)
+   * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
+   *         (Last Update, 2026-03-30)
    */
   static void getElapsedTimeSince(const std::span<const int, 8> referenceDate,
                                   double &elapsedTime) noexcept;
@@ -179,7 +184,8 @@ public:
    * @details Retrieves the current UTC system time.
    * @return Current date and time in DateTime format.
    * @author Main Author(s): Hendrik L. Tolman (Initial, 2026-03-11)
-   * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI) (Last Update, 2026-03-30)
+   * @author Contributors: Aldgisl (AI Persona), Jules (Agentic AI)
+   *         (Last Update, 2026-03-30)
    */
   static DateTime getPresentDateTime() noexcept;
 
