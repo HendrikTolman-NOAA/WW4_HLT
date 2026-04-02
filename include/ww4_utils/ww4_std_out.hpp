@@ -22,7 +22,9 @@
 #ifndef WW4_UTILS_WW4_STD_OUT_HPP
 #define WW4_UTILS_WW4_STD_OUT_HPP
 
+#include "ww4_utils/memory_utils.hpp"
 #include <iostream>
+#include <optional>
 #include <string>
 
 /**
@@ -51,11 +53,18 @@ void writeInitialOutput(std::ostream &os, const std::string &programName);
  * @brief Writes the final footer to the provided output stream.
  * @details Duplicates the final Fortran FORMAT statements from WW3.
  *          Identified as format 999 in ww3_shel.F90 and ww3_multi.F90.
+ *          Optionally includes execution times and memory usage.
  * @param os The output stream to write to (e.g., std::cout).
  * @param programName The name of the executable program to identify in the
  *        footer.
+ * @param initTime Optional initialization time in seconds.
+ * @param elapsedTotal Optional total elapsed time in seconds.
+ * @param memory Optional memory usage metrics.
  */
-void writeFinalOutput(std::ostream &os, const std::string &programName);
+void writeFinalOutput(std::ostream &os, const std::string &programName,
+                      std::optional<double> initTime = std::nullopt,
+                      std::optional<double> elapsedTotal = std::nullopt,
+                      std::optional<MemoryUsage> memory = std::nullopt);
 
 } // namespace ww4_std_out
 } // namespace ww4_utils

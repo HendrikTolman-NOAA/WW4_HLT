@@ -19,6 +19,8 @@
  */
 
 #include "ww4_utils/ww4_std_out.hpp"
+#include <format>
+#include <iomanip>
 
 namespace ww4_utils {
 namespace ww4_std_out {
@@ -37,7 +39,26 @@ void writeInitialOutput(std::ostream &os, const std::string &programName) {
      << std::endl;
 }
 
-void writeFinalOutput(std::ostream &os, const std::string &programName) {
+void writeFinalOutput(std::ostream &os, const std::string &programName,
+                      std::optional<double> initTime,
+                      std::optional<double> elapsedTotal,
+                      std::optional<MemoryUsage> memory) {
+  // Matches FORMAT 997, 998 in log but adapted for modularity
+  if (initTime.has_value()) {
+    os << std::format("\n  Initialization time :{:10.2f} s\n", *initTime);
+  }
+  if (elapsedTotal.has_value()) {
+    os << std::format("  Elapsed time        :{:10.2f} s\n", *elapsedTotal);
+  }
+
+  // Optional memory output
+  if (memory.has_value()) {
+    os << "  Memory usage:\n"
+       << std::format("    Peak Virtual Mem  : {:10} kB\n", memory->vmPeak)
+       << std::format("    Resident Set Size : {:10} kB (Peak: {} kB)\n",
+                      memory->vmRSS, memory->vmHWM);
+  }
+
   // Matches WW3 aesthetics, updated for WW4
   os << "\n  End of program \n"
      << " ========================================\n"

@@ -40,10 +40,24 @@ void writeInitialOutput(std::ostream &os, const std::string &programName) {
 }
 
 void writeFinalOutput(std::ostream &os, const std::string &programName,
-                      const double initTime, const double elapsedTotal) {
+                      std::optional<double> initTime,
+                      std::optional<double> elapsedTotal,
+                      std::optional<MemoryUsage> memory) {
   // Matches FORMAT 997, 998, 999
-  os << std::format("\n  Initialization time :{:10.2f} s\n", initTime);
-  os << std::format("  Elapsed time        :{:10.2f} s\n", elapsedTotal);
+  if (initTime.has_value()) {
+    os << std::format("\n  Initialization time :{:10.2f} s\n", *initTime);
+  }
+  if (elapsedTotal.has_value()) {
+    os << std::format("  Elapsed time        :{:10.2f} s\n", *elapsedTotal);
+  }
+
+  // Optional memory output
+  if (memory.has_value()) {
+    os << "  Memory usage:\n"
+       << std::format("    Peak Virtual Mem  : {:10} kB\n", memory->vmPeak)
+       << std::format("    Resident Set Size : {:10} kB (Peak: {} kB)\n",
+                      memory->vmRSS, memory->vmHWM);
+  }
 
   os << "\n  End of program \n"
      << " ========================================\n"

@@ -22,7 +22,9 @@
 #ifndef WW4_UTILS_WW4_LOGFILE_HPP
 #define WW4_UTILS_WW4_LOGFILE_HPP
 
+#include "ww4_utils/memory_utils.hpp"
 #include <iostream>
+#include <optional>
 #include <string>
 
 /**
@@ -47,15 +49,18 @@ void writeInitialOutput(std::ostream &os, const std::string &programName);
 
 /**
  * @brief Writes the final log entry to the provided output stream.
- * @details Duplicates the final log formatting from WW3, including
- *          elapsed time information if applicable.
+ * @details Duplicates the final log formatting from WW3.
+ *          Optionally includes execution times and memory usage.
  * @param os The output stream to write to.
  * @param programName The name of the executable program.
- * @param initTime Initialization time in seconds.
- * @param elapsedTotal Total elapsed time in seconds.
+ * @param initTime Optional initialization time in seconds.
+ * @param elapsedTotal Optional total elapsed time in seconds.
+ * @param memory Optional memory usage metrics.
  */
 void writeFinalOutput(std::ostream &os, const std::string &programName,
-                      double initTime = 0.0, double elapsedTotal = 0.0);
+                      std::optional<double> initTime = std::nullopt,
+                      std::optional<double> elapsedTotal = std::nullopt,
+                      std::optional<MemoryUsage> memory = std::nullopt);
 
 } // namespace ww4_logfile
 } // namespace ww4_utils
