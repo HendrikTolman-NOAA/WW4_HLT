@@ -45,7 +45,8 @@ TEST(LogFileTest, FinalOutputWithTimes) {
   EXPECT_NE(output.find("  Elapsed time        :      4.56 s"),
             std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
-  EXPECT_NE(output.find("WAVEWATCH IV program Program shell"), std::string::npos);
+  EXPECT_NE(output.find("WAVEWATCH IV program Program shell"),
+            std::string::npos);
 }
 
 int main(int argc, char **argv) {

@@ -29,10 +29,12 @@ TEST(StdOutTest, InitialOutputProgramShell) {
   std::string output = ss.str();
 
   // Expected 15 spaces then banner
-  EXPECT_NE(output.find("      *** WAVEWATCH IV program Program shell ***      "),
-            std::string::npos);
-  EXPECT_NE(output.find("======================================================"),
-            std::string::npos);
+  EXPECT_NE(
+      output.find("      *** WAVEWATCH IV program Program shell ***      "),
+      std::string::npos);
+  EXPECT_NE(
+      output.find("======================================================"),
+      std::string::npos);
 }
 
 /**
