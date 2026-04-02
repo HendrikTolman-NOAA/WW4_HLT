@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file stand_alone_config.cpp
+ * @file ww4_stand_alone_config.cpp
  * @brief Implementation of stand-alone configuration processing.
  * @details This file implements the loadStandAloneConfig function,
  *          providing a simple YAML parser for start and end times.
@@ -16,7 +16,7 @@
  * @date Last Update, 2026-04-02
  */
 
-#include "ww4_utils/stand_alone_config.hpp"
+#include "ww4_utils/ww4_stand_alone_config.hpp"
 #include <charconv>
 #include <fstream>
 #include <string>
