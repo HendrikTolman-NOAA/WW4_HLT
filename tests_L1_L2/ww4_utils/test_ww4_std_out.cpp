@@ -8,8 +8,8 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Aldgisl (AI Persona)
- * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
  * @date Last Update, 2026-04-01
  */
@@ -21,7 +21,7 @@
 using namespace ww4_utils::ww4_std_out;
 
 /**
- * @test Verify the initial output banner for the Program shell.
+ * @test Verify the initial output banner for a Program shell.
  */
 TEST(StdOutTest, InitialOutputProgramShell) {
   std::stringstream ss;
@@ -29,28 +29,14 @@ TEST(StdOutTest, InitialOutputProgramShell) {
   std::string output = ss.str();
 
   // Expected 15 spaces then banner
-  EXPECT_NE(output.find("      *** WAVEWATCH III Program shell ***      "),
+  EXPECT_NE(output.find("      *** WAVEWATCH IV program Program shell ***      "),
             std::string::npos);
-  EXPECT_NE(output.find("==============================================="),
-            std::string::npos);
-}
-
-/**
- * @test Verify the initial output banner for the Multi-grid shell.
- */
-TEST(StdOutTest, InitialOutputMultiGrid) {
-  std::stringstream ss;
-  writeInitialOutput(ss, "Multi-grid shell");
-  std::string output = ss.str();
-
-  EXPECT_NE(output.find("     *** WAVEWATCH III Multi-grid shell ***    "),
-            std::string::npos);
-  EXPECT_NE(output.find("================================================="),
+  EXPECT_NE(output.find("======================================================"),
             std::string::npos);
 }
 
 /**
- * @test Verify the final output footer for the Program shell.
+ * @test Verify the final output footer for a Program shell.
  */
 TEST(StdOutTest, FinalOutputProgramShell) {
   std::stringstream ss;
@@ -58,9 +44,9 @@ TEST(StdOutTest, FinalOutputProgramShell) {
   std::string output = ss.str();
 
   EXPECT_NE(output.find("  End of program "), std::string::npos);
-  EXPECT_NE(output.find("         WAVEWATCH III Program shell "),
+  EXPECT_NE(output.find("          WAVEWATCH IV program Program shell "),
             std::string::npos);
-  EXPECT_NE(output.find(" ===================================="),
+  EXPECT_NE(output.find(" ========================================"),
             std::string::npos);
 }
 

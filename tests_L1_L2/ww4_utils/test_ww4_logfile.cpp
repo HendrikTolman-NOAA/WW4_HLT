@@ -8,8 +8,8 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Aldgisl (AI Persona)
- * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
  * @date Last Update, 2026-04-01
  */
@@ -28,7 +28,7 @@ TEST(LogFileTest, InitialOutput) {
   writeInitialOutput(ss, "Program shell");
   std::string output = ss.str();
 
-  EXPECT_NE(output.find("*** WAVEWATCH III Program shell ***"),
+  EXPECT_NE(output.find("*** WAVEWATCH IV program Program shell ***"),
             std::string::npos);
 }
 
@@ -45,6 +45,7 @@ TEST(LogFileTest, FinalOutputWithTimes) {
   EXPECT_NE(output.find("  Elapsed time        :      4.56 s"),
             std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
+  EXPECT_NE(output.find("WAVEWATCH IV program Program shell"), std::string::npos);
 }
 
 int main(int argc, char **argv) {
