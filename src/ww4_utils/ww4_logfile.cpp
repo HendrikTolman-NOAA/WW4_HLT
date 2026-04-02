@@ -26,7 +26,6 @@ namespace ww4_utils {
 namespace ww4_logfile {
 
 void writeInitialOutput(std::ostream &os, const std::string &programName) {
-  // Matches WW3 aesthetics, updated for WW4
   const std::string mid = "*** WAVEWATCH IV program " + programName + " ***";
 
   // Generic banner format with 15X (15 spaces) and / (newline)

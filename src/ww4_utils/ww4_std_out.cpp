@@ -26,7 +26,6 @@ namespace ww4_utils {
 namespace ww4_std_out {
 
 void writeInitialOutput(std::ostream &os, const std::string &programName) {
-  // Matches WW3 aesthetics, updated for WW4
   const std::string mid = "*** WAVEWATCH IV program " + programName + " ***";
 
   // Generic banner format with 15X (15 spaces) and / (newline)
@@ -59,7 +58,6 @@ void writeFinalOutput(std::ostream &os, const std::string &programName,
                       memory->vmRSS, memory->vmHWM);
   }
 
-  // Matches WW3 aesthetics, updated for WW4
   os << "\n  End of program \n"
      << " ========================================\n"
      << "          WAVEWATCH IV program " << programName << " \n"
