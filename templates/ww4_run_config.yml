@@ -1,0 +1,27 @@
+# @file ww4_run_config.yml
+# @brief YAML template for WAVEWATCH IV (WW4) run-time configuration.
+# @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
+#
+# @details This file provides a template for configuring run-time settings
+#          for WAVEWATCH IV. All inputs are optional and have default
+#          settings as indicated below.
+#
+#          To use this file, copy it to the root directory of the repository
+#          or the directory from which the executable is run.
+#
+#          Note: All YAML files in the root directory of the clone are
+#          automatically ignored by Git. This allows for local testing without
+#          adding customized input files to the repository.
+
+# Calendar type for the simulation.
+# Options: "Standard" (default), "NoLeap", "ThreeSixtyDay"
+# Note: "Standard" refers to the normal Gregorian calendar.
+calendar_type: "Standard"
+
+# Option for producing standard program output to the screen.
+# Options: "yes" (default), "no"
+produce_std_out: "yes"
+
+# Option for producing a log file.
+# Options: "yes" (default), "no"
+produce_log_file: "yes"
