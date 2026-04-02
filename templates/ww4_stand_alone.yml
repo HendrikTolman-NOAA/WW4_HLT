@@ -9,9 +9,9 @@
 #          To use this file, copy it to the root directory of the repository
 #          or the directory from which the executable is run.
 #
-#          Note: This file should be included in .gitexclude when found in the
-#          main directory of the repository to allow for local testing without
-#          committing customized input.
+#          Note: All YAML files in the root directory of the clone are
+#          automatically ignored by Git. This allows for local testing without
+#          adding customized input files to the repository.
 
 # Starting time for the stand-alone program.
 # Format: "YYYYMMDD HHMMSS"
