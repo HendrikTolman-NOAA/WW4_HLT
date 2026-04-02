@@ -6,7 +6,7 @@ test_format
 test_format.cpp
 
 # User-specific configuration
-/ww4_compile_config.yml
+/*.yml
 
 # Python
 __pycache__/
