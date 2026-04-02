@@ -11,8 +11,8 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Hendrik L. Tolman (Initial, 2026-04-02)
- * @author Aldgisl (AI Persona), Jules (Agentic AI) (Contributors)
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
  * @date Last Update, 2026-04-02
  */
@@ -30,8 +30,8 @@ namespace ww4_utils {
  * @struct StandAloneConfig
  * @brief Configuration for the ww4_stand_alone program.
  * @details Stores the start and end times for the simulation.
- * @author Hendrik L. Tolman (Initial, 2026-04-02)
- * @author Aldgisl (AI Persona), Jules (Agentic AI) (Contributors)
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
  */
 struct StandAloneConfig {
   DateTime startTime; ///< Simulation start time.
@@ -47,8 +47,8 @@ struct StandAloneConfig {
  * @return A StandAloneConfig structure if successful, or std::nullopt
  *         if an error occurred (e.g., file not found, invalid format,
  *         or validation failure).
- * @author Hendrik L. Tolman (Initial, 2026-04-02)
- * @author Aldgisl (AI Persona), Jules (Agentic AI) (Contributors)
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
  */
 std::optional<StandAloneConfig>
 loadStandAloneConfig(std::string_view filename) noexcept;
