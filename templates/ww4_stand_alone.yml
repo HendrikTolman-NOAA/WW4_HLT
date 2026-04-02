@@ -1,0 +1,23 @@
+# @file ww4_stand_alone.yml
+# @brief YAML template for WAVEWATCH IV (WW4) stand-alone program configuration.
+# @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
+#
+# @details This file provides a template for configuring the start and end
+#          times for the ww4_stand_alone program. Both inputs are required
+#          and have no default settings.
+#
+#          To use this file, copy it to the root directory of the repository
+#          or the directory from which the executable is run.
+#
+#          Note: All YAML files in the root directory of the clone are
+#          automatically ignored by Git. This allows for local testing without
+#          adding customized input files to the repository.
+
+# Starting time for the stand-alone program.
+# Format: "YYYYMMDD HHMMSS"
+start_time: "19680606 060000"
+
+# Ending time for the stand-alone program.
+# Format: "YYYYMMDD HHMMSS"
+# Note: The ending time must not be before the starting time.
+end_time: "19680606 180000"
