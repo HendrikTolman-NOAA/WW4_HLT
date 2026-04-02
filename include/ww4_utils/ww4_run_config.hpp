@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file run_config.hpp
+ * @file ww4_run_config.hpp
  * @brief Service routine for processing run-time configuration YAML file.
  * @details This header defines the RunConfig structure and the
  *          loadRunConfig function, which reads and processes the
@@ -17,8 +17,8 @@
  * @date Last Update, 2026-04-03
  */
 
-#ifndef WW4_UTILS_RUN_CONFIG_HPP
-#define WW4_UTILS_RUN_CONFIG_HPP
+#ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
+#define WW4_UTILS_WW4_RUN_CONFIG_HPP
 
 #include "ww4_utils/time_management.hpp"
 #include <string_view>
@@ -53,4 +53,4 @@ RunConfig loadRunConfig(std::string_view filename) noexcept;
 
 } // namespace ww4_utils
 
-#endif // WW4_UTILS_RUN_CONFIG_HPP
+#endif // WW4_UTILS_WW4_RUN_CONFIG_HPP

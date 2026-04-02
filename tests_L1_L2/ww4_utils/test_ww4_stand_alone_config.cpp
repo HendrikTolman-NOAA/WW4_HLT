@@ -16,7 +16,7 @@
  * @date Last Update, 2026-04-02
  */
 
-#include "ww4_utils/stand_alone_config.hpp"
+#include "ww4_utils/ww4_stand_alone_config.hpp"
 #include <fstream>
 #include <gtest/gtest.h>
 

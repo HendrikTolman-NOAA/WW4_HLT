@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file run_config.cpp
+ * @file ww4_run_config.cpp
  * @brief Implementation of run-time configuration processing.
  * @details This file implements the loadRunConfig function,
  *          providing a simple YAML parser for run-time settings.
@@ -16,7 +16,7 @@
  * @date Last Update, 2026-04-03
  */
 
-#include "ww4_utils/run_config.hpp"
+#include "ww4_utils/ww4_run_config.hpp"
 #include <fstream>
 #include <string>
 

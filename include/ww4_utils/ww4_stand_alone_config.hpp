@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file stand_alone_config.hpp
+ * @file ww4_stand_alone_config.hpp
  * @brief Service routine for processing stand-alone configuration YAML file.
  * @details This header defines the StandAloneConfig structure and the
  *          loadStandAloneConfig function, which reads and validates the
@@ -17,8 +17,8 @@
  * @date Last Update, 2026-04-02
  */
 
-#ifndef WW4_UTILS_STAND_ALONE_CONFIG_HPP
-#define WW4_UTILS_STAND_ALONE_CONFIG_HPP
+#ifndef WW4_UTILS_WW4_STAND_ALONE_CONFIG_HPP
+#define WW4_UTILS_WW4_STAND_ALONE_CONFIG_HPP
 
 #include "ww4_utils/time_management.hpp"
 #include <optional>
@@ -55,4 +55,4 @@ loadStandAloneConfig(std::string_view filename) noexcept;
 
 } // namespace ww4_utils
 
-#endif // WW4_UTILS_STAND_ALONE_CONFIG_HPP
+#endif // WW4_UTILS_WW4_STAND_ALONE_CONFIG_HPP
