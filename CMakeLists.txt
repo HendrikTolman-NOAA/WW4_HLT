@@ -59,14 +59,16 @@ add_library(ww4_utils
 target_include_directories(ww4_utils PUBLIC include)
 
 add_library(ww4_core
-    src/ww4_core/ww4_core.cpp
+    src/ww4_core/w4core_init.cpp
+    src/ww4_core/w4core_wave.cpp
+    src/ww4_core/w4core_finl.cpp
 )
 target_include_directories(ww4_core PUBLIC include)
 target_link_libraries(ww4_core PUBLIC ww4_utils)
 
 # Executables
 add_executable(ww4_stand_alone
-    src/ww3_progs/ww4_stand_alone.cpp
+    src/ww4_progs/ww4_stand_alone.cpp
 )
 target_link_libraries(ww4_stand_alone PRIVATE ww4_core ww4_utils)
 

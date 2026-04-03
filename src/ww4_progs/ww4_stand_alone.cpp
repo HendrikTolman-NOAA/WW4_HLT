@@ -19,7 +19,9 @@
  *       Original author of WW3 stand-alone shell: Hendrik L. Tolman.
  */
 
-#include "ww4_core/ww4_core.hpp"
+#include "ww4_core/w4core_finl.hpp"
+#include "ww4_core/w4core_init.hpp"
+#include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/memory_utils.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
