@@ -25,15 +25,18 @@
 namespace ww4_core {
 
 void w4core_init() {
-  std::cout << "          * Initialization (w4core_init) ... complete" << std::endl;
+  std::cout << "          * Initialization (w4core_init) ... complete"
+            << std::endl;
 }
 
 void w4core_wave() {
-  std::cout << "          * Time stepping (w4core_wave) ... complete" << std::endl;
+  std::cout << "          * Time stepping (w4core_wave) ... complete"
+            << std::endl;
 }
 
 void w4core_finl() {
-  std::cout << "          * Finalization (w4core_finl) ... complete" << std::endl;
+  std::cout << "          * Finalization (w4core_finl) ... complete"
+            << std::endl;
 }
 
 } // namespace ww4_core
