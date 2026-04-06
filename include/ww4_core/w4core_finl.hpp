@@ -21,6 +21,8 @@
 #ifndef WW4_CORE_W4CORE_FINL_HPP
 #define WW4_CORE_W4CORE_FINL_HPP
 
+#include "ww4_utils/time_management.hpp"
+
 /**
  * @namespace ww4_core
  * @brief Core routines for WAVEWATCH IV.
@@ -32,11 +34,12 @@ namespace ww4_core {
  * @details Performs all necessary cleanup and final reporting for the
  *          wave model core. Follows the architectural design of the
  *          finalization in ww3_multi.F90 from WAVEWATCH III.
+ * @param[in] endTime Simulation end time.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-04-03
  */
-void w4core_finl();
+void w4core_finl(const ww4_utils::DateTime &endTime);
 
 } // namespace ww4_core
 

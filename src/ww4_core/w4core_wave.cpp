@@ -19,13 +19,17 @@
  */
 
 #include "ww4_core/w4core_wave.hpp"
+#include "ww4_utils/time_management.hpp"
 #include <iostream>
 
 namespace ww4_core {
 
-void w4core_wave() {
-  std::cout << "          * Time stepping (w4core_wave) ... complete"
-            << std::endl;
+void w4core_wave(const ww4_utils::DateTime &startTime,
+                 const ww4_utils::DateTime &endTime) {
+  std::cout << "          * Time stepping (w4core_wave) ... receiving start: "
+            << ww4_utils::TimeManagement::toFormattedString(startTime)
+            << " end: " << ww4_utils::TimeManagement::toFormattedString(endTime)
+            << " ... complete" << std::endl;
 }
 
 } // namespace ww4_core

@@ -21,6 +21,8 @@
 #ifndef WW4_CORE_W4CORE_INIT_HPP
 #define WW4_CORE_W4CORE_INIT_HPP
 
+#include "ww4_utils/time_management.hpp"
+
 /**
  * @namespace ww4_core
  * @brief Core routines for WAVEWATCH IV.
@@ -32,11 +34,12 @@ namespace ww4_core {
  * @details Performs all necessary setup for the wave model core.
  *          Follows the architectural design of the initialization in
  *          ww3_multi.F90 from WAVEWATCH III.
+ * @param[in] startTime Simulation start time.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-04-03
  */
-void w4core_init();
+void w4core_init(const ww4_utils::DateTime &startTime);
 
 } // namespace ww4_core
 

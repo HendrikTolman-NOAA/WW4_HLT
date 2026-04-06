@@ -98,6 +98,9 @@ target_link_libraries(test_ww4_stand_alone_config PRIVATE ww4_utils GTest::gtest
 add_executable(test_ww4_run_config tests_L1_L2/ww4_utils/test_ww4_run_config.cpp)
 target_link_libraries(test_ww4_run_config PRIVATE ww4_utils GTest::gtest_main)
 
+add_executable(test_w4core_time tests_L1_L2/ww4_core/test_w4core_time.cpp)
+target_link_libraries(test_w4core_time PRIVATE ww4_core ww4_utils GTest::gtest_main)
+
 include(GoogleTest)
 gtest_discover_tests(test_time_management)
 gtest_discover_tests(test_memory_utils)
@@ -105,3 +108,4 @@ gtest_discover_tests(test_ww4_std_out)
 gtest_discover_tests(test_ww4_logfile)
 gtest_discover_tests(test_ww4_stand_alone_config)
 gtest_discover_tests(test_ww4_run_config)
+gtest_discover_tests(test_w4core_time)
