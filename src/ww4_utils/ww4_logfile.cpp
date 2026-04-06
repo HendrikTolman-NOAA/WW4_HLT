@@ -19,7 +19,6 @@
  */
 
 #include "ww4_utils/ww4_logfile.hpp"
-#include <format>
 #include <iomanip>
 
 namespace ww4_utils {
@@ -44,18 +43,21 @@ void writeFinalOutput(std::ostream &os, const std::string &programName,
                       std::optional<MemoryUsage> memory) {
   // Matches FORMAT 997, 998, 999
   if (initTime.has_value()) {
-    os << std::format("\n  Initialization time :{:10.2f} s\n", *initTime);
+    os << "\n  Initialization time :" << std::fixed << std::setprecision(2)
+       << std::setw(10) << *initTime << " s\n";
   }
   if (elapsedTotal.has_value()) {
-    os << std::format("  Elapsed time        :{:10.2f} s\n", *elapsedTotal);
+    os << "  Elapsed time        :" << std::fixed << std::setprecision(2)
+       << std::setw(10) << *elapsedTotal << " s\n";
   }
 
   // Optional memory output
   if (memory.has_value()) {
     os << "  Memory usage:\n"
-       << std::format("    Peak Virtual Mem  : {:10} kB\n", memory->vmPeak)
-       << std::format("    Resident Set Size : {:10} kB (Peak: {} kB)\n",
-                      memory->vmRSS, memory->vmHWM);
+       << "    Peak Virtual Mem  : " << std::setw(10) << memory->vmPeak
+       << " kB\n"
+       << "    Resident Set Size : " << std::setw(10) << memory->vmRSS
+       << " kB (Peak: " << memory->vmHWM << " kB)\n";
   }
 
   os << "\n  End of program \n"

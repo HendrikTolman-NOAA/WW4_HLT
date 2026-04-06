@@ -20,7 +20,6 @@
 #include <charconv>
 #include <chrono>
 #include <cmath>
-#include <format>
 #include <iomanip>
 #include <sstream>
 
@@ -365,8 +364,11 @@ std::string TimeManagement::toFormattedString(const DateTime &time) {
   const int imi = (static_cast<int>(time.hms) / 100) % 100;
   const int is = static_cast<int>(std::fmod(time.hms, 100.0));
 
-  return std::format("{:04d}/{:02d}/{:02d} {:02d}:{:02d}:{:02d} UTC", iy, imo,
-                     id, ih, imi, is);
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(4) << iy << "/" << std::setw(2) << imo
+      << "/" << std::setw(2) << id << " " << std::setw(2) << ih << ":"
+      << std::setw(2) << imi << ":" << std::setw(2) << is << " UTC";
+  return oss.str();
 }
 
 std::string TimeManagement::toIsoString(const DateTime &time) {
@@ -377,8 +379,11 @@ std::string TimeManagement::toIsoString(const DateTime &time) {
   const int imi = (static_cast<int>(time.hms) / 100) % 100;
   const int is = static_cast<int>(std::fmod(time.hms, 100.0));
 
-  return std::format("{}-{:02}-{:02}T{:02}:{:02}:{:02}", iy, imo, id, ih, imi,
-                     is);
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(4) << iy << "-" << std::setw(2) << imo
+      << "-" << std::setw(2) << id << "T" << std::setw(2) << ih << ":"
+      << std::setw(2) << imi << ":" << std::setw(2) << is;
+  return oss.str();
 }
 
 void TimeManagement::parseUnitsToDateArray(const std::string_view units,
