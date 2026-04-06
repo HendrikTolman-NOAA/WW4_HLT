@@ -24,12 +24,9 @@
 
 namespace ww4_core {
 
-void w4core_wave(const ww4_utils::DateTime &startTime,
-                 const ww4_utils::DateTime &endTime) {
-  std::cout << "          * Time stepping (w4core_wave) ... receiving start: "
-            << ww4_utils::TimeManagement::toFormattedString(startTime)
-            << " end: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-            << " ... complete" << std::endl;
+void w4core_wave(const ww4_utils::DateTime & /*startTime*/,
+                 const ww4_utils::DateTime & /*endTime*/) {
+  // Empty for now, but will contain the main wave model execution loop.
 }
 
 } // namespace ww4_core

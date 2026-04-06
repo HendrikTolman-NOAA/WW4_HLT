@@ -22,6 +22,7 @@
 #define WW4_CORE_W4CORE_INIT_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_run_config.hpp"
 
 /**
  * @namespace ww4_core
@@ -40,6 +41,12 @@ namespace ww4_core {
  * @date 2026-04-03
  */
 void w4core_init(const ww4_utils::DateTime &startTime);
+
+/**
+ * @brief Provides access to the loaded run-time configuration.
+ * @return A reference to the RunConfig structure.
+ */
+const ww4_utils::RunConfig &getRunConfig();
 
 } // namespace ww4_core
 

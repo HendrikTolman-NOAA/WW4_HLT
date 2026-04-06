@@ -24,10 +24,8 @@
 
 namespace ww4_core {
 
-void w4core_finl(const ww4_utils::DateTime &endTime) {
-  std::cout << "          * Finalization (w4core_finl) ... receiving end: "
-            << ww4_utils::TimeManagement::toFormattedString(endTime)
-            << " ... complete" << std::endl;
+void w4core_finl(const ww4_utils::DateTime & /*endTime*/) {
+  // Empty for now, but will contain model cleanup and reporting.
 }
 
 } // namespace ww4_core
