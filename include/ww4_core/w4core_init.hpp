@@ -23,6 +23,8 @@
 
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
+#include <fstream>
+#include <iostream>
 
 /**
  * @namespace ww4_core
@@ -49,10 +51,18 @@ void w4core_init(const ww4_utils::DateTime &startTime);
 const ww4_utils::RunConfig &getRunConfig();
 
 /**
- * @brief Reports the current configuration to standard output.
- * @param config The RunConfig structure to report.
+ * @brief Provides access to the log file stream.
+ * @return A reference to the std::ofstream for the log file.
  */
-void reportRunConfig(const ww4_utils::RunConfig &config);
+std::ofstream &getLogFileStream();
+
+/**
+ * @brief Reports the current configuration to the provided output stream.
+ * @param config The RunConfig structure to report.
+ * @param os The output stream to write to (default: std::cout).
+ */
+void reportRunConfig(const ww4_utils::RunConfig &config,
+                     std::ostream &os = std::cout);
 
 } // namespace ww4_core
 
