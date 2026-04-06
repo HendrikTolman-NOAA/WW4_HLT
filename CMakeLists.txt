@@ -29,13 +29,30 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Set the output directory for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/exe)
 
-# Strict warnings and sanitizers (if not overridden by CMAKE_CXX_FLAGS)
-if(NOT CMAKE_CXX_FLAGS)
-    if(MSVC)
-        add_compile_options(/W4 /WX)
-    else()
-        add_compile_options(-Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined)
-        add_link_options(-fsanitize=address,undefined)
+# Options for strict warnings and sanitizers
+option(WW4_STRICT_WARNINGS "Enable strict compiler warnings and treat as errors" OFF)
+option(WW4_USE_SANITIZERS "Enable address and undefined behavior sanitizers" OFF)
+
+# Define common compile options for WW4 targets
+set(WW4_COMMON_COMPILE_OPTIONS "")
+set(WW4_COMMON_LINK_OPTIONS "")
+
+if(MSVC)
+    if(WW4_STRICT_WARNINGS)
+        list(APPEND WW4_COMMON_COMPILE_OPTIONS /W4 /WX)
+    endif()
+else()
+    list(APPEND WW4_COMMON_COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
+    if(WW4_STRICT_WARNINGS)
+        list(APPEND WW4_COMMON_COMPILE_OPTIONS -Werror)
+        # Suppress unknown warning option errors for LLVM-based compilers (Clang, IntelLLVM)
+        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
+            list(APPEND WW4_COMMON_COMPILE_OPTIONS -Wno-error=unknown-warning-option)
+        endif()
+    endif()
+    if(WW4_USE_SANITIZERS)
+        list(APPEND WW4_COMMON_COMPILE_OPTIONS -fsanitize=address,undefined)
+        list(APPEND WW4_COMMON_LINK_OPTIONS -fsanitize=address,undefined)
     endif()
 endif()
 
@@ -62,6 +79,8 @@ add_library(ww4_utils
     src/ww4_utils/ww4_run_config.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
+target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
+target_link_options(ww4_utils PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
 add_library(ww4_core
     src/ww4_core/w4core_init.cpp
@@ -70,12 +89,16 @@ add_library(ww4_core
 )
 target_include_directories(ww4_core PUBLIC include)
 target_link_libraries(ww4_core PUBLIC ww4_utils)
+target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
+target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
 # Executables
 add_executable(ww4_stand_alone
     src/ww4_progs/ww4_stand_alone.cpp
 )
 target_link_libraries(ww4_stand_alone PRIVATE ww4_core ww4_utils)
+target_compile_options(ww4_stand_alone PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
+target_link_options(ww4_stand_alone PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
 # Tests
 enable_testing()
@@ -100,6 +123,21 @@ target_link_libraries(test_ww4_run_config PRIVATE ww4_utils GTest::gtest_main)
 
 add_executable(test_w4core_time tests_L1_L2/ww4_core/test_w4core_time.cpp)
 target_link_libraries(test_w4core_time PRIVATE ww4_core ww4_utils GTest::gtest_main)
+
+set(WW4_TEST_TARGETS
+    test_time_management
+    test_memory_utils
+    test_ww4_std_out
+    test_ww4_logfile
+    test_ww4_stand_alone_config
+    test_ww4_run_config
+    test_w4core_time
+)
+
+foreach(test_target IN LISTS WW4_TEST_TARGETS)
+    target_compile_options(${test_target} PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
+    target_link_options(${test_target} PRIVATE ${WW4_COMMON_LINK_OPTIONS})
+endforeach()
 
 include(GoogleTest)
 gtest_discover_tests(test_time_management)
