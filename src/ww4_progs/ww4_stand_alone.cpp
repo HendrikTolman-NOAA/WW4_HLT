@@ -31,30 +31,14 @@
  * @return 0 on success.
  */
 int main() {
-  std::cout << "Starting ww4_stand_alone ..." << std::endl;
-
   auto config = ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml");
   if (!config) {
-    std::cerr << "***************************************************"
-              << std::endl;
-    std::cerr << " ERROR: FAILED TO LOAD ww4_stand_alone.yml " << std::endl;
-    std::cerr << "***************************************************"
-              << std::endl;
     return 1;
   }
-
-  std::cout << "  Start time: "
-            << ww4_utils::TimeManagement::toFormattedString(config->startTime)
-            << std::endl;
-  std::cout << "  End time:   "
-            << ww4_utils::TimeManagement::toFormattedString(config->endTime)
-            << std::endl;
 
   ww4_core::w4core_init(config->startTime);
   ww4_core::w4core_wave(config->startTime, config->endTime);
   ww4_core::w4core_finl(config->endTime);
-
-  std::cout << "Ending ww4_stand_alone" << std::endl;
 
   return 0;
 }

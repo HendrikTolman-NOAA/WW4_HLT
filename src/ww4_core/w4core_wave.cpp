@@ -19,6 +19,7 @@
  */
 
 #include "ww4_core/w4core_wave.hpp"
+#include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
 #include <iostream>
 
@@ -26,10 +27,14 @@ namespace ww4_core {
 
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime) {
-  std::cout << "          * Time stepping (w4core_wave) ... receiving start: "
-            << ww4_utils::TimeManagement::toFormattedString(startTime)
-            << " end: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-            << " ... complete" << std::endl;
+  if (getRunConfig().produceStdOut) {
+    std::cout << "          * Time stepping (w4core_wave) from: "
+              << ww4_utils::TimeManagement::toFormattedString(startTime)
+              << " to: "
+              << ww4_utils::TimeManagement::toFormattedString(endTime)
+              << std::endl;
+    reportRunConfig(getRunConfig());
+  }
 }
 
 } // namespace ww4_core

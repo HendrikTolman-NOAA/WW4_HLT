@@ -19,15 +19,19 @@
  */
 
 #include "ww4_core/w4core_finl.hpp"
+#include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
 #include <iostream>
 
 namespace ww4_core {
 
 void w4core_finl(const ww4_utils::DateTime &endTime) {
-  std::cout << "          * Finalization (w4core_finl) ... receiving end: "
-            << ww4_utils::TimeManagement::toFormattedString(endTime)
-            << " ... complete" << std::endl;
+  if (getRunConfig().produceStdOut) {
+    std::cout << "          * Finalization (w4core_finl) ending: "
+              << ww4_utils::TimeManagement::toFormattedString(endTime)
+              << std::endl;
+    reportRunConfig(getRunConfig());
+  }
 }
 
 } // namespace ww4_core
