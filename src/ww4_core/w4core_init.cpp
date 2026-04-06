@@ -20,33 +20,63 @@
 
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
+#include <fstream>
 #include <iostream>
 
 namespace ww4_core {
 
 namespace {
 ww4_utils::RunConfig globalRunConfig;
-}
+std::ofstream logFile;
+} // namespace
 
 void w4core_init(const ww4_utils::DateTime &startTime) {
+  //
   // Load configuration
   globalRunConfig = ww4_utils::loadRunConfig("ww4_run_config.yml");
 
+  //
+  // Initialize profiling
+  ww4_utils::TimeManagement::initializeProfiling();
+
+  //
+  // Open log file if requested
+  if (globalRunConfig.produceLogFile) {
+    logFile.open("log.ww4");
+  }
+
+  //
+  // Initial standard output
   if (globalRunConfig.produceStdOut) {
     ww4_utils::ww4_std_out::writeInitialOutput(std::cout, "Multi-grid shell");
     std::cout << "          * Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
-    reportRunConfig(globalRunConfig);
+    //
+    reportRunConfig(globalRunConfig, std::cout);
+  }
+
+  //
+  // Initial log file output
+  if (globalRunConfig.produceLogFile && logFile.is_open()) {
+    ww4_utils::ww4_logfile::writeInitialOutput(logFile, "Multi-grid shell");
+    logFile << "          * Initialization (w4core_init) starting: "
+            << ww4_utils::TimeManagement::toFormattedString(startTime)
+            << std::endl;
+    //
+    reportRunConfig(globalRunConfig, logFile);
   }
 }
 
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
 
-void reportRunConfig(const ww4_utils::RunConfig &config) {
-  std::cout << "          Configuration settings :" << std::endl;
+std::ofstream &getLogFileStream() { return logFile; }
+
+void reportRunConfig(const ww4_utils::RunConfig &config, std::ostream &os) {
+  os << "          Configuration settings :" << std::endl;
 
   std::string calType = "Standard";
   if (config.calendarType == ww4_utils::TimeManagement::CalendarType::NoLeap) {
@@ -56,12 +86,12 @@ void reportRunConfig(const ww4_utils::RunConfig &config) {
     calType = "ThreeSixtyDay";
   }
 
-  std::cout << "            Calendar type      : " << calType << std::endl;
-  std::cout << "            Screen output      : "
-            << (config.produceStdOut ? "yes" : "no") << std::endl;
-  std::cout << "            Log file           : "
-            << (config.produceLogFile ? "yes" : "no") << std::endl;
-  std::cout << std::endl;
+  os << "            Calendar type      : " << calType << std::endl;
+  os << "            Screen output      : "
+     << (config.produceStdOut ? "yes" : "no") << std::endl;
+  os << "            Log file           : "
+     << (config.produceLogFile ? "yes" : "no") << std::endl;
+  os << std::endl;
 }
 
 } // namespace ww4_core

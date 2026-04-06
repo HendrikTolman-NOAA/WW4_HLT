@@ -31,13 +31,23 @@
  * @return 0 on success.
  */
 int main() {
+  //
+  // Load configuration
   auto config = ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml");
   if (!config) {
     return 1;
   }
 
+  //
+  // Initialize core
   ww4_core::w4core_init(config->startTime);
+
+  //
+  // Time stepping
   ww4_core::w4core_wave(config->startTime, config->endTime);
+
+  //
+  // Finalize core
   ww4_core::w4core_finl(config->endTime);
 
   return 0;

@@ -20,18 +20,53 @@
 
 #include "ww4_core/w4core_finl.hpp"
 #include "ww4_core/w4core_init.hpp"
+#include "ww4_utils/memory_utils.hpp"
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_logfile.hpp"
+#include "ww4_utils/ww4_std_out.hpp"
 #include <iostream>
 
 namespace ww4_core {
 
 void w4core_finl(const ww4_utils::DateTime &endTime) {
+  //
+  // Capture memory usage and run time
+  const auto memory = ww4_utils::MemoryUtils::captureMemoryUsage();
+  const double runTime = ww4_utils::TimeManagement::getProfilingTime();
+
+  //
+  // Final standard output
   if (getRunConfig().produceStdOut) {
     std::cout << "          * Finalization (w4core_finl) ending: "
               << ww4_utils::TimeManagement::toFormattedString(endTime)
               << std::endl;
-    reportRunConfig(getRunConfig());
+    //
+    reportRunConfig(getRunConfig(), std::cout);
+    //
+    ww4_utils::ww4_std_out::writeFinalOutput(std::cout, "Multi-grid shell",
+                                             std::nullopt, runTime, memory);
   }
+
+  //
+  // Final log file output
+  if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+    getLogFileStream() << "          * Finalization (w4core_finl) ending: "
+                       << ww4_utils::TimeManagement::toFormattedString(endTime)
+                       << std::endl;
+    //
+    reportRunConfig(getRunConfig(), getLogFileStream());
+    //
+    ww4_utils::ww4_logfile::writeFinalOutput(
+        getLogFileStream(), "Multi-grid shell", std::nullopt, runTime, memory);
+    //
+    // Close log file
+    getLogFileStream().close();
+  }
+
+  //
+  // Release persistent model data
+  // Note: Only globalRunConfig for now.
+  const_cast<ww4_utils::RunConfig &>(getRunConfig()) = ww4_utils::RunConfig();
 }
 
 } // namespace ww4_core
