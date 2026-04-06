@@ -19,13 +19,16 @@
  */
 
 #include "ww4_core/w4core_finl.hpp"
+#include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
 #include <iostream>
 
 namespace ww4_core {
 
 void w4core_finl(const ww4_utils::DateTime & /*endTime*/) {
-  // Empty for now, but will contain model cleanup and reporting.
+  if (getRunConfig().produceStdOut) {
+    reportRunConfig(getRunConfig());
+  }
 }
 
 } // namespace ww4_core

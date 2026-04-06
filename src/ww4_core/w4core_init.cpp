@@ -36,27 +36,29 @@ void w4core_init(const ww4_utils::DateTime & /*startTime*/) {
 
   if (globalRunConfig.produceStdOut) {
     ww4_utils::ww4_std_out::writeInitialOutput(std::cout, "Multi-grid shell");
-
-    std::cout << "          Configuration settings :" << std::endl;
-
-    std::string calType = "Standard";
-    if (globalRunConfig.calendarType ==
-        ww4_utils::TimeManagement::CalendarType::NoLeap) {
-      calType = "NoLeap";
-    } else if (globalRunConfig.calendarType ==
-               ww4_utils::TimeManagement::CalendarType::ThreeSixtyDay) {
-      calType = "ThreeSixtyDay";
-    }
-
-    std::cout << "            Calendar type      : " << calType << std::endl;
-    std::cout << "            Screen output      : "
-              << (globalRunConfig.produceStdOut ? "yes" : "no") << std::endl;
-    std::cout << "            Log file           : "
-              << (globalRunConfig.produceLogFile ? "yes" : "no") << std::endl;
-    std::cout << std::endl;
+    reportRunConfig(globalRunConfig);
   }
 }
 
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
+
+void reportRunConfig(const ww4_utils::RunConfig &config) {
+  std::cout << "          Configuration settings :" << std::endl;
+
+  std::string calType = "Standard";
+  if (config.calendarType == ww4_utils::TimeManagement::CalendarType::NoLeap) {
+    calType = "NoLeap";
+  } else if (config.calendarType ==
+             ww4_utils::TimeManagement::CalendarType::ThreeSixtyDay) {
+    calType = "ThreeSixtyDay";
+  }
+
+  std::cout << "            Calendar type      : " << calType << std::endl;
+  std::cout << "            Screen output      : "
+            << (config.produceStdOut ? "yes" : "no") << std::endl;
+  std::cout << "            Log file           : "
+            << (config.produceLogFile ? "yes" : "no") << std::endl;
+  std::cout << std::endl;
+}
 
 } // namespace ww4_core

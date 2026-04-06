@@ -48,6 +48,12 @@ void w4core_init(const ww4_utils::DateTime &startTime);
  */
 const ww4_utils::RunConfig &getRunConfig();
 
+/**
+ * @brief Reports the current configuration to standard output.
+ * @param config The RunConfig structure to report.
+ */
+void reportRunConfig(const ww4_utils::RunConfig &config);
+
 } // namespace ww4_core
 
 #endif // WW4_CORE_W4CORE_INIT_HPP
