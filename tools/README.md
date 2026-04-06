@@ -28,11 +28,20 @@ This tool will:
 
 ### 2. Compilation
 
-Once configured, you can compile WAVEWATCH IV using:
+Once configured, you can compile WAVEWATCH IV using either the built-in tool or standard CMake.
+
+#### Built-in Tool:
 ```bash
 ./ww4_compile
 ```
 This tool uses the settings from `ww4_compile_config.yml` and invokes CMake to build the project.
+
+#### Standard CMake:
+```bash
+cmake -B build
+cmake --build build
+```
+The `ww4_setup` tool generates a `ww4_local_config.cmake` file that stores your selected compiler and flags, which is automatically included by `CMakeLists.txt`.
 
 ## Manual Usage
 
