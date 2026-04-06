@@ -25,9 +25,14 @@
 
 namespace ww4_core {
 
-void w4core_wave(const ww4_utils::DateTime & /*startTime*/,
-                 const ww4_utils::DateTime & /*endTime*/) {
+void w4core_wave(const ww4_utils::DateTime &startTime,
+                 const ww4_utils::DateTime &endTime) {
   if (getRunConfig().produceStdOut) {
+    std::cout << "          * Time stepping (w4core_wave) from: "
+              << ww4_utils::TimeManagement::toFormattedString(startTime)
+              << " to: "
+              << ww4_utils::TimeManagement::toFormattedString(endTime)
+              << std::endl;
     reportRunConfig(getRunConfig());
   }
 }

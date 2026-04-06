@@ -25,8 +25,11 @@
 
 namespace ww4_core {
 
-void w4core_finl(const ww4_utils::DateTime & /*endTime*/) {
+void w4core_finl(const ww4_utils::DateTime &endTime) {
   if (getRunConfig().produceStdOut) {
+    std::cout << "          * Finalization (w4core_finl) ending: "
+              << ww4_utils::TimeManagement::toFormattedString(endTime)
+              << std::endl;
     reportRunConfig(getRunConfig());
   }
 }

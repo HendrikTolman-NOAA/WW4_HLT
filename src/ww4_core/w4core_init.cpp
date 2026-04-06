@@ -30,12 +30,15 @@ namespace {
 ww4_utils::RunConfig globalRunConfig;
 }
 
-void w4core_init(const ww4_utils::DateTime & /*startTime*/) {
+void w4core_init(const ww4_utils::DateTime &startTime) {
   // Load configuration
   globalRunConfig = ww4_utils::loadRunConfig("ww4_run_config.yml");
 
   if (globalRunConfig.produceStdOut) {
     ww4_utils::ww4_std_out::writeInitialOutput(std::cout, "Multi-grid shell");
+    std::cout << "          * Initialization (w4core_init) starting: "
+              << ww4_utils::TimeManagement::toFormattedString(startTime)
+              << std::endl;
     reportRunConfig(globalRunConfig);
   }
 }
