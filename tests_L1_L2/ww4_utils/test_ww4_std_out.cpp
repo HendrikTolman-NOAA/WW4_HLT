@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last Update, 2026-04-01
+ * @date Last Update, 2026-04-06
  */
 
 #include "ww4_utils/ww4_std_out.hpp"
@@ -70,6 +70,30 @@ TEST(StdOutTest, FinalOutputWithoutMetrics) {
   EXPECT_EQ(output.find("Initialization time"), std::string::npos);
   EXPECT_EQ(output.find("Memory usage"), std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
+}
+
+/**
+ * @test Verify the output formatting of writeExtcdeOutput.
+ */
+TEST(StdOutTest, WriteExtcdeOutputFormatting) {
+  std::stringstream ss;
+  writeExtcdeOutput(ss, "Fatal error", "main.cpp", 42);
+  std::string output = ss.str();
+
+  EXPECT_NE(output.find("WW4 ERROR: Fatal error"), std::string::npos);
+  EXPECT_NE(output.find("WW4 ERROR: FILE=main.cpp LINE=42"), std::string::npos);
+}
+
+/**
+ * @test Verify writeExtcdeOutput with only message.
+ */
+TEST(StdOutTest, WriteExtcdeOutputOnlyMessage) {
+  std::stringstream ss;
+  writeExtcdeOutput(ss, "Simple error");
+  std::string output = ss.str();
+
+  EXPECT_NE(output.find("WW4 ERROR: Simple error"), std::string::npos);
+  EXPECT_EQ(output.find("FILE="), std::string::npos);
 }
 
 int main(int argc, char **argv) {

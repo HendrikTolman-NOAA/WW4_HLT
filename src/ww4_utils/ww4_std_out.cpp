@@ -14,11 +14,13 @@
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-04-01
  * @date Last Update: 2026-04-06
- * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
+ * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
+ *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
  */
 
 #include "ww4_utils/ww4_std_out.hpp"
+#include <cstdlib>
 #include <iomanip>
 
 namespace ww4_utils {
@@ -64,6 +66,39 @@ void writeFinalOutput(std::ostream &os, const std::string &programName,
      << " ========================================\n"
      << "          WAVEWATCH IV program " << programName << " \n"
      << std::endl;
+}
+
+void writeExtcdeOutput(std::ostream &os, std::optional<std::string_view> msg,
+                       std::optional<std::string_view> file,
+                       std::optional<int> line) {
+  const std::string prefix = "WW4 ERROR:";
+
+  if (msg.has_value()) {
+    os << prefix << " " << *msg << "\n";
+  }
+
+  std::string context;
+  if (file.has_value()) {
+    context += " FILE=";
+    context += *file;
+  }
+  if (line.has_value()) {
+    context += " LINE=";
+    context += std::to_string(*line);
+  }
+
+  if (!context.empty()) {
+    os << prefix << context << "\n";
+  }
+  os << std::flush;
+}
+
+[[noreturn]] void extcde(int exitCode, std::ostream &os,
+                         std::optional<std::string_view> msg,
+                         std::optional<std::string_view> file,
+                         std::optional<int> line) {
+  writeExtcdeOutput(os, msg, file, line);
+  std::exit(exitCode);
 }
 
 } // namespace ww4_std_out

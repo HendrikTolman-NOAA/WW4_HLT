@@ -14,8 +14,9 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last Update, 2026-04-01
- * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
+ * @date Last Update, 2026-04-06
+ * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
+ *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
  */
 
@@ -26,6 +27,7 @@
 #include <iostream>
 #include <optional>
 #include <string>
+#include <string_view>
 
 /**
  * @namespace ww4_utils
@@ -65,6 +67,35 @@ void writeFinalOutput(std::ostream &os, const std::string &programName,
                       std::optional<double> initTime = std::nullopt,
                       std::optional<double> elapsedTotal = std::nullopt,
                       std::optional<MemoryUsage> memory = std::nullopt);
+
+/**
+ * @brief Writes an error message to the provided output stream in the standard
+ *        WAVEWATCH format.
+ * @details Heritage from EXTCDE in WAVEWATCH III w3servmd.F90.
+ * @param os The output stream to write to.
+ * @param msg Optional error message to report.
+ * @param file Optional source file name where the error occurred.
+ * @param line Optional line number in the source file.
+ */
+void writeExtcdeOutput(std::ostream &os,
+                       std::optional<std::string_view> msg = std::nullopt,
+                       std::optional<std::string_view> file = std::nullopt,
+                       std::optional<int> line = std::nullopt);
+
+/**
+ * @brief Performs a program stop with an exit code.
+ * @details Heritage from EXTCDE in WAVEWATCH III w3servmd.F90.
+ *          Calls writeExtcdeOutput and then std::exit.
+ * @param exitCode The exit code to return to the environment.
+ * @param os The output stream to write to (defaults to std::cerr).
+ * @param msg Optional error message to report.
+ * @param file Optional source file name where the error occurred.
+ * @param line Optional line number in the source file.
+ */
+[[noreturn]] void extcde(int exitCode, std::ostream &os = std::cerr,
+                         std::optional<std::string_view> msg = std::nullopt,
+                         std::optional<std::string_view> file = std::nullopt,
+                         std::optional<int> line = std::nullopt);
 
 } // namespace ww4_std_out
 } // namespace ww4_utils
