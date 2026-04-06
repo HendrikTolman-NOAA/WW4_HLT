@@ -18,3 +18,9 @@ compiler:
 
   # Compilation options/flags
   options: "-O3 -Wall -Wextra -std=c++20"
+
+  # Enable strict compiler warnings and treat as errors (true/false)
+  strict_warnings: false
+
+  # Enable address and undefined behavior sanitizers (true/false)
+  use_sanitizers: false

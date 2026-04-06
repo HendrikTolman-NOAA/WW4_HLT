@@ -43,7 +43,7 @@ If an absolute path is provided, it is used directly.
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
 @author Aldgisl, Hendrik Tolman (Initial, 2026-03-20)
-@author Aldgisl, Hendrik Tolman (Last Update, 2026-03-30)
+@author Aldgisl, Hendrik Tolman (Last Update, 2026-04-06)
 """
 
 import argparse
@@ -182,8 +182,11 @@ def main() -> None:
 
     # Load configuration
     config = load_config(config_path)
-    compiler_name = config["compiler"].get("name", "g++")
-    compiler_options = config["compiler"].get("options", "")
+    compiler_info = config["compiler"]
+    compiler_name = compiler_info.get("name", "g++")
+    compiler_options = compiler_info.get("options", "")
+    strict_warnings = compiler_info.get("strict_warnings", False)
+    use_sanitizers = compiler_info.get("use_sanitizers", False)
 
     # Verify 'cmake' is available in the PATH
     if not shutil.which("cmake"):
@@ -197,6 +200,8 @@ def main() -> None:
         shutil.rmtree(build_dir)
 
     # Configure
+    sw = "ON" if strict_warnings else "OFF"
+    us = "ON" if use_sanitizers else "OFF"
     configure_cmd = [
         "cmake",
         "-B",
@@ -205,6 +210,8 @@ def main() -> None:
         str(root_dir),
         f"-DCMAKE_CXX_COMPILER={compiler_name}",
         f"-DCMAKE_CXX_FLAGS={compiler_options}",
+        f"-DWW4_STRICT_WARNINGS={sw}",
+        f"-DWW4_USE_SANITIZERS={us}",
     ]
     run_command(configure_cmd)
 
