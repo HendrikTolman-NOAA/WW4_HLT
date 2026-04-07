@@ -42,8 +42,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                 << " to: "
                 << ww4_utils::TimeManagement::toFormattedString(endTime)
                 << std::endl;
-      //
-      ww4_utils::reportRunConfig(getRunConfig(), std::cout);
     }
     //
     // 0.2 To log file (if requested)  likely to be temporarily as the 
@@ -55,8 +53,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                           << " to: "
                           << ww4_utils::TimeManagement::toFormattedString(endTime)
                           << std::endl;
-      //
-      ww4_utils::reportRunConfig(getRunConfig(), getLogFileStream());
     }
     //
     // 1.  xxxxxxxxxx --------------------------------------------------------
