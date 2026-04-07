@@ -32,15 +32,28 @@ namespace ww4_core {
 namespace {
 ww4_utils::RunConfig globalRunConfig;
 std::ofstream logFile;
+std::string capturedProgramName;
 } // namespace
 
-void w4core_init(const ww4_utils::DateTime &startTime) {
+void w4core_init(const ww4_utils::DateTime &startTime,
+                 const std::string &programName) {
   try {
     //
     // 0.  General initialization --------------------------------------------
+    // 0.0 Capture program name
+    //
+    capturedProgramName = programName;
+
+    //
     // 0.1 Load configuration from ww4_run_config.yml file
     //
-    globalRunConfig = ww4_utils::loadRunConfig("ww4_run_config.yml");
+    auto config = ww4_utils::loadRunConfig("ww4_run_config.yml");
+    if (!config) {
+      ww4_utils::ww4_std_out::extcde(1, std::cerr,
+                                     "Could not load run-time configuration",
+                                     __FILE__, __LINE__);
+    }
+    globalRunConfig = *config;
 
     //
     // 0.2 Initial standard output if requested
@@ -49,7 +62,8 @@ void w4core_init(const ww4_utils::DateTime &startTime) {
       //
       // 0.2.1 Initial standard output
       //
-      ww4_utils::ww4_std_out::writeInitialOutput(std::cout, "ww4_stand_alone");
+      ww4_utils::ww4_std_out::writeInitialOutput(std::cout,
+                                                 capturedProgramName);
       //
       // 0.2.2 Identify being in initialization routine
       //
@@ -73,7 +87,7 @@ void w4core_init(const ww4_utils::DateTime &startTime) {
       //
       // 0.3.2 Initial log file output
       //
-      ww4_utils::ww4_logfile::writeInitialOutput(logFile, "ww4_stand_alone");
+      ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
       //
       // 0.3.3 Identify being in initialization routine
       //
@@ -105,5 +119,7 @@ void w4core_init(const ww4_utils::DateTime &startTime) {
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
 
 std::ofstream &getLogFileStream() { return logFile; }
+
+const std::string &getProgramName() { return capturedProgramName; }
 
 } // namespace ww4_core

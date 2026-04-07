@@ -26,21 +26,32 @@
 #include "ww4_utils/ww4_stand_alone_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
 #include <exception>
+#include <filesystem>
 #include <iostream>
 
 /**
  * @brief Main entry point for the simplified ww4_stand_alone program.
  * @return 0 on success.
  */
-int main() {
+int main(int argc, char **argv) {
   try {
     //
     // 0.  Program initialization -------------------------------------------
+    // 0.0 Extract program name
+    //
+    std::string programName = "ww4_stand_alone";
+    if (argc > 0) {
+      programName = std::filesystem::path(argv[0]).stem().string();
+    }
+
+    //
     // 0.1 Load configuration from ww4_stand_alone.yml file
     //
     auto config = ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml");
     if (!config) {
-      return 1;
+      ww4_utils::ww4_std_out::extcde(1, std::cerr,
+                                     "Could not load stand-alone configuration",
+                                     __FILE__, __LINE__);
     }
     //
     // 0.2 MPI initialization (if applicable) -------------------------------
@@ -48,7 +59,7 @@ int main() {
     //
     // 1.  Run initialization routine  --------------------------------------
     //
-    ww4_core::w4core_init(config->startTime);
+    ww4_core::w4core_init(config->startTime, programName);
 
     //
     // 2.  Run time stepping routine  ----------------------------------------

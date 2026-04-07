@@ -34,9 +34,10 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file.close();
 
   const auto config = loadRunConfig(filename);
-  EXPECT_EQ(config.calendarType, TimeManagement::CalendarType::NoLeap);
-  EXPECT_FALSE(config.produceStdOut);
-  EXPECT_FALSE(config.produceLogFile);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
+  EXPECT_FALSE(config->produceStdOut);
+  EXPECT_FALSE(config->produceLogFile);
   EXPECT_EQ(TimeManagement::getCalendarType(),
             TimeManagement::CalendarType::NoLeap);
 
@@ -51,11 +52,10 @@ TEST(RunConfigTest, MissingFileDefaults) {
   TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
 
   const auto config = loadRunConfig("non_existent_run_config.yml");
-  EXPECT_EQ(config.calendarType, TimeManagement::CalendarType::Standard);
-  EXPECT_TRUE(config.produceStdOut);
-  EXPECT_TRUE(config.produceLogFile);
-  EXPECT_EQ(TimeManagement::getCalendarType(),
-            TimeManagement::CalendarType::Standard);
+  EXPECT_FALSE(config.has_value());
+
+  // Manually reset for other tests
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::Standard);
 }
 
 /**
@@ -68,9 +68,10 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   file.close();
 
   const auto config = loadRunConfig(filename);
-  EXPECT_EQ(config.calendarType, TimeManagement::CalendarType::ThreeSixtyDay);
-  EXPECT_TRUE(config.produceStdOut);
-  EXPECT_TRUE(config.produceLogFile);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::ThreeSixtyDay);
+  EXPECT_TRUE(config->produceStdOut);
+  EXPECT_TRUE(config->produceLogFile);
   EXPECT_EQ(TimeManagement::getCalendarType(),
             TimeManagement::CalendarType::ThreeSixtyDay);
 
@@ -87,9 +88,10 @@ TEST(RunConfigTest, PartialConfig) {
   file.close();
 
   const auto config = loadRunConfig(filename);
-  EXPECT_EQ(config.calendarType, TimeManagement::CalendarType::Standard);
-  EXPECT_FALSE(config.produceStdOut);
-  EXPECT_TRUE(config.produceLogFile);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::Standard);
+  EXPECT_FALSE(config->produceStdOut);
+  EXPECT_TRUE(config->produceLogFile);
 
   std::remove(filename.c_str());
 }

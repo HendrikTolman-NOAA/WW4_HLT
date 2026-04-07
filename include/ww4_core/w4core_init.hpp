@@ -38,11 +38,19 @@ namespace ww4_core {
  *          Follows the architectural design of the initialization in
  *          ww3_multi.F90 from WAVEWATCH III.
  * @param[in] startTime Simulation start time.
+ * @param[in] programName Name of the program to identify in output banners.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-04-03
  */
-void w4core_init(const ww4_utils::DateTime &startTime);
+void w4core_init(const ww4_utils::DateTime &startTime,
+                 const std::string &programName);
+
+/**
+ * @brief Provides access to the captured program name.
+ * @return A reference to the program name string.
+ */
+const std::string &getProgramName();
 
 /**
  * @brief Provides access to the loaded run-time configuration.
