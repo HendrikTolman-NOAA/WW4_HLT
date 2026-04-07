@@ -13,7 +13,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-03
+ * @date Last Update, 2026-04-07
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -110,10 +110,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   }
 
   os << "     Calendar type      : " << calType << std::endl;
-  os << "     Screen output      : "
-     << (config.produceStdOut ? "yes" : "no") << std::endl;
-  os << "     Log file           : "
-     << (config.produceLogFile ? "yes" : "no") << std::endl;
+  os << "     Screen output      : " << (config.produceStdOut ? "yes" : "no")
+     << std::endl;
+  os << "     Log file           : " << (config.produceLogFile ? "yes" : "no")
+     << std::endl;
   os << std::endl;
 }
 
