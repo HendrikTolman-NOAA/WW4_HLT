@@ -48,8 +48,6 @@ void w4core_finl(const ww4_utils::DateTime &endTime) {
       //
       // 2.2 Run time and memory usage summary
       //
-      ww4_utils::reportRunConfig(getRunConfig(), std::cout);
-      //
       ww4_utils::ww4_std_out::writeFinalOutput(std::cout, getProgramName(),
                                                std::nullopt, runTime, memory);
     }
