@@ -44,15 +44,15 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                 << std::endl;
     }
     //
-    // 0.2 To log file (if requested)  likely to be temporarily as the 
+    // 0.2 To log file (if requested)  likely to be temporarily as the
     //     eventually the log file will be to consice for this output
     //
     if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-      getLogFileStream() << "\n  Time stepping (w4core_wave) from: "
-                          << ww4_utils::TimeManagement::toFormattedString(startTime)
-                          << " to: "
-                          << ww4_utils::TimeManagement::toFormattedString(endTime)
-                          << std::endl;
+      getLogFileStream()
+          << "\n  Time stepping (w4core_wave) from: "
+          << ww4_utils::TimeManagement::toFormattedString(startTime)
+          << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
+          << std::endl;
     }
     //
     // 1.  xxxxxxxxxx --------------------------------------------------------

@@ -43,8 +43,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime) {
     //
     if (getRunConfig().produceStdOut) {
       std::cout << "\n  Finalization (w4core_finl) starting: "
-                << ww4_utils::TimeManagement::toFormattedString(endTime)
-                << "\n"
+                << ww4_utils::TimeManagement::toFormattedString(endTime) << "\n"
                 << std::endl;
       //
       // 2.2 Run time and memory usage summary

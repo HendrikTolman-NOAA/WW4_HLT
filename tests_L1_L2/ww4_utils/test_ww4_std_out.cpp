@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last Update, 2026-04-06
+ * @date Last Update, 2026-04-07
  */
 
 #include "ww4_utils/ww4_std_out.hpp"
@@ -54,6 +54,10 @@ TEST(StdOutTest, FinalOutputProgramShellWithMetrics) {
   EXPECT_NE(output.find("  Memory usage:"), std::string::npos);
   EXPECT_NE(output.find("    Peak Virtual Mem  :       1000 kB"),
             std::string::npos);
+  EXPECT_NE(
+      output.find(
+          "    Resident Set Size :        400 kB (Peak: 500 kB / 0.0005 GB)"),
+      std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("          WAVEWATCH IV program Program shell "),
             std::string::npos);
