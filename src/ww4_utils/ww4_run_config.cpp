@@ -36,14 +36,12 @@ static std::string_view cleanValue(std::string_view s) {
   return s.substr(start, end - start + 1);
 }
 
-RunConfig loadRunConfig(std::string_view filename) noexcept {
+std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
   std::ifstream file((std::string(filename)));
   RunConfig config{};
 
   if (!file.is_open()) {
-    // If file is not found, apply default calendar type and return.
-    TimeManagement::setCalendarType(config.calendarType);
-    return config;
+    return std::nullopt;
   }
 
   std::string line;

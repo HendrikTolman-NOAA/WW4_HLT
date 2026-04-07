@@ -40,7 +40,15 @@ protected:
  *          implementation only prints to stdout, we just verify callability.
  */
 TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
-  EXPECT_NO_THROW(ww4_core::w4core_init(startTime));
+  // Create dummy run configuration file
+  std::ofstream runFile("ww4_run_config.yml");
+  runFile << "calendar_type: \"Standard\"\n";
+  runFile.close();
+
+  EXPECT_NO_THROW(ww4_core::w4core_init(startTime, "test_program"));
   EXPECT_NO_THROW(ww4_core::w4core_wave(startTime, endTime));
   EXPECT_NO_THROW(ww4_core::w4core_finl(endTime));
+
+  std::remove("ww4_run_config.yml");
+  std::remove("log.ww4");
 }

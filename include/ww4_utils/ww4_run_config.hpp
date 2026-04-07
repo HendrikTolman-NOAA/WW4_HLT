@@ -22,6 +22,7 @@
 
 #include "ww4_utils/time_management.hpp"
 #include <iostream>
+#include <optional>
 #include <string_view>
 
 namespace ww4_utils {
@@ -46,11 +47,12 @@ struct RunConfig {
  *          extracts the configuration settings, and updates the
  *          TimeManagement calendar type.
  * @param filename The name of the YAML file to load.
- * @return A RunConfig structure containing the loaded (or default) settings.
+ * @return A RunConfig structure containing the loaded (or default) settings,
+ *         or std::nullopt if the file could not be opened.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  */
-RunConfig loadRunConfig(std::string_view filename) noexcept;
+std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept;
 
 /**
  * @brief Reports the current configuration to the provided output stream.
