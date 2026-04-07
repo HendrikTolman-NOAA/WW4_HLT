@@ -10,9 +10,10 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Aldgisl, Hendrik L. Tolman (Initial, 2026-02-27)
- * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026-03-30)
- * @date 2026-03-30
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-02-27
+ * @date Last Update, 2026-04-03
  */
 
 #include "ww4_utils/memory_utils.hpp"
@@ -20,6 +21,17 @@
 #include <vector>
 
 namespace ww4_utils {
+
+/**
+ * @test Verify that MemoryUsage struct initializes fields to zero.
+ */
+TEST(MemoryUtilsTest, DefaultInitialization) {
+  const MemoryUsage usage{};
+  EXPECT_EQ(usage.vmPeak, 0);
+  EXPECT_EQ(usage.vmSize, 0);
+  EXPECT_EQ(usage.vmHWM, 0);
+  EXPECT_EQ(usage.vmRSS, 0);
+}
 
 /**
  * @test Verify that captureMemoryUsage returns valid non-zero metrics.
@@ -57,6 +69,16 @@ TEST(MemoryUtilsTest, MemoryIncreaseAfterAllocation) {
 
   const auto after = MemoryUtils::captureMemoryUsage();
   ASSERT_TRUE(after.has_value());
+}
+
+/**
+ * @test Verify that captureMemoryHWM returns a valid non-zero metric.
+ */
+TEST(MemoryUtilsTest, CaptureMemoryHWM) {
+  const auto hwm = MemoryUtils::captureMemoryHWM();
+
+  ASSERT_TRUE(hwm.has_value());
+  EXPECT_GT(*hwm, 0);
 }
 
 } // namespace ww4_utils

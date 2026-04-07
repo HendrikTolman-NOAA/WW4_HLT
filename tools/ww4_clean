@@ -15,8 +15,10 @@
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
 #               of the National Weather Service.
-# @author Aldgisl, Hendrik Tolman (Initial, 2026-03-30)
-# @author Aldgisl, Hendrik Tolman (Last Update, 2026-03-31)
+# @author Main Author(s): Aldgisl (AI Persona), Hendrik Tolman
+# @author Contributors: Jules (Agentic AI)
+# @date Initial, 2026-03-30
+# @date Last Update, 2026-03-31
 
 # Identify the repository root (parent of the directory containing this script)
 TOOLS_DIR=$(cd "$(dirname "$0")" && pwd)
