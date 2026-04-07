@@ -24,6 +24,8 @@
 #include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_stand_alone_config.hpp"
+#include "ww4_utils/ww4_std_out.hpp"
+#include <exception>
 #include <iostream>
 
 /**
@@ -31,31 +33,38 @@
  * @return 0 on success.
  */
 int main() {
-  //
-  // 0.  Program initialization ---------------------------------------------
-  // 0.1 Load configuration from ww4_stand_alone.yml file
-  //
-  auto config = ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml");
-  if (!config) {
-    return 1;
+  try {
+    //
+    // 0.  Program initialization -------------------------------------------
+    // 0.1 Load configuration from ww4_stand_alone.yml file
+    //
+    auto config = ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml");
+    if (!config) {
+      return 1;
+    }
+    //
+    // 0.2 MPI initialization (if applicable) -------------------------------
+    //
+    //
+    // 1.  Run initialization routine  --------------------------------------
+    //
+    ww4_core::w4core_init(config->startTime);
+
+    //
+    // 2.  Run time stepping routine  ----------------------------------------
+    //
+    ww4_core::w4core_wave(config->startTime, config->endTime);
+
+    //
+    // 3.  Run finalization routine  -----------------------------------------
+    //
+    ww4_core::w4core_finl(config->endTime);
+
+    return 0;
+  } catch (const std::exception &e) {
+    ww4_utils::ww4_std_out::extcde(1, std::cerr, e.what(), __FILE__, __LINE__);
+  } catch (...) {
+    ww4_utils::ww4_std_out::extcde(1, std::cerr, "Unknown exception in main",
+                                   __FILE__, __LINE__);
   }
-  //
-  // 0.2 MPI initialization (if applicable) ----------------------------------
-  //
-  //
-  // 1.  Run initialization routine  ----------------------------------------
-  //
-  ww4_core::w4core_init(config->startTime);
-
-  //
-  // 2.  Run time stepping routine  ------------------------------------------
-  //
-  ww4_core::w4core_wave(config->startTime, config->endTime);
-
-  //
-  // 3.  Run finalization routine  -------------------------------------------
-  //
-  ww4_core::w4core_finl(config->endTime);
-
-  return 0;
 }
