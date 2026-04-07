@@ -81,13 +81,13 @@ void w4core_init(const ww4_utils::DateTime &startTime) {
     //
     // 0.3.4 Report out run time configuration
     //
-    reportRunConfig(globalRunConfig, logFile);  }
+    reportRunConfig(globalRunConfig, logFile);
   }
-  
+
   //
   // 0.4 Initialize profiling
   //
-  ww4_utils::TimeManagement::initializeProfiling();  
+  ww4_utils::TimeManagement::initializeProfiling();
 
   //
   // 1.  XXXXXXXXX -----------------------------------------------------------
