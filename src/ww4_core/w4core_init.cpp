@@ -23,6 +23,7 @@
 #include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
+#include <exception>
 #include <fstream>
 #include <iostream>
 
@@ -34,87 +35,75 @@ std::ofstream logFile;
 } // namespace
 
 void w4core_init(const ww4_utils::DateTime &startTime) {
-  //
-  // 0.  General initialization ----------------------------------------------
-  // 0.1 Load configuration from ww4_run_config.yml file
-  //
-  globalRunConfig = ww4_utils::loadRunConfig("ww4_run_config.yml");
+  try {
+    //
+    // 0.  General initialization --------------------------------------------
+    // 0.1 Load configuration from ww4_run_config.yml file
+    //
+    globalRunConfig = ww4_utils::loadRunConfig("ww4_run_config.yml");
 
-  //
-  // 0.2 Initial standard output if requested
-  //
-  if (globalRunConfig.produceStdOut) {
     //
-    // 0.2.1 Initial standard output
+    // 0.2 Initial standard output if requested
     //
-    ww4_utils::ww4_std_out::writeInitialOutput(std::cout, "ww4_stand_alone");
+    if (globalRunConfig.produceStdOut) {
+      //
+      // 0.2.1 Initial standard output
+      //
+      ww4_utils::ww4_std_out::writeInitialOutput(std::cout, "ww4_stand_alone");
+      //
+      // 0.2.2 Identify being in initialization routine
+      //
+      std::cout << "          * Initialization (w4core_init) starting: "
+                << ww4_utils::TimeManagement::toFormattedString(startTime)
+                << std::endl;
+      //
+      // 0.2.3 Report out run time configuration
+      //
+      ww4_utils::reportRunConfig(globalRunConfig, std::cout);
+    }
+
     //
-    // 0.2.2 Identify being in initialization routine
+    // 0.3 Start log file if requested
     //
-    std::cout << "          * Initialization (w4core_init) starting: "
+    if (globalRunConfig.produceLogFile) {
+      //
+      // 0.3.1 Open log file
+      //
+      logFile.open("log.ww4");
+      //
+      // 0.3.2 Initial log file output
+      //
+      ww4_utils::ww4_logfile::writeInitialOutput(logFile, "ww4_stand_alone");
+      //
+      // 0.3.3 Identify being in initialization routine
+      //
+      logFile << "          * Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
-    //
-    // 0.2.3 Report out run time configuration
-    //
-    reportRunConfig(globalRunConfig, std::cout);
-  }
+      //
+      // 0.3.4 Report out run time configuration
+      //
+      ww4_utils::reportRunConfig(globalRunConfig, logFile);
+    }
 
-  //
-  // 0.3 Start log file if requested
-  //
-  if (globalRunConfig.produceLogFile) {
     //
-    // 0.3.1 Open log file
+    // 0.4 Initialize profiling
     //
-    logFile.open("log.ww4");
-    //
-    // 0.3.2 Initial log file output
-    //
-    ww4_utils::ww4_logfile::writeInitialOutput(logFile, "ww4_stand_alone");
-    //
-    // 0.3.3 Identify being in initialization routine
-    //
-    logFile << "          * Initialization (w4core_init) starting: "
-            << ww4_utils::TimeManagement::toFormattedString(startTime)
-            << std::endl;
-    //
-    // 0.3.4 Report out run time configuration
-    //
-    reportRunConfig(globalRunConfig, logFile);  }
-  }
-  
-  //
-  // 0.4 Initialize profiling
-  //
-  ww4_utils::TimeManagement::initializeProfiling();  
+    ww4_utils::TimeManagement::initializeProfiling();
 
-  //
-  // 1.  XXXXXXXXX -----------------------------------------------------------
-  //
+    //
+    // 1.  XXXXXXXXX ---------------------------------------------------------
+    //
+  } catch (const std::exception &e) {
+    ww4_utils::ww4_std_out::extcde(1, std::cerr, e.what(), __FILE__, __LINE__);
+  } catch (...) {
+    ww4_utils::ww4_std_out::extcde(
+        1, std::cerr, "Unknown exception in w4core_init", __FILE__, __LINE__);
+  }
 }
 
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
 
 std::ofstream &getLogFileStream() { return logFile; }
-
-void reportRunConfig(const ww4_utils::RunConfig &config, std::ostream &os) {
-  os << "          Configuration settings :" << std::endl;
-
-  std::string calType = "Standard";
-  if (config.calendarType == ww4_utils::TimeManagement::CalendarType::NoLeap) {
-    calType = "NoLeap";
-  } else if (config.calendarType ==
-             ww4_utils::TimeManagement::CalendarType::ThreeSixtyDay) {
-    calType = "ThreeSixtyDay";
-  }
-
-  os << "            Calendar type      : " << calType << std::endl;
-  os << "            Screen output      : "
-     << (config.produceStdOut ? "yes" : "no") << std::endl;
-  os << "            Log file           : "
-     << (config.produceLogFile ? "yes" : "no") << std::endl;
-  os << std::endl;
-}
 
 } // namespace ww4_core

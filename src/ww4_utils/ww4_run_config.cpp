@@ -18,6 +18,7 @@
 
 #include "ww4_utils/ww4_run_config.hpp"
 #include <fstream>
+#include <iostream>
 #include <string>
 
 namespace ww4_utils {
@@ -97,6 +98,25 @@ RunConfig loadRunConfig(std::string_view filename) noexcept {
   TimeManagement::setCalendarType(config.calendarType);
 
   return config;
+}
+
+void reportRunConfig(const RunConfig &config, std::ostream &os) {
+  os << "          Configuration settings :" << std::endl;
+
+  std::string calType = "Standard";
+  if (config.calendarType == TimeManagement::CalendarType::NoLeap) {
+    calType = "NoLeap";
+  } else if (config.calendarType ==
+             TimeManagement::CalendarType::ThreeSixtyDay) {
+    calType = "ThreeSixtyDay";
+  }
+
+  os << "            Calendar type      : " << calType << std::endl;
+  os << "            Screen output      : "
+     << (config.produceStdOut ? "yes" : "no") << std::endl;
+  os << "            Log file           : "
+     << (config.produceLogFile ? "yes" : "no") << std::endl;
+  os << std::endl;
 }
 
 } // namespace ww4_utils

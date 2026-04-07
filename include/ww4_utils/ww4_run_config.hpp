@@ -21,6 +21,7 @@
 #define WW4_UTILS_WW4_RUN_CONFIG_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include <iostream>
 #include <string_view>
 
 namespace ww4_utils {
@@ -50,6 +51,16 @@ struct RunConfig {
  * @author Contributors: Jules (Agentic AI)
  */
 RunConfig loadRunConfig(std::string_view filename) noexcept;
+
+/**
+ * @brief Reports the current configuration to the provided output stream.
+ * @param config The RunConfig structure to report.
+ * @param os The output stream to write to (default: std::cout).
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-07
+ */
+void reportRunConfig(const RunConfig &config, std::ostream &os = std::cout);
 
 } // namespace ww4_utils
 

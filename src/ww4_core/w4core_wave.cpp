@@ -21,22 +21,31 @@
 #include "ww4_core/w4core_wave.hpp"
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_std_out.hpp"
+#include <exception>
 #include <iostream>
 
 namespace ww4_core {
 
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime) {
-  //
-  // Report starting time stepping
-  if (getRunConfig().produceStdOut) {
-    std::cout << "          * Time stepping (w4core_wave) from: "
-              << ww4_utils::TimeManagement::toFormattedString(startTime)
-              << " to: "
-              << ww4_utils::TimeManagement::toFormattedString(endTime)
-              << std::endl;
+  try {
     //
-    reportRunConfig(getRunConfig(), std::cout);
+    // Report starting time stepping
+    if (getRunConfig().produceStdOut) {
+      std::cout << "          * Time stepping (w4core_wave) from: "
+                << ww4_utils::TimeManagement::toFormattedString(startTime)
+                << " to: "
+                << ww4_utils::TimeManagement::toFormattedString(endTime)
+                << std::endl;
+      //
+      ww4_utils::reportRunConfig(getRunConfig(), std::cout);
+    }
+  } catch (const std::exception &e) {
+    ww4_utils::ww4_std_out::extcde(1, std::cerr, e.what(), __FILE__, __LINE__);
+  } catch (...) {
+    ww4_utils::ww4_std_out::extcde(
+        1, std::cerr, "Unknown exception in w4core_wave", __FILE__, __LINE__);
   }
 }
 
