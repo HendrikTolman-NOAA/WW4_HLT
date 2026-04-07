@@ -99,7 +99,7 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
 }
 
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
-  os << "          Configuration settings :" << std::endl;
+  os << "\n  Configuration settings :" << std::endl;
 
   std::string calType = "Standard";
   if (config.calendarType == TimeManagement::CalendarType::NoLeap) {
@@ -109,10 +109,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     calType = "ThreeSixtyDay";
   }
 
-  os << "            Calendar type      : " << calType << std::endl;
-  os << "            Screen output      : "
+  os << "     Calendar type      : " << calType << std::endl;
+  os << "     Screen output      : "
      << (config.produceStdOut ? "yes" : "no") << std::endl;
-  os << "            Log file           : "
+  os << "     Log file           : "
      << (config.produceLogFile ? "yes" : "no") << std::endl;
   os << std::endl;
 }

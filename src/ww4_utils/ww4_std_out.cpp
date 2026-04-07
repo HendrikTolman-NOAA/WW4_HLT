@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-04-01
- * @date Last Update: 2026-04-06
+ * @date Last Update: 2026-04-07
  * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
  *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
@@ -63,7 +63,7 @@ void writeFinalOutput(std::ostream &os, const std::string &programName,
   }
 
   os << "\n  End of program \n"
-     << " ========================================\n"
+     << " ==================================================\n"
      << "          WAVEWATCH IV program " << programName << " \n"
      << std::endl;
 }
