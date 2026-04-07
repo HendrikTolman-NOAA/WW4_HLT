@@ -53,14 +53,13 @@ void writeFinalOutput(std::ostream &os, const std::string &programName,
 
   // Optional memory output
   if (memory.has_value()) {
-    const double hwmGb =
-        (static_cast<double>(memory->vmHWM) * 1024.0 * 8.0) / 1.0e9;
+    const double hwmGB = static_cast<double>(memory->vmHWM) / (1024.0 * 1024.0);
     os << "  Memory usage:\n"
        << "    Peak Virtual Mem  : " << std::setw(10) << memory->vmPeak
        << " kB\n"
        << "    Resident Set Size : " << std::setw(10) << memory->vmRSS
        << " kB (Peak: " << memory->vmHWM << " kB / " << std::fixed
-       << std::setprecision(4) << hwmGb << " Gb)\n";
+       << std::setprecision(4) << hwmGB << " GB)\n";
   }
 
   os << "\n  End of program \n"

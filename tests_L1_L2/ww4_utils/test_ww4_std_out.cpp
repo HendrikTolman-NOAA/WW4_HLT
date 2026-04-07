@@ -56,7 +56,7 @@ TEST(StdOutTest, FinalOutputProgramShellWithMetrics) {
             std::string::npos);
   EXPECT_NE(
       output.find(
-          "    Resident Set Size :        400 kB (Peak: 500 kB / 0.0041 Gb)"),
+          "    Resident Set Size :        400 kB (Peak: 500 kB / 0.0005 GB)"),
       std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("          WAVEWATCH IV program Program shell "),
