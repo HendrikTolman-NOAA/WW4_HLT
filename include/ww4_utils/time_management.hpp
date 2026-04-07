@@ -21,7 +21,6 @@
 
 #include <array>
 #include <chrono>
-#include <span>
 #include <string>
 #include <string_view>
 
@@ -140,8 +139,8 @@ public:
    * @param t2 Second date/time array (DATE_AND_TIME format).
    * @return Difference (t2 - t1) in seconds.
    */
-  static double differenceInSeconds(const std::span<const int, 8> t1,
-                                    const std::span<const int, 8> t2) noexcept;
+  static double differenceInSeconds(const DateArray &t1,
+                                    const DateArray &t2) noexcept;
 
   /**
    * @brief Captures the present date and time.
@@ -155,7 +154,7 @@ public:
    * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026-03-30)
    * @date 2026-03-30
    */
-  static void getSystemDateArray(const std::span<int, 8> dateArray) noexcept;
+  static void getSystemDateArray(DateArray &dateArray) noexcept;
 
   /**
    * @brief Calculates the elapsed time since a reference date.
@@ -170,7 +169,7 @@ public:
    * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026-03-30)
    * @date 2026-03-30
    */
-  static void getElapsedTimeSince(const std::span<const int, 8> referenceDate,
+  static void getElapsedTimeSince(const DateArray &referenceDate,
                                   double &elapsedTime) noexcept;
 
   /**
@@ -301,8 +300,7 @@ public:
    * @param[out] errorCode Error code (0 for success).
    * @post dateArray is populated, errorCode is set.
    */
-  static void dateTimeToDateArray(const DateTime &time,
-                                  const std::span<int, 8> dateArray,
+  static void dateTimeToDateArray(const DateTime &time, DateArray &dateArray,
                                   int &errorCode) noexcept;
 
   /**
@@ -315,8 +313,8 @@ public:
    * @param[out] errorCode Error code (0 for success).
    * @post time is populated, errorCode is set.
    */
-  static void dateArrayToDateTime(const std::span<const int, 8> dateArray,
-                                  DateTime &time, int &errorCode) noexcept;
+  static void dateArrayToDateTime(const DateArray &dateArray, DateTime &time,
+                                  int &errorCode) noexcept;
 
   /**
    * @brief Convert DateArray to Julian Day.
@@ -328,8 +326,8 @@ public:
    * @param[out] errorCode Error code (0 for success, -1/1 for errors).
    * @post julian is populated, errorCode is set.
    */
-  static void dateArrayToJulianDay(const std::span<const int, 8> dateArray,
-                                   double &julian, int &errorCode) noexcept;
+  static void dateArrayToJulianDay(const DateArray &dateArray, double &julian,
+                                   int &errorCode) noexcept;
 
   /**
    * @brief Convert Julian Day to DateArray.
@@ -341,8 +339,7 @@ public:
    * @param[out] errorCode Error code (0 for success).
    * @post dateArray is populated, errorCode is set.
    */
-  static void julianDayToDateArray(const double julian,
-                                   const std::span<int, 8> dateArray,
+  static void julianDayToDateArray(const double julian, DateArray &dateArray,
                                    int &errorCode) noexcept;
 
   /**
@@ -354,8 +351,8 @@ public:
    * @param t2 Second date array.
    * @return Difference (t2 - t1) in days.
    */
-  static double differenceInDays(const std::span<const int, 8> t1,
-                                 const std::span<const int, 8> t2) noexcept;
+  static double differenceInDays(const DateArray &t1,
+                                 const DateArray &t2) noexcept;
 
   /**
    * @brief Convert time units attribute to DateArray.
@@ -368,7 +365,7 @@ public:
    * @post dateArray is populated if successful, errorCode is set.
    */
   static void parseUnitsToDateArray(const std::string_view units,
-                                    const std::span<int, 8> dateArray,
+                                    DateArray &dateArray,
                                     int &errorCode) noexcept;
 
   /**
