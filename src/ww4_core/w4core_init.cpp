@@ -49,9 +49,11 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     //
     auto config = ww4_utils::loadRunConfig("ww4_run_config.yml");
     if (!config) {
-      ww4_utils::ww4_std_out::extcde(1, std::cerr,
-                                     "Could not load run-time configuration",
-                                     __FILE__, __LINE__);
+      ww4_utils::ww4_std_out::extcde(
+          1, std::cerr,
+          "Run-time configuration file 'ww4_run_config.yml' not found or could "
+          "not be opened.",
+          __FILE__, __LINE__);
     }
     globalRunConfig = *config;
 
