@@ -41,7 +41,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime) {
               << ww4_utils::TimeManagement::toFormattedString(endTime)
               << std::endl;
     //
-    reportRunConfig(getRunConfig(), std::cout);
+    ww4_utils::reportRunConfig(getRunConfig(), std::cout);
     //
     ww4_utils::ww4_std_out::writeFinalOutput(std::cout, "Multi-grid shell",
                                              std::nullopt, runTime, memory);
@@ -54,7 +54,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime) {
                        << ww4_utils::TimeManagement::toFormattedString(endTime)
                        << std::endl;
     //
-    reportRunConfig(getRunConfig(), getLogFileStream());
+    ww4_utils::reportRunConfig(getRunConfig(), getLogFileStream());
     //
     ww4_utils::ww4_logfile::writeFinalOutput(
         getLogFileStream(), "Multi-grid shell", std::nullopt, runTime, memory);

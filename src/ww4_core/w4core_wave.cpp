@@ -36,7 +36,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
               << ww4_utils::TimeManagement::toFormattedString(endTime)
               << std::endl;
     //
-    reportRunConfig(getRunConfig(), std::cout);
+    ww4_utils::reportRunConfig(getRunConfig(), std::cout);
   }
 }
 

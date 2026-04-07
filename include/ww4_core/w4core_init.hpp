@@ -56,14 +56,6 @@ const ww4_utils::RunConfig &getRunConfig();
  */
 std::ofstream &getLogFileStream();
 
-/**
- * @brief Reports the current configuration to the provided output stream.
- * @param config The RunConfig structure to report.
- * @param os The output stream to write to (default: std::cout).
- */
-void reportRunConfig(const ww4_utils::RunConfig &config,
-                     std::ostream &os = std::cout);
-
 } // namespace ww4_core
 
 #endif // WW4_CORE_W4CORE_INIT_HPP

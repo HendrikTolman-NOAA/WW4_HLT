@@ -57,7 +57,7 @@ void w4core_init(const ww4_utils::DateTime &startTime) {
     //
     // 0.2.3 Report out run time configuration
     //
-    reportRunConfig(globalRunConfig, std::cout);
+    ww4_utils::reportRunConfig(globalRunConfig, std::cout);
   }
 
   //
@@ -81,7 +81,7 @@ void w4core_init(const ww4_utils::DateTime &startTime) {
     //
     // 0.3.4 Report out run time configuration
     //
-    reportRunConfig(globalRunConfig, logFile);
+    ww4_utils::reportRunConfig(globalRunConfig, logFile);
   }
 
   //
@@ -97,24 +97,5 @@ void w4core_init(const ww4_utils::DateTime &startTime) {
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
 
 std::ofstream &getLogFileStream() { return logFile; }
-
-void reportRunConfig(const ww4_utils::RunConfig &config, std::ostream &os) {
-  os << "          Configuration settings :" << std::endl;
-
-  std::string calType = "Standard";
-  if (config.calendarType == ww4_utils::TimeManagement::CalendarType::NoLeap) {
-    calType = "NoLeap";
-  } else if (config.calendarType ==
-             ww4_utils::TimeManagement::CalendarType::ThreeSixtyDay) {
-    calType = "ThreeSixtyDay";
-  }
-
-  os << "            Calendar type      : " << calType << std::endl;
-  os << "            Screen output      : "
-     << (config.produceStdOut ? "yes" : "no") << std::endl;
-  os << "            Log file           : "
-     << (config.produceLogFile ? "yes" : "no") << std::endl;
-  os << std::endl;
-}
 
 } // namespace ww4_core
