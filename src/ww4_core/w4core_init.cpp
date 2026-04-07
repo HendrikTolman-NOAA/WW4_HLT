@@ -67,7 +67,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       //
       // 0.2.2 Identify being in initialization routine
       //
-      std::cout << "          * Initialization (w4core_init) starting: "
+      std::cout << "  Initialization (w4core_init) starting: "
                 << ww4_utils::TimeManagement::toFormattedString(startTime)
                 << std::endl;
       //
@@ -91,7 +91,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       //
       // 0.3.3 Identify being in initialization routine
       //
-      logFile << "          * Initialization (w4core_init) starting: "
+      logFile << "  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
       //
