@@ -110,10 +110,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   }
 
   os << "     Calendar type      : " << calType << std::endl;
-  os << "     Screen output      : "
-     << (config.produceStdOut ? "yes" : "no") << std::endl;
-  os << "     Log file           : "
-     << (config.produceLogFile ? "yes" : "no") << std::endl;
+  os << "     Screen output      : " << (config.produceStdOut ? "yes" : "no")
+     << std::endl;
+  os << "     Log file           : " << (config.produceLogFile ? "yes" : "no")
+     << std::endl;
   os << std::endl;
 }
 

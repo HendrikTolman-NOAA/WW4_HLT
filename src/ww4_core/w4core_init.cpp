@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-07
+ * @date Last Update, 2026-04-08
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -56,51 +56,56 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     globalRunConfig = *config;
 
     //
-    // 0.2 Initialize profiling
+    // 0.2 Initialize calendar type in time management service
+    //
+    ww4_utils::TimeManagement::setCalendarType(globalRunConfig.calendarType);
+
+    //
+    // 0.3 Initialize profiling
     //
     ww4_utils::TimeManagement::initializeProfiling();
 
     //
-    // 0.3 Initial standard output if requested
+    // 0.4 Initial standard output if requested
     //
     if (globalRunConfig.produceStdOut) {
       //
-      // 0.2.1 Initial standard output
+      // 0.4.1 Initial standard output
       //
       ww4_utils::ww4_std_out::writeInitialOutput(std::cout,
                                                  capturedProgramName);
       //
-      // 0.2.2 Identify being in initialization routine
+      // 0.4.2 Identify being in initialization routine
       //
       std::cout << "  Initialization (w4core_init) starting: "
                 << ww4_utils::TimeManagement::toFormattedString(startTime)
                 << std::endl;
       //
-      // 0.2.3 Report out run time configuration
+      // 0.4.3 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, std::cout);
     }
 
     //
-    // 0.4 Start log file if requested
+    // 0.5 Start log file if requested
     //
     if (globalRunConfig.produceLogFile) {
       //
-      // 0.3.1 Open log file
+      // 0.5.1 Open log file
       //
       logFile.open("log.ww4");
       //
-      // 0.3.2 Initial log file output
+      // 0.5.2 Initial log file output
       //
       ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
       //
-      // 0.3.3 Identify being in initialization routine
+      // 0.5.3 Identify being in initialization routine
       //
       logFile << "  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
       //
-      // 0.3.4 Report out run time configuration
+      // 0.5.4 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
     }
