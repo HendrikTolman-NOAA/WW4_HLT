@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-06
+ * @date Last Update, 2026-04-07
  * @note This program follows the structure of the stand-alone shell
  *       (ww3_shel.F90) in WAVEWATCH III.
  *       Original author of WW3 stand-alone shell: Hendrik L. Tolman.
@@ -32,22 +32,29 @@
  */
 int main() {
   //
-  // Load configuration
+  // 0.  Program initialization ---------------------------------------------
+  // 0.1 Load configuration from ww4_stand_alone.yml file
+  //
   auto config = ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml");
   if (!config) {
     return 1;
   }
-
   //
-  // Initialize core
+  // 0.2 MPI initialization (if applicable) ----------------------------------
+  //
+  //
+  // 1.  Run initialization routine  ----------------------------------------
+  // 
   ww4_core::w4core_init(config->startTime);
 
   //
-  // Time stepping
+  // 2.  Run time stepping routine  ------------------------------------------
+  // 
   ww4_core::w4core_wave(config->startTime, config->endTime);
 
   //
-  // Finalize core
+  // 3.  Run finalization routine  -------------------------------------------
+  //
   ww4_core::w4core_finl(config->endTime);
 
   return 0;
