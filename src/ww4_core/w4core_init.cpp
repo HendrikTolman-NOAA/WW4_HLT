@@ -115,6 +115,9 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     //
     // 1.  XXXXXXXXX ---------------------------------------------------------
     //
+
+
+
   } catch (const std::exception &e) {
     ww4_utils::ww4_std_out::extcde(1, std::cerr, e.what(), __FILE__, __LINE__);
   } catch (...) {
