@@ -56,7 +56,12 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     globalRunConfig = *config;
 
     //
-    // 0.2 Initial standard output if requested
+    // 0.2 Initialize profiling
+    //
+    ww4_utils::TimeManagement::initializeProfiling();
+
+    //
+    // 0.3 Initial standard output if requested
     //
     if (globalRunConfig.produceStdOut) {
       //
@@ -77,7 +82,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     }
 
     //
-    // 0.3 Start log file if requested
+    // 0.4 Start log file if requested
     //
     if (globalRunConfig.produceLogFile) {
       //
@@ -99,11 +104,6 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
     }
-
-    //
-    // 0.4 Initialize profiling
-    //
-    ww4_utils::TimeManagement::initializeProfiling();
 
     //
     // 1.  XXXXXXXXX ---------------------------------------------------------
