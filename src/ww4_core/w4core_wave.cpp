@@ -33,9 +33,11 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime) {
   try {
     //
-    // Report starting time stepping
+    // 0.  Report starting time stepping -------------------------------------
+    // 0.1 To standard output (if requested)
+    //
     if (getRunConfig().produceStdOut) {
-      std::cout << "          * Time stepping (w4core_wave) from: "
+      std::cout << "\n  Time stepping (w4core_wave) from: "
                 << ww4_utils::TimeManagement::toFormattedString(startTime)
                 << " to: "
                 << ww4_utils::TimeManagement::toFormattedString(endTime)
@@ -43,7 +45,21 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       ww4_utils::reportRunConfig(getRunConfig(), std::cout);
     }
-
+    //
+    // 0.2 To log file (if requested)  likely to be temporarily as the 
+    //     eventually the log file will be to consice for this output
+    //
+    if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+      getLogFileStream() << "\n  Time stepping (w4core_wave) from: "
+                          << ww4_utils::TimeManagement::toFormattedString(startTime)
+                          << " to: "
+                          << ww4_utils::TimeManagement::toFormattedString(endTime)
+                          << std::endl;
+      //
+      ww4_utils::reportRunConfig(getRunConfig(), getLogFileStream());
+    }
+    //
+    // 1.  xxxxxxxxxx --------------------------------------------------------
     //
     // Sleep for 2 seconds to facilitate testing of run-time output
     //
