@@ -52,12 +52,10 @@ TEST(StdOutTest, FinalOutputProgramShellWithMetrics) {
   EXPECT_NE(output.find("  Elapsed time        :      4.56 s"),
             std::string::npos);
   EXPECT_NE(output.find("  Memory usage:"), std::string::npos);
-  EXPECT_NE(output.find("    Peak Virtual Mem  :       1000 kB"),
+  EXPECT_NE(output.find("    Peak Virtual Mem  :     0.0010 GB"),
             std::string::npos);
-  EXPECT_NE(
-      output.find(
-          "    Resident Set Size :        400 kB (Peak: 500 kB / 0.0005 GB)"),
-      std::string::npos);
+  EXPECT_NE(output.find("    Resident Set Size :        400 kB (Peak: 500 kB)"),
+            std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("          WAVEWATCH IV program Program shell "),
             std::string::npos);

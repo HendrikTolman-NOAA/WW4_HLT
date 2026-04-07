@@ -48,8 +48,7 @@ TEST(LogFileTest, FinalOutputWithMetrics) {
             std::string::npos);
   EXPECT_NE(output.find("  Memory usage:"), std::string::npos);
   EXPECT_NE(
-      output.find(
-          "    Resident Set Size :        900 kB (Peak: 1000 kB / 0.0010 GB)"),
+      output.find("    Resident Set Size :        900 kB (Peak: 1000 kB)"),
       std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("WAVEWATCH IV program Program shell"),
