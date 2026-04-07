@@ -44,12 +44,12 @@ int main() {
   //
   //
   // 1.  Run initialization routine  ----------------------------------------
-  // 
+  //
   ww4_core::w4core_init(config->startTime);
 
   //
   // 2.  Run time stepping routine  ------------------------------------------
-  // 
+  //
   ww4_core::w4core_wave(config->startTime, config->endTime);
 
   //
