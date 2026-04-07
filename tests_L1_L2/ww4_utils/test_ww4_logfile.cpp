@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last Update, 2026-04-01
+ * @date Last Update, 2026-04-07
  */
 
 #include "ww4_utils/ww4_logfile.hpp"
@@ -48,7 +48,8 @@ TEST(LogFileTest, FinalOutputWithMetrics) {
             std::string::npos);
   EXPECT_NE(output.find("  Memory usage:"), std::string::npos);
   EXPECT_NE(
-      output.find("    Resident Set Size :        900 kB (Peak: 1000 kB)"),
+      output.find(
+          "    Resident Set Size :        900 kB (Peak: 1000 kB / 0.0082 Gb)"),
       std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("WAVEWATCH IV program Program shell"),
