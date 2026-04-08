@@ -16,8 +16,6 @@ WAVEWATCH IV provides multiple ways to set up and build the project, ranging fro
 
 Run the setup tool to interactively configure your active clone and compiler settings:
 
-### 1. Setup
-
 ```bash
 ./ww4_setup
 ```
@@ -26,41 +24,6 @@ This tool will:
 - Detect available C++ compilers on your system.
 - Configure compilation flags for either development or maximum optimization in `ww4_compile_config.yml`.
 
-### 2. Compilation
-
-Once configured, you can compile WAVEWATCH IV using:
-```bash
-./ww4_compile
-```
-This tool uses the settings from `ww4_compile_config.yml` and invokes CMake to build the project.
-
-## Manual Usage
-
-If you prefer to configure the tools manually, follow these steps:
-
-### 1. Setup
-
-Copy the template configuration file to the repository root:
-```bash
-cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
-```
-Then, edit `ww4_compile_config.yml` to specify your compiler and preferred options.
-
-### 2. Compilation
-
-Run the compile tool from the repository root:
-```bash
-python3 tools/ww4_compile.py
-```
-
-## Quick Start with Presets
-
-The `--preset` option allows for compilation with a single command without the need for additional configuration. This bypasses the need for a local `ww4_compile_config.yml` file by using pre-defined templates.
-
-```bash
-./ww4_compile --preset <PRESET_NAME>
-```
-Available presets can be found in the `templates/` directory (e.g., `templates/ww4_compile_config.test.yml` corresponds to `--preset test`).
 
 ## Developer Tools
 
