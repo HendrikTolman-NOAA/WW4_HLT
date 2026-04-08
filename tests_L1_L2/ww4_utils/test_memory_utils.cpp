@@ -13,10 +13,11 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last Update, 2026-04-03
+ * @date Last Update, 2026-04-07
  */
 
 #include "ww4_utils/memory_utils.hpp"
+#include <fstream>
 #include <gtest/gtest.h>
 #include <vector>
 
@@ -79,6 +80,32 @@ TEST(MemoryUtilsTest, CaptureMemoryHWM) {
 
   ASSERT_TRUE(hwm.has_value());
   EXPECT_GT(*hwm, 0);
+}
+
+/**
+ * @test Verify parsing of extremely large memory values (mocked).
+ */
+TEST(MemoryUtilsTest, MockLargeValues) {
+  const char *mockPath = "mock_status.txt";
+  {
+    std::ofstream mockFile(mockPath);
+    mockFile << "VmPeak: 70252780120440 kB\n";
+    mockFile << "VmSize: 70252780120440 kB\n";
+    mockFile << "VmHWM:       6144 kB\n";
+    mockFile << "VmRSS:       6144 kB\n";
+  }
+
+  setMemoryStatusPathForTesting(mockPath);
+  const auto usage = MemoryUtils::captureMemoryUsage();
+  setMemoryStatusPathForTesting("/proc/self/status"); // Reset
+
+  ASSERT_TRUE(usage.has_value());
+  EXPECT_EQ(usage->vmPeak, 70252780120440ULL);
+  EXPECT_EQ(usage->vmSize, 70252780120440ULL);
+  EXPECT_EQ(usage->vmHWM, 6144ULL);
+  EXPECT_EQ(usage->vmRSS, 6144ULL);
+
+  std::remove(mockPath);
 }
 
 } // namespace ww4_utils
