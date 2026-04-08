@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-04-01
- * @date Last Update: 2026-04-07
+ * @date Last Update: 2026-04-08
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
