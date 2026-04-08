@@ -11,9 +11,10 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Hendrik L. Tolman (Initial, 2026-02-27)
- * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026-03-30)
- * @date 2026-03-30
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-02-27
+ * @date Last Update, 2026-03-30
  */
 
 #include "ww4_utils/time_management.hpp"
@@ -214,4 +215,179 @@ TEST_F(TimeManagementTest, SystemTimeRoutines) {
   // Test getPresentDateTime
   const DateTime dt = TimeManagement::getPresentDateTime();
   EXPECT_GE(dt.ymd, 20200101);
+}
+
+/**
+ * @test Verify calendar type getter and setter.
+ */
+TEST_F(TimeManagementTest, CalendarState) {
+  // Check default (set to Standard in fixture SetUp)
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::Standard);
+
+  // Check manual setting
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::NoLeap);
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::NoLeap);
+
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::ThreeSixtyDay);
+
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::Standard);
+  EXPECT_EQ(TimeManagement::getCalendarType(),
+            TimeManagement::CalendarType::Standard);
+}
+
+/**
+ * @test Verify day of year calculations.
+ */
+TEST_F(TimeManagementTest, DayOfYear) {
+  // Standard calendar
+  EXPECT_EQ(TimeManagement::getDayOfYear(20230101), 1);
+  EXPECT_EQ(TimeManagement::getDayOfYear(20230301), 60); // 31 + 28 + 1
+  EXPECT_EQ(TimeManagement::getDayOfYear(20240301), 61); // 31 + 29 + 1 (Leap)
+
+  // 360-day calendar
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
+  EXPECT_EQ(TimeManagement::getDayOfYear(20240230), 60);  // 30 + 30
+  EXPECT_EQ(TimeManagement::getDayOfYear(20241230), 360); // 12 * 30
+}
+
+/**
+ * @test Verify advanced Julian day conversions.
+ */
+TEST_F(TimeManagementTest, AdvancedJulianConversions) {
+  // Standard calendar
+  DateArray dat = {2000, 1, 1, 0, 12, 0, 0, 0};
+  double julian;
+  int errorCode;
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  EXPECT_NEAR(julian, 2451545.0, 1e-6);
+
+  // Round trip conversion
+  DateArray dat2{};
+  TimeManagement::julianDayToDateArray(julian, dat2, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  for (size_t i = 0; i < 8; ++i) {
+    if (i == 3)
+      continue; // Skip timezone
+    EXPECT_EQ(dat[i], dat2[i]);
+  }
+
+  // Error handling for year 0
+  dat[0] = 0;
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, -1);
+
+  // 360-day calendar
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
+  dat = {1800, 1, 1, 0, 0, 0, 0, 0};
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  EXPECT_NEAR(julian, 0.0, 1e-6);
+
+  // Round trip
+  TimeManagement::julianDayToDateArray(0.0, dat2, errorCode);
+  EXPECT_EQ(errorCode, 0);
+  for (size_t i = 0; i < 8; ++i) {
+    if (i == 3)
+      continue;
+    EXPECT_EQ(dat[i], dat2[i]);
+  }
+}
+
+/**
+ * @test Verify time2hours conversions.
+ */
+TEST_F(TimeManagementTest, Time2Hours) {
+  const DateTime dt = {20000101, 120000.0};
+  const double hours = TimeManagement::time2hours(dt);
+  // Julian day for 2000-01-01 is 2451545. 24 * 2451545 + 12 = 58837092.
+  EXPECT_NEAR(hours, 58837092.0, 1e-6);
+}
+
+/**
+ * @test Verify NoLeap calendar behavior.
+ */
+TEST_F(TimeManagementTest, NoLeapCalendar) {
+  TimeManagement::setCalendarType(TimeManagement::CalendarType::NoLeap);
+
+  // 2024 is a leap year in Standard, but not in NoLeap
+  EXPECT_EQ(TimeManagement::incrementDateByDay(20240228, 1), 20240301);
+  EXPECT_EQ(TimeManagement::getDayOfYear(20240301), 60); // 31 + 28 + 1
+}
+
+/**
+ * @test Verify incrementDateTime with negative time steps.
+ */
+TEST_F(TimeManagementTest, NegativeIncrements) {
+  DateTime dt = {20240101, 0.0};
+  TimeManagement::incrementDateTime(dt, -1.0);
+  EXPECT_EQ(dt.ymd, 20231231);
+  EXPECT_NEAR(dt.hms, 235959.0, 1e-6);
+
+  TimeManagement::incrementDateTime(dt, -86400.0);
+  EXPECT_EQ(dt.ymd, 20231230);
+  EXPECT_NEAR(dt.hms, 235959.0, 1e-6);
+}
+
+/**
+ * @test Verify handling of Year 0 and other boundary years.
+ */
+TEST_F(TimeManagementTest, YearZeroHandling) {
+  EXPECT_EQ(TimeManagement::computeJulianDay(1, 1, 0), -1);
+
+  DateArray dat = {0, 1, 1, 0, 0, 0, 0, 0};
+  double julian;
+  int errorCode;
+  TimeManagement::dateArrayToJulianDay(dat, julian, errorCode);
+  EXPECT_EQ(errorCode, -1);
+}
+
+/**
+ * @test Verify behavior for uninitialized/unset date and time.
+ */
+TEST_F(TimeManagementTest, NotSetDateTime) {
+  const DateTime dt = {-1, 0.0};
+  EXPECT_EQ(TimeManagement::toFormattedString(dt), " date and time not set.");
+}
+
+/**
+ * @test Verify differenceInSeconds with reverse time order.
+ */
+TEST_F(TimeManagementTest, DifferenceInSecondsReverse) {
+  const DateTime dt1 = {20240101, 120000.0};
+  const DateTime dt2 = {20240101, 115959.0};
+  EXPECT_NEAR(TimeManagement::differenceInSeconds(dt1, dt2), -1.0, 1e-6);
+
+  const DateTime dt_midnight = {20240101, 0.0};
+  const DateTime dt_prev_day = {20231231, 235959.0};
+  EXPECT_NEAR(TimeManagement::differenceInSeconds(dt_midnight, dt_prev_day),
+              -1.0, 1e-6);
+}
+
+/**
+ * @test Verify error handling for Julian day conversions.
+ */
+TEST_F(TimeManagementTest, JulianErrorHandling) {
+  DateArray dat{};
+  int errorCode;
+  // Standard calendar does not support negative Julian days
+  TimeManagement::julianDayToDateArray(-1.0, dat, errorCode);
+  EXPECT_EQ(errorCode, 1);
+}
+
+/**
+ * @test Verify error handling for units parsing.
+ */
+TEST_F(TimeManagementTest, UnitsParsingErrors) {
+  DateArray dat{};
+  int errorCode;
+  TimeManagement::parseUnitsToDateArray("invalid units", dat, errorCode);
+  EXPECT_EQ(errorCode, 1);
+
+  TimeManagement::parseUnitsToDateArray("seconds since ", dat, errorCode);
+  EXPECT_EQ(errorCode, 1);
 }

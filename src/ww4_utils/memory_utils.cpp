@@ -10,8 +10,10 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Aldgisl, Hendrik L. Tolman (Initial, 2026-02-27)
- * @author Aldgisl, Hendrik L. Tolman (Last Update, 2026-03-18)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-02-27
+ * @date Last Update, 2026-04-03
  */
 
 #include "ww4_utils/memory_utils.hpp"
@@ -64,6 +66,14 @@ std::optional<MemoryUsage> MemoryUtils::captureMemoryUsage() noexcept {
   }
 
   return usage;
+}
+
+std::optional<long> MemoryUtils::captureMemoryHWM() noexcept {
+  const auto usage = captureMemoryUsage();
+  if (usage) {
+    return usage->vmHWM;
+  }
+  return std::nullopt;
 }
 
 } // namespace ww4_utils
