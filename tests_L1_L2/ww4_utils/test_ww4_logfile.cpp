@@ -38,18 +38,14 @@ TEST(LogFileTest, InitialOutput) {
  */
 TEST(LogFileTest, FinalOutputWithMetrics) {
   std::stringstream ss;
-  MemoryUsage mem{2000, 1500, 1000, 900};
-  writeFinalOutput(ss, "Program shell", 1.23, 4.56, mem);
+  writeFinalOutput(ss, "Program shell", 1.23, 4.56);
   std::string output = ss.str();
 
   EXPECT_NE(output.find("  Initialization time :      1.23 s"),
             std::string::npos);
   EXPECT_NE(output.find("  Elapsed time        :      4.56 s"),
             std::string::npos);
-  EXPECT_NE(output.find("  Memory usage:"), std::string::npos);
-  EXPECT_NE(
-      output.find("    Resident Set Size :        900 kB (Peak: 1000 kB)"),
-      std::string::npos);
+  EXPECT_EQ(output.find("  Memory usage:"), std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("WAVEWATCH IV program Program shell"),
             std::string::npos);

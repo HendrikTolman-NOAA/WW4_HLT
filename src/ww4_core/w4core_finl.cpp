@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-07
+ * @date Last Update, 2026-04-08
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -20,7 +20,6 @@
 
 #include "ww4_core/w4core_finl.hpp"
 #include "ww4_core/w4core_init.hpp"
-#include "ww4_utils/memory_utils.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
@@ -32,9 +31,8 @@ namespace ww4_core {
 void w4core_finl(const ww4_utils::DateTime &endTime) {
   try {
     //
-    // 1.  Capture memory usage and run time ---------------------------------
+    // 1.  Capture run time --------------------------------------------------
     //
-    const auto memory = ww4_utils::MemoryUtils::captureMemoryUsage();
     const double runTime = ww4_utils::TimeManagement::getProfilingTime();
 
     //
@@ -45,11 +43,20 @@ void w4core_finl(const ww4_utils::DateTime &endTime) {
       std::cout << "\n  Finalization (w4core_finl) starting: "
                 << ww4_utils::TimeManagement::toFormattedString(endTime) << "\n"
                 << std::endl;
+
       //
-      // 2.2 Run time and memory usage summary
+      // 2.2 Report out run end time
+      //
+      std::cout << "  Run ends at         : "
+                << ww4_utils::TimeManagement::toFormattedString(
+                       ww4_utils::TimeManagement::getPresentDateTime())
+                << std::endl;
+
+      //
+      // 2.3 Run time summary
       //
       ww4_utils::ww4_std_out::writeFinalOutput(std::cout, getProgramName(),
-                                               std::nullopt, runTime, memory);
+                                               std::nullopt, runTime);
     }
 
     //
@@ -63,12 +70,20 @@ void w4core_finl(const ww4_utils::DateTime &endTime) {
                          << std::endl;
 
       //
-      // 3.2 Run time and memory usage summary
+      // 3.2 Report out run end time
+      //
+      getLogFileStream() << "  Run ends at         : "
+                         << ww4_utils::TimeManagement::toFormattedString(
+                                ww4_utils::TimeManagement::getPresentDateTime())
+                         << std::endl;
+
+      //
+      // 3.3 Run time summary
       //
       ww4_utils::ww4_logfile::writeFinalOutput(
-          getLogFileStream(), getProgramName(), std::nullopt, runTime, memory);
+          getLogFileStream(), getProgramName(), std::nullopt, runTime);
       //
-      // 3.2 Close log file
+      // 3.4 Close log file
       //
       getLogFileStream().close();
     }

@@ -34,7 +34,7 @@ except ImportError:
 
 def find_clones() -> List[Path]:
     """
-    Find all WW4 clones by searching for tools/ww4_compile or tools/ww4_compile.py.
+    Find all WW4 clones by searching for tools/ww4_setup or tools/ww4_setup.py.
 
     Returns
     -------
@@ -48,7 +48,7 @@ def find_clones() -> List[Path]:
     # Check current directory and its parent first as common case
     cwd = Path.cwd()
     for p in [cwd, cwd.parent]:
-        for tool_name in ["ww4_compile", "ww4_compile.py"]:
+        for tool_name in ["ww4_setup", "ww4_setup.py"]:
             target = p / "tools" / tool_name
             if target.exists():
                 root = p.resolve()
@@ -65,19 +65,19 @@ def find_clones() -> List[Path]:
             continue
         try:
             # Using find via subprocess for speed and robustness
-            # Look for either ww4_compile or ww4_compile.py in tools/
+            # Look for either ww4_setup or ww4_setup.py in tools/
             cmd = [
                 "find",
                 str(search_path),
                 "-maxdepth", "4",
-                "-name", "ww4_compile*",
+                "-name", "ww4_setup*",
             ]
             result = subprocess.run(
                 cmd, capture_output=True, text=True, check=False, timeout=10
             )
             for line in result.stdout.splitlines():
                 path = Path(line).resolve()
-                if path.name in ["ww4_compile", "ww4_compile.py"] and path.parent.name == "tools":
+                if path.name in ["ww4_setup", "ww4_setup.py"] and path.parent.name == "tools":
                     clone_root = path.parent.parent
                     if clone_root not in seen_paths:
                         clones.append(clone_root)
@@ -395,9 +395,8 @@ def main() -> None:
     setup_compiler(active_clone)
 
     print("\nSetup complete!")
-    print("You can now build WAVEWATCH IV using either:")
-    print("  1. The built-in tool:  ww4_compile")
-    print("  2. Standard CMake:     cmake -B build && cmake --build build")
+    print("You can now build WAVEWATCH IV using standard CMake:")
+    print("  cmake -B build && cmake --build build")
 
 
 if __name__ == "__main__":

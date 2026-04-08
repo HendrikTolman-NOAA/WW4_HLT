@@ -28,15 +28,8 @@ This tool will:
 
 ### 2. Compilation
 
-Once configured, you can compile WAVEWATCH IV using either the built-in tool or standard CMake.
+Once configured, you can compile WAVEWATCH IV using standard CMake:
 
-#### Built-in Tool:
-```bash
-./ww4_compile
-```
-This tool uses the settings from `ww4_compile_config.yml` and invokes CMake to build the project.
-
-#### Standard CMake:
 ```bash
 cmake -B build
 cmake --build build
@@ -57,19 +50,7 @@ Then, edit `ww4_compile_config.yml` to specify your compiler and preferred optio
 
 ### 2. Compilation
 
-Run the compile tool from the repository root:
-```bash
-python3 tools/ww4_compile.py
-```
-
-## Quick Start with Presets
-
-The `--preset` option allows for compilation with a single command without the need for additional configuration. This bypasses the need for a local `ww4_compile_config.yml` file by using pre-defined templates.
-
-```bash
-./ww4_compile --preset <PRESET_NAME>
-```
-Available presets can be found in the `templates/` directory (e.g., `templates/ww4_compile_config.test.yml` corresponds to `--preset test`).
+Configure and build with CMake as shown above.
 
 ## Developer Tools
 

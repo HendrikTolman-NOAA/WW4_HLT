@@ -41,8 +41,7 @@ void writeInitialOutput(std::ostream &os, const std::string &programName) {
 
 void writeFinalOutput(std::ostream &os, const std::string &programName,
                       std::optional<double> initTime,
-                      std::optional<double> elapsedTotal,
-                      std::optional<MemoryUsage> memory) {
+                      std::optional<double> elapsedTotal) {
   // Matches FORMAT 997, 998 in log but adapted for modularity
   if (initTime.has_value()) {
     os << "\n  Initialization time :" << std::fixed << std::setprecision(2)
@@ -51,17 +50,6 @@ void writeFinalOutput(std::ostream &os, const std::string &programName,
   if (elapsedTotal.has_value()) {
     os << "  Elapsed time        :" << std::fixed << std::setprecision(2)
        << std::setw(10) << *elapsedTotal << " s\n";
-  }
-
-  // Optional memory output
-  if (memory.has_value()) {
-    const double vmPeakGB =
-        static_cast<double>(memory->vmPeak) / (1024.0 * 1024.0);
-    os << "  Memory usage:\n"
-       << "    Peak Virtual Mem  : " << std::fixed << std::setprecision(4)
-       << std::setw(10) << vmPeakGB << " GB\n"
-       << "    Resident Set Size : " << std::setw(10) << memory->vmRSS
-       << " kB (Peak: " << memory->vmHWM << " kB)\n";
   }
 
   os << "\n  End of program \n"
