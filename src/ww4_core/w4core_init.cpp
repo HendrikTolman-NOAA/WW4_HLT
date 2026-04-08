@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-07
+ * @date Last Update, 2026-04-08
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -76,14 +76,23 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       //
       ww4_utils::ww4_std_out::writeInitialOutput(std::cout,
                                                  capturedProgramName);
+
       //
-      // 0.4.2 Identify being in initialization routine
+      // 0.4.2 Report out run start time
+      //
+      std::cout << "  Run starts at       : "
+                << ww4_utils::TimeManagement::toFormattedString(
+                       ww4_utils::TimeManagement::getPresentDateTime())
+                << std::endl;
+
+      //
+      // 0.4.3 Identify being in initialization routine
       //
       std::cout << "  Initialization (w4core_init) starting: "
                 << ww4_utils::TimeManagement::toFormattedString(startTime)
                 << std::endl;
       //
-      // 0.4.3 Report out run time configuration
+      // 0.4.4 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, std::cout);
     }
@@ -100,14 +109,23 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       // 0.5.2 Initial log file output
       //
       ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
+
       //
-      // 0.5.3 Identify being in initialization routine
+      // 0.5.3 Report out run start time
+      //
+      logFile << "  Run starts at       : "
+              << ww4_utils::TimeManagement::toFormattedString(
+                     ww4_utils::TimeManagement::getPresentDateTime())
+              << std::endl;
+
+      //
+      // 0.5.4 Identify being in initialization routine
       //
       logFile << "  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
       //
-      // 0.5.4 Report out run time configuration
+      // 0.5.5 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
     }

@@ -55,12 +55,10 @@ void writeInitialOutput(std::ostream &os, const std::string &programName);
  * @param programName The name of the executable program.
  * @param initTime Optional initialization time in seconds.
  * @param elapsedTotal Optional total elapsed time in seconds.
- * @param memory Optional memory usage metrics.
  */
 void writeFinalOutput(std::ostream &os, const std::string &programName,
                       std::optional<double> initTime = std::nullopt,
-                      std::optional<double> elapsedTotal = std::nullopt,
-                      std::optional<MemoryUsage> memory = std::nullopt);
+                      std::optional<double> elapsedTotal = std::nullopt);
 
 } // namespace ww4_logfile
 } // namespace ww4_utils
