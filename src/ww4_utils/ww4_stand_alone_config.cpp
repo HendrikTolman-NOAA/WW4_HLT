@@ -13,10 +13,11 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last Update, 2026-04-02
+ * @date Last Update, 2026-04-09
  */
 
 #include "ww4_utils/ww4_stand_alone_config.hpp"
+#include "ww4_utils/ww4_run_config.hpp"
 #include <charconv>
 #include <fstream>
 #include <string>
@@ -29,12 +30,8 @@ namespace ww4_utils {
  * @param s The string view to parse.
  * @return A DateTime structure if successful, or std::nullopt.
  */
-static std::optional<DateTime> parseDateTimeString(std::string_view s) {
-  const size_t start = s.find_first_not_of(" \t\"");
-  const size_t end = s.find_last_not_of(" \t\"");
-  if (start == std::string_view::npos)
-    return std::nullopt;
-  const std::string_view clean = s.substr(start, end - start + 1);
+std::optional<DateTime> parseDateTimeString(std::string_view s) {
+  const std::string_view clean = cleanValue(s);
 
   if (clean.length() < 15 || clean[8] != ' ')
     return std::nullopt;

@@ -46,6 +46,35 @@ TEST(RunConfigTest, NonDefaultConfig) {
 }
 
 /**
+ * @test Verify the cleanValue helper function for trimming and quote removal.
+ */
+TEST(RunConfigTest, CleanValue) {
+  // Test whitespace trimming
+  EXPECT_EQ(cleanValue("  hello  "), "hello");
+  EXPECT_EQ(cleanValue("\thello\t"), "hello");
+
+  // Test quote removal
+  EXPECT_EQ(cleanValue("\"hello\""), "hello");
+  EXPECT_EQ(cleanValue("  \"hello\"  "), "hello");
+
+  // Test mixed whitespace and quotes
+  EXPECT_EQ(cleanValue(" \t\"hello\" \t"), "hello");
+
+  // Test empty and whitespace-only strings
+  EXPECT_EQ(cleanValue(""), "");
+  EXPECT_EQ(cleanValue("   "), "");
+  EXPECT_EQ(cleanValue("\t\t"), "");
+
+  // Test only quotes
+  EXPECT_EQ(cleanValue("\"\""), "");
+  EXPECT_EQ(cleanValue(" \"\" "), "");
+
+  // Test string with internal spaces
+  EXPECT_EQ(cleanValue("  hello world  "), "hello world");
+  EXPECT_EQ(cleanValue("\"hello world\""), "hello world");
+}
+
+/**
  * @test Verify loading configuration with comments, blank lines, and
  * whitespace.
  */

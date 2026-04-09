@@ -14,7 +14,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-03
+ * @date Last Update, 2026-04-09
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
@@ -40,6 +40,13 @@ struct RunConfig {
   bool produceStdOut = true;                  ///< Screen output flag.
   bool produceLogFile = true;                 ///< Log file flag.
 };
+
+/**
+ * @brief Internal helper to trim whitespace and quotes from a string.
+ * @param s The string view to clean.
+ * @return A cleaned string view.
+ */
+std::string_view cleanValue(std::string_view s);
 
 /**
  * @brief Loads the run-time configuration from a YAML file.

@@ -28,7 +28,7 @@ namespace ww4_utils {
  * @param s The string view to clean.
  * @return A cleaned string view.
  */
-static std::string_view cleanValue(std::string_view s) {
+std::string_view cleanValue(std::string_view s) {
   const size_t start = s.find_first_not_of(" \t\"");
   const size_t end = s.find_last_not_of(" \t\"");
   if (start == std::string_view::npos)
