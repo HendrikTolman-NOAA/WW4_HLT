@@ -64,27 +64,34 @@ loadStandAloneConfig(std::string_view filename) noexcept {
 
   std::string line;
   while (std::getline(file, line)) {
-    if (line.empty())
+    std::string_view lineView(line);
+
+    // Remove comments
+    const size_t hashPos = lineView.find('#');
+    if (hashPos != std::string_view::npos) {
+      lineView = lineView.substr(0, hashPos);
+    }
+
+    if (lineView.empty())
       continue;
 
     // Trim leading whitespace
-    const size_t first = line.find_first_not_of(" \t");
-    if (first == std::string::npos || line[first] == '#')
+    const size_t first = lineView.find_first_not_of(" \t");
+    if (first == std::string::npos)
       continue;
 
-    const size_t colonPos = line.find(':');
+    const size_t colonPos = lineView.find(':');
     if (colonPos == std::string::npos)
       continue;
 
-    std::string_view key =
-        std::string_view(line).substr(first, colonPos - first);
+    std::string_view key = lineView.substr(first, colonPos - first);
     // Trim trailing whitespace from key
     const size_t kend = key.find_last_not_of(" \t");
     if (kend != std::string_view::npos) {
       key = key.substr(0, kend + 1);
     }
 
-    const std::string_view value = std::string_view(line).substr(colonPos + 1);
+    const std::string_view value = lineView.substr(colonPos + 1);
 
     if (key == "start_time") {
       const auto dt = parseDateTimeString(value);
@@ -111,6 +118,15 @@ loadStandAloneConfig(std::string_view filename) noexcept {
   }
 
   return config;
+}
+
+void reportStandAloneConfig(const StandAloneConfig &config, std::ostream &os) {
+  os << "\n  Stand-alone configuration settings :" << std::endl;
+  os << "     Start time         : "
+     << TimeManagement::toFormattedString(config.startTime) << std::endl;
+  os << "     End time           : "
+     << TimeManagement::toFormattedString(config.endTime) << std::endl;
+  os << std::endl;
 }
 
 } // namespace ww4_utils
