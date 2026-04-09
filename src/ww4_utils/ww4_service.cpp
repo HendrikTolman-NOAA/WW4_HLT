@@ -189,22 +189,20 @@ void kerkei(double x, double &ker, double &kei) noexcept {
 void tabuFw(std::span<double, SIZEFWTABLE + 1> fwTable,
             double &delab) noexcept {
   static constexpr int niter = 100;
-  double ker, kei;
-  double abr, abrlog, factor, fsubw, fsubwmemo, dzeta0, dzeta0memo;
-
   delab = (ABMAX - ABMIN) / static_cast<double>(SIZEFWTABLE);
-  double l10 = std::log(10.0);
+  const double l10 = std::log(10.0);
 
   for (int i = 0; i <= SIZEFWTABLE; ++i) {
-    abrlog = ABMIN + static_cast<double>(i) * delab;
-    abr = std::exp(abrlog * l10);
-    factor = 1.0 / abr / (21.2 * KAPPA);
-    fsubw = 0.05;
-    dzeta0 = 0.0;
+    const double abrlog = ABMIN + static_cast<double>(i) * delab;
+    const double abr = std::exp(abrlog * l10);
+    const double factor = 1.0 / abr / (21.2 * KAPPA);
+    double fsubw = 0.05;
+    double dzeta0 = 0.0;
     for (int iter = 0; iter < niter; ++iter) {
-      fsubwmemo = fsubw;
-      dzeta0memo = dzeta0;
+      const double fsubwmemo = fsubw;
+      const double dzeta0memo = dzeta0;
       dzeta0 = factor * std::pow(fsubw, -0.5);
+      double ker, kei;
       kerkei(2.0 * std::sqrt(dzeta0), ker, kei);
       fsubw = 0.08 / (ker * ker + kei * kei);
       fsubw = 0.5 * (fsubwmemo + fsubw);
