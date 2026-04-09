@@ -43,6 +43,38 @@ TEST(StandAloneConfigTest, ValidConfig) {
 }
 
 /**
+ * @test Verify the parseDateTimeString helper function directly.
+ */
+TEST(StandAloneConfigTest, ParseDateTimeString) {
+  // Valid case
+  auto dt = parseDateTimeString("19680606 060000");
+  ASSERT_TRUE(dt.has_value());
+  EXPECT_EQ(dt->ymd, 19680606);
+  EXPECT_NEAR(dt->hms, 60000.0, 1e-6);
+
+  // Valid case with whitespace and quotes
+  dt = parseDateTimeString("  \"19680606 060000\"  ");
+  ASSERT_TRUE(dt.has_value());
+  EXPECT_EQ(dt->ymd, 19680606);
+  EXPECT_NEAR(dt->hms, 60000.0, 1e-6);
+
+  // Invalid: Empty
+  EXPECT_FALSE(parseDateTimeString("").has_value());
+  EXPECT_FALSE(parseDateTimeString("   ").has_value());
+
+  // Invalid: Short
+  EXPECT_FALSE(parseDateTimeString("19680606").has_value());
+  EXPECT_FALSE(parseDateTimeString("19680606 123").has_value());
+
+  // Invalid: Malformed (wrong separator)
+  EXPECT_FALSE(parseDateTimeString("19680606-060000").has_value());
+
+  // Invalid: Non-numeric
+  EXPECT_FALSE(parseDateTimeString("ABCDEFGH 060000").has_value());
+  EXPECT_FALSE(parseDateTimeString("19680606 ABCDEF").has_value());
+}
+
+/**
  * @test Verify handling of empty date-time values.
  */
 TEST(StandAloneConfigTest, EmptyDateTime) {

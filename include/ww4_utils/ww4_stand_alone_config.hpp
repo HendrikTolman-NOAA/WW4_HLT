@@ -14,7 +14,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last Update, 2026-04-02
+ * @date Last Update, 2026-04-09
  */
 
 #ifndef WW4_UTILS_WW4_STAND_ALONE_CONFIG_HPP
@@ -37,6 +37,14 @@ struct StandAloneConfig {
   DateTime startTime; ///< Simulation start time.
   DateTime endTime;   ///< Simulation end time.
 };
+
+/**
+ * @brief Internal helper to parse a date-time string in "YYYYMMDD HHMMSS"
+ * format.
+ * @param s The string view to parse.
+ * @return A DateTime structure if successful, or std::nullopt.
+ */
+std::optional<DateTime> parseDateTimeString(std::string_view s);
 
 /**
  * @brief Loads the stand-alone configuration from a YAML file.
