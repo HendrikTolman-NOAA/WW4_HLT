@@ -6,19 +6,11 @@
  * @file ww4_service.hpp
  * @brief Common mathematical and physical constants for WAVEWATCH IV.
  * @details This header defines a set of shared constants used across the WW4
- *          model, converted from the WW3 constants.F90 and mod_constants.f90
- *          routines.
+ *          model.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-09
- * @date Last Update, 2026-04-09
- *
- * @note This file is converted from WAVEWATCH III (WW3) source files
- *       constants.F90 and mod_constants.f90.
- *       Original author in WW3: Hendrik L. Tolman.
  */
 
 #ifndef WW4_UTILS_WW4_SERVICE_HPP
@@ -31,6 +23,11 @@ namespace ww4_utils {
 /**
  * @namespace constants
  * @brief Namespace containing all physical and mathematical constants.
+ * @details This namespace contains constants converted from the WAVEWATCH III
+ *          (WW3) source files constants.F90 and mod_constants.f90.
+ *          Original author in WW3: Hendrik L. Tolman.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  */
 namespace constants {
 
@@ -63,8 +60,6 @@ constexpr double DAIR = 1.225;
 constexpr double NU_AIR = 1.4e-5;
 /** @brief Kinematic viscosity of water (m^2/s). (constants.F90) */
 constexpr double NU_WATER = 1.31e-6;
-/** @brief Kinematic viscosity of water (m^2/s). (mod_constants.f90) */
-constexpr double NU = 1.0e-6;
 /** @brief Specific gravity of sediments (N.D.). */
 constexpr double SED_SG = 2.65;
 /** @brief von Karman's constant (N.D.). */
@@ -91,12 +86,6 @@ constexpr double ABMAX = 8.0;
 constexpr double EXPMIN = -20.0;
 /** @brief Maximum argument for exp function to avoid overflow. */
 constexpr double EXPMAX = 20.0;
-
-// PDLIB / Debugging constants
-/** @brief Node number used for debugging. */
-constexpr int DEBUG_NODE = 1014;
-/** @brief Element number used for debug. */
-constexpr int DEBUG_ELEMENT = 50;
 
 /** @brief External constants defined in source file. */
 extern const double SQRTG;

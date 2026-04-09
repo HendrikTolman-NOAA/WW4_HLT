@@ -10,14 +10,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-09
- * @date Last Update, 2026-04-09
- *
- * @note This file is converted from WAVEWATCH III (WW3) source files
- *       constants.F90 and mod_constants.f90.
- *       Original author in WW3: Hendrik L. Tolman.
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -27,7 +20,10 @@ namespace ww4_utils {
 
 namespace constants {
 
-/** @brief Square root of gravity. */
+/** @brief Square root of gravity.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
 const double SQRTG = std::sqrt(GRAV);
 
 } // namespace constants

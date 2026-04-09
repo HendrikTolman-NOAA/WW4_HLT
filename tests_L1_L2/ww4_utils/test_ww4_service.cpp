@@ -9,10 +9,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-09
- * @date Last Update, 2026-04-09
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -26,6 +23,8 @@ namespace testing {
 /**
  * @test VerifyMathematicalConstants
  * @brief Ensures all mathematical constants are correctly defined.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyMathematicalConstants) {
   EXPECT_DOUBLE_EQ(PI, 3.14159265358979323846);
@@ -41,6 +40,8 @@ TEST(WW4ServiceTest, VerifyMathematicalConstants) {
 /**
  * @test VerifyPhysicalConstants
  * @brief Ensures all physical constants match WW3 values.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyPhysicalConstants) {
   EXPECT_DOUBLE_EQ(GRAV, 9.806);
@@ -48,7 +49,6 @@ TEST(WW4ServiceTest, VerifyPhysicalConstants) {
   EXPECT_DOUBLE_EQ(DAIR, 1.225);
   EXPECT_DOUBLE_EQ(NU_AIR, 1.4e-5);
   EXPECT_DOUBLE_EQ(NU_WATER, 1.31e-6);
-  EXPECT_DOUBLE_EQ(NU, 1.0e-6);
   EXPECT_DOUBLE_EQ(SED_SG, 2.65);
   EXPECT_DOUBLE_EQ(KAPPA, 0.40);
   EXPECT_DOUBLE_EQ(RADIUS, 4.0e7 / TPI);
@@ -57,6 +57,8 @@ TEST(WW4ServiceTest, VerifyPhysicalConstants) {
 /**
  * @test VerifyDerivedConstants
  * @brief Ensures derived constants are correctly calculated.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyDerivedConstants) {
   EXPECT_NEAR(SQRTG, std::sqrt(9.806), 1e-15);
@@ -68,6 +70,8 @@ TEST(WW4ServiceTest, VerifyDerivedConstants) {
 /**
  * @test VerifyModelConstants
  * @brief Ensures model-specific constants are correctly defined.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(UNDEF, -999.9);
@@ -75,15 +79,6 @@ TEST(WW4ServiceTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(ABMAX, 8.0);
   EXPECT_DOUBLE_EQ(EXPMIN, -20.0);
   EXPECT_DOUBLE_EQ(EXPMAX, 20.0);
-}
-
-/**
- * @test VerifyPDLIBConstants
- * @brief Ensures PDLIB and debugging constants are correctly defined.
- */
-TEST(WW4ServiceTest, VerifyPDLIBConstants) {
-  EXPECT_EQ(DEBUG_NODE, 1014);
-  EXPECT_EQ(DEBUG_ELEMENT, 50);
 }
 
 } // namespace testing
