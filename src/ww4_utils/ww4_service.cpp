@@ -34,10 +34,10 @@ const double SQRTG = std::sqrt(GRAV);
  */
 void kzeone(double x, double y, double &re0, double &im0, double &re1,
             double &im1) noexcept {
-  static constexpr double exsq[8] = {
-      0.5641003087264,    0.4120286874989,    0.1584889157959,
-      0.3078003387255e-1, 0.2778068842913e-2, 0.1000044412325e-3,
-      0.1059115547711e-5, 0.1522475804254e-8};
+  static constexpr double exsq[8] = {0.5641003087264,    0.4120286874989,
+                                     0.1584889157959,    0.3078003387255e-1,
+                                     0.2778068842913e-2, 0.1000044412325e-3,
+                                     0.1059115547711e-5, 0.1522475804254e-8};
   static constexpr double tsq[8] = {0.0,
                                     3.19303633920635e-1,
                                     1.29075862295915,
@@ -186,7 +186,8 @@ void kerkei(double x, double &ker, double &kei) noexcept {
  * @author Contributors: Jules (Agentic AI)
  * @details Converted from WW3 routine TABU_FW. Original author: F. Ardhuin.
  */
-void tabuFw(std::span<double, SIZEFWTABLE + 1> fwTable, double &delab) noexcept {
+void tabuFw(std::span<double, SIZEFWTABLE + 1> fwTable,
+            double &delab) noexcept {
   static constexpr int niter = 100;
   double ker, kei;
   double abr, abrlog, factor, fsubw, fsubwmemo, dzeta0, dzeta0memo;
