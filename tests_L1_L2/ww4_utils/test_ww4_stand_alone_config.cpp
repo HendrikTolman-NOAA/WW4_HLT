@@ -19,6 +19,7 @@
 #include "ww4_utils/ww4_stand_alone_config.hpp"
 #include <fstream>
 #include <gtest/gtest.h>
+#include <sstream>
 
 using namespace ww4_utils;
 
@@ -209,4 +210,48 @@ TEST(StandAloneConfigTest, MalformedDateTime) {
 TEST(StandAloneConfigTest, NonExistentFile) {
   const auto config = loadStandAloneConfig("non_existent.yml");
   EXPECT_FALSE(config.has_value());
+}
+
+/**
+ * @test Verify reportStandAloneConfig formatting.
+ */
+TEST(StandAloneConfigTest, ReportConfig) {
+  StandAloneConfig config;
+  config.startTime = {19680606, 60000.0};
+  config.endTime = {19680606, 180000.0};
+
+  std::stringstream ss;
+  reportStandAloneConfig(config, ss);
+  std::string output = ss.str();
+
+  EXPECT_NE(output.find("Stand-alone configuration settings :"),
+            std::string::npos);
+  EXPECT_NE(output.find("Start time         : 1968/06/06 06:00:00 UTC"),
+            std::string::npos);
+  EXPECT_NE(output.find("End time           : 1968/06/06 18:00:00 UTC"),
+            std::string::npos);
+}
+
+/**
+ * @test Verify loading configuration with comments, blank lines, and
+ * whitespace.
+ */
+TEST(StandAloneConfigTest, RobustParsingConfig) {
+  const std::string filename = "test_standalone_robust.yml";
+  std::ofstream file(filename);
+  file << "\n";
+  file << "  # This is a comment\n";
+  file << "start_time   :   \"19680606 060000\"   # End of line comment\n";
+  file << "\n";
+  file << "end_time : \"19680606 180000\"\n";
+  file.close();
+
+  const auto config = loadStandAloneConfig(filename);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->startTime.ymd, 19680606);
+  EXPECT_NEAR(config->startTime.hms, 60000.0, 1e-6);
+  EXPECT_EQ(config->endTime.ymd, 19680606);
+  EXPECT_NEAR(config->endTime.hms, 180000.0, 1e-6);
+
+  std::remove(filename.c_str());
 }

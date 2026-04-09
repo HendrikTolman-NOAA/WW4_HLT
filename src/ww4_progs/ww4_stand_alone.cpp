@@ -53,6 +53,9 @@ int main(int argc, char **argv) {
                                      "Could not load stand-alone configuration",
                                      __FILE__, __LINE__);
     }
+
+    ww4_utils::reportStandAloneConfig(*config, std::cout);
+
     //
     // 0.2 MPI initialization (if applicable) -------------------------------
     //

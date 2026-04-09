@@ -21,6 +21,7 @@
 #define WW4_UTILS_WW4_STAND_ALONE_CONFIG_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include <iostream>
 #include <optional>
 #include <string_view>
 
@@ -60,6 +61,17 @@ std::optional<DateTime> parseDateTimeString(std::string_view s);
  */
 std::optional<StandAloneConfig>
 loadStandAloneConfig(std::string_view filename) noexcept;
+
+/**
+ * @brief Reports the stand-alone configuration to the provided output stream.
+ * @param config The StandAloneConfig structure to report.
+ * @param os The output stream to write to (default: std::cout).
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-09
+ */
+void reportStandAloneConfig(const StandAloneConfig &config,
+                            std::ostream &os = std::cout);
 
 } // namespace ww4_utils
 
