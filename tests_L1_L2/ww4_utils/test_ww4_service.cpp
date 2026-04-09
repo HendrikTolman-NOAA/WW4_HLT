@@ -16,8 +16,8 @@
  */
 
 #include "ww4_utils/ww4_service.hpp"
-#include <gtest/gtest.h>
 #include <cmath>
+#include <gtest/gtest.h>
 
 namespace ww4_utils {
 namespace constants {
