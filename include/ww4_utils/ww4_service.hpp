@@ -16,7 +16,7 @@
 #ifndef WW4_UTILS_WW4_SERVICE_HPP
 #define WW4_UTILS_WW4_SERVICE_HPP
 
-#include <cmath>
+#include <span>
 
 namespace ww4_utils {
 
@@ -89,6 +89,55 @@ constexpr double EXPMAX = 20.0;
 
 /** @brief External constants defined in source file. */
 extern const double SQRTG;
+
+/** @brief Size of the friction factor table. */
+constexpr int SIZEFWTABLE = 300;
+
+/**
+ * @brief Estimate friction coefficients in oscillatory boundary layers
+ *        using tabulation on Kelvin functions.
+ * @details Converted from WW3 routine TABU_FW.
+ *          Original author in WW3: F. Ardhuin.
+ * @param fwTable Array to store the friction factor table.
+ * @param delab Output parameter for the log10 increment.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-09
+ */
+void tabuFw(std::span<double, SIZEFWTABLE + 1> fwTable, double &delab) noexcept;
+
+/**
+ * @brief Bessel functions K0 and K1 for complex arguments.
+ * @details Computes real and imaginary parts of exp(x)*K0 and exp(x)*K1.
+ *          Converted from WW3 routine KZEONE.
+ *          Original author in WW3: N/A (ACM).
+ * @param x Real part of argument.
+ * @param y Imaginary part of argument.
+ * @param re0 Real part of exp(x)*K0.
+ * @param im0 Imaginary part of exp(x)*K0.
+ * @param re1 Real part of exp(x)*K1.
+ * @param im1 Imaginary part of exp(x)*K1.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-09
+ */
+void kzeone(double x, double y, double &re0, double &im0, double &re1,
+            double &im1) noexcept;
+
+/**
+ * @brief Computes the values of the zeroth order Kelvin function Ker and Kei.
+ * @details These functions are used to determine the friction factor
+ *          fw as a function of the bottom roughness length assuming a linear
+ *          profile of eddy viscosity. Converted from WW3 routine KERKEI.
+ *          Original author in WW3: N/A.
+ * @param x Input value.
+ * @param ker Real part of the Kelvin function.
+ * @param kei Imaginary part of the Kelvin function.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-09
+ */
+void kerkei(double x, double &ker, double &kei) noexcept;
 
 } // namespace constants
 
