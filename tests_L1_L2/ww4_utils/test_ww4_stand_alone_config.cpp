@@ -13,7 +13,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last Update, 2026-04-02
+ * @date Last Update, 2026-04-08
  */
 
 #include "ww4_utils/ww4_stand_alone_config.hpp"
@@ -38,6 +38,70 @@ TEST(StandAloneConfigTest, ValidConfig) {
   EXPECT_NEAR(config->startTime.hms, 60000.0, 1e-6);
   EXPECT_EQ(config->endTime.ymd, 19680606);
   EXPECT_NEAR(config->endTime.hms, 180000.0, 1e-6);
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify handling of empty date-time values.
+ */
+TEST(StandAloneConfigTest, EmptyDateTime) {
+  const std::string filename = "test_empty_dt.yml";
+  std::ofstream file(filename);
+  file << "start_time: \"\"\n";
+  file << "end_time: \"19680606 180000\"\n";
+  file.close();
+
+  const auto config = loadStandAloneConfig(filename);
+  EXPECT_FALSE(config.has_value());
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify handling of short date-time values.
+ */
+TEST(StandAloneConfigTest, ShortDateTime) {
+  const std::string filename = "test_short_dt.yml";
+  std::ofstream file(filename);
+  file << "start_time: \"19680606\"\n";
+  file << "end_time: \"19680606 180000\"\n";
+  file.close();
+
+  const auto config = loadStandAloneConfig(filename);
+  EXPECT_FALSE(config.has_value());
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify handling of non-numeric date-time parts.
+ */
+TEST(StandAloneConfigTest, NonNumericDateTime) {
+  const std::string filename = "test_non_numeric_dt.yml";
+  std::ofstream file(filename);
+  file << "start_time: \"ABCDEFGH 060000\"\n";
+  file << "end_time: \"19680606 180000\"\n";
+  file.close();
+
+  const auto config = loadStandAloneConfig(filename);
+  EXPECT_FALSE(config.has_value());
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify handling of non-numeric time part.
+ */
+TEST(StandAloneConfigTest, NonNumericTimePart) {
+  const std::string filename = "test_non_numeric_time.yml";
+  std::ofstream file(filename);
+  file << "start_time: \"19680606 ABCDEF\"\n";
+  file << "end_time: \"19680606 180000\"\n";
+  file.close();
+
+  const auto config = loadStandAloneConfig(filename);
+  EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
 }

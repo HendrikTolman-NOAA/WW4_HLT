@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last Update, 2026-04-07
+ * @date Last Update, 2026-04-08
  */
 
 #include "ww4_utils/ww4_std_out.hpp"
@@ -91,6 +91,21 @@ TEST(StdOutTest, WriteExtcdeOutputOnlyMessage) {
 
   EXPECT_NE(output.find("WW4 ERROR: Simple error"), std::string::npos);
   EXPECT_EQ(output.find("FILE="), std::string::npos);
+}
+
+/**
+ * @test Verify extcde performs program stop with correct exit code and output.
+ */
+TEST(StdOutTest, ExtcdeTermination) {
+  const int expectedExitCode = 1;
+  const std::string errorMsg = "Fatal program error";
+
+  // Use EXPECT_EXIT to verify that extcde calls std::exit with the correct code
+  // and prints the expected message to stderr (default for extcde).
+  EXPECT_EXIT(
+      extcde(expectedExitCode, std::cerr, errorMsg, "test.cpp", 123),
+      ::testing::ExitedWithCode(expectedExitCode),
+      "WW4 ERROR: Fatal program error.*WW4 ERROR: FILE=test.cpp LINE=123");
 }
 
 int main(int argc, char **argv) {
