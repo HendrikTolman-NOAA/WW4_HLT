@@ -87,30 +87,48 @@ constexpr double ABMAX = 8.0;
 } // namespace constants
 
 /**
- * @class ww4_Service
- * @brief Service class providing utility mathematical routines.
- * @details This class contains ported routines from WAVEWATCH III (WW3).
+ * @namespace ww4_service
+ * @brief Namespace providing utility mathematical routines.
+ * @details This namespace contains ported routines from WAVEWATCH III (WW3).
  */
-class ww4_Service {
-public:
-  /**
-   * @brief Calculate 5-parameter JONSWAP spectrum.
-   * @details Ported from WW3 routine EJ5P in w3srcemd.f90.
-   *          Original authors in WW3: G. Ph. van Vledder.
-   * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
-   * @author Contributors: Jules (Agentic AI)
-   * @date Initial, 2026-04-10
-   * @param f Frequency (Hz).
-   * @param fp Peak frequency (Hz).
-   * @param alpha Phillip's constant.
-   * @param gamma Peak enhancement factor.
-   * @param siga Sigma_a (for f <= fp).
-   * @param sigb Sigma_b (for f > fp).
-   * @return Spectral density E(f).
-   */
-  static double JONSWAP_5p(double f, double fp, double alpha, double gamma,
-                           double siga, double sigb);
-};
+namespace ww4_service {
+
+/**
+ * @brief Calculate 5-parameter JONSWAP spectrum.
+ * @details Ported from WW3 routine EJ5P in w3srcemd.f90.
+ *          Original authors in WW3: G. Ph. van Vledder.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-10
+ * @param f Frequency (Hz).
+ * @param fp Peak frequency (Hz).
+ * @param alpha Phillip's constant.
+ * @param gamma Peak enhancement factor.
+ * @param siga Sigma_a (for f <= fp).
+ * @param sigb Sigma_b (for f > fp).
+ * @return Spectral density E(f).
+ */
+double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
+                  double sigb);
+
+/**
+ * @brief Calculate the haversine distance between two points on a sphere.
+ * @details Ported from WW3 routine DIST_HAVERSINE in w3servmd.F90.
+ *          Method: R.W. Sinnott, "Virtues of the Haversine",
+ *                  Sky and Telescope, vol. 68, no. 2, 1984, p. 159.
+ *          Original author in WW3: D. A. Honegger (USACE/ERDC).
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-10
+ * @param lon1 Longitude of 1st point (degrees).
+ * @param lat1 Latitude of 1st point (degrees).
+ * @param lon2 Longitude of 2nd point (degrees).
+ * @param lat2 Latitude of 2nd point (degrees).
+ * @return Spherical distance (radians).
+ */
+double dist_Haversine(double lon1, double lat1, double lon2, double lat2);
+
+} // namespace ww4_service
 
 } // namespace ww4_utils
 
