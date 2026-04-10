@@ -11,7 +11,7 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: G. Ph. van Vledder
+ * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
  */
 
@@ -29,7 +29,7 @@ namespace ww4_utils {
  *          (WW3) source file constants.F90.
  *          Original author in WW3: Hendrik L. Tolman.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: G. Ph. van Vledder
+ * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
  */
 namespace constants {
@@ -96,7 +96,7 @@ public:
    * @details Ported from WW3 routine EJ5P in w3srcemd.f90.
    *          Original authors in WW3: G. Ph. van Vledder.
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
-   * @author Contributors: G. Ph. van Vledder
+   * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-04-10
    * @param f Frequency (Hz).
    * @param fp Peak frequency (Hz).

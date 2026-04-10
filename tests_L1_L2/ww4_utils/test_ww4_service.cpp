@@ -23,7 +23,7 @@ namespace testing {
  * @test VerifyMathematicalConstants
  * @brief Ensures all mathematical constants are correctly defined.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: G. Ph. van Vledder
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyMathematicalConstants) {
   EXPECT_DOUBLE_EQ(PI, 3.14159265358979323846);
@@ -39,7 +39,7 @@ TEST(WW4ServiceTest, VerifyMathematicalConstants) {
  * @test VerifyPhysicalConstants
  * @brief Ensures all physical constants match WW3 values.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: G. Ph. van Vledder
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyPhysicalConstants) {
   EXPECT_DOUBLE_EQ(GRAV, 9.806);
@@ -56,7 +56,7 @@ TEST(WW4ServiceTest, VerifyPhysicalConstants) {
  * @test VerifyDerivedConstants
  * @brief Ensures derived constants are correctly calculated.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: G. Ph. van Vledder
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyDerivedConstants) {
   EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * TPI * TPI * TPI));
@@ -67,7 +67,7 @@ TEST(WW4ServiceTest, VerifyDerivedConstants) {
  * @test VerifyModelConstants
  * @brief Ensures model-specific constants are correctly defined.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: G. Ph. van Vledder
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(UNDEF, -999.9);
@@ -79,7 +79,7 @@ TEST(WW4ServiceTest, VerifyModelConstants) {
  * @test VerifyJonswap5p
  * @brief Ensures the 5-parameter JONSWAP spectrum is correctly calculated.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: G. Ph. van Vledder
+ * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyJonswap5p) {
   const double f = 0.1;
