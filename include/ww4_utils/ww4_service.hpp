@@ -18,6 +18,8 @@
 #ifndef WW4_UTILS_WW4_SERVICE_HPP
 #define WW4_UTILS_WW4_SERVICE_HPP
 
+#include <cmath>
+
 namespace ww4_utils {
 
 /**
@@ -29,7 +31,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
-*/
+ */
 namespace constants {
 
 // Mathematical constants
@@ -72,7 +74,41 @@ constexpr double G2PI3I = 1.0 / (GRAV * GRAV * TPI * TPI * TPI);
 /** @brief Inverse of gravity * 2 * Pi. */
 constexpr double G1PI1I = 1.0 / (GRAV * TPI);
 
+// Model constants
+/** @brief Undefined value. */
+constexpr double UNDEF = -999.9;
+/** @brief Minimum value for spectral density (log10). */
+constexpr double ABMIN = -1.0;
+/** @brief Maximum value for spectral density (log10). */
+constexpr double ABMAX = 8.0;
+
 } // namespace constants
+
+/**
+ * @class ww4_Service
+ * @brief Service class providing utility mathematical routines.
+ * @details This class contains ported routines from WAVEWATCH III (WW3).
+ */
+class ww4_Service {
+public:
+  /**
+   * @brief Calculate 5-parameter JONSWAP spectrum.
+   * @details Ported from WW3 routine EJ5P in w3srcemd.f90.
+   *          Original authors in WW3: G. Ph. van Vledder.
+   * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+   * @author Contributors: Jules (Agentic AI)
+   * @date Initial, 2026-04-10
+   * @param f Frequency (Hz).
+   * @param fp Peak frequency (Hz).
+   * @param alpha Phillip's constant.
+   * @param gamma Peak enhancement factor.
+   * @param siga Sigma_a (for f <= fp).
+   * @param sigb Sigma_b (for f > fp).
+   * @return Spectral density E(f).
+   */
+  static double JONSWAP_5p(double f, double fp, double alpha, double gamma,
+                           double siga, double sigb);
+};
 
 } // namespace ww4_utils
 

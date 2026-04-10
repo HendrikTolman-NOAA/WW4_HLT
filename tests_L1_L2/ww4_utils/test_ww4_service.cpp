@@ -9,7 +9,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @date Initial, 2026-04-09
+ * @date Initial, 2026-04-10
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -73,6 +73,40 @@ TEST(WW4ServiceTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(UNDEF, -999.9);
   EXPECT_DOUBLE_EQ(ABMIN, -1.0);
   EXPECT_DOUBLE_EQ(ABMAX, 8.0);
+}
+
+/**
+ * @test VerifyJonswap5p
+ * @brief Ensures the 5-parameter JONSWAP spectrum is correctly calculated.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+TEST(WW4ServiceTest, VerifyJonswap5p) {
+  const double f = 0.1;
+  const double fp = 0.1;
+  const double alpha = 0.0081;
+  const double gamma = 3.3;
+  const double siga = 0.07;
+  const double sigb = 0.09;
+
+  // At f = fp, the formula simplifies:
+  // r = exp(-0.5 * ((0.1 - 0.1) / (0.07 * 0.1))^2) = exp(0) = 1.0
+  // f_ratio = 0.1 / 0.1 = 1.0
+  // E(f) = 0.06175 * 0.0081 * (0.1)^-5 * exp(-1.25 * (1.0)^4) * (3.3)^1.0
+  // E(f) = 0.06175 * 0.0081 * 100000 * exp(-1.25) * 3.3
+  // E(f) = 50.0175 * 0.28650479686 * 3.3
+  // E(f) = 47.28913...
+
+  double expected = 0.06175 * alpha * std::pow(f, -5) * std::exp(-1.25) * gamma;
+  double result = ww4_Service::JONSWAP_5p(f, fp, alpha, gamma, siga, sigb);
+
+  EXPECT_NEAR(result, expected, 1e-7);
+
+  // Test zero/negative frequency
+  EXPECT_DOUBLE_EQ(ww4_Service::JONSWAP_5p(0.0, fp, alpha, gamma, siga, sigb),
+                   0.0);
+  EXPECT_DOUBLE_EQ(ww4_Service::JONSWAP_5p(-0.1, fp, alpha, gamma, siga, sigb),
+                   0.0);
 }
 
 } // namespace testing
