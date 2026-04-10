@@ -27,8 +27,10 @@ namespace constants {
 
 } // namespace constants
 
-double ww4_Service::JONSWAP_5p(double f, double fp, double alpha, double gamma,
-                               double siga, double sigb) {
+namespace ww4_service {
+
+double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
+                  double sigb) {
   if (f <= 0.0 || fp <= 0.0) {
     return 0.0;
   }
@@ -45,8 +47,7 @@ double ww4_Service::JONSWAP_5p(double f, double fp, double alpha, double gamma,
          std::exp(-1.25 * std::pow(f_ratio, 4)) * std::pow(gamma, r);
 }
 
-double ww4_Service::dist_Haversine(double lon1, double lat1, double lon2,
-                                   double lat2) {
+double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
   // Compute differences in latitude and longitude in radians
   double dlat = (lat2 - lat1) * constants::DERA;
   double dlon = (lon2 - lon1) * constants::DERA;
@@ -63,5 +64,7 @@ double ww4_Service::dist_Haversine(double lon1, double lat1, double lon2,
   // Compute the spherical distance in radians
   return c;
 }
+
+} // namespace ww4_service
 
 } // namespace ww4_utils

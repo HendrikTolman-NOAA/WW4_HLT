@@ -98,14 +98,14 @@ TEST(WW4ServiceTest, VerifyJonswap5p) {
   // E(f) = 47.28913...
 
   double expected = 0.06175 * alpha * std::pow(f, -5) * std::exp(-1.25) * gamma;
-  double result = ww4_Service::JONSWAP_5p(f, fp, alpha, gamma, siga, sigb);
+  double result = ww4_service::JONSWAP_5p(f, fp, alpha, gamma, siga, sigb);
 
   EXPECT_NEAR(result, expected, 1e-7);
 
   // Test zero/negative frequency
-  EXPECT_DOUBLE_EQ(ww4_Service::JONSWAP_5p(0.0, fp, alpha, gamma, siga, sigb),
+  EXPECT_DOUBLE_EQ(ww4_service::JONSWAP_5p(0.0, fp, alpha, gamma, siga, sigb),
                    0.0);
-  EXPECT_DOUBLE_EQ(ww4_Service::JONSWAP_5p(-0.1, fp, alpha, gamma, siga, sigb),
+  EXPECT_DOUBLE_EQ(ww4_service::JONSWAP_5p(-0.1, fp, alpha, gamma, siga, sigb),
                    0.0);
 }
 
@@ -117,19 +117,19 @@ TEST(WW4ServiceTest, VerifyJonswap5p) {
  */
 TEST(WW4ServiceTest, VerifyDistHaversine) {
   // Test distance between same points
-  EXPECT_NEAR(ww4_Service::dist_Haversine(10.0, 20.0, 10.0, 20.0), 0.0, 1e-9);
+  EXPECT_NEAR(ww4_service::dist_Haversine(10.0, 20.0, 10.0, 20.0), 0.0, 1e-9);
 
   // Test distance of 1 degree along the equator
   // lon1=0, lat1=0, lon2=1, lat2=0 -> distance should be 1 degree in radians
-  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 0.0, 1.0, 0.0), DERA, 1e-9);
+  EXPECT_NEAR(ww4_service::dist_Haversine(0.0, 0.0, 1.0, 0.0), DERA, 1e-9);
 
   // Test distance of 1 degree along a meridian
   // lon1=0, lat1=0, lon2=0, lat2=1 -> distance should be 1 degree in radians
-  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 0.0, 0.0, 1.0), DERA, 1e-9);
+  EXPECT_NEAR(ww4_service::dist_Haversine(0.0, 0.0, 0.0, 1.0), DERA, 1e-9);
 
   // Test distance of 180 degrees (antipodal points)
   // lon1=0, lat1=0, lon2=180, lat2=0 -> distance should be PI radians
-  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 0.0, 180.0, 0.0), PI, 1e-9);
+  EXPECT_NEAR(ww4_service::dist_Haversine(0.0, 0.0, 180.0, 0.0), PI, 1e-9);
 
   // Test distance between (0, 45) and (1, 45)
   // dlat = 0
@@ -141,7 +141,7 @@ TEST(WW4ServiceTest, VerifyDistHaversine) {
       std::pow(std::cos(lat_rad), 2) * std::pow(std::sin(dlon_rad / 2.0), 2);
   double expected_c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(1.0 - a));
 
-  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 45.0, 1.0, 45.0), expected_c,
+  EXPECT_NEAR(ww4_service::dist_Haversine(0.0, 45.0, 1.0, 45.0), expected_c,
               1e-9);
 }
 
