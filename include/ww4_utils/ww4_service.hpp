@@ -5,7 +5,7 @@
  *
  * @file ww4_service.hpp
  * @brief Mathematical, physical, and model constants and service routines.
- * @details This header defines the Ww4Service class, providing core constants
+ * @details This header defines the ww4Service class, providing core constants
  *          and utility routines ported from WAVEWATCH III.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -23,13 +23,13 @@
 namespace ww4_utils {
 
 /**
- * @class Ww4Service
+ * @class ww4Service
  * @brief Service utility class containing constants and general routines.
  * @details Ported from WAVEWATCH III constants.F90 and w3servmd.F90.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class Ww4Service {
+class ww4Service {
 public:
   // Mathematical constants
   static constexpr double PI = 3.14159265358979323846;

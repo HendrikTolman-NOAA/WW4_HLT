@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file test_ww4_service.cpp
- * @brief Unit tests for Ww4Service.
+ * @brief Unit tests for ww4Service.
  * @details This file contains unit tests for core constants and the
- *          JONSWAP_5p static method of the Ww4Service class.
+ *          JONSWAP_5p static method of the ww4Service class.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -27,22 +27,22 @@ namespace ww4_utils {
 /**
  * @test Verify mathematical and physical constants.
  */
-TEST(Ww4ServiceTest, ConstantsVerification) {
-  EXPECT_NEAR(Ww4Service::PI, 3.14159265358979323846, 1.0e-15);
-  EXPECT_NEAR(Ww4Service::TPI, 2.0 * Ww4Service::PI, 1.0e-15);
-  EXPECT_NEAR(Ww4Service::GRAV, 9.806, 1.0e-10);
-  EXPECT_NEAR(Ww4Service::DWAT, 1000.0, 1.0e-10);
-  EXPECT_NEAR(Ww4Service::DAIR, 1.225, 1.0e-10);
-  EXPECT_NEAR(Ww4Service::UNDEF, -999.9, 1.0e-10);
+TEST(ww4ServiceTest, ConstantsVerification) {
+  EXPECT_NEAR(ww4Service::PI, 3.14159265358979323846, 1.0e-15);
+  EXPECT_NEAR(ww4Service::TPI, 2.0 * ww4Service::PI, 1.0e-15);
+  EXPECT_NEAR(ww4Service::GRAV, 9.806, 1.0e-10);
+  EXPECT_NEAR(ww4Service::DWAT, 1000.0, 1.0e-10);
+  EXPECT_NEAR(ww4Service::DAIR, 1.225, 1.0e-10);
+  EXPECT_NEAR(ww4Service::UNDEF, -999.9, 1.0e-10);
 }
 
 /**
  * @test Verify the JONSWAP_5p JONSWAP spectrum routine.
  */
-TEST(Ww4ServiceTest, JONSWAP_5pVerification) {
+TEST(ww4ServiceTest, JONSWAP_5pVerification) {
   // Test case 1: Zero frequency should return zero.
-  EXPECT_DOUBLE_EQ(Ww4Service::JONSWAP_5p(0.0, 1.0, 0.1, 1.0, 0.07, 0.09), 0.0);
-  EXPECT_DOUBLE_EQ(Ww4Service::JONSWAP_5p(1.0e-5, 1.0, 0.1, 1.0, 0.07, 0.09),
+  EXPECT_DOUBLE_EQ(ww4Service::JONSWAP_5p(0.0, 1.0, 0.1, 1.0, 0.07, 0.09), 0.0);
+  EXPECT_DOUBLE_EQ(ww4Service::JONSWAP_5p(1.0e-5, 1.0, 0.1, 1.0, 0.07, 0.09),
                    0.0);
 
   // Test case 2: Typical JONSWAP parameters.
@@ -61,11 +61,11 @@ TEST(Ww4ServiceTest, JONSWAP_5pVerification) {
   // 165.05775 * 0.28650479... approx 47.289...
 
   const double expected = 50.0175 * 3.3 * std::exp(-1.25);
-  const double result = Ww4Service::JONSWAP_5p(f, alfa, fp, yln, siga, sigb);
+  const double result = ww4Service::JONSWAP_5p(f, alfa, fp, yln, siga, sigb);
   EXPECT_NEAR(result, expected, 1.0e-7);
 
   // Test case 3: Low overshoot (PM-like)
-  const double result_pm = Ww4Service::JONSWAP_5p(f, alfa, fp, 0.0, siga, sigb);
+  const double result_pm = ww4Service::JONSWAP_5p(f, alfa, fp, 0.0, siga, sigb);
   EXPECT_NEAR(result_pm, 50.0175 * std::exp(-1.25), 1.0e-7);
 }
 

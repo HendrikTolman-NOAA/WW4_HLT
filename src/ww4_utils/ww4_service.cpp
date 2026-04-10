@@ -5,7 +5,7 @@
  *
  * @file ww4_service.cpp
  * @brief Implementation of service routines.
- * @details This file implements the utility routines for Ww4Service,
+ * @details This file implements the utility routines for ww4Service,
  *          providing core algorithms ported from WAVEWATCH III.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -25,7 +25,7 @@
 
 namespace ww4_utils {
 
-double Ww4Service::JONSWAP_5p(double f, double alfa, double fp, double yln,
+double ww4Service::JONSWAP_5p(double f, double alfa, double fp, double yln,
                               double siga, double sigb) noexcept {
   /**
    * @details Conversion of EJ5P from WW3 w3servmd.F90.
