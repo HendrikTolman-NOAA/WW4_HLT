@@ -114,6 +114,8 @@ public:
   /**
    * @brief Calculate the haversine distance between two points on a sphere.
    * @details Ported from WW3 routine DIST_HAVERSINE in w3servmd.F90.
+   *          Method: R.W. Sinnott, "Virtues of the Haversine",
+   *                  Sky and Telescope, vol. 68, no. 2, 1984, p. 159.
    *          Original author in WW3: D. A. Honegger (USACE/ERDC).
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
