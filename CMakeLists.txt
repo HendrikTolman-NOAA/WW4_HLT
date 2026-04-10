@@ -13,7 +13,7 @@
 # @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
 # @author Contributors: Jules (Agentic AI)
 # @date Initial, 2026-03-20
-# @date Last Update, 2026-03-30
+# @date Last Update, 2026-04-09
 
 cmake_minimum_required(VERSION 3.20)
 project(WW4_Utils VERSION 1.0.0 LANGUAGES CXX)
@@ -24,16 +24,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Set the output directory for executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/exe)
-
-# Strict warnings and sanitizers (if not overridden by CMAKE_CXX_FLAGS)
-if(NOT CMAKE_CXX_FLAGS)
-    if(MSVC)
-        add_compile_options(/W4 /WX)
-    else()
-        add_compile_options(-Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined)
-        add_link_options(-fsanitize=address,undefined)
-    endif()
-endif()
 
 # Include directories
 include_directories(include)
@@ -52,18 +42,42 @@ FetchContent_MakeAvailable(googletest)
 add_library(ww4_utils
     src/ww4_utils/time_management.cpp
     src/ww4_utils/memory_utils.cpp
+    src/ww4_utils/ww4_service.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
+
+# Strict warnings and sanitizers for local targets
+set(WW4_STRICT_FLAGS "")
+set(WW4_LINK_FLAGS "")
+if(MSVC)
+    set(WW4_STRICT_FLAGS /W4 /WX)
+else()
+    set(WW4_STRICT_FLAGS -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined)
+    set(WW4_LINK_FLAGS -fsanitize=address,undefined)
+endif()
+
+target_compile_options(ww4_utils PRIVATE ${WW4_STRICT_FLAGS})
+target_link_options(ww4_utils PRIVATE ${WW4_LINK_FLAGS})
 
 # Tests
 enable_testing()
 
 add_executable(test_time_management tests_L1_L2/ww4_utils/test_time_management.cpp)
 target_link_libraries(test_time_management PRIVATE ww4_utils GTest::gtest_main)
+target_compile_options(test_time_management PRIVATE ${WW4_STRICT_FLAGS})
+target_link_options(test_time_management PRIVATE ${WW4_LINK_FLAGS})
 
 add_executable(test_memory_utils tests_L1_L2/ww4_utils/test_memory_utils.cpp)
 target_link_libraries(test_memory_utils PRIVATE ww4_utils GTest::gtest_main)
+target_compile_options(test_memory_utils PRIVATE ${WW4_STRICT_FLAGS})
+target_link_options(test_memory_utils PRIVATE ${WW4_LINK_FLAGS})
+
+add_executable(test_ww4_service tests_L1_L2/ww4_utils/test_ww4_service.cpp)
+target_link_libraries(test_ww4_service PRIVATE ww4_utils GTest::gtest_main)
+target_compile_options(test_ww4_service PRIVATE ${WW4_STRICT_FLAGS})
+target_link_options(test_ww4_service PRIVATE ${WW4_LINK_FLAGS})
 
 include(GoogleTest)
 gtest_discover_tests(test_time_management)
 gtest_discover_tests(test_memory_utils)
+gtest_discover_tests(test_ww4_service)
