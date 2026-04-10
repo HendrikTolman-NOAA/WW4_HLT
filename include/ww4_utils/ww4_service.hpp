@@ -10,7 +10,9 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @date Initial, 2026-04-09
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-10
  */
 
 #ifndef WW4_UTILS_WW4_SERVICE_HPP
@@ -26,7 +28,8 @@ namespace ww4_utils {
  *          Original author in WW3: Hendrik L. Tolman.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- */
+ * @date Initial, 2026-04-10
+*/
 namespace constants {
 
 // Mathematical constants
@@ -68,14 +71,6 @@ constexpr double RADIUS = 4.0e7 / TPI;
 constexpr double G2PI3I = 1.0 / (GRAV * GRAV * TPI * TPI * TPI);
 /** @brief Inverse of gravity * 2 * Pi. */
 constexpr double G1PI1I = 1.0 / (GRAV * TPI);
-
-// Model constants
-/** @brief Value for undefined variable in output. */
-constexpr double UNDEF = -999.9;
-/** @brief Minimum value for friction factor table argument. */
-constexpr double ABMIN = -1.0;
-/** @brief Maximum value for friction factor table argument. */
-constexpr double ABMAX = 8.0;
 
 } // namespace constants
 
