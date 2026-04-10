@@ -60,8 +60,8 @@ double ww4_Service::dist_Haversine(double lon1, double lat1, double lon2,
   // Compute the angular distance (c), ensuring no precision issues
   double c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(std::max(0.0, 1.0 - a)));
 
-  // Compute the spherical distance in degrees
-  return constants::RADE * c;
+  // Compute the spherical distance in radians
+  return c;
 }
 
 } // namespace ww4_utils

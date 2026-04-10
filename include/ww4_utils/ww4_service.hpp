@@ -122,7 +122,7 @@ public:
    * @param lat1 Latitude of 1st point (degrees).
    * @param lon2 Longitude of 2nd point (degrees).
    * @param lat2 Latitude of 2nd point (degrees).
-   * @return Spherical distance (degrees).
+   * @return Spherical distance (radians).
    */
   static double dist_Haversine(double lon1, double lat1, double lon2,
                                double lat2);
