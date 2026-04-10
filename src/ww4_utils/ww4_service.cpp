@@ -7,7 +7,8 @@
  * @brief Common mathematical and physical constants for WAVEWATCH IV
  *        and various service routines.
  * @details This source file holds subroutine codes by not the constants
- *          from constants.F90 as they are  implemented as constexpr in the header.
+ *          from constants.F90 as they are  implemented as constexpr in the
+ * header.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -51,10 +52,10 @@ double ww4_Service::dist_Haversine(double lon1, double lat1, double lon2,
   double dlon = (lon2 - lon1) * constants::DERA;
 
   // Compute the haversine of the central angle
-  double a = std::pow(std::sin(dlat / 2.0), 2) +
-             std::cos(lat1 * constants::DERA) *
-                 std::cos(lat2 * constants::DERA) *
-                 std::pow(std::sin(dlon / 2.0), 2);
+  double a =
+      std::pow(std::sin(dlat / 2.0), 2) + std::cos(lat1 * constants::DERA) *
+                                              std::cos(lat2 * constants::DERA) *
+                                              std::pow(std::sin(dlon / 2.0), 2);
 
   // Compute the angular distance (c), ensuring no precision issues
   double c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(std::max(0.0, 1.0 - a)));

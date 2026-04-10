@@ -137,7 +137,8 @@ TEST(WW4ServiceTest, VerifyDistHaversine) {
   // c = 2 * atan2(sqrt(a), sqrt(1-a))
   double dlon_rad = 1.0 * DERA;
   double lat_rad = 45.0 * DERA;
-  double a = std::pow(std::cos(lat_rad), 2) * std::pow(std::sin(dlon_rad / 2.0), 2);
+  double a =
+      std::pow(std::cos(lat_rad), 2) * std::pow(std::sin(dlon_rad / 2.0), 2);
   double expected_c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(1.0 - a));
   double expected_dist = RADE * expected_c;
 
