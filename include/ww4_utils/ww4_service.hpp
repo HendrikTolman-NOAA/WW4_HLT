@@ -22,7 +22,7 @@ namespace ww4_utils {
  * @namespace constants
  * @brief Namespace containing all physical and mathematical constants.
  * @details This namespace contains constants converted from the WAVEWATCH III
- *          (WW3) source files constants.F90 and mod_constants.f90.
+ *          (WW3) source file constants.F90.
  *          Original author in WW3: Hendrik L. Tolman.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
@@ -44,8 +44,6 @@ constexpr double HPIINV = 1.0 / HPI;
 constexpr double RADE = 180.0 / PI;
 /** @brief Conversion factor from degrees to radians. */
 constexpr double DERA = PI / 180.0;
-/** @brief Square root of 2. */
-constexpr double SQRT2 = 1.414213562373095;
 
 // Physical constants
 /** @brief Acceleration of gravity (m/s^2). (constants.F90) */
@@ -70,8 +68,6 @@ constexpr double RADIUS = 4.0e7 / TPI;
 constexpr double G2PI3I = 1.0 / (GRAV * GRAV * TPI * TPI * TPI);
 /** @brief Inverse of gravity * 2 * Pi. */
 constexpr double G1PI1I = 1.0 / (GRAV * TPI);
-/** @brief Square of gravity. */
-constexpr double GSQ = GRAV * GRAV;
 
 // Model constants
 /** @brief Value for undefined variable in output. */
@@ -80,13 +76,6 @@ constexpr double UNDEF = -999.9;
 constexpr double ABMIN = -1.0;
 /** @brief Maximum value for friction factor table argument. */
 constexpr double ABMAX = 8.0;
-/** @brief Minimum argument for exp function to avoid underflow. */
-constexpr double EXPMIN = -20.0;
-/** @brief Maximum argument for exp function to avoid overflow. */
-constexpr double EXPMAX = 20.0;
-
-/** @brief External constants defined in source file. */
-extern const double SQRTG;
 
 } // namespace constants
 

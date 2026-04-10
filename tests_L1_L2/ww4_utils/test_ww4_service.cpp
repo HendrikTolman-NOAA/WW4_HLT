@@ -13,7 +13,6 @@
  */
 
 #include "ww4_utils/ww4_service.hpp"
-#include <cmath>
 #include <gtest/gtest.h>
 
 namespace ww4_utils {
@@ -34,7 +33,6 @@ TEST(WW4ServiceTest, VerifyMathematicalConstants) {
   EXPECT_DOUBLE_EQ(HPIINV, 1.0 / HPI);
   EXPECT_DOUBLE_EQ(RADE, 180.0 / PI);
   EXPECT_DOUBLE_EQ(DERA, PI / 180.0);
-  EXPECT_DOUBLE_EQ(SQRT2, 1.414213562373095);
 }
 
 /**
@@ -61,8 +59,6 @@ TEST(WW4ServiceTest, VerifyPhysicalConstants) {
  * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyDerivedConstants) {
-  EXPECT_NEAR(SQRTG, std::sqrt(9.806), 1e-15);
-  EXPECT_DOUBLE_EQ(GSQ, 9.806 * 9.806);
   EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * TPI * TPI * TPI));
   EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * TPI));
 }
@@ -77,8 +73,6 @@ TEST(WW4ServiceTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(UNDEF, -999.9);
   EXPECT_DOUBLE_EQ(ABMIN, -1.0);
   EXPECT_DOUBLE_EQ(ABMAX, 8.0);
-  EXPECT_DOUBLE_EQ(EXPMIN, -20.0);
-  EXPECT_DOUBLE_EQ(EXPMAX, 20.0);
 }
 
 } // namespace testing
