@@ -9,7 +9,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @date Initial, 2026-04-09
+ * @date Initial, 2026-04-10
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -23,7 +23,7 @@ namespace testing {
  * @test VerifyMathematicalConstants
  * @brief Ensures all mathematical constants are correctly defined.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: G. Ph. van Vledder
  */
 TEST(WW4ServiceTest, VerifyMathematicalConstants) {
   EXPECT_DOUBLE_EQ(PI, 3.14159265358979323846);
@@ -39,7 +39,7 @@ TEST(WW4ServiceTest, VerifyMathematicalConstants) {
  * @test VerifyPhysicalConstants
  * @brief Ensures all physical constants match WW3 values.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: G. Ph. van Vledder
  */
 TEST(WW4ServiceTest, VerifyPhysicalConstants) {
   EXPECT_DOUBLE_EQ(GRAV, 9.806);
@@ -56,7 +56,7 @@ TEST(WW4ServiceTest, VerifyPhysicalConstants) {
  * @test VerifyDerivedConstants
  * @brief Ensures derived constants are correctly calculated.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: G. Ph. van Vledder
  */
 TEST(WW4ServiceTest, VerifyDerivedConstants) {
   EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * TPI * TPI * TPI));
@@ -67,7 +67,7 @@ TEST(WW4ServiceTest, VerifyDerivedConstants) {
  * @test VerifyModelConstants
  * @brief Ensures model-specific constants are correctly defined.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: G. Ph. van Vledder
  */
 TEST(WW4ServiceTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(UNDEF, -999.9);
@@ -79,7 +79,7 @@ TEST(WW4ServiceTest, VerifyModelConstants) {
  * @test VerifyJonswap5p
  * @brief Ensures the 5-parameter JONSWAP spectrum is correctly calculated.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: G. Ph. van Vledder
  */
 TEST(WW4ServiceTest, VerifyJonswap5p) {
   const double f = 0.1;
@@ -98,14 +98,14 @@ TEST(WW4ServiceTest, VerifyJonswap5p) {
   // E(f) = 47.28913...
 
   double expected = 0.06175 * alpha * std::pow(f, -5) * std::exp(-1.25) * gamma;
-  double result = Ww4Service::JONSWAP_5p(f, fp, alpha, gamma, siga, sigb);
+  double result = ww4_Service::JONSWAP_5p(f, fp, alpha, gamma, siga, sigb);
 
   EXPECT_NEAR(result, expected, 1e-7);
 
   // Test zero/negative frequency
-  EXPECT_DOUBLE_EQ(Ww4Service::JONSWAP_5p(0.0, fp, alpha, gamma, siga, sigb),
+  EXPECT_DOUBLE_EQ(ww4_Service::JONSWAP_5p(0.0, fp, alpha, gamma, siga, sigb),
                    0.0);
-  EXPECT_DOUBLE_EQ(Ww4Service::JONSWAP_5p(-0.1, fp, alpha, gamma, siga, sigb),
+  EXPECT_DOUBLE_EQ(ww4_Service::JONSWAP_5p(-0.1, fp, alpha, gamma, siga, sigb),
                    0.0);
 }
 

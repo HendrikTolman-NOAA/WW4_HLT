@@ -11,8 +11,8 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-09
+ * @author Contributors: G. Ph. van Vledder
+ * @date Initial, 2026-04-10
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -25,13 +25,14 @@ namespace constants {
 
 } // namespace constants
 
-double Ww4Service::JONSWAP_5p(double f, double fp, double alpha, double gamma,
-                              double siga, double sigb) {
+double ww4_Service::JONSWAP_5p(double f, double fp, double alpha, double gamma,
+                               double siga, double sigb) {
   if (f <= 0.0 || fp <= 0.0) {
     return 0.0;
   }
 
-  // Physics factor approximating g^2 / (2 * PI)^4
+  // Physics factor approximating g^2 / (2 * PI)^4.
+  // Maintained as 0.06175 for numerical consistency with WW3.
   const double FACTOR = 0.06175;
 
   double sigma = (f <= fp) ? siga : sigb;

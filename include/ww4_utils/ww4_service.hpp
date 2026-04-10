@@ -11,8 +11,8 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-09
+ * @author Contributors: G. Ph. van Vledder
+ * @date Initial, 2026-04-10
  */
 
 #ifndef WW4_UTILS_WW4_SERVICE_HPP
@@ -29,8 +29,8 @@ namespace ww4_utils {
  *          (WW3) source file constants.F90.
  *          Original author in WW3: Hendrik L. Tolman.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-09
+ * @author Contributors: G. Ph. van Vledder
+ * @date Initial, 2026-04-10
  */
 namespace constants {
 
@@ -85,19 +85,19 @@ constexpr double ABMAX = 8.0;
 } // namespace constants
 
 /**
- * @class Ww4Service
+ * @class ww4_Service
  * @brief Service class providing utility mathematical routines.
  * @details This class contains ported routines from WAVEWATCH III (WW3).
  */
-class Ww4Service {
+class ww4_Service {
 public:
   /**
    * @brief Calculate 5-parameter JONSWAP spectrum.
    * @details Ported from WW3 routine EJ5P in w3srcemd.f90.
-   *          Original authors in WW3: Hendrik L. Tolman.
+   *          Original authors in WW3: G. Ph. van Vledder.
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
-   * @author Contributors: Jules (Agentic AI)
-   * @date Initial, 2026-04-09
+   * @author Contributors: G. Ph. van Vledder
+   * @date Initial, 2026-04-10
    * @param f Frequency (Hz).
    * @param fp Peak frequency (Hz).
    * @param alpha Phillip's constant.
