@@ -12,7 +12,7 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-10
+ * @date Initial, 2026-04-09
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -21,9 +21,25 @@ namespace ww4_utils {
 
 namespace constants {
 
-// This file is currently empty as all constants are constexpr in the header.
-// It is maintained for future additions that may require runtime calculation.
+// All constants are currently constexpr in the header.
 
 } // namespace constants
+
+double Ww4Service::JONSWAP_5p(double f, double fp, double alpha, double gamma,
+                              double siga, double sigb) {
+  if (f <= 0.0 || fp <= 0.0) {
+    return 0.0;
+  }
+
+  // Physics factor approximating g^2 / (2 * PI)^4
+  const double FACTOR = 0.06175;
+
+  double sigma = (f <= fp) ? siga : sigb;
+  double f_ratio = fp / f;
+  double r = std::exp(-0.5 * std::pow((f - fp) / (sigma * fp), 2));
+
+  return FACTOR * alpha * std::pow(f, -5) *
+         std::exp(-1.25 * std::pow(f_ratio, 4)) * std::pow(gamma, r);
+}
 
 } // namespace ww4_utils
