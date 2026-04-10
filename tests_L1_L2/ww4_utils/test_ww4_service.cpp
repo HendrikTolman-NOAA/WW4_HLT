@@ -145,6 +145,28 @@ TEST(WW4ServiceTest, VerifyDistHaversine) {
               1e-9);
 }
 
+/**
+ * @test VerifyDistOnSphere
+ * @brief Ensures the spherical distance in meters is correctly calculated.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+TEST(WW4ServiceTest, VerifyDistOnSphere) {
+  // Test distance between same points
+  EXPECT_NEAR(ww4_service::dist_on_sphere(10.0, 20.0, 10.0, 20.0), 0.0, 1e-3);
+
+  // Test distance of 1 degree along the equator
+  // 1 degree in radians * RADIUS should be the distance in meters
+  double expected_m = DERA * RADIUS;
+  EXPECT_NEAR(ww4_service::dist_on_sphere(0.0, 0.0, 1.0, 0.0), expected_m, 1e-3);
+
+  // According to definition of RADIUS = 4.0e7 / TPI,
+  // 360 degrees (TPI radians) = 4.0e7 meters.
+  // 1 degree = 4.0e7 / 360 = 111111.111... meters.
+  EXPECT_NEAR(ww4_service::dist_on_sphere(0.0, 0.0, 1.0, 0.0), 4.0e7 / 360.0,
+              1e-3);
+}
+
 } // namespace testing
 } // namespace constants
 } // namespace ww4_utils
