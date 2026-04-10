@@ -96,7 +96,7 @@ namespace ww4_service {
 /**
  * @brief Calculate 5-parameter JONSWAP spectrum.
  * @details Ported from WW3 routine EJ5P in w3srcemd.f90.
- *          Original authors in WW3: G. Ph. van Vledder.
+ *          Original author in WW3: G. Ph. van Vledder.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
@@ -127,6 +127,22 @@ double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
  * @return Spherical distance (radians).
  */
 double dist_Haversine(double lon1, double lat1, double lon2, double lat2);
+
+/**
+ * @brief Calculate the spherical distance between two points in meters.
+ * @details Ported from WW3 routine DIST_SPHERE in w3srcemd.f90.
+ *          Uses the haversine formula for computation.
+ *          Original author in WW3: Fabrice Ardhuin.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-10
+ * @param lon1 Longitude of 1st point (degrees).
+ * @param lat1 Latitude of 1st point (degrees).
+ * @param lon2 Longitude of 2nd point (degrees).
+ * @param lat2 Latitude of 2nd point (degrees).
+ * @return Spherical distance (meters).
+ */
+double dist_on_sphere(double lon1, double lat1, double lon2, double lat2);
 
 } // namespace ww4_service
 

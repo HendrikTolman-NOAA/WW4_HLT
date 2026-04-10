@@ -65,6 +65,14 @@ double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
   return c;
 }
 
+double dist_on_sphere(double lon1, double lat1, double lon2, double lat2) {
+  // Compute the haversine distance in radians
+  double dist_rad = dist_Haversine(lon1, lat1, lon2, lat2);
+
+  // Convert to meters using the radius of the earth
+  return dist_rad * constants::RADIUS;
+}
+
 } // namespace ww4_service
 
 } // namespace ww4_utils
