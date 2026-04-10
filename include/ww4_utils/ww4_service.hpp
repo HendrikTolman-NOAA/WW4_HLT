@@ -12,7 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-10
+ * @date Initial, 2026-04-09
+ * @date Last update, 2026-04-10
  */
 
 #ifndef WW4_UTILS_WW4_SERVICE_HPP
@@ -30,7 +31,8 @@ namespace ww4_utils {
  *          Original author in WW3: Hendrik L. Tolman.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-10
+ * @date Initial, 2026-04-09
+ * @date Last update, 2026-04-10
  */
 namespace constants {
 
