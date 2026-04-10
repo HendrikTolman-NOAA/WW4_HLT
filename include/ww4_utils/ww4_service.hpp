@@ -110,6 +110,22 @@ public:
    */
   static double JONSWAP_5p(double f, double fp, double alpha, double gamma,
                            double siga, double sigb);
+
+  /**
+   * @brief Calculate the haversine distance between two points on a sphere.
+   * @details Ported from WW3 routine DIST_HAVERSINE in w3servmd.F90.
+   *          Original author in WW3: D. A. Honegger (USACE/ERDC).
+   * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+   * @author Contributors: Jules (Agentic AI)
+   * @date Initial, 2026-04-10
+   * @param lon1 Longitude of 1st point (degrees).
+   * @param lat1 Latitude of 1st point (degrees).
+   * @param lon2 Longitude of 2nd point (degrees).
+   * @param lat2 Latitude of 2nd point (degrees).
+   * @return Spherical distance (degrees).
+   */
+  static double dist_Haversine(double lon1, double lat1, double lon2,
+                               double lat2);
 };
 
 } // namespace ww4_utils

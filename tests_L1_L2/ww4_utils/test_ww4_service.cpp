@@ -109,6 +109,42 @@ TEST(WW4ServiceTest, VerifyJonswap5p) {
                    0.0);
 }
 
+/**
+ * @test VerifyDistHaversine
+ * @brief Ensures the haversine distance is correctly calculated.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+TEST(WW4ServiceTest, VerifyDistHaversine) {
+  // Test distance between same points
+  EXPECT_NEAR(ww4_Service::dist_Haversine(10.0, 20.0, 10.0, 20.0), 0.0, 1e-9);
+
+  // Test distance of 1 degree along the equator
+  // lon1=0, lat1=0, lon2=1, lat2=0 -> distance should be 1 degree
+  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 0.0, 1.0, 0.0), 1.0, 1e-9);
+
+  // Test distance of 1 degree along a meridian
+  // lon1=0, lat1=0, lon2=0, lat2=1 -> distance should be 1 degree
+  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 0.0, 0.0, 1.0), 1.0, 1e-9);
+
+  // Test distance of 180 degrees (antipodal points)
+  // lon1=0, lat1=0, lon2=180, lat2=0 -> distance should be 180 degrees
+  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 0.0, 180.0, 0.0), 180.0, 1e-9);
+
+  // Test distance between (0, 45) and (1, 45)
+  // dlat = 0
+  // a = cos(45)^2 * sin(0.5)^2
+  // c = 2 * atan2(sqrt(a), sqrt(1-a))
+  double dlon_rad = 1.0 * DERA;
+  double lat_rad = 45.0 * DERA;
+  double a = std::pow(std::cos(lat_rad), 2) * std::pow(std::sin(dlon_rad / 2.0), 2);
+  double expected_c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(1.0 - a));
+  double expected_dist = RADE * expected_c;
+
+  EXPECT_NEAR(ww4_Service::dist_Haversine(0.0, 45.0, 1.0, 45.0), expected_dist,
+              1e-9);
+}
+
 } // namespace testing
 } // namespace constants
 } // namespace ww4_utils
