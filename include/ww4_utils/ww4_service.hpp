@@ -59,7 +59,7 @@ public:
    * @brief Computation of spectral density using a 5-parameter
    * JONSWAP-spectrum.
    * @details Converted from WW3 routine EJ5P.
-   *          EJ5P(F) = A * EXP(B + LN(Y) * EXP(C))
+   *          JONSWAP_5p(F) = A * EXP(B + LN(Y) * EXP(C))
    * @note Original author in WW3: G. Ph. van Vledder.
    * @param f Frequency in Hz.
    * @param alfa Energy scaling factor.
@@ -69,8 +69,8 @@ public:
    * @param sigb Spectral width, for f > fp.
    * @return Spectral density.
    */
-  static double ej5p(double f, double alfa, double fp, double yln, double siga,
-                     double sigb) noexcept;
+  static double JONSWAP_5p(double f, double alfa, double fp, double yln,
+                           double siga, double sigb) noexcept;
 };
 
 } // namespace ww4_utils

@@ -24,8 +24,8 @@
 
 namespace ww4_utils {
 
-double Ww4Service::ej5p(double f, double alfa, double fp, double yln,
-                        double siga, double sigb) noexcept {
+double Ww4Service::JONSWAP_5p(double f, double alfa, double fp, double yln,
+                              double siga, double sigb) noexcept {
   /**
    * @details Conversion of EJ5P from WW3 w3servmd.F90.
    *          Initial author: G. Ph. van Vledder.

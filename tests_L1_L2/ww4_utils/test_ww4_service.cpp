@@ -6,7 +6,7 @@
  * @file test_ww4_service.cpp
  * @brief Unit tests for Ww4Service.
  * @details This file contains unit tests for core constants and the
- *          ej5p static method of the Ww4Service class.
+ *          JONSWAP_5p static method of the Ww4Service class.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -36,12 +36,13 @@ TEST(Ww4ServiceTest, ConstantsVerification) {
 }
 
 /**
- * @test Verify the ej5p JONSWAP spectrum routine.
+ * @test Verify the JONSWAP_5p JONSWAP spectrum routine.
  */
-TEST(Ww4ServiceTest, Ej5pVerification) {
+TEST(Ww4ServiceTest, JONSWAP_5pVerification) {
   // Test case 1: Zero frequency should return zero.
-  EXPECT_DOUBLE_EQ(Ww4Service::ej5p(0.0, 1.0, 0.1, 1.0, 0.07, 0.09), 0.0);
-  EXPECT_DOUBLE_EQ(Ww4Service::ej5p(1.0e-5, 1.0, 0.1, 1.0, 0.07, 0.09), 0.0);
+  EXPECT_DOUBLE_EQ(Ww4Service::JONSWAP_5p(0.0, 1.0, 0.1, 1.0, 0.07, 0.09), 0.0);
+  EXPECT_DOUBLE_EQ(Ww4Service::JONSWAP_5p(1.0e-5, 1.0, 0.1, 1.0, 0.07, 0.09),
+                   0.0);
 
   // Test case 2: Typical JONSWAP parameters.
   // Using parameters where we can estimate behavior.
@@ -59,11 +60,11 @@ TEST(Ww4ServiceTest, Ej5pVerification) {
   // 165.05775 * 0.28650479... approx 47.289...
 
   const double expected = 50.0175 * 3.3 * std::exp(-1.25);
-  const double result = Ww4Service::ej5p(f, alfa, fp, yln, siga, sigb);
+  const double result = Ww4Service::JONSWAP_5p(f, alfa, fp, yln, siga, sigb);
   EXPECT_NEAR(result, expected, 1.0e-7);
 
   // Test case 3: Low overshoot (PM-like)
-  const double result_pm = Ww4Service::ej5p(f, alfa, fp, 0.0, siga, sigb);
+  const double result_pm = Ww4Service::JONSWAP_5p(f, alfa, fp, 0.0, siga, sigb);
   EXPECT_NEAR(result_pm, 50.0175 * std::exp(-1.25), 1.0e-7);
 }
 
