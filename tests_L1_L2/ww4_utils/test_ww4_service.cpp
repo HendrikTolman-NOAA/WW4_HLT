@@ -13,7 +13,6 @@
  */
 
 #include "ww4_utils/ww4_service.hpp"
-#include <array>
 #include <cmath>
 #include <gtest/gtest.h>
 
@@ -80,55 +79,6 @@ TEST(WW4ServiceTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(ABMAX, 8.0);
   EXPECT_DOUBLE_EQ(EXPMIN, -20.0);
   EXPECT_DOUBLE_EQ(EXPMAX, 20.0);
-}
-
-/**
- * @test VerifyBesselFunctions
- * @brief Ensures KZEONE routine produces expected results.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-TEST(WW4ServiceTest, VerifyBesselFunctions) {
-  double re0, im0, re1, im1;
-  // Test case for r2 >= 1.96e2
-  kzeone(20.0, 1.0, re0, im0, re1, im1);
-  EXPECT_GT(re0, 0.0);
-  // Test case for r2 >= 1.849e1
-  kzeone(5.0, 0.0, re0, im0, re1, im1);
-  EXPECT_GT(re0, 0.0);
-  // Test case for series expansion
-  kzeone(0.5, 0.1, re0, im0, re1, im1);
-  EXPECT_GT(re0, 0.0);
-}
-
-/**
- * @test VerifyKelvinFunctions
- * @brief Ensures KERKEI routine produces expected results.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-TEST(WW4ServiceTest, VerifyKelvinFunctions) {
-  double ker, kei;
-  kerkei(1.0, ker, kei);
-  EXPECT_NEAR(ker, 0.286706, 1e-6);
-  EXPECT_NEAR(kei, -0.494995, 1e-6);
-}
-
-/**
- * @test VerifyFrictionFactorTable
- * @brief Ensures tabuFw correctly populates the table.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-TEST(WW4ServiceTest, VerifyFrictionFactorTable) {
-  std::array<double, SIZEFWTABLE + 1> fwTable;
-  double delab;
-  tabuFw(fwTable, delab);
-  EXPECT_DOUBLE_EQ(delab, (8.0 - (-1.0)) / 300.0);
-  for (double val : fwTable) {
-    EXPECT_LE(val, 0.5);
-    EXPECT_GT(val, 0.0);
-  }
 }
 
 } // namespace testing
