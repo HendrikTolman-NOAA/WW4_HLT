@@ -13,6 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-09
+ * @date Last Update, 2026-04-10
  *
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3servmd.F90.

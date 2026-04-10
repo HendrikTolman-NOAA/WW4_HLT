@@ -13,7 +13,7 @@
 # @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
 # @author Contributors: Jules (Agentic AI)
 # @date Initial, 2026-03-20
-# @date Last Update, 2026-04-09
+# @date Last Update, 2026-04-10
 
 cmake_minimum_required(VERSION 3.20)
 project(WW4_Utils VERSION 1.0.0 LANGUAGES CXX)
