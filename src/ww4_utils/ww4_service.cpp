@@ -43,14 +43,15 @@ Dispersion wavenumber_Beji(double omega, double h) {
 
   // Calculate KH using the approximation
   double kh =
-      kh0 * (1.0 + std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(KDMAX, tmp)))) /
+      kh0 *
+      (1.0 + std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(KDMAX, tmp)))) /
       std::sqrt(std::tanh(std::min(KDMAX, kh0)));
 
   double k = kh / h;
 
   // Group velocity calculation from linear wave theory
-  double cg =
-      0.5 * (1.0 + (2.0 * kh / std::sinh(std::min(KDMAX, 2.0 * kh)))) * omega / k;
+  double cg = 0.5 * (1.0 + (2.0 * kh / std::sinh(std::min(KDMAX, 2.0 * kh)))) *
+              omega / k;
 
   return {k, cg};
 }

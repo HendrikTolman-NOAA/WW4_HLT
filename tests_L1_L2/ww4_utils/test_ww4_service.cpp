@@ -184,13 +184,12 @@ TEST(WW4ServiceTest, VerifyWavenumberBeji) {
     std::string label;
   };
 
-  std::vector<TestCase> test_cases = {
-      {1.0, 1000.0, "Deep water"},
-      {1.0, 10.0, "Intermediate water"},
-      {0.1, 1.0, "Shallow water"},
-      {2.0, 0.5, "Very shallow/high freq"}};
+  std::vector<TestCase> test_cases = {{1.0, 1000.0, "Deep water"},
+                                      {1.0, 10.0, "Intermediate water"},
+                                      {0.1, 1.0, "Shallow water"},
+                                      {2.0, 0.5, "Very shallow/high freq"}};
 
-  for (const auto& tc : test_cases) {
+  for (const auto &tc : test_cases) {
     auto result = ww4_service::wavenumber_Beji(tc.omega, tc.h);
 
     // Back-calculate omega^2 from exact dispersion relation: omega^2 = g * k *
