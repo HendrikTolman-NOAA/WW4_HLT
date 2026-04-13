@@ -43,7 +43,7 @@ struct Dispersion {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-09
- * @date Last update, 2026-04-10
+ * @date Last update, 2026-04-13
  */
 namespace constants {
 
@@ -94,6 +94,12 @@ constexpr double UNDEF = -999.9;
 constexpr double ABMIN = -1.0;
 /** @brief Maximum value for spectral density (log10). */
 constexpr double ABMAX = 8.0;
+
+/** @brief Maximum value for k*d in dispersion calculations. */
+constexpr double KDMAX = 20.0;
+
+/** @brief Physics factor for JONSWAP spectrum (g^2 / (2*PI)^4). */
+constexpr double JONSWAP_FACTOR = 0.06175;
 
 } // namespace constants
 

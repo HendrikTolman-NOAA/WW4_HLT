@@ -27,13 +27,21 @@ namespace testing {
  * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyMathematicalConstants) {
+  static_assert(PI == 3.14159265358979323846);
+  static_assert(TPI == 2.0 * PI);
+  static_assert(HPI == 0.5 * PI);
+  static_assert(TPIINV == 1.0 / TPI);
+  static_assert(HPIINV == 1.0 / HPI);
+  static_assert(RADE == 180.0 / PI);
+  static_assert(DERA == PI / 180.0);
+
   EXPECT_DOUBLE_EQ(PI, 3.14159265358979323846);
-  EXPECT_DOUBLE_EQ(TPI, 2.0 * PI);
-  EXPECT_DOUBLE_EQ(HPI, 0.5 * PI);
-  EXPECT_DOUBLE_EQ(TPIINV, 1.0 / TPI);
-  EXPECT_DOUBLE_EQ(HPIINV, 1.0 / HPI);
-  EXPECT_DOUBLE_EQ(RADE, 180.0 / PI);
-  EXPECT_DOUBLE_EQ(DERA, PI / 180.0);
+  EXPECT_DOUBLE_EQ(TPI, 6.28318530717958647692);
+  EXPECT_DOUBLE_EQ(HPI, 1.57079632679489661923);
+  EXPECT_NEAR(TPIINV, 0.15915494309189533, 1e-15);
+  EXPECT_NEAR(HPIINV, 0.6366197723675813, 1e-15);
+  EXPECT_NEAR(RADE, 57.29577951308232, 1e-14);
+  EXPECT_NEAR(DERA, 0.017453292519943295, 1e-17);
 }
 
 /**
@@ -43,6 +51,15 @@ TEST(WW4ServiceTest, VerifyMathematicalConstants) {
  * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyPhysicalConstants) {
+  static_assert(GRAV == 9.806);
+  static_assert(DWAT == 1000.0);
+  static_assert(DAIR == 1.225);
+  static_assert(NU_AIR == 1.4e-5);
+  static_assert(NU_WATER == 1.31e-6);
+  static_assert(SED_SG == 2.65);
+  static_assert(KAPPA == 0.40);
+  static_assert(RADIUS == 4.0e7 / TPI);
+
   EXPECT_DOUBLE_EQ(GRAV, 9.806);
   EXPECT_DOUBLE_EQ(DWAT, 1000.0);
   EXPECT_DOUBLE_EQ(DAIR, 1.225);
@@ -50,7 +67,7 @@ TEST(WW4ServiceTest, VerifyPhysicalConstants) {
   EXPECT_DOUBLE_EQ(NU_WATER, 1.31e-6);
   EXPECT_DOUBLE_EQ(SED_SG, 2.65);
   EXPECT_DOUBLE_EQ(KAPPA, 0.40);
-  EXPECT_DOUBLE_EQ(RADIUS, 4.0e7 / TPI);
+  EXPECT_NEAR(RADIUS, 6366197.723675813, 1e-8);
 }
 
 /**
@@ -71,9 +88,30 @@ TEST(WW4ServiceTest, VerifyDerivedConstants) {
  * @author Contributors: Jules (Agentic AI)
  */
 TEST(WW4ServiceTest, VerifyModelConstants) {
+  static_assert(UNDEF == -999.9);
+  static_assert(ABMIN == -1.0);
+  static_assert(ABMAX == 8.0);
+  static_assert(KDMAX == 20.0);
+  static_assert(JONSWAP_FACTOR == 0.06175);
+
   EXPECT_DOUBLE_EQ(UNDEF, -999.9);
   EXPECT_DOUBLE_EQ(ABMIN, -1.0);
   EXPECT_DOUBLE_EQ(ABMAX, 8.0);
+  EXPECT_DOUBLE_EQ(KDMAX, 20.0);
+  EXPECT_DOUBLE_EQ(JONSWAP_FACTOR, 0.06175);
+}
+
+/**
+ * @test VerifyConstantsConsistency
+ * @brief Ensures mathematical relations between constants are maintained.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+TEST(WW4ServiceTest, VerifyConstantsConsistency) {
+  EXPECT_NEAR(DERA * RADE, 1.0, 1e-15);
+  EXPECT_NEAR(TPI * TPIINV, 1.0, 1e-15);
+  EXPECT_NEAR(HPI * HPIINV, 1.0, 1e-15);
+  EXPECT_NEAR(TPI, 4.0 * HPI, 1e-15);
 }
 
 /**

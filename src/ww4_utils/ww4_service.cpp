@@ -35,7 +35,6 @@ Dispersion wavenumber_Beji(double omega, double h) {
     return {0.0, 0.0};
   }
 
-  const double KDMAX = 20.0;
   // Deep water KH0 = omega^2 * h / g
   double kh0 = (omega * omega * h) / constants::GRAV;
 
@@ -45,14 +44,17 @@ Dispersion wavenumber_Beji(double omega, double h) {
   // Calculate KH using the approximation
   double kh =
       kh0 *
-      (1.0 + std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(KDMAX, tmp)))) /
-      std::sqrt(std::tanh(std::min(KDMAX, kh0)));
+      (1.0 +
+       std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(constants::KDMAX, tmp)))) /
+      std::sqrt(std::tanh(std::min(constants::KDMAX, kh0)));
 
   double k = kh / h;
 
   // Group velocity calculation from linear wave theory
-  double cg = 0.5 * (1.0 + (2.0 * kh / std::sinh(std::min(KDMAX, 2.0 * kh)))) *
-              omega / k;
+  double cg =
+      0.5 *
+      (1.0 + (2.0 * kh / std::sinh(std::min(constants::KDMAX, 2.0 * kh)))) *
+      omega / k;
 
   return {k, cg};
 }
@@ -63,15 +65,11 @@ double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
     return 0.0;
   }
 
-  // Physics factor approximating g^2 / (2 * PI)^4.
-  // Maintained as 0.06175 for numerical consistency with WW3.
-  const double FACTOR = 0.06175;
-
   double sigma = (f <= fp) ? siga : sigb;
   double f_ratio = fp / f;
   double r = std::exp(-0.5 * std::pow((f - fp) / (sigma * fp), 2));
 
-  return FACTOR * alpha * std::pow(f, -5) *
+  return constants::JONSWAP_FACTOR * alpha * std::pow(f, -5) *
          std::exp(-1.25 * std::pow(f_ratio, 4)) * std::pow(gamma, r);
 }
 
