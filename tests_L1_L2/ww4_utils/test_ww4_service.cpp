@@ -176,7 +176,7 @@ TEST(WW4ServiceTest, VerifyDistOnSphere) {
  *          relation (omega^2 = g*k*tanh(k*h)) across different regimes.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-13
+ * @date 2026-04-13
  */
 TEST(WW4ServiceTest, VerifyWavenumberBeji) {
   // Test cases: {omega, h}
