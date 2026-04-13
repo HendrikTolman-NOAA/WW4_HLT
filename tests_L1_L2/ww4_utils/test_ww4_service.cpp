@@ -168,6 +168,66 @@ TEST(WW4ServiceTest, VerifyDistOnSphere) {
               1e-3);
 }
 
+/**
+ * @test VerifyWavenumberBeji
+ * @brief Ensures the wavenumber calculation (Beji 2013) is accurate.
+ * @details Validates the approximate wavenumber against the exact dispersion
+ *          relation (omega^2 = g*k*tanh(k*h)) across different regimes.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+TEST(WW4ServiceTest, VerifyWavenumberBeji) {
+  // Test cases: {omega, h}
+  struct TestCase {
+    double omega;
+    double h;
+    std::string label;
+  };
+
+  std::vector<TestCase> test_cases = {
+      {1.0, 1000.0, "Deep water"},
+      {1.0, 10.0, "Intermediate water"},
+      {0.1, 1.0, "Shallow water"},
+      {2.0, 0.5, "Very shallow/high freq"}};
+
+  for (const auto& tc : test_cases) {
+    auto result = ww4_service::wavenumber_Beji(tc.omega, tc.h);
+
+    // Back-calculate omega^2 from exact dispersion relation: omega^2 = g * k *
+    // tanh(k * h)
+    double omega_sq_exact =
+        constants::GRAV * result.k * std::tanh(result.k * tc.h);
+    double omega_exact = std::sqrt(omega_sq_exact);
+
+    // Beji (2013) is an approximation, so we expect some error but it should be
+    // small.
+    EXPECT_NEAR(omega_exact, tc.omega, 1e-3)
+        << "Failed for " << tc.label << " (omega=" << tc.omega << ", h=" << tc.h
+        << ")";
+
+    // Verify group velocity relation: cg = 0.5 * (1 + 2kh/sinh(2kh)) * omega/k
+    double kh = result.k * tc.h;
+    double expected_cg;
+    if (kh > 20.0) {
+      expected_cg = 0.5 * tc.omega / result.k;
+    } else {
+      expected_cg =
+          0.5 * (1.0 + (2.0 * kh / std::sinh(2.0 * kh))) * tc.omega / result.k;
+    }
+    EXPECT_NEAR(result.cg, expected_cg, 1e-5)
+        << "Group velocity mismatch for " << tc.label;
+  }
+
+  // Test zero/negative inputs
+  auto zero_h = ww4_service::wavenumber_Beji(1.0, 0.0);
+  EXPECT_DOUBLE_EQ(zero_h.k, 0.0);
+  EXPECT_DOUBLE_EQ(zero_h.cg, 0.0);
+
+  auto zero_omega = ww4_service::wavenumber_Beji(0.0, 10.0);
+  EXPECT_DOUBLE_EQ(zero_omega.k, 0.0);
+  EXPECT_DOUBLE_EQ(zero_omega.cg, 0.0);
+}
+
 } // namespace testing
 } // namespace constants
 } // namespace ww4_utils

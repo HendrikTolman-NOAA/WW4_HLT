@@ -24,6 +24,17 @@
 namespace ww4_utils {
 
 /**
+ * @struct Dispersion
+ * @brief Structure to hold wave dispersion parameters.
+ * @details This structure contains the wavenumber and group velocity
+ *          calculated from the dispersion relation.
+ */
+struct Dispersion {
+  double k;  /**< Wavenumber (rad/m). */
+  double cg; /**< Group velocity (m/s). */
+};
+
+/**
  * @namespace constants
  * @brief Namespace containing all physical and mathematical constants.
  * @details This namespace contains constants converted from the WAVEWATCH III
@@ -92,6 +103,21 @@ constexpr double ABMAX = 8.0;
  * @details This namespace contains ported routines from WAVEWATCH III (WW3).
  */
 namespace ww4_service {
+
+/**
+ * @brief Calculate wavenumber and group velocity using Beji (2013).
+ * @details Ported from WW3 routine WAVNU3 in w3dispmd.ftn.
+ *          Calculates wavenumber (k) and group velocity (cg) using the
+ *          improved Eckart formula by Beji (2013).
+ *          Original author in WW3: Aron Roland.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-10
+ * @param omega Intrinsic frequency (rad/s).
+ * @param h Water depth (m).
+ * @return Dispersion struct containing k and cg.
+ */
+Dispersion wavenumber_Beji(double omega, double h);
 
 /**
  * @brief Calculate 5-parameter JONSWAP spectrum.
