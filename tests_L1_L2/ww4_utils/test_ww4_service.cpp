@@ -197,8 +197,8 @@ TEST(WW4ServiceTest, VerifyWavenumberBeji) {
   EXPECT_NEAR(d_deep.cg, 0.5 * omega_deep / d_deep.k, 1e-5);
 
   // Shallow water test: omega = 0.01, h = 1.0
-  // k_shallow = omega / sqrt(g*h) = 0.01 / sqrt(9.806) = 0.01 / 3.13145 = 0.0031934
-  // cg_shallow = sqrt(g*h) = 3.13145
+  // k_shallow = omega / sqrt(g*h) = 0.01 / sqrt(9.806) = 0.01 / 3.13145 =
+  // 0.0031934 cg_shallow = sqrt(g*h) = 3.13145
   double omega_shallow = 0.01;
   double h_shallow = 1.0;
   auto d_shallow = ww4_service::wavenumber_Beji(omega_shallow, h_shallow);
@@ -220,9 +220,11 @@ TEST(WW4ServiceTest, VerifyWavenumberBeji) {
       // Beji's (2013) formula has a maximum relative error of 0.05%
       EXPECT_NEAR(omega_calc, omega, omega * 0.001);
 
-      // Verify group velocity formula: cg = 0.5 * (1 + 2kh / sinh(2kh)) * omega / k
+      // Verify group velocity formula: cg = 0.5 * (1 + 2kh / sinh(2kh)) * omega
+      // / k
       double kh = d.k * h;
-      double cg_expected = 0.5 * (1.0 + (2.0 * kh / std::sinh(2.0 * kh))) * omega / d.k;
+      double cg_expected =
+          0.5 * (1.0 + (2.0 * kh / std::sinh(2.0 * kh))) * omega / d.k;
       EXPECT_NEAR(d.cg, cg_expected, 1e-6);
     }
   }

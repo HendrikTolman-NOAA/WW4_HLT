@@ -88,7 +88,8 @@ Dispersion wavenumber_Beji(double omega, double h) {
   // Beji's improved Eckart approximation
   const double tmp = 1.55 + 1.3 * kh0 + 0.216 * kh0 * kh0;
   const double kh =
-      kh0 * (1.0 + std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(kdmax, tmp)))) /
+      kh0 *
+      (1.0 + std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(kdmax, tmp)))) /
       std::sqrt(std::tanh(std::min(kdmax, kh0)));
 
   double k = kh / h;
