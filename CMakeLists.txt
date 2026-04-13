@@ -52,6 +52,7 @@ FetchContent_MakeAvailable(googletest)
 add_library(ww4_utils
     src/ww4_utils/time_management.cpp
     src/ww4_utils/memory_utils.cpp
+    src/ww4_utils/ww4_service.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
 
@@ -64,6 +65,10 @@ target_link_libraries(test_time_management PRIVATE ww4_utils GTest::gtest_main)
 add_executable(test_memory_utils tests_L1_L2/ww4_utils/test_memory_utils.cpp)
 target_link_libraries(test_memory_utils PRIVATE ww4_utils GTest::gtest_main)
 
+add_executable(test_ww4_service tests_L1_L2/ww4_utils/test_ww4_service.cpp)
+target_link_libraries(test_ww4_service PRIVATE ww4_utils GTest::gtest_main)
+
 include(GoogleTest)
 gtest_discover_tests(test_time_management)
 gtest_discover_tests(test_memory_utils)
+gtest_discover_tests(test_ww4_service)
