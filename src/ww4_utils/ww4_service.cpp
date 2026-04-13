@@ -15,6 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
+ * @date Last update, 2026-04-13
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -28,6 +29,33 @@ namespace constants {
 } // namespace constants
 
 namespace ww4_service {
+
+Dispersion wavenumber_Beji(double omega, double h) {
+  if (h <= 0.0 || omega <= 0.0) {
+    return {0.0, 0.0};
+  }
+
+  const double KDMAX = 20.0;
+  // Deep water KH0 = omega^2 * h / g
+  double kh0 = (omega * omega * h) / constants::GRAV;
+
+  // Intermediate term for Beji's improved Eckart formula
+  double tmp = 1.55 + 1.3 * kh0 + 0.216 * kh0 * kh0;
+
+  // Calculate KH using the approximation
+  double kh =
+      kh0 *
+      (1.0 + std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(KDMAX, tmp)))) /
+      std::sqrt(std::tanh(std::min(KDMAX, kh0)));
+
+  double k = kh / h;
+
+  // Group velocity calculation from linear wave theory
+  double cg = 0.5 * (1.0 + (2.0 * kh / std::sinh(std::min(KDMAX, 2.0 * kh)))) *
+              omega / k;
+
+  return {k, cg};
+}
 
 double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
                   double sigb) {
