@@ -26,6 +26,24 @@ namespace testing {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
+/**
+ * @test VerifyDispersionStruct
+ * @brief Ensures the Dispersion struct correctly stores values.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+TEST(WW4ServiceTest, VerifyDispersionStruct) {
+  Dispersion disp{1.5, 10.2};
+  EXPECT_DOUBLE_EQ(disp.k, 1.5);
+  EXPECT_DOUBLE_EQ(disp.cg, 10.2);
+
+  Dispersion disp2;
+  disp2.k = 2.0;
+  disp2.cg = 5.0;
+  EXPECT_DOUBLE_EQ(disp2.k, 2.0);
+  EXPECT_DOUBLE_EQ(disp2.cg, 5.0);
+}
+
 TEST(WW4ServiceTest, VerifyMathematicalConstants) {
   static_assert(PI == 3.14159265358979323846);
   static_assert(TPI == 2.0 * PI);
