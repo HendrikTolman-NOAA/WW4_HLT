@@ -10,6 +10,7 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @date Initial, 2026-04-10
+ * @date Last update, 2026-04-13
  */
 
 #include "ww4_utils/ww4_service.hpp"
@@ -175,6 +176,7 @@ TEST(WW4ServiceTest, VerifyDistOnSphere) {
  *          relation (omega^2 = g*k*tanh(k*h)) across different regimes.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-13
  */
 TEST(WW4ServiceTest, VerifyWavenumberBeji) {
   // Test cases: {omega, h}
