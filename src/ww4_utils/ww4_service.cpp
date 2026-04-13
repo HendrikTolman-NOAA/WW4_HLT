@@ -42,11 +42,10 @@ Dispersion wavenumber_Beji(double omega, double h) {
   double tmp = 1.55 + 1.3 * kh0 + 0.216 * kh0 * kh0;
 
   // Calculate KH using the approximation
-  double kh =
-      kh0 *
-      (1.0 +
-       std::pow(kh0, 1.09) * (1.0 / std::exp(std::min(constants::KDMAX, tmp)))) /
-      std::sqrt(std::tanh(std::min(constants::KDMAX, kh0)));
+  double kh = kh0 *
+              (1.0 + std::pow(kh0, 1.09) *
+                         (1.0 / std::exp(std::min(constants::KDMAX, tmp)))) /
+              std::sqrt(std::tanh(std::min(constants::KDMAX, kh0)));
 
   double k = kh / h;
 
