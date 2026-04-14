@@ -95,11 +95,11 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       } else if (value == "no") {
         config.produceLogFile = false;
       }
-    } else if (key == "dry_points") {
+    } else if (key == "dry_run") {
       if (value == "yes") {
-        config.dryPoints = true;
+        config.dryRun = true;
       } else if (value == "no") {
-        config.dryPoints = false;
+        config.dryRun = false;
       }
     } else if (key == "propagate_x") {
       if (value == "yes") {
@@ -157,7 +157,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "     Log file           : " << (config.produceLogFile ? "yes" : "no")
      << std::endl;
 
-  const bool isConventional = !config.dryPoints && config.propagateX &&
+  const bool isConventional = !config.dryRun && config.propagateX &&
                               config.propagateY && config.propagateTheta &&
                               config.propagateK && config.sourceTerms;
 
@@ -165,7 +165,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << std::endl;
 
   if (!isConventional) {
-    os << "        Dry points      : " << (config.dryPoints ? "yes" : "no")
+    os << "        Dry run         : " << (config.dryRun ? "yes" : "no")
        << std::endl;
     os << "        Propagate X     : " << (config.propagateX ? "yes" : "no")
        << std::endl;

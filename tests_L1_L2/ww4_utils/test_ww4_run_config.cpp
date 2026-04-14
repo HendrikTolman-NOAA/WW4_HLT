@@ -51,7 +51,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
 TEST(RunConfigTest, NewFlagsConfig) {
   const std::string filename = "test_run_new_flags.yml";
   std::ofstream file(filename);
-  file << "dry_points: yes\n";
+  file << "dry_run: yes\n";
   file << "propagate_x: no\n";
   file << "propagate_y: no\n";
   file << "propagate_theta: no\n";
@@ -61,7 +61,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
 
   const auto config = loadRunConfig(filename);
   ASSERT_TRUE(config.has_value());
-  EXPECT_TRUE(config->dryPoints);
+  EXPECT_TRUE(config->dryRun);
   EXPECT_FALSE(config->propagateX);
   EXPECT_FALSE(config->propagateY);
   EXPECT_FALSE(config->propagateTheta);
@@ -143,7 +143,7 @@ TEST(RunConfigTest, ReportConfigStandard) {
   EXPECT_NE(output.find("Log file           : yes"), std::string::npos);
   EXPECT_NE(output.find("Conventional model run : yes"), std::string::npos);
   // Ensure no detailed flag reporting when conventional
-  EXPECT_EQ(output.find("Dry points"), std::string::npos);
+  EXPECT_EQ(output.find("Dry run"), std::string::npos);
 }
 
 /**
@@ -151,7 +151,7 @@ TEST(RunConfigTest, ReportConfigStandard) {
  */
 TEST(RunConfigTest, ReportConfigNonConventional) {
   RunConfig config;
-  config.dryPoints = true;
+  config.dryRun = true;
   config.propagateX = false;
 
   std::stringstream ss;
@@ -159,7 +159,7 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   std::string output = ss.str();
 
   EXPECT_NE(output.find("Conventional model run : no"), std::string::npos);
-  EXPECT_NE(output.find("Dry points      : yes"), std::string::npos);
+  EXPECT_NE(output.find("Dry run         : yes"), std::string::npos);
   EXPECT_NE(output.find("Propagate X     : no"), std::string::npos);
   EXPECT_NE(output.find("Propagate Y     : yes"), std::string::npos);
 }

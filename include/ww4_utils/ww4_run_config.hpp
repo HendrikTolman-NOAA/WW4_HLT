@@ -39,12 +39,12 @@ struct RunConfig {
       TimeManagement::CalendarType::Standard; ///< Calendar type.
   bool produceStdOut = true;                  ///< Screen output flag.
   bool produceLogFile = true;                 ///< Log file flag.
-  bool dryPoints = false;                     ///< Dry points flag (FLDRY).
-  bool propagateX = true;     ///< Propagation flag in x-direction (FLCX).
-  bool propagateY = true;     ///< Propagation flag in y-direction (FLCY).
-  bool propagateTheta = true; ///< Propagation flag in theta-direction (FLCTH).
-  bool propagateK = true;     ///< Propagation flag in k-direction (FLK).
-  bool sourceTerms = true;    ///< Source terms flag (FLSOU).
+  bool dryRun = false;                        ///< Dry run flag.
+  bool propagateX = true;     ///< Propagation flag in x-direction.
+  bool propagateY = true;     ///< Propagation flag in y-direction.
+  bool propagateTheta = true; ///< Propagation flag in theta-direction.
+  bool propagateK = true;     ///< Propagation flag in k-direction.
+  bool sourceTerms = true;    ///< Source terms flag.
 };
 
 /**

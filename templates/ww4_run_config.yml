@@ -26,9 +26,9 @@ produce_std_out: "yes"
 # Options: "yes" (default), "no"
 produce_log_file: "yes"
 
-# Option for processing dry points.
+# Option for a dry run (no computations).
 # Options: "no" (default), "yes"
-dry_points: "no"
+dry_run: "no"
 
 # Option for propagation in x-direction.
 # Options: "yes" (default), "no"
