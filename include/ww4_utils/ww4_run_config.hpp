@@ -14,7 +14,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-13
+ * @date Last Update, 2026-04-14
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
