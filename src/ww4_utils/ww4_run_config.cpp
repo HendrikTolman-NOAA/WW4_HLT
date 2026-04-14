@@ -13,10 +13,11 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-14
+ * @date Last update, 2026-04-14
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_utils/ww4_stand_alone_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
 #include <fstream>
 #include <iostream>
@@ -69,6 +70,60 @@ std::string inputOptionToString(InputFieldOption option) {
     return "from_grid";
   default:
     return "undefined";
+  }
+}
+
+/**
+ * @brief Helper to update OutputConfig from a key-value pair.
+ * @param oc The OutputConfig structure to update.
+ * @param key_suffix The suffix of the configuration key.
+ * @param value The value to set.
+ */
+void updateOutputConfig(OutputConfig &oc, std::string_view key_suffix,
+                        std::string_view value) {
+  if (key_suffix == "requested") {
+    oc.requested = (value == "yes");
+  } else if (key_suffix == "start") {
+    oc.startTime = parseDateTimeString(value);
+  } else if (key_suffix == "end") {
+    oc.endTime = parseDateTimeString(value);
+  } else if (key_suffix == "interval") {
+    try {
+      oc.interval = std::stod(std::string(value));
+    } catch (...) {
+      oc.interval = -1.0;
+    }
+  } else if (key_suffix == "at_first") {
+    if (value == "yes") {
+      oc.atFirstTime = true;
+    } else if (value == "no") {
+      oc.atFirstTime = false;
+    }
+  }
+}
+
+/**
+ * @brief Helper to report OutputConfig settings.
+ * @param oc The OutputConfig structure to report.
+ * @param label The label for the output type.
+ * @param os The output stream to write to.
+ */
+void reportOutput(const OutputConfig &oc, std::string_view label,
+                  std::ostream &os) {
+  os << "     " << label << " output : " << (oc.requested ? "yes" : "no")
+     << std::endl;
+  if (oc.requested) {
+    os << "        Interval        : " << oc.interval << " s" << std::endl;
+    os << "        At first time   : " << (oc.atFirstTime ? "yes" : "no")
+       << std::endl;
+    if (oc.startTime) {
+      os << "        Start time      : "
+         << TimeManagement::toFormattedString(*oc.startTime) << std::endl;
+    }
+    if (oc.endTime) {
+      os << "        End time        : "
+         << TimeManagement::toFormattedString(*oc.endTime) << std::endl;
+    }
   }
 }
 
@@ -192,6 +247,16 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       config.iceConcentrations = parseInputOption(value);
     } else if (key == "bottom_depth") {
       config.bottomDepth = parseInputOption(value, true);
+    } else if (key.starts_with("output_fields_")) {
+      updateOutputConfig(config.outputFields, key.substr(14), value);
+    } else if (key.starts_with("output_points_")) {
+      updateOutputConfig(config.outputPoints, key.substr(14), value);
+    } else if (key.starts_with("output_nesting_")) {
+      updateOutputConfig(config.outputNesting, key.substr(15), value);
+    } else if (key.starts_with("output_tracks_")) {
+      updateOutputConfig(config.outputTracks, key.substr(14), value);
+    } else if (key.starts_with("output_restart_")) {
+      updateOutputConfig(config.outputRestart, key.substr(15), value);
     }
   }
 
@@ -216,6 +281,30 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       std::cerr << "   Missing/invalid: bottom_depth" << std::endl;
 
     ww4_std_out::extcde(1, std::cerr, "Missing or invalid mandatory fields.",
+                        __FILE__, __LINE__);
+  }
+
+  // Output validation
+  bool outputValid = true;
+  auto validateOutput = [&](const OutputConfig &oc, std::string_view name) {
+    if (oc.requested && oc.interval <= 0.0) {
+      std::cerr << "WW4 ERROR: Mandatory interval missing or invalid for "
+                   "requested output: "
+                << name << std::endl;
+      return false;
+    }
+    return true;
+  };
+
+  outputValid &= validateOutput(config.outputFields, "output_fields");
+  outputValid &= validateOutput(config.outputPoints, "output_points");
+  outputValid &= validateOutput(config.outputNesting, "output_nesting");
+  outputValid &= validateOutput(config.outputTracks, "output_tracks");
+  outputValid &= validateOutput(config.outputRestart, "output_restart");
+
+  if (!outputValid) {
+    ww4_std_out::extcde(1, std::cerr,
+                        "Missing or invalid mandatory output interval(s).",
                         __FILE__, __LINE__);
   }
 
@@ -274,6 +363,12 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << inputOptionToString(config.iceConcentrations) << std::endl;
   os << "     Bottom depth       : " << inputOptionToString(config.bottomDepth)
      << std::endl;
+
+  reportOutput(config.outputFields, "Gridded fields", os);
+  reportOutput(config.outputPoints, "Point", os);
+  reportOutput(config.outputNesting, "Nesting data", os);
+  reportOutput(config.outputTracks, "Track", os);
+  reportOutput(config.outputRestart, "Restart file", os);
 
   os << std::endl;
 }

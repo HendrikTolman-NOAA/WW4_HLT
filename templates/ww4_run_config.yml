@@ -70,3 +70,44 @@ ice_concentrations: "none"
 
 # Bottom depth option.
 bottom_depth: "from_grid"
+
+# Data output options.
+# For each output type, track if requested ("yes"/"no"), start/end times,
+# and output interval (mandatory if requested, in seconds).
+# "at_first" flag determines if output at the first time is requested (default: "yes").
+# All output types default to "no" (requested: "no").
+
+# Output type 1: Gridded fields
+output_fields_requested: "no"
+output_fields_interval: 3600.0
+# output_fields_start: "20260101 000000"
+# output_fields_end: "20260102 000000"
+output_fields_at_first: "yes"
+
+# Output type 2: Point output
+output_points_requested: "no"
+output_points_interval: 3600.0
+# output_points_start: "20260101 000000"
+# output_points_end: "20260102 000000"
+output_points_at_first: "yes"
+
+# Output type 3: Nesting data
+output_nesting_requested: "no"
+output_nesting_interval: 3600.0
+# output_nesting_start: "20260101 000000"
+# output_nesting_end: "20260102 000000"
+output_nesting_at_first: "yes"
+
+# Output type 4: Track output
+output_tracks_requested: "no"
+output_tracks_interval: 3600.0
+# output_tracks_start: "20260101 000000"
+# output_tracks_end: "20260102 000000"
+output_tracks_at_first: "yes"
+
+# Output type 5: Restart files
+output_restart_requested: "no"
+output_restart_interval: 86400.0
+# output_restart_start: "20260101 000000"
+# output_restart_end: "20260102 000000"
+output_restart_at_first: "yes"

@@ -13,7 +13,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-14
+ * @date Last update, 2026-04-14
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -53,6 +53,98 @@ TEST(RunConfigTest, NonDefaultConfig) {
             TimeManagement::CalendarType::NoLeap);
 
   std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify data output configuration parsing.
+ */
+TEST(RunConfigTest, OutputConfigParsing) {
+  const std::string filename = "test_output_parsing.yml";
+  std::ofstream file(filename);
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+
+  file << "output_fields_requested: yes\n";
+  file << "output_fields_interval: 3600\n";
+  file << "output_fields_start: \"20260101 000000\"\n";
+  file << "output_fields_end: \"20260101 120000\"\n";
+  file << "output_fields_at_first: no\n";
+
+  file << "output_restart_requested: yes\n";
+  file << "output_restart_interval: 86400\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename);
+  ASSERT_TRUE(config.has_value());
+
+  EXPECT_TRUE(config->outputFields.requested);
+  EXPECT_DOUBLE_EQ(config->outputFields.interval, 3600.0);
+  ASSERT_TRUE(config->outputFields.startTime.has_value());
+  EXPECT_EQ(config->outputFields.startTime->ymd, 20260101);
+  EXPECT_DOUBLE_EQ(config->outputFields.startTime->hms, 0.0);
+  ASSERT_TRUE(config->outputFields.endTime.has_value());
+  EXPECT_EQ(config->outputFields.endTime->ymd, 20260101);
+  EXPECT_DOUBLE_EQ(config->outputFields.endTime->hms, 120000.0);
+  EXPECT_FALSE(config->outputFields.atFirstTime);
+
+  EXPECT_TRUE(config->outputRestart.requested);
+  EXPECT_DOUBLE_EQ(config->outputRestart.interval, 86400.0);
+  EXPECT_FALSE(config->outputRestart.startTime.has_value());
+  EXPECT_TRUE(config->outputRestart.atFirstTime); // Default
+
+  EXPECT_FALSE(config->outputPoints.requested); // Default
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify mandatory output interval failure.
+ */
+TEST(RunConfigTest, OutputIntervalFailure) {
+  const std::string filename = "test_output_interval_failure.yml";
+  std::ofstream file(filename);
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "output_fields_requested: yes\n";
+  // Missing interval
+  file.close();
+
+  EXPECT_DEATH(loadRunConfig(filename),
+               "Missing or invalid mandatory output interval\\(s\\).");
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify reportRunConfig with outputs.
+ */
+TEST(RunConfigTest, ReportConfigWithOutputs) {
+  RunConfig config;
+  config.waterLevels = InputFieldOption::None;
+  config.currents = InputFieldOption::None;
+  config.winds = InputFieldOption::None;
+  config.iceConcentrations = InputFieldOption::None;
+  config.bottomDepth = InputFieldOption::FromGrid;
+
+  config.outputFields.requested = true;
+  config.outputFields.interval = 3600.0;
+  config.outputFields.atFirstTime = false;
+  config.outputFields.startTime = DateTime{20260101, 0.0};
+
+  std::stringstream ss;
+  reportRunConfig(config, ss);
+  std::string output = ss.str();
+
+  EXPECT_NE(output.find("Gridded fields output : yes"), std::string::npos);
+  EXPECT_NE(output.find("Interval        : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("At first time   : no"), std::string::npos);
+  EXPECT_NE(output.find("Start time      : 2026/01/01 00:00:00 UTC"),
+            std::string::npos);
+  EXPECT_NE(output.find("Point output : no"), std::string::npos);
 }
 
 /**
