@@ -47,7 +47,7 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   runFile << "currents: none\n";
   runFile << "winds: none\n";
   runFile << "ice_concentrations: none\n";
-  runFile << "bottom_depth: from_grid\n";
+  // bottom_depth is optional
   runFile.close();
 
   EXPECT_NO_THROW(ww4_core::w4core_init(startTime, "test_program"));
