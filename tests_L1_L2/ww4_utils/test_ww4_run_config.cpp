@@ -32,6 +32,11 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "calendar_type: \"NoLeap\"\n";
   file << "produce_std_out: \"no\"\n";
   file << "produce_log_file: \"no\"\n";
+  file << "water_levels: \"from_file\"\n";
+  file << "currents: \"from_coupling\"\n";
+  file << "winds: \"homogeneous\"\n";
+  file << "ice_concentrations: \"none\"\n";
+  file << "bottom_depth: \"from_grid\"\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -39,6 +44,11 @@ TEST(RunConfigTest, NonDefaultConfig) {
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_FALSE(config->produceLogFile);
+  EXPECT_EQ(config->waterLevels, InputFieldOption::FromFile);
+  EXPECT_EQ(config->currents, InputFieldOption::FromCoupling);
+  EXPECT_EQ(config->winds, InputFieldOption::Homogeneous);
+  EXPECT_EQ(config->iceConcentrations, InputFieldOption::None);
+  EXPECT_EQ(config->bottomDepth, InputFieldOption::FromGrid);
   EXPECT_EQ(TimeManagement::getCalendarType(),
             TimeManagement::CalendarType::NoLeap);
 
@@ -57,6 +67,11 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "propagate_theta: no\n";
   file << "propagate_k: no\n";
   file << "source_terms: no\n";
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "bottom_depth: from_grid\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -113,6 +128,11 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "produce_std_out: yes\n";
   file << "\n";
   file << "produce_log_file : \"no\"\n";
+  file << "water_levels : \"none\"\n";
+  file << "currents : none # inline comment\n";
+  file << "winds : \"none\"\n";
+  file << "ice_concentrations : \"none\"\n";
+  file << "bottom_depth : \"from_grid\"\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -132,6 +152,11 @@ TEST(RunConfigTest, ReportConfigStandard) {
   config.calendarType = TimeManagement::CalendarType::Standard;
   config.produceStdOut = true;
   config.produceLogFile = true;
+  config.waterLevels = InputFieldOption::None;
+  config.currents = InputFieldOption::None;
+  config.winds = InputFieldOption::None;
+  config.iceConcentrations = InputFieldOption::None;
+  config.bottomDepth = InputFieldOption::FromGrid;
 
   std::stringstream ss;
   reportRunConfig(config, ss);
@@ -144,6 +169,12 @@ TEST(RunConfigTest, ReportConfigStandard) {
   EXPECT_NE(output.find("Conventional model run : yes"), std::string::npos);
   // Ensure no detailed flag reporting when conventional
   EXPECT_EQ(output.find("Dry run"), std::string::npos);
+
+  EXPECT_NE(output.find("Water levels       : none"), std::string::npos);
+  EXPECT_NE(output.find("Currents           : none"), std::string::npos);
+  EXPECT_NE(output.find("Winds              : none"), std::string::npos);
+  EXPECT_NE(output.find("Ice concentrations : none"), std::string::npos);
+  EXPECT_NE(output.find("Bottom depth       : from_grid"), std::string::npos);
 }
 
 /**
@@ -153,6 +184,11 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   RunConfig config;
   config.dryRun = true;
   config.propagateX = false;
+  config.waterLevels = InputFieldOption::None;
+  config.currents = InputFieldOption::None;
+  config.winds = InputFieldOption::None;
+  config.iceConcentrations = InputFieldOption::None;
+  config.bottomDepth = InputFieldOption::FromGrid;
 
   std::stringstream ss;
   reportRunConfig(config, ss);
@@ -218,6 +254,11 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   const std::string filename = "test_run_360.yml";
   std::ofstream file(filename);
   file << "calendar_type: \"ThreeSixtyDay\"\n";
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "bottom_depth: from_grid\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -238,6 +279,11 @@ TEST(RunConfigTest, PartialConfig) {
   const std::string filename = "test_run_partial.yml";
   std::ofstream file(filename);
   file << "produce_std_out: \"no\"\n";
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "bottom_depth: from_grid\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -245,6 +291,46 @@ TEST(RunConfigTest, PartialConfig) {
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::Standard);
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_TRUE(config->produceLogFile);
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify mandatory fields failure.
+ */
+TEST(RunConfigTest, MandatoryFieldsFailure) {
+  const std::string filename = "test_run_mandatory_failure.yml";
+  std::ofstream file(filename);
+  file << "produce_std_out: \"no\"\n";
+  // Missing other fields
+  file.close();
+
+  const auto config = loadRunConfig(filename);
+  EXPECT_FALSE(config.has_value());
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify all InputFieldOption parsing.
+ */
+TEST(RunConfigTest, InputFieldOptionParsing) {
+  const std::string filename = "test_input_parsing.yml";
+  std::ofstream file(filename);
+  file << "water_levels: \"none\"\n";
+  file << "currents: \"from_file\"\n";
+  file << "winds: \"from_coupling\"\n";
+  file << "ice_concentrations: \"homogeneous\"\n";
+  file << "bottom_depth: \"from_grid\"\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->waterLevels, InputFieldOption::None);
+  EXPECT_EQ(config->currents, InputFieldOption::FromFile);
+  EXPECT_EQ(config->winds, InputFieldOption::FromCoupling);
+  EXPECT_EQ(config->iceConcentrations, InputFieldOption::Homogeneous);
+  EXPECT_EQ(config->bottomDepth, InputFieldOption::FromGrid);
 
   std::remove(filename.c_str());
 }

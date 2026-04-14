@@ -43,6 +43,11 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yml");
   runFile << "calendar_type: \"Standard\"\n";
+  runFile << "water_levels: none\n";
+  runFile << "currents: none\n";
+  runFile << "winds: none\n";
+  runFile << "ice_concentrations: none\n";
+  runFile << "bottom_depth: from_grid\n";
   runFile.close();
 
   EXPECT_NO_THROW(ww4_core::w4core_init(startTime, "test_program"));

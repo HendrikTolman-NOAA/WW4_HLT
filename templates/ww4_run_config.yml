@@ -3,8 +3,8 @@
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
 #
 # @details This file provides a template for configuring run-time settings
-#          for WAVEWATCH IV. All inputs are optional and have default
-#          settings as indicated below.
+#          for WAVEWATCH IV. Most inputs are optional and have default
+#          settings as indicated below. Mandatory inputs are also indicated.
 #
 #          To use this file, copy it to the root directory of the repository
 #          or the directory from which the executable is run.
@@ -49,3 +49,22 @@ propagate_k: "yes"
 # Option for processing source terms.
 # Options: "yes" (default), "no"
 source_terms: "yes"
+
+# Mandatory input field options.
+# Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"
+# (Note: "from_grid" is only valid for bottom depth).
+
+# Water levels option.
+water_levels: "none"
+
+# Currents option.
+currents: "none"
+
+# Winds option.
+winds: "none"
+
+# Ice concentrations option.
+ice_concentrations: "none"
+
+# Bottom depth option.
+bottom_depth: "from_grid"

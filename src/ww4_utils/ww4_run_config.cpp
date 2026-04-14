@@ -23,6 +23,52 @@
 
 namespace ww4_utils {
 
+namespace {
+
+/**
+ * @brief Helper to parse InputFieldOption from string.
+ * @param value The string value to parse.
+ * @return The corresponding InputFieldOption.
+ */
+InputFieldOption parseInputOption(std::string_view value) {
+  if (value == "none") {
+    return InputFieldOption::None;
+  } else if (value == "from_file") {
+    return InputFieldOption::FromFile;
+  } else if (value == "from_coupling") {
+    return InputFieldOption::FromCoupling;
+  } else if (value == "homogeneous") {
+    return InputFieldOption::Homogeneous;
+  } else if (value == "from_grid") {
+    return InputFieldOption::FromGrid;
+  }
+  return InputFieldOption::Undefined;
+}
+
+/**
+ * @brief Helper to convert InputFieldOption to string for reporting.
+ * @param option The InputFieldOption to convert.
+ * @return A string representation of the option.
+ */
+std::string inputOptionToString(InputFieldOption option) {
+  switch (option) {
+  case InputFieldOption::None:
+    return "none";
+  case InputFieldOption::FromFile:
+    return "from_file";
+  case InputFieldOption::FromCoupling:
+    return "from_coupling";
+  case InputFieldOption::Homogeneous:
+    return "homogeneous";
+  case InputFieldOption::FromGrid:
+    return "from_grid";
+  default:
+    return "undefined";
+  }
+}
+
+} // namespace
+
 /**
  * @brief Internal helper to trim whitespace and quotes from a string.
  * @param s The string view to clean.
@@ -131,7 +177,26 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       } else if (value == "no") {
         config.sourceTerms = false;
       }
+    } else if (key == "water_levels") {
+      config.waterLevels = parseInputOption(value);
+    } else if (key == "currents") {
+      config.currents = parseInputOption(value);
+    } else if (key == "winds") {
+      config.winds = parseInputOption(value);
+    } else if (key == "ice_concentrations") {
+      config.iceConcentrations = parseInputOption(value);
+    } else if (key == "bottom_depth") {
+      config.bottomDepth = parseInputOption(value);
     }
+  }
+
+  // Mandatory fields check
+  if (config.waterLevels == InputFieldOption::Undefined ||
+      config.currents == InputFieldOption::Undefined ||
+      config.winds == InputFieldOption::Undefined ||
+      config.iceConcentrations == InputFieldOption::Undefined ||
+      config.bottomDepth == InputFieldOption::Undefined) {
+    return std::nullopt;
   }
 
   // Update TimeManagement with the loaded calendar type.
@@ -178,6 +243,17 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     os << "        Source terms    : " << (config.sourceTerms ? "yes" : "no")
        << std::endl;
   }
+
+  os << "     Water levels       : " << inputOptionToString(config.waterLevels)
+     << std::endl;
+  os << "     Currents           : " << inputOptionToString(config.currents)
+     << std::endl;
+  os << "     Winds              : " << inputOptionToString(config.winds)
+     << std::endl;
+  os << "     Ice concentrations : "
+     << inputOptionToString(config.iceConcentrations) << std::endl;
+  os << "     Bottom depth       : " << inputOptionToString(config.bottomDepth)
+     << std::endl;
 
   os << std::endl;
 }
