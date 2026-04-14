@@ -306,8 +306,7 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
   file.close();
 
   // Should abort program
-  EXPECT_DEATH(loadRunConfig(filename),
-               "Missing or invalid mandatory fields.");
+  EXPECT_DEATH(loadRunConfig(filename), "Missing or invalid mandatory fields.");
 
   std::remove(filename.c_str());
 }
@@ -326,8 +325,7 @@ TEST(RunConfigTest, FromGridRejection) {
   file.close();
 
   // Should abort because water_levels: from_grid is invalid
-  EXPECT_DEATH(loadRunConfig(filename),
-               "Missing or invalid mandatory fields.");
+  EXPECT_DEATH(loadRunConfig(filename), "Missing or invalid mandatory fields.");
 
   std::remove(filename.c_str());
 }
