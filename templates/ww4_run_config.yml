@@ -52,7 +52,7 @@ source_terms: "yes"
 
 # Mandatory input field options.
 # Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"
-# (Note: "from_grid" is only valid for bottom depth).
+# (Note: "from_grid" is only valid for bottom depth, and is its default).
 
 # Water levels option.
 water_levels: "none"

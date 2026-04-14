@@ -17,6 +17,7 @@
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_utils/ww4_std_out.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -28,9 +29,11 @@ namespace {
 /**
  * @brief Helper to parse InputFieldOption from string.
  * @param value The string value to parse.
+ * @param allowFromGrid Whether to allow the 'from_grid' option.
  * @return The corresponding InputFieldOption.
  */
-InputFieldOption parseInputOption(std::string_view value) {
+InputFieldOption parseInputOption(std::string_view value,
+                                  bool allowFromGrid = false) {
   if (value == "none") {
     return InputFieldOption::None;
   } else if (value == "from_file") {
@@ -40,7 +43,9 @@ InputFieldOption parseInputOption(std::string_view value) {
   } else if (value == "homogeneous") {
     return InputFieldOption::Homogeneous;
   } else if (value == "from_grid") {
-    return InputFieldOption::FromGrid;
+    if (allowFromGrid) {
+      return InputFieldOption::FromGrid;
+    }
   }
   return InputFieldOption::Undefined;
 }
@@ -186,7 +191,7 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
     } else if (key == "ice_concentrations") {
       config.iceConcentrations = parseInputOption(value);
     } else if (key == "bottom_depth") {
-      config.bottomDepth = parseInputOption(value);
+      config.bottomDepth = parseInputOption(value, true);
     }
   }
 
@@ -196,7 +201,22 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       config.winds == InputFieldOption::Undefined ||
       config.iceConcentrations == InputFieldOption::Undefined ||
       config.bottomDepth == InputFieldOption::Undefined) {
-    return std::nullopt;
+    std::cerr << "WW4 ERROR: Mandatory model input field(s) missing or invalid "
+                 "in configuration."
+              << std::endl;
+    if (config.waterLevels == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: water_levels" << std::endl;
+    if (config.currents == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: currents" << std::endl;
+    if (config.winds == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: winds" << std::endl;
+    if (config.iceConcentrations == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: ice_concentrations" << std::endl;
+    if (config.bottomDepth == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: bottom_depth" << std::endl;
+
+    ww4_std_out::extcde(1, std::cerr, "Missing or invalid mandatory fields.",
+                        __FILE__, __LINE__);
   }
 
   // Update TimeManagement with the loaded calendar type.

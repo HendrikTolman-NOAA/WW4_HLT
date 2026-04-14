@@ -305,8 +305,29 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
   // Missing other fields
   file.close();
 
-  const auto config = loadRunConfig(filename);
-  EXPECT_FALSE(config.has_value());
+  // Should abort program
+  EXPECT_DEATH(loadRunConfig(filename),
+               "Missing or invalid mandatory fields.");
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify that from_grid is rejected for other fields.
+ */
+TEST(RunConfigTest, FromGridRejection) {
+  const std::string filename = "test_run_from_grid_rejection.yml";
+  std::ofstream file(filename);
+  file << "water_levels: from_grid\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "bottom_depth: from_grid\n";
+  file.close();
+
+  // Should abort because water_levels: from_grid is invalid
+  EXPECT_DEATH(loadRunConfig(filename),
+               "Missing or invalid mandatory fields.");
 
   std::remove(filename.c_str());
 }
