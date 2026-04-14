@@ -17,11 +17,62 @@
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_utils/ww4_std_out.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
 
 namespace ww4_utils {
+
+namespace {
+
+/**
+ * @brief Helper to parse InputFieldOption from string.
+ * @param value The string value to parse.
+ * @param allowFromGrid Whether to allow the 'from_grid' option.
+ * @return The corresponding InputFieldOption.
+ */
+InputFieldOption parseInputOption(std::string_view value,
+                                  bool allowFromGrid = false) {
+  if (value == "none") {
+    return InputFieldOption::None;
+  } else if (value == "from_file") {
+    return InputFieldOption::FromFile;
+  } else if (value == "from_coupling") {
+    return InputFieldOption::FromCoupling;
+  } else if (value == "homogeneous") {
+    return InputFieldOption::Homogeneous;
+  } else if (value == "from_grid") {
+    if (allowFromGrid) {
+      return InputFieldOption::FromGrid;
+    }
+  }
+  return InputFieldOption::Undefined;
+}
+
+/**
+ * @brief Helper to convert InputFieldOption to string for reporting.
+ * @param option The InputFieldOption to convert.
+ * @return A string representation of the option.
+ */
+std::string inputOptionToString(InputFieldOption option) {
+  switch (option) {
+  case InputFieldOption::None:
+    return "none";
+  case InputFieldOption::FromFile:
+    return "from_file";
+  case InputFieldOption::FromCoupling:
+    return "from_coupling";
+  case InputFieldOption::Homogeneous:
+    return "homogeneous";
+  case InputFieldOption::FromGrid:
+    return "from_grid";
+  default:
+    return "undefined";
+  }
+}
+
+} // namespace
 
 /**
  * @brief Internal helper to trim whitespace and quotes from a string.
@@ -131,7 +182,41 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       } else if (value == "no") {
         config.sourceTerms = false;
       }
+    } else if (key == "water_levels") {
+      config.waterLevels = parseInputOption(value);
+    } else if (key == "currents") {
+      config.currents = parseInputOption(value);
+    } else if (key == "winds") {
+      config.winds = parseInputOption(value);
+    } else if (key == "ice_concentrations") {
+      config.iceConcentrations = parseInputOption(value);
+    } else if (key == "bottom_depth") {
+      config.bottomDepth = parseInputOption(value, true);
     }
+  }
+
+  // Mandatory fields check
+  if (config.waterLevels == InputFieldOption::Undefined ||
+      config.currents == InputFieldOption::Undefined ||
+      config.winds == InputFieldOption::Undefined ||
+      config.iceConcentrations == InputFieldOption::Undefined ||
+      config.bottomDepth == InputFieldOption::Undefined) {
+    std::cerr << "WW4 ERROR: Mandatory model input field(s) missing or invalid "
+                 "in configuration."
+              << std::endl;
+    if (config.waterLevels == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: water_levels" << std::endl;
+    if (config.currents == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: currents" << std::endl;
+    if (config.winds == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: winds" << std::endl;
+    if (config.iceConcentrations == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: ice_concentrations" << std::endl;
+    if (config.bottomDepth == InputFieldOption::Undefined)
+      std::cerr << "   Missing/invalid: bottom_depth" << std::endl;
+
+    ww4_std_out::extcde(1, std::cerr, "Missing or invalid mandatory fields.",
+                        __FILE__, __LINE__);
   }
 
   // Update TimeManagement with the loaded calendar type.
@@ -178,6 +263,17 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     os << "        Source terms    : " << (config.sourceTerms ? "yes" : "no")
        << std::endl;
   }
+
+  os << "     Water levels       : " << inputOptionToString(config.waterLevels)
+     << std::endl;
+  os << "     Currents           : " << inputOptionToString(config.currents)
+     << std::endl;
+  os << "     Winds              : " << inputOptionToString(config.winds)
+     << std::endl;
+  os << "     Ice concentrations : "
+     << inputOptionToString(config.iceConcentrations) << std::endl;
+  os << "     Bottom depth       : " << inputOptionToString(config.bottomDepth)
+     << std::endl;
 
   os << std::endl;
 }

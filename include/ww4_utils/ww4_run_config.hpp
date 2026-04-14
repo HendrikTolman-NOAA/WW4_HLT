@@ -28,9 +28,24 @@
 namespace ww4_utils {
 
 /**
+ * @enum InputFieldOption
+ * @brief Options for model input fields.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+enum class InputFieldOption {
+  Undefined,    ///< Mandatory field not yet defined.
+  None,         ///< No input, data set to zero.
+  FromFile,     ///< Input from file.
+  FromCoupling, ///< Input from coupling.
+  Homogeneous,  ///< Homogeneous field.
+  FromGrid      ///< Static data read as part of the grid data.
+};
+
+/**
  * @struct RunConfig
  * @brief Configuration for the run-time environment.
- * @details Stores the calendar type and output preferences.
+ * @details Stores the calendar type, output preferences, and input options.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  */
@@ -45,6 +60,15 @@ struct RunConfig {
   bool propagateTheta = true; ///< Propagation flag in theta-direction.
   bool propagateK = true;     ///< Propagation flag in k-direction.
   bool sourceTerms = true;    ///< Source terms flag.
+
+  InputFieldOption waterLevels =
+      InputFieldOption::Undefined; ///< Water levels option.
+  InputFieldOption currents = InputFieldOption::Undefined; ///< Currents option.
+  InputFieldOption winds = InputFieldOption::Undefined;    ///< Winds option.
+  InputFieldOption iceConcentrations =
+      InputFieldOption::Undefined; ///< Ice concentrations option.
+  InputFieldOption bottomDepth =
+      InputFieldOption::FromGrid; ///< Bottom depth option.
 };
 
 /**
