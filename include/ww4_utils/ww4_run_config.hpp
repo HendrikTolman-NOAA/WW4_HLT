@@ -14,7 +14,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-09
+ * @date Last Update, 2026-04-14
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
@@ -39,6 +39,12 @@ struct RunConfig {
       TimeManagement::CalendarType::Standard; ///< Calendar type.
   bool produceStdOut = true;                  ///< Screen output flag.
   bool produceLogFile = true;                 ///< Log file flag.
+  bool dryRun = false;                        ///< Dry run flag.
+  bool propagateX = true;     ///< Propagation flag in x-direction.
+  bool propagateY = true;     ///< Propagation flag in y-direction.
+  bool propagateTheta = true; ///< Propagation flag in theta-direction.
+  bool propagateK = true;     ///< Propagation flag in k-direction.
+  bool sourceTerms = true;    ///< Source terms flag.
 };
 
 /**

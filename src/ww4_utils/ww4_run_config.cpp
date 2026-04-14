@@ -13,7 +13,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-09
+ * @date Last Update, 2026-04-14
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -95,6 +95,42 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       } else if (value == "no") {
         config.produceLogFile = false;
       }
+    } else if (key == "dry_run") {
+      if (value == "yes") {
+        config.dryRun = true;
+      } else if (value == "no") {
+        config.dryRun = false;
+      }
+    } else if (key == "propagate_x") {
+      if (value == "yes") {
+        config.propagateX = true;
+      } else if (value == "no") {
+        config.propagateX = false;
+      }
+    } else if (key == "propagate_y") {
+      if (value == "yes") {
+        config.propagateY = true;
+      } else if (value == "no") {
+        config.propagateY = false;
+      }
+    } else if (key == "propagate_theta") {
+      if (value == "yes") {
+        config.propagateTheta = true;
+      } else if (value == "no") {
+        config.propagateTheta = false;
+      }
+    } else if (key == "propagate_k") {
+      if (value == "yes") {
+        config.propagateK = true;
+      } else if (value == "no") {
+        config.propagateK = false;
+      }
+    } else if (key == "source_terms") {
+      if (value == "yes") {
+        config.sourceTerms = true;
+      } else if (value == "no") {
+        config.sourceTerms = false;
+      }
     }
   }
 
@@ -120,6 +156,29 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << std::endl;
   os << "     Log file           : " << (config.produceLogFile ? "yes" : "no")
      << std::endl;
+
+  const bool isConventional = !config.dryRun && config.propagateX &&
+                              config.propagateY && config.propagateTheta &&
+                              config.propagateK && config.sourceTerms;
+
+  os << "     Conventional model run : " << (isConventional ? "yes" : "no")
+     << std::endl;
+
+  if (!isConventional) {
+    os << "        Dry run         : " << (config.dryRun ? "yes" : "no")
+       << std::endl;
+    os << "        Propagate X     : " << (config.propagateX ? "yes" : "no")
+       << std::endl;
+    os << "        Propagate Y     : " << (config.propagateY ? "yes" : "no")
+       << std::endl;
+    os << "        Propagate Theta : " << (config.propagateTheta ? "yes" : "no")
+       << std::endl;
+    os << "        Propagate K     : " << (config.propagateK ? "yes" : "no")
+       << std::endl;
+    os << "        Source terms    : " << (config.sourceTerms ? "yes" : "no")
+       << std::endl;
+  }
+
   os << std::endl;
 }
 
