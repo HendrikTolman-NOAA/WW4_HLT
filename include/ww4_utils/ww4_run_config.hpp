@@ -68,7 +68,7 @@ struct RunConfig {
   InputFieldOption iceConcentrations =
       InputFieldOption::Undefined; ///< Ice concentrations option.
   InputFieldOption bottomDepth =
-      InputFieldOption::FromGrid; ///< Bottom depth option.
+      InputFieldOption::Undefined; ///< Bottom depth option.
 };
 
 /**

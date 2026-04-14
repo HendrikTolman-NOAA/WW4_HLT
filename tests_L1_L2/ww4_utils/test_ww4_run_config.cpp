@@ -312,6 +312,26 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
 }
 
 /**
+ * @test Verify that bottom_depth can take other options.
+ */
+TEST(RunConfigTest, BottomDepthOtherOptions) {
+  const std::string filename = "test_run_bottom_depth_none.yml";
+  std::ofstream file(filename);
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "bottom_depth: none\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->bottomDepth, InputFieldOption::None);
+
+  std::remove(filename.c_str());
+}
+
+/**
  * @test Verify that from_grid is rejected for other fields.
  */
 TEST(RunConfigTest, FromGridRejection) {
