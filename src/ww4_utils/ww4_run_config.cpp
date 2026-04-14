@@ -157,9 +157,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "     Log file           : " << (config.produceLogFile ? "yes" : "no")
      << std::endl;
 
-  const bool isConventional =
-      !config.dryPoints && config.propagateX && config.propagateY &&
-      config.propagateTheta && config.propagateK && config.sourceTerms;
+  const bool isConventional = !config.dryPoints && config.propagateX &&
+                              config.propagateY && config.propagateTheta &&
+                              config.propagateK && config.sourceTerms;
 
   os << "     Conventional model run : " << (isConventional ? "yes" : "no")
      << std::endl;
@@ -171,8 +171,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
        << std::endl;
     os << "        Propagate Y     : " << (config.propagateY ? "yes" : "no")
        << std::endl;
-    os << "        Propagate Theta : "
-       << (config.propagateTheta ? "yes" : "no") << std::endl;
+    os << "        Propagate Theta : " << (config.propagateTheta ? "yes" : "no")
+       << std::endl;
     os << "        Propagate K     : " << (config.propagateK ? "yes" : "no")
        << std::endl;
     os << "        Source terms    : " << (config.sourceTerms ? "yes" : "no")

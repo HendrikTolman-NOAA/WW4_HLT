@@ -40,11 +40,11 @@ struct RunConfig {
   bool produceStdOut = true;                  ///< Screen output flag.
   bool produceLogFile = true;                 ///< Log file flag.
   bool dryPoints = false;                     ///< Dry points flag (FLDRY).
-  bool propagateX = true;    ///< Propagation flag in x-direction (FLCX).
-  bool propagateY = true;    ///< Propagation flag in y-direction (FLCY).
+  bool propagateX = true;     ///< Propagation flag in x-direction (FLCX).
+  bool propagateY = true;     ///< Propagation flag in y-direction (FLCY).
   bool propagateTheta = true; ///< Propagation flag in theta-direction (FLCTH).
-  bool propagateK = true;    ///< Propagation flag in k-direction (FLK).
-  bool sourceTerms = true;   ///< Source terms flag (FLSOU).
+  bool propagateK = true;     ///< Propagation flag in k-direction (FLK).
+  bool sourceTerms = true;    ///< Source terms flag (FLSOU).
 };
 
 /**
