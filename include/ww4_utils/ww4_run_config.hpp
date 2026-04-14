@@ -14,7 +14,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-14
+ * @date Last update, 2026-04-14
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
@@ -40,6 +40,20 @@ enum class InputFieldOption {
   FromCoupling, ///< Input from coupling.
   Homogeneous,  ///< Homogeneous field.
   FromGrid      ///< Static data read as part of the grid data.
+};
+
+/**
+ * @struct OutputConfig
+ * @brief Configuration for a specific output type.
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ */
+struct OutputConfig {
+  bool requested = false;            ///< Is this output requested?
+  std::optional<DateTime> startTime; ///< Start time for output.
+  std::optional<DateTime> endTime;   ///< End time for output.
+  double interval = -1.0;            ///< Output interval in seconds.
+  bool atFirstTime = true;           ///< Output at first time?
 };
 
 /**
@@ -69,6 +83,12 @@ struct RunConfig {
       InputFieldOption::Undefined; ///< Ice concentrations option.
   InputFieldOption bottomDepth =
       InputFieldOption::FromGrid; ///< Bottom depth option.
+
+  OutputConfig outputFields;  ///< Gridded fields output configuration.
+  OutputConfig outputPoints;  ///< Point output configuration.
+  OutputConfig outputNesting; ///< Nesting data output configuration.
+  OutputConfig outputTracks;  ///< Track output configuration.
+  OutputConfig outputRestart; ///< Restart file output configuration.
 };
 
 /**
