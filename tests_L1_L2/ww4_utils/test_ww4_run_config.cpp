@@ -13,7 +13,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-09
+ * @date Last Update, 2026-04-13
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -41,6 +41,32 @@ TEST(RunConfigTest, NonDefaultConfig) {
   EXPECT_FALSE(config->produceLogFile);
   EXPECT_EQ(TimeManagement::getCalendarType(),
             TimeManagement::CalendarType::NoLeap);
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify loading configuration with new runtime flags.
+ */
+TEST(RunConfigTest, NewFlagsConfig) {
+  const std::string filename = "test_run_new_flags.yml";
+  std::ofstream file(filename);
+  file << "dry_points: yes\n";
+  file << "propagate_x: no\n";
+  file << "propagate_y: no\n";
+  file << "propagate_theta: no\n";
+  file << "propagate_k: no\n";
+  file << "source_terms: no\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_TRUE(config->dryPoints);
+  EXPECT_FALSE(config->propagateX);
+  EXPECT_FALSE(config->propagateY);
+  EXPECT_FALSE(config->propagateTheta);
+  EXPECT_FALSE(config->propagateK);
+  EXPECT_FALSE(config->sourceTerms);
 
   std::remove(filename.c_str());
 }
@@ -115,6 +141,27 @@ TEST(RunConfigTest, ReportConfigStandard) {
   EXPECT_NE(output.find("Calendar type      : Standard"), std::string::npos);
   EXPECT_NE(output.find("Screen output      : yes"), std::string::npos);
   EXPECT_NE(output.find("Log file           : yes"), std::string::npos);
+  EXPECT_NE(output.find("Conventional model run : yes"), std::string::npos);
+  // Ensure no detailed flag reporting when conventional
+  EXPECT_EQ(output.find("Dry points"), std::string::npos);
+}
+
+/**
+ * @test Verify reportRunConfig for non-conventional run.
+ */
+TEST(RunConfigTest, ReportConfigNonConventional) {
+  RunConfig config;
+  config.dryPoints = true;
+  config.propagateX = false;
+
+  std::stringstream ss;
+  reportRunConfig(config, ss);
+  std::string output = ss.str();
+
+  EXPECT_NE(output.find("Conventional model run : no"), std::string::npos);
+  EXPECT_NE(output.find("Dry points      : yes"), std::string::npos);
+  EXPECT_NE(output.find("Propagate X     : no"), std::string::npos);
+  EXPECT_NE(output.find("Propagate Y     : yes"), std::string::npos);
 }
 
 /**

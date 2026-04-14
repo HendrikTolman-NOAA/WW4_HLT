@@ -25,3 +25,27 @@ produce_std_out: "yes"
 # Option for producing a log file.
 # Options: "yes" (default), "no"
 produce_log_file: "yes"
+
+# Option for processing dry points.
+# Options: "no" (default), "yes"
+dry_points: "no"
+
+# Option for propagation in x-direction.
+# Options: "yes" (default), "no"
+propagate_x: "yes"
+
+# Option for propagation in y-direction.
+# Options: "yes" (default), "no"
+propagate_y: "yes"
+
+# Option for propagation in theta-direction.
+# Options: "yes" (default), "no"
+propagate_theta: "yes"
+
+# Option for propagation in k-direction.
+# Options: "yes" (default), "no"
+propagate_k: "yes"
+
+# Option for processing source terms.
+# Options: "yes" (default), "no"
+source_terms: "yes"
