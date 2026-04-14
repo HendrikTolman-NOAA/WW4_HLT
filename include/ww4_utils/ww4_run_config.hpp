@@ -61,11 +61,14 @@ struct RunConfig {
   bool propagateK = true;     ///< Propagation flag in k-direction.
   bool sourceTerms = true;    ///< Source terms flag.
 
-  InputFieldOption waterLevels = InputFieldOption::Undefined;      ///< Water levels option.
-  InputFieldOption currents = InputFieldOption::Undefined;         ///< Currents option.
-  InputFieldOption winds = InputFieldOption::Undefined;            ///< Winds option.
-  InputFieldOption iceConcentrations = InputFieldOption::Undefined; ///< Ice concentrations option.
-  InputFieldOption bottomDepth = InputFieldOption::Undefined;      ///< Bottom depth option.
+  InputFieldOption waterLevels =
+      InputFieldOption::Undefined; ///< Water levels option.
+  InputFieldOption currents = InputFieldOption::Undefined; ///< Currents option.
+  InputFieldOption winds = InputFieldOption::Undefined;    ///< Winds option.
+  InputFieldOption iceConcentrations =
+      InputFieldOption::Undefined; ///< Ice concentrations option.
+  InputFieldOption bottomDepth =
+      InputFieldOption::Undefined; ///< Bottom depth option.
 };
 
 /**
