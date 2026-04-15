@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-08
+ * @date Last Update, 2026-04-15
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -20,6 +20,7 @@
 
 #include "ww4_core/w4core_finl.hpp"
 #include "ww4_core/w4core_init.hpp"
+#include "ww4_utils/memory_utils.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
@@ -90,9 +91,10 @@ void w4core_finl(const ww4_utils::DateTime &endTime) {
 
     //
     // 4.  Release persistent model data -------------------------------------
-    // Note: Only globalRunConfig for now
     //
-    const_cast<ww4_utils::RunConfig &>(getRunConfig()) = ww4_utils::RunConfig();
+    ww4_utils::TimeManagement::reset();
+    ww4_utils::resetMemoryStatusPath();
+    resetInternalState();
   } catch (const std::exception &e) {
     ww4_utils::ww4_std_out::extcde(1, std::cerr, e.what(), __FILE__, __LINE__);
   } catch (...) {

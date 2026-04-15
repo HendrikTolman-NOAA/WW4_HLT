@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last Update, 2026-04-08
+ * @date Last Update, 2026-04-15
  */
 
 #ifndef WW4_UTILS_MEMORY_UTILS_HPP
@@ -35,6 +35,11 @@ namespace ww4_utils {
  * @note This is for internal testing only and should not be used in production.
  */
 void setMemoryStatusPathForTesting(const char *path);
+
+/**
+ * @brief Resets the memory status path to the default "/proc/self/status".
+ */
+void resetMemoryStatusPath() noexcept;
 
 /**
  * @struct MemoryUsage

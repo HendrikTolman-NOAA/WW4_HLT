@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-08
+ * @date Last Update, 2026-04-15
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -147,5 +147,13 @@ const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
 std::ofstream &getLogFileStream() { return logFile; }
 
 const std::string &getProgramName() { return capturedProgramName; }
+
+void resetInternalState() noexcept {
+  globalRunConfig = ww4_utils::RunConfig();
+  capturedProgramName.clear();
+  if (logFile.is_open()) {
+    logFile.close();
+  }
+}
 
 } // namespace ww4_core

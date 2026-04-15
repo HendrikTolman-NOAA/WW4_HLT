@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-06
+ * @date Last Update, 2026-04-15
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -45,6 +45,13 @@ namespace ww4_core {
  */
 void w4core_init(const ww4_utils::DateTime &startTime,
                  const std::string &programName);
+
+/**
+ * @brief Resets the internal state of the core module.
+ * @details Clears global configuration, program name, and ensures log file
+ *          stream is reset. Used during program finalization.
+ */
+void resetInternalState() noexcept;
 
 /**
  * @brief Provides access to the captured program name.

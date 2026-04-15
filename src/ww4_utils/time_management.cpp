@@ -14,7 +14,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
  * @date Initial: 2026-03-11
- * @date Last Update: 2026-04-06
+ * @date Last Update: 2026-04-15
  */
 
 #include "ww4_utils/time_management.hpp"
@@ -39,6 +39,13 @@ void TimeManagement::setCalendarType(const CalendarType type) noexcept {
 
 TimeManagement::CalendarType TimeManagement::getCalendarType() noexcept {
   return m_calendarType;
+}
+
+void TimeManagement::reset() noexcept {
+  m_calendarType = CalendarType::Standard;
+  m_profilingBase = {0, 0, 0, 0, 0, 0, 0, 0};
+  m_profilingInitialized = false;
+  m_steadyBase = std::chrono::steady_clock::time_point();
 }
 
 void TimeManagement::incrementDateTime(DateTime &time,

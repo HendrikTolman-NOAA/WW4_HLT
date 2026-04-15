@@ -49,12 +49,21 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   runFile << "winds: none\n";
   runFile << "ice_concentrations: none\n";
   runFile << "time_step: 3600.0\n";
-  // bottom_depth is optional
+  runFile << "bottom_depth: none\n";
   runFile.close();
 
   EXPECT_NO_THROW(ww4_core::w4core_init(startTime, "test_program"));
+
+  // Verify internal state is set
+  EXPECT_EQ(ww4_core::getProgramName(), "test_program");
+  EXPECT_EQ(ww4_core::getRunConfig().timeStep, 3600.0);
+
   EXPECT_NO_THROW(ww4_core::w4core_wave(startTime, endTime));
   EXPECT_NO_THROW(ww4_core::w4core_finl(endTime));
+
+  // Verify internal state is reset after finalization
+  EXPECT_EQ(ww4_core::getProgramName(), "");
+  EXPECT_EQ(ww4_core::getRunConfig().timeStep, -1.0); // Default value
 
   std::remove("ww4_run_config.yml");
   std::remove("log.ww4");
