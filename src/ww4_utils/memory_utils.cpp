@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last Update, 2026-04-08
+ * @date Last Update, 2026-04-15
  */
 
 #include "ww4_utils/memory_utils.hpp"
@@ -27,10 +27,13 @@
 namespace ww4_utils {
 
 namespace {
-const char *statusFilePath = "/proc/self/status";
+const char *defaultStatusFilePath = "/proc/self/status";
+const char *statusFilePath = defaultStatusFilePath;
 }
 
 void setMemoryStatusPathForTesting(const char *path) { statusFilePath = path; }
+
+void resetMemoryStatusPath() noexcept { statusFilePath = defaultStatusFilePath; }
 
 std::optional<MemoryUsage> MemoryUtils::captureMemoryUsage() noexcept {
   std::ifstream statusFile(statusFilePath);

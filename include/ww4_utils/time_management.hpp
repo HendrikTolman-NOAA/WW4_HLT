@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-31
+ * @date Last Update, 2026-04-15
  *
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
@@ -101,6 +101,14 @@ public:
    * @return The currently set calendar type.
    */
   static CalendarType getCalendarType() noexcept;
+
+  /**
+   * @brief Resets all persistent static members to their default values.
+   * @details Used during program finalization to ensure no stale data remains.
+   * @post m_calendarType, m_profilingBase, m_profilingInitialized, and
+   *       m_steadyBase are reset.
+   */
+  static void reset() noexcept;
 
   /**
    * @brief Increment a date and time with a given number of seconds.
