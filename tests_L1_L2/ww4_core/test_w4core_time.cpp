@@ -11,6 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-06
+ * @date Last update, 2026-04-15
  */
 
 #include "ww4_core/w4core_finl.hpp"
@@ -47,6 +48,7 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   runFile << "currents: none\n";
   runFile << "winds: none\n";
   runFile << "ice_concentrations: none\n";
+  runFile << "time_step: 3600.0\n";
   // bottom_depth is optional
   runFile.close();
 

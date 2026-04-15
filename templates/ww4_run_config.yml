@@ -50,6 +50,10 @@ propagate_k: "yes"
 # Options: "yes" (default), "no"
 source_terms: "yes"
 
+# Mandatory model time step in seconds.
+# This parameter must be positive and non-zero.
+time_step: 3600.0
+
 # Mandatory input field options.
 # Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"
 # Note: "from_grid" is only valid for bottom depth.
