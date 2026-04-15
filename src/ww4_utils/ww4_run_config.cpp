@@ -295,9 +295,8 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
     std::cerr << "WW4 ERROR: Mandatory time step missing or invalid "
                  "in configuration."
               << std::endl;
-    ww4_std_out::extcde(1, std::cerr,
-                        "Missing or invalid mandatory time step.", __FILE__,
-                        __LINE__);
+    ww4_std_out::extcde(1, std::cerr, "Missing or invalid mandatory time step.",
+                        __FILE__, __LINE__);
   }
 
   // Output validation

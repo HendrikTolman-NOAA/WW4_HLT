@@ -47,6 +47,7 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   runFile << "currents: none\n";
   runFile << "winds: none\n";
   runFile << "ice_concentrations: none\n";
+  runFile << "time_step: 3600.0\n";
   // bottom_depth is optional
   runFile.close();
 
