@@ -29,11 +29,13 @@ namespace ww4_utils {
 namespace {
 const char *defaultStatusFilePath = "/proc/self/status";
 const char *statusFilePath = defaultStatusFilePath;
-}
+} // namespace
 
 void setMemoryStatusPathForTesting(const char *path) { statusFilePath = path; }
 
-void resetMemoryStatusPath() noexcept { statusFilePath = defaultStatusFilePath; }
+void resetMemoryStatusPath() noexcept {
+  statusFilePath = defaultStatusFilePath;
+}
 
 std::optional<MemoryUsage> MemoryUtils::captureMemoryUsage() noexcept {
   std::ifstream statusFile(statusFilePath);
