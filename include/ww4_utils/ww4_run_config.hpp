@@ -84,6 +84,8 @@ struct RunConfig {
   InputFieldOption bottomDepth =
       InputFieldOption::FromGrid; ///< Bottom depth option.
 
+  double timeStep = -1.0; ///< Model time step in seconds.
+
   OutputConfig outputFields;  ///< Gridded fields output configuration.
   OutputConfig outputPoints;  ///< Point output configuration.
   OutputConfig outputNesting; ///< Nesting data output configuration.

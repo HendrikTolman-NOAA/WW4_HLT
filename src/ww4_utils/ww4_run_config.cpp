@@ -247,6 +247,12 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       config.iceConcentrations = parseInputOption(value);
     } else if (key == "bottom_depth") {
       config.bottomDepth = parseInputOption(value, true);
+    } else if (key == "time_step") {
+      try {
+        config.timeStep = std::stod(std::string(value));
+      } catch (...) {
+        config.timeStep = -1.0;
+      }
     } else if (key.starts_with("output_fields_")) {
       updateOutputConfig(config.outputFields, key.substr(14), value);
     } else if (key.starts_with("output_points_")) {
@@ -282,6 +288,16 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
 
     ww4_std_out::extcde(1, std::cerr, "Missing or invalid mandatory fields.",
                         __FILE__, __LINE__);
+  }
+
+  // Time step validation
+  if (config.timeStep <= 0.0) {
+    std::cerr << "WW4 ERROR: Mandatory time step missing or invalid "
+                 "in configuration."
+              << std::endl;
+    ww4_std_out::extcde(1, std::cerr,
+                        "Missing or invalid mandatory time step.", __FILE__,
+                        __LINE__);
   }
 
   // Output validation
@@ -363,6 +379,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << inputOptionToString(config.iceConcentrations) << std::endl;
   os << "     Bottom depth       : " << inputOptionToString(config.bottomDepth)
      << std::endl;
+
+  os << "     Time step          : " << config.timeStep << " s" << std::endl;
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);

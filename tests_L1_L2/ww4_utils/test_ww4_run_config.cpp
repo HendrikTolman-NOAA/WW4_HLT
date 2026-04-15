@@ -37,10 +37,12 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "winds: \"homogeneous\"\n";
   file << "ice_concentrations: \"none\"\n";
   file << "bottom_depth: \"from_grid\"\n";
+  file << "time_step: 1800.0\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
   ASSERT_TRUE(config.has_value());
+  EXPECT_DOUBLE_EQ(config->timeStep, 1800.0);
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_FALSE(config->produceLogFile);
@@ -65,6 +67,7 @@ TEST(RunConfigTest, OutputConfigParsing) {
   file << "currents: none\n";
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
+  file << "time_step: 3600.0\n";
 
   file << "output_fields_requested: yes\n";
   file << "output_fields_interval: 3600\n";
@@ -109,6 +112,7 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   file << "currents: none\n";
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
+  file << "time_step: 3600.0\n";
   file << "output_fields_requested: yes\n";
   // Missing interval
   file.close();
@@ -129,6 +133,7 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
   config.winds = InputFieldOption::None;
   config.iceConcentrations = InputFieldOption::None;
   config.bottomDepth = InputFieldOption::FromGrid;
+  config.timeStep = 3600.0;
 
   config.outputFields.requested = true;
   config.outputFields.interval = 3600.0;
@@ -144,6 +149,7 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
   EXPECT_NE(output.find("At first time   : no"), std::string::npos);
   EXPECT_NE(output.find("Start time      : 2026/01/01 00:00:00 UTC"),
             std::string::npos);
+  EXPECT_NE(output.find("Time step          : 3600 s"), std::string::npos);
   EXPECT_NE(output.find("Point output : no"), std::string::npos);
 }
 
@@ -164,6 +170,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
   file << "bottom_depth: from_grid\n";
+  file << "time_step: 3600.0\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -225,6 +232,7 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "winds : \"none\"\n";
   file << "ice_concentrations : \"none\"\n";
   file << "bottom_depth : \"from_grid\"\n";
+  file << "time_step : 3600.0\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -249,6 +257,7 @@ TEST(RunConfigTest, ReportConfigStandard) {
   config.winds = InputFieldOption::None;
   config.iceConcentrations = InputFieldOption::None;
   config.bottomDepth = InputFieldOption::FromGrid;
+  config.timeStep = 3600.0;
 
   std::stringstream ss;
   reportRunConfig(config, ss);
@@ -267,6 +276,7 @@ TEST(RunConfigTest, ReportConfigStandard) {
   EXPECT_NE(output.find("Winds              : none"), std::string::npos);
   EXPECT_NE(output.find("Ice concentrations : none"), std::string::npos);
   EXPECT_NE(output.find("Bottom depth       : from_grid"), std::string::npos);
+  EXPECT_NE(output.find("Time step          : 3600 s"), std::string::npos);
 }
 
 /**
@@ -281,6 +291,7 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   config.winds = InputFieldOption::None;
   config.iceConcentrations = InputFieldOption::None;
   config.bottomDepth = InputFieldOption::FromGrid;
+  config.timeStep = 3600.0;
 
   std::stringstream ss;
   reportRunConfig(config, ss);
@@ -290,6 +301,7 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   EXPECT_NE(output.find("Dry run         : yes"), std::string::npos);
   EXPECT_NE(output.find("Propagate X     : no"), std::string::npos);
   EXPECT_NE(output.find("Propagate Y     : yes"), std::string::npos);
+  EXPECT_NE(output.find("Time step          : 3600 s"), std::string::npos);
 }
 
 /**
@@ -351,6 +363,7 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
   file << "bottom_depth: from_grid\n";
+  file << "time_step: 3600.0\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -376,6 +389,7 @@ TEST(RunConfigTest, PartialConfig) {
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
   file << "bottom_depth: from_grid\n";
+  file << "time_step: 3600.0\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -383,6 +397,27 @@ TEST(RunConfigTest, PartialConfig) {
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::Standard);
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_TRUE(config->produceLogFile);
+
+  std::remove(filename.c_str());
+}
+
+/**
+ * @test Verify mandatory time step failure.
+ */
+TEST(RunConfigTest, TimeStepFailure) {
+  const std::string filename = "test_run_time_step_failure.yml";
+  std::ofstream file(filename);
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  // time_step is missing or invalid
+  file << "time_step: 0.0\n";
+  file.close();
+
+  // Should abort program
+  EXPECT_DEATH(loadRunConfig(filename),
+               "Missing or invalid mandatory time step.");
 
   std::remove(filename.c_str());
 }
@@ -413,6 +448,7 @@ TEST(RunConfigTest, BottomDepthDefault) {
   file << "currents: none\n";
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
+  file << "time_step: 3600.0\n";
   // bottom_depth is missing
   file.close();
 
@@ -434,6 +470,7 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
   file << "bottom_depth: none\n";
+  file << "time_step: 3600.0\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
@@ -454,6 +491,7 @@ TEST(RunConfigTest, FromGridRejection) {
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
   file << "bottom_depth: from_grid\n";
+  file << "time_step: 3600.0\n";
   file.close();
 
   // Should abort because water_levels: from_grid is invalid
@@ -473,6 +511,7 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   file << "winds: \"from_coupling\"\n";
   file << "ice_concentrations: \"homogeneous\"\n";
   file << "bottom_depth: \"from_grid\"\n";
+  file << "time_step: 3600.0\n";
   file.close();
 
   const auto config = loadRunConfig(filename);
