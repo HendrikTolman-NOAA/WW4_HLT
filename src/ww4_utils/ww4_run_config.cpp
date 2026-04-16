@@ -358,8 +358,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
            << std::endl;
            if (config.dryRun) {
                 os << "        Dry run         : " << (config.dryRun ? "yes" : "no")
-       << std::endl;           }
-       
+                                                   << std::endl;
+           } else {
     os << "        Propagate X     : " << (config.propagateX ? "yes" : "no")
        << std::endl;
     os << "        Propagate Y     : " << (config.propagateY ? "yes" : "no")
@@ -370,6 +370,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
        << std::endl;
     os << "        Source terms    : " << (config.sourceTerms ? "yes" : "no")
        << std::endl;
+           }
   }
 
   os << "     Water levels       : " << inputOptionToString(config.waterLevels)
