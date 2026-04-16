@@ -359,20 +359,20 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
            if (config.dryRun) {
                 os << "        Dry run" << std::endl;
            } else {
-        os << "        Propagate X         : " << (config.propagateX ? "yes" : "no")
+        os << "        Propagate X       : " << (config.propagateX ? "yes" : "no")
            << std::endl;
-        os << "        Propagate Y         : " << (config.propagateY ? "yes" : "no")
+        os << "        Propagate Y       : " << (config.propagateY ? "yes" : "no")
            << std::endl;
-        os << "        Propagate Theta     : " << (config.propagateTheta ? "yes" : "no")
+        os << "        Propagate Theta   : " << (config.propagateTheta ? "yes" : "no")
            << std::endl;
-        os << "        Propagate K         : " << (config.propagateK ? "yes" : "no")
+        os << "        Propagate K       : " << (config.propagateK ? "yes" : "no")
            << std::endl;
-        os << "        Source terms        : " << (config.sourceTerms ? "yes" : "no")
+        os << "        Source terms      : " << (config.sourceTerms ? "yes" : "no")
            << std::endl;
            }
   }
 
-  os << "     Time step          : " << config.timeStep << " s" << std::endl;
+  os << "     Time step            : " << config.timeStep << " s" << std::endl;
 
   os << "\n  Model input:" << std::endl;
 
