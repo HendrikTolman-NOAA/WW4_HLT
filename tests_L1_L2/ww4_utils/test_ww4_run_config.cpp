@@ -299,7 +299,7 @@ TEST(RunConfigTest, ApiOutputConfig) {
 
   std::stringstream ss;
   reportRunConfig(*config, ss);
-  EXPECT_NE(ss.str().find("API output           : yes"), std::string::npos);
+  EXPECT_NE(ss.str().find("API output requested"), std::string::npos);
 
   std::remove(filename.c_str());
 }

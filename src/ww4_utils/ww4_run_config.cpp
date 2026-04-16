@@ -394,8 +394,11 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Model output:" << std::endl;
 
-  os << "     API output           : " << (config.outputApi ? "yes" : "no")
-     << std::endl;
+  if (config.outputApi) {
+    os << "     API output requested" << std::endl;
+  } else {
+    os << "     API output not requested" << std::endl;
+  }
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);
