@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-07
+ * @date Last update, 2026-04-16
  * @note This program follows the structure of the stand-alone shell
  *       (ww3_shel.F90) in WAVEWATCH III.
  *       Original author of WW3 stand-alone shell: Hendrik L. Tolman.
@@ -47,7 +47,8 @@ int main(int argc, char **argv) {
     //
     // 0.1 Load configuration from ww4_stand_alone.yml file
     //
-    auto config = ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml");
+    const auto config =
+        ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml", std::cout);
     if (!config) {
       ww4_utils::ww4_std_out::extcde(1, std::cerr,
                                      "Could not load stand-alone configuration",
@@ -62,17 +63,17 @@ int main(int argc, char **argv) {
     //
     // 1.  Run initialization routine  --------------------------------------
     //
-    ww4_core::w4core_init(config->startTime, programName);
+    ww4_core::w4core_init(config->startTime, programName, std::cout);
 
     //
     // 2.  Run time stepping routine  ----------------------------------------
     //
-    ww4_core::w4core_wave(config->startTime, config->endTime);
+    ww4_core::w4core_wave(config->startTime, config->endTime, std::cout);
 
     //
     // 3.  Run finalization routine  -----------------------------------------
     //
-    ww4_core::w4core_finl(config->endTime);
+    ww4_core::w4core_finl(config->endTime, std::cout);
 
     return 0;
   } catch (const std::exception &e) {

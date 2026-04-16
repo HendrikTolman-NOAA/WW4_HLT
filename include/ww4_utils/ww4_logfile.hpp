@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last Update, 2026-04-01
+ * @date Last update, 2026-04-16
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -45,7 +45,7 @@ namespace ww4_logfile {
  * @param os The output stream to write to (e.g., an std::ofstream).
  * @param programName The name of the executable program.
  */
-void writeInitialOutput(std::ostream &os, const std::string &programName);
+void writeInitialOutput(std::ostream &os, std::string_view programName);
 
 /**
  * @brief Writes the final log entry to the provided output stream.
@@ -56,7 +56,7 @@ void writeInitialOutput(std::ostream &os, const std::string &programName);
  * @param initTime Optional initialization time in seconds.
  * @param elapsedTotal Optional total elapsed time in seconds.
  */
-void writeFinalOutput(std::ostream &os, const std::string &programName,
+void writeFinalOutput(std::ostream &os, std::string_view programName,
                       std::optional<double> initTime = std::nullopt,
                       std::optional<double> elapsedTotal = std::nullopt);
 

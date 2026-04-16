@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last Update, 2026-04-06
+ * @date Last update, 2026-04-16
  * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
  *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
@@ -49,7 +49,7 @@ namespace ww4_std_out {
  * @param programName The name of the executable program to identify in the
  *        banner.
  */
-void writeInitialOutput(std::ostream &os, const std::string &programName);
+void writeInitialOutput(std::ostream &os, std::string_view programName);
 
 /**
  * @brief Writes the final footer to the provided output stream.
@@ -62,7 +62,7 @@ void writeInitialOutput(std::ostream &os, const std::string &programName);
  * @param initTime Optional initialization time in seconds.
  * @param elapsedTotal Optional total elapsed time in seconds.
  */
-void writeFinalOutput(std::ostream &os, const std::string &programName,
+void writeFinalOutput(std::ostream &os, std::string_view programName,
                       std::optional<double> initTime = std::nullopt,
                       std::optional<double> elapsedTotal = std::nullopt);
 
@@ -90,7 +90,7 @@ void writeExtcdeOutput(std::ostream &os,
  * @param file Optional source file name where the error occurred.
  * @param line Optional line number in the source file.
  */
-[[noreturn]] void extcde(int exitCode, std::ostream &os = std::cerr,
+[[noreturn]] void extcde(int exitCode, std::ostream &os,
                          std::optional<std::string_view> msg = std::nullopt,
                          std::optional<std::string_view> file = std::nullopt,
                          std::optional<int> line = std::nullopt);

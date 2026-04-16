@@ -10,10 +10,10 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last Update, 2026-04-09
+ * @date Last update, 2026-04-16
  */
 
 #include "ww4_utils/ww4_stand_alone_config.hpp"
@@ -33,7 +33,7 @@ TEST(StandAloneConfigTest, ValidConfig) {
   file << "end_time: \"19680606 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->startTime.ymd, 19680606);
   EXPECT_NEAR(config->startTime.hms, 60000.0, 1e-6);
@@ -85,7 +85,7 @@ TEST(StandAloneConfigTest, EmptyDateTime) {
   file << "end_time: \"19680606 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
@@ -101,7 +101,7 @@ TEST(StandAloneConfigTest, ShortDateTime) {
   file << "end_time: \"19680606 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
@@ -117,7 +117,7 @@ TEST(StandAloneConfigTest, NonNumericDateTime) {
   file << "end_time: \"19680606 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
@@ -133,7 +133,7 @@ TEST(StandAloneConfigTest, NonNumericTimePart) {
   file << "end_time: \"19680606 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
@@ -149,7 +149,7 @@ TEST(StandAloneConfigTest, EqualTimes) {
   file << "end_time: \"19680606 060000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->startTime.ymd, config->endTime.ymd);
   EXPECT_NEAR(config->startTime.hms, config->endTime.hms, 1e-6);
@@ -167,7 +167,7 @@ TEST(StandAloneConfigTest, InvalidTimeOrder) {
   file << "end_time: \"19680605 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
@@ -182,7 +182,7 @@ TEST(StandAloneConfigTest, MissingFields) {
   file << "start_time: \"19680606 060000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
@@ -198,7 +198,7 @@ TEST(StandAloneConfigTest, MalformedDateTime) {
   file << "end_time: \"19680606 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   EXPECT_FALSE(config.has_value());
 
   std::remove(filename.c_str());
@@ -208,7 +208,7 @@ TEST(StandAloneConfigTest, MalformedDateTime) {
  * @test Verify behavior with non-existent file.
  */
 TEST(StandAloneConfigTest, NonExistentFile) {
-  const auto config = loadStandAloneConfig("non_existent.yml");
+  const auto config = loadStandAloneConfig("non_existent.yml", std::cerr);
   EXPECT_FALSE(config.has_value());
 }
 
@@ -246,7 +246,7 @@ TEST(StandAloneConfigTest, RobustParsingConfig) {
   file << "end_time : \"19680606 180000\"\n";
   file.close();
 
-  const auto config = loadStandAloneConfig(filename);
+  const auto config = loadStandAloneConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->startTime.ymd, 19680606);
   EXPECT_NEAR(config->startTime.hms, 60000.0, 1e-6);
