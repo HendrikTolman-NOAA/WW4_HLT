@@ -273,10 +273,35 @@ TEST(RunConfigTest, ReportConfigStandard) {
 
   EXPECT_NE(output.find("Water levels         : none"), std::string::npos);
   EXPECT_NE(output.find("Currents             : none"), std::string::npos);
-  EXPECT_NE(output.find("Winds  : none"), std::string::npos);
+  EXPECT_NE(output.find("Winds                : none"), std::string::npos);
   EXPECT_NE(output.find("Ice concentrations   : none"), std::string::npos);
   EXPECT_NE(output.find("Bottom depth         : from_grid"), std::string::npos);
   EXPECT_NE(output.find("Time step              : 3600 s"), std::string::npos);
+}
+
+/**
+ * @test Verify API output configuration parsing.
+ */
+TEST(RunConfigTest, ApiOutputConfig) {
+  const std::string filename = "test_api_output.yml";
+  std::ofstream file(filename);
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "time_step: 3600.0\n";
+  file << "output_api: yes\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename, std::cerr);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_TRUE(config->outputApi);
+
+  std::stringstream ss;
+  reportRunConfig(*config, ss);
+  EXPECT_NE(ss.str().find("API output           : yes"), std::string::npos);
+
+  std::remove(filename.c_str());
 }
 
 /**

@@ -256,6 +256,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
               .ec != std::errc()) {
         config.timeStep = -1.0;
       }
+    } else if (key == "output_api") {
+      config.outputApi = (value == "yes");
     } else if (key.starts_with("output_fields_")) {
       updateOutputConfig(config.outputFields, key.substr(14), value);
     } else if (key.starts_with("output_points_")) {
@@ -390,6 +392,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << inputOptionToString(config.iceConcentrations) << std::endl;
 
   os << "\n  Model output:" << std::endl;
+
+  os << "     API output           : " << (config.outputApi ? "yes" : "no")
+     << std::endl;
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);
