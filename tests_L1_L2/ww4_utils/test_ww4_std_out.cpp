@@ -48,8 +48,7 @@ TEST(StdOutTest, FinalOutputProgramShellWithMetrics) {
 
   EXPECT_NE(output.find("  Initialization time :      1.23 s"),
             std::string::npos);
-  EXPECT_NE(output.find("  Elapsed time       4.56 s"),
-            std::string::npos);
+  EXPECT_NE(output.find("  Elapsed time       4.56 s"), std::string::npos);
   EXPECT_EQ(output.find("  Memory usage:"), std::string::npos);
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("          WAVEWATCH IV program Program shell "),

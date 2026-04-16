@@ -67,7 +67,8 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
       getLogFileStream() << "\n  Finalization (w4core_finl) starting: "
                          << ww4_utils::TimeManagement::toFormattedString(
-                                endTime) << "\n"
+                                endTime)
+                         << "\n"
                          << std::endl;
 
       //
