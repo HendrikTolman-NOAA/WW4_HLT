@@ -10,7 +10,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
  * @date Last update, 2026-04-16
@@ -19,6 +19,7 @@
 #include "ww4_utils/ww4_run_config.hpp"
 #include "ww4_utils/ww4_stand_alone_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
+#include <charconv>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -33,8 +34,8 @@ namespace {
  * @param allowFromGrid Whether to allow the 'from_grid' option.
  * @return The corresponding InputFieldOption.
  */
-InputFieldOption parseInputOption(std::string_view value,
-                                  bool allowFromGrid = false) {
+InputFieldOption parseInputOption(const std::string_view value,
+                                  const bool allowFromGrid = false) {
   if (value == "none") {
     return InputFieldOption::None;
   } else if (value == "from_file") {
@@ -56,7 +57,7 @@ InputFieldOption parseInputOption(std::string_view value,
  * @param option The InputFieldOption to convert.
  * @return A string representation of the option.
  */
-std::string inputOptionToString(InputFieldOption option) {
+std::string inputOptionToString(const InputFieldOption option) {
   switch (option) {
   case InputFieldOption::None:
     return "none";
@@ -79,8 +80,8 @@ std::string inputOptionToString(InputFieldOption option) {
  * @param key_suffix The suffix of the configuration key.
  * @param value The value to set.
  */
-void updateOutputConfig(OutputConfig &oc, std::string_view key_suffix,
-                        std::string_view value) {
+void updateOutputConfig(OutputConfig &oc, const std::string_view key_suffix,
+                        const std::string_view value) {
   if (key_suffix == "requested") {
     oc.requested = (value == "yes");
   } else if (key_suffix == "start") {
@@ -108,11 +109,10 @@ void updateOutputConfig(OutputConfig &oc, std::string_view key_suffix,
  * @param label The label for the output type.
  * @param os The output stream to write to.
  */
-void reportOutput(const OutputConfig &oc, std::string_view label,
+void reportOutput(const OutputConfig &oc, const std::string_view label,
                   std::ostream &os) {
   if (oc.requested) {
-    os << "\n     " << label << " output"
-                  << std::endl;
+    os << "\n     " << label << " output" << std::endl;
     os << "        Interval          : " << oc.interval << " s" << std::endl;
     os << "        At first time     : " << (oc.atFirstTime ? "yes" : "no")
        << std::endl;
@@ -125,8 +125,7 @@ void reportOutput(const OutputConfig &oc, std::string_view label,
          << TimeManagement::toFormattedString(*oc.endTime) << std::endl;
     }
   } else {
-     os << "\n     " << label << " output not requested " << std::endl;
-
+    os << "\n     " << label << " output not requested " << std::endl;
   }
 }
 
@@ -137,7 +136,7 @@ void reportOutput(const OutputConfig &oc, std::string_view label,
  * @param s The string view to clean.
  * @return A cleaned string view.
  */
-std::string_view cleanValue(std::string_view s) {
+std::string_view cleanValue(const std::string_view s) {
   const size_t start = s.find_first_not_of(" \t\"");
   const size_t end = s.find_last_not_of(" \t\"");
   if (start == std::string_view::npos)
@@ -145,7 +144,8 @@ std::string_view cleanValue(std::string_view s) {
   return s.substr(start, end - start + 1);
 }
 
-std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
+std::optional<RunConfig> loadRunConfig(const std::string_view filename,
+                                       std::ostream &os) noexcept {
   std::ifstream file((std::string(filename)));
   RunConfig config{};
 
@@ -155,13 +155,13 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
 
   std::string line;
   while (std::getline(file, line)) {
-    std::string_view lineView(line);
+    const std::string_view lineFullView(line);
 
     // Remove comments
-    const size_t hashPos = lineView.find('#');
-    if (hashPos != std::string_view::npos) {
-      lineView = lineView.substr(0, hashPos);
-    }
+    const size_t hashPos = lineFullView.find('#');
+    const std::string_view lineView = (hashPos != std::string_view::npos)
+                                          ? lineFullView.substr(0, hashPos)
+                                          : lineFullView;
 
     if (lineView.empty())
       continue;
@@ -175,12 +175,12 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
     if (colonPos == std::string_view::npos)
       continue;
 
-    std::string_view key = lineView.substr(first, colonPos - first);
+    const std::string_view key_raw = lineView.substr(first, colonPos - first);
     // Trim trailing whitespace from key
-    const size_t kend = key.find_last_not_of(" \t");
-    if (kend != std::string_view::npos) {
-      key = key.substr(0, kend + 1);
-    }
+    const size_t kend = key_raw.find_last_not_of(" \t");
+    const std::string_view key = (kend != std::string_view::npos)
+                                     ? key_raw.substr(0, kend + 1)
+                                     : key_raw;
 
     const std::string_view value = cleanValue(lineView.substr(colonPos + 1));
 
@@ -251,9 +251,9 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
     } else if (key == "bottom_depth") {
       config.bottomDepth = parseInputOption(value, true);
     } else if (key == "time_step") {
-      try {
-        config.timeStep = std::stod(std::string(value));
-      } catch (...) {
+      if (std::from_chars(value.data(), value.data() + value.size(),
+                          config.timeStep)
+              .ec != std::errc()) {
         config.timeStep = -1.0;
       }
     } else if (key.starts_with("output_fields_")) {
@@ -275,40 +275,41 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
       config.winds == InputFieldOption::Undefined ||
       config.iceConcentrations == InputFieldOption::Undefined ||
       config.bottomDepth == InputFieldOption::Undefined) {
-    std::cerr << "WW4 ERROR: Mandatory model input field(s) missing or invalid "
-                 "in configuration."
-              << std::endl;
+    os << "WW4 ERROR: Mandatory model input field(s) missing or invalid "
+          "in configuration."
+       << std::endl;
     if (config.waterLevels == InputFieldOption::Undefined)
-      std::cerr << "   Missing/invalid: water_levels" << std::endl;
+      os << "   Missing/invalid: water_levels" << std::endl;
     if (config.currents == InputFieldOption::Undefined)
-      std::cerr << "   Missing/invalid: currents" << std::endl;
+      os << "   Missing/invalid: currents" << std::endl;
     if (config.winds == InputFieldOption::Undefined)
-      std::cerr << "   Missing/invalid: winds" << std::endl;
+      os << "   Missing/invalid: winds" << std::endl;
     if (config.iceConcentrations == InputFieldOption::Undefined)
-      std::cerr << "   Missing/invalid: ice_concentrations" << std::endl;
+      os << "   Missing/invalid: ice_concentrations" << std::endl;
     if (config.bottomDepth == InputFieldOption::Undefined)
-      std::cerr << "   Missing/invalid: bottom_depth" << std::endl;
+      os << "   Missing/invalid: bottom_depth" << std::endl;
 
-    ww4_std_out::extcde(1, std::cerr, "Missing or invalid mandatory fields.",
-                        __FILE__, __LINE__);
+    ww4_std_out::extcde(1, os, "Missing or invalid mandatory fields.", __FILE__,
+                        __LINE__);
   }
 
   // Time step validation
   if (config.timeStep <= 0.0) {
-    std::cerr << "WW4 ERROR: Mandatory time step missing or invalid "
-                 "in configuration."
-              << std::endl;
-    ww4_std_out::extcde(1, std::cerr, "Missing or invalid mandatory time step.",
+    os << "WW4 ERROR: Mandatory time step missing or invalid "
+          "in configuration."
+       << std::endl;
+    ww4_std_out::extcde(1, os, "Missing or invalid mandatory time step.",
                         __FILE__, __LINE__);
   }
 
   // Output validation
   bool outputValid = true;
-  auto validateOutput = [&](const OutputConfig &oc, std::string_view name) {
+  auto validateOutput = [&](const OutputConfig &oc,
+                            const std::string_view name) {
     if (oc.requested && oc.interval <= 0.0) {
-      std::cerr << "WW4 ERROR: Mandatory interval missing or invalid for "
-                   "requested output: "
-                << name << std::endl;
+      os << "WW4 ERROR: Mandatory interval missing or invalid for "
+            "requested output: "
+         << name << std::endl;
       return false;
     }
     return true;
@@ -321,7 +322,7 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept {
   outputValid &= validateOutput(config.outputRestart, "output_restart");
 
   if (!outputValid) {
-    ww4_std_out::extcde(1, std::cerr,
+    ww4_std_out::extcde(1, os,
                         "Missing or invalid mandatory output interval(s).",
                         __FILE__, __LINE__);
   }
@@ -354,43 +355,41 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
                               config.propagateK && config.sourceTerms;
 
   if (isConventional) {
-      os << "     Conventional model run"
-         << std::endl;
+    os << "     Conventional model run" << std::endl;
   } else {
-        os << "     Unconventional model run"
-           << std::endl;
-           if (config.dryRun) {
-                os << "        Dry run" << std::endl;
-           } else {
-        os << "        Propagate X       : " << (config.propagateX ? "yes" : "no")
-           << std::endl;
-        os << "        Propagate Y       : " << (config.propagateY ? "yes" : "no")
-           << std::endl;
-        os << "        Propagate Theta   : " << (config.propagateTheta ? "yes" : "no")
-           << std::endl;
-        os << "        Propagate K       : " << (config.propagateK ? "yes" : "no")
-           << std::endl;
-        os << "        Source terms      : " << (config.sourceTerms ? "yes" : "no")
-           << std::endl;
-           }
+    os << "     Unconventional model run" << std::endl;
+    if (config.dryRun) {
+      os << "        Dry run" << std::endl;
+    } else {
+      os << "        Propagate X       : " << (config.propagateX ? "yes" : "no")
+         << std::endl;
+      os << "        Propagate Y       : " << (config.propagateY ? "yes" : "no")
+         << std::endl;
+      os << "        Propagate Theta   : "
+         << (config.propagateTheta ? "yes" : "no") << std::endl;
+      os << "        Propagate K       : " << (config.propagateK ? "yes" : "no")
+         << std::endl;
+      os << "        Source terms      : "
+         << (config.sourceTerms ? "yes" : "no") << std::endl;
+    }
   }
 
-  os << "     Time step              : " << config.timeStep << " s" << std::endl;
+  os << "     Time step              : " << config.timeStep << " s"
+     << std::endl;
 
   os << "\n  Model input:" << std::endl;
 
-  os << "     Bottom depth         : " << inputOptionToString(config.bottomDepth)
-     << std::endl;
-  os << "     Water levels         : " << inputOptionToString(config.waterLevels)
-     << std::endl;
+  os << "     Bottom depth         : "
+     << inputOptionToString(config.bottomDepth) << std::endl;
+  os << "     Water levels         : "
+     << inputOptionToString(config.waterLevels) << std::endl;
   os << "     Currents             : " << inputOptionToString(config.currents)
      << std::endl;
-  os << "     Winds  : " << inputOptionToString(config.winds)
-     << std::endl;
+  os << "     Winds  : " << inputOptionToString(config.winds) << std::endl;
   os << "     Ice concentrations   : "
      << inputOptionToString(config.iceConcentrations) << std::endl;
 
-       os << "\n  Model output:" << std::endl;
+  os << "\n  Model output:" << std::endl;
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);

@@ -10,10 +10,10 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last Update, 2026-04-09
+ * @date Last update, 2026-04-16
  */
 
 #include "ww4_utils/ww4_stand_alone_config.hpp"
@@ -30,7 +30,7 @@ namespace ww4_utils {
  * @param s The string view to parse.
  * @return A DateTime structure if successful, or std::nullopt.
  */
-std::optional<DateTime> parseDateTimeString(std::string_view s) {
+std::optional<DateTime> parseDateTimeString(const std::string_view s) {
   const std::string_view clean = cleanValue(s);
 
   if (clean.length() < 15 || clean[8] != ' ')
@@ -43,9 +43,8 @@ std::optional<DateTime> parseDateTimeString(std::string_view s) {
 
   const std::string_view hms_part = clean.substr(9);
   double hms = 0.0;
-  try {
-    hms = std::stod(std::string(hms_part));
-  } catch (...) {
+  if (std::from_chars(hms_part.data(), hms_part.data() + hms_part.size(), hms)
+          .ec != std::errc()) {
     return std::nullopt;
   }
 
@@ -53,7 +52,8 @@ std::optional<DateTime> parseDateTimeString(std::string_view s) {
 }
 
 std::optional<StandAloneConfig>
-loadStandAloneConfig(std::string_view filename) noexcept {
+loadStandAloneConfig(const std::string_view filename,
+                     [[maybe_unused]] std::ostream &os) noexcept {
   std::ifstream file((std::string(filename)));
   if (!file.is_open())
     return std::nullopt;
@@ -64,13 +64,13 @@ loadStandAloneConfig(std::string_view filename) noexcept {
 
   std::string line;
   while (std::getline(file, line)) {
-    std::string_view lineView(line);
+    const std::string_view lineFullView(line);
 
     // Remove comments
-    const size_t hashPos = lineView.find('#');
-    if (hashPos != std::string_view::npos) {
-      lineView = lineView.substr(0, hashPos);
-    }
+    const size_t hashPos = lineFullView.find('#');
+    const std::string_view lineView = (hashPos != std::string_view::npos)
+                                          ? lineFullView.substr(0, hashPos)
+                                          : lineFullView;
 
     if (lineView.empty())
       continue;
@@ -84,12 +84,12 @@ loadStandAloneConfig(std::string_view filename) noexcept {
     if (colonPos == std::string::npos)
       continue;
 
-    std::string_view key = lineView.substr(first, colonPos - first);
+    const std::string_view key_raw = lineView.substr(first, colonPos - first);
     // Trim trailing whitespace from key
-    const size_t kend = key.find_last_not_of(" \t");
-    if (kend != std::string_view::npos) {
-      key = key.substr(0, kend + 1);
-    }
+    const size_t kend = key_raw.find_last_not_of(" \t");
+    const std::string_view key = (kend != std::string_view::npos)
+                                     ? key_raw.substr(0, kend + 1)
+                                     : key_raw;
 
     const std::string_view value = lineView.substr(colonPos + 1);
 

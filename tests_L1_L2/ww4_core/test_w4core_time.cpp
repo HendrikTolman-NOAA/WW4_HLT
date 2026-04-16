@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-06
- * @date Last update, 2026-04-15
+ * @date Last update, 2026-04-16
  */
 
 #include "ww4_core/w4core_finl.hpp"
@@ -52,14 +52,14 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   runFile << "bottom_depth: none\n";
   runFile.close();
 
-  EXPECT_NO_THROW(ww4_core::w4core_init(startTime, "test_program"));
+  EXPECT_NO_THROW(ww4_core::w4core_init(startTime, "test_program", std::cout));
 
   // Verify internal state is set
   EXPECT_EQ(ww4_core::getProgramName(), "test_program");
   EXPECT_EQ(ww4_core::getRunConfig().timeStep, 3600.0);
 
-  EXPECT_NO_THROW(ww4_core::w4core_wave(startTime, endTime));
-  EXPECT_NO_THROW(ww4_core::w4core_finl(endTime));
+  EXPECT_NO_THROW(ww4_core::w4core_wave(startTime, endTime, std::cout));
+  EXPECT_NO_THROW(ww4_core::w4core_finl(endTime, std::cout));
 
   // Verify internal state is reset after finalization
   EXPECT_EQ(ww4_core::getProgramName(), "");

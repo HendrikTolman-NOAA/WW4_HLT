@@ -12,8 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-01
- * @date Last Update: 2026-04-08
+ * @date Initial, 2026-04-01
+ * @date Last update, 2026-04-16
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -24,8 +24,9 @@
 namespace ww4_utils {
 namespace ww4_logfile {
 
-void writeInitialOutput(std::ostream &os, const std::string &programName) {
-  const std::string mid = "*** WAVEWATCH IV program " + programName + " ***";
+void writeInitialOutput(std::ostream &os, std::string_view programName) {
+  const std::string mid =
+      "*** WAVEWATCH IV program " + std::string(programName) + " ***";
 
   // Generic banner format with 15X (15 spaces) and / (newline)
   const std::string bannerLine = "      " + mid + "      ";
@@ -37,7 +38,7 @@ void writeInitialOutput(std::ostream &os, const std::string &programName) {
      << std::endl;
 }
 
-void writeFinalOutput(std::ostream &os, const std::string &programName,
+void writeFinalOutput(std::ostream &os, std::string_view programName,
                       std::optional<double> initTime,
                       std::optional<double> elapsedTotal) {
   // Matches FORMAT 997, 998, 999

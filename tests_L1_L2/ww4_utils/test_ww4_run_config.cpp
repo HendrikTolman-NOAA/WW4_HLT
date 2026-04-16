@@ -10,10 +10,10 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-15
+ * @date Last update, 2026-04-16
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -40,7 +40,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "time_step: 1800.0\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_DOUBLE_EQ(config->timeStep, 1800.0);
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
@@ -79,7 +79,7 @@ TEST(RunConfigTest, OutputConfigParsing) {
   file << "output_restart_interval: 86400\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
 
   EXPECT_TRUE(config->outputFields.requested);
@@ -117,7 +117,7 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   // Missing interval
   file.close();
 
-  EXPECT_DEATH(loadRunConfig(filename),
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
                "Missing or invalid mandatory output interval\\(s\\).");
 
   std::remove(filename.c_str());
@@ -144,13 +144,13 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
   reportRunConfig(config, ss);
   std::string output = ss.str();
 
-  EXPECT_NE(output.find("Gridded fields output : yes"), std::string::npos);
-  EXPECT_NE(output.find("Interval        : 3600 s"), std::string::npos);
-  EXPECT_NE(output.find("At first time   : no"), std::string::npos);
-  EXPECT_NE(output.find("Start time      : 2026/01/01 00:00:00 UTC"),
+  EXPECT_NE(output.find("Gridded fields output"), std::string::npos);
+  EXPECT_NE(output.find("Interval          : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("At first time     : no"), std::string::npos);
+  EXPECT_NE(output.find("Start time        : 2026/01/01 00:00:00 UTC"),
             std::string::npos);
-  EXPECT_NE(output.find("Time step          : 3600 s"), std::string::npos);
-  EXPECT_NE(output.find("Point output : no"), std::string::npos);
+  EXPECT_NE(output.find("Time step              : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Point output not requested"), std::string::npos);
 }
 
 /**
@@ -173,7 +173,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "time_step: 3600.0\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_TRUE(config->dryRun);
   EXPECT_FALSE(config->propagateX);
@@ -235,7 +235,7 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "time_step : 3600.0\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
   EXPECT_TRUE(config->produceStdOut);
@@ -264,19 +264,19 @@ TEST(RunConfigTest, ReportConfigStandard) {
   std::string output = ss.str();
 
   EXPECT_NE(output.find("Configuration settings :"), std::string::npos);
-  EXPECT_NE(output.find("Calendar type      : Standard"), std::string::npos);
-  EXPECT_NE(output.find("Screen output      : yes"), std::string::npos);
-  EXPECT_NE(output.find("Log file           : yes"), std::string::npos);
-  EXPECT_NE(output.find("Conventional model run : yes"), std::string::npos);
+  EXPECT_NE(output.find("Calendar type        : Standard"), std::string::npos);
+  EXPECT_NE(output.find("Screen output        : yes"), std::string::npos);
+  EXPECT_NE(output.find("Log file             : yes"), std::string::npos);
+  EXPECT_NE(output.find("Conventional model run"), std::string::npos);
   // Ensure no detailed flag reporting when conventional
   EXPECT_EQ(output.find("Dry run"), std::string::npos);
 
-  EXPECT_NE(output.find("Water levels       : none"), std::string::npos);
-  EXPECT_NE(output.find("Currents           : none"), std::string::npos);
-  EXPECT_NE(output.find("Winds              : none"), std::string::npos);
-  EXPECT_NE(output.find("Ice concentrations : none"), std::string::npos);
-  EXPECT_NE(output.find("Bottom depth       : from_grid"), std::string::npos);
-  EXPECT_NE(output.find("Time step          : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Water levels         : none"), std::string::npos);
+  EXPECT_NE(output.find("Currents             : none"), std::string::npos);
+  EXPECT_NE(output.find("Winds  : none"), std::string::npos);
+  EXPECT_NE(output.find("Ice concentrations   : none"), std::string::npos);
+  EXPECT_NE(output.find("Bottom depth         : from_grid"), std::string::npos);
+  EXPECT_NE(output.find("Time step              : 3600 s"), std::string::npos);
 }
 
 /**
@@ -297,11 +297,10 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   reportRunConfig(config, ss);
   std::string output = ss.str();
 
-  EXPECT_NE(output.find("Conventional model run : no"), std::string::npos);
-  EXPECT_NE(output.find("Dry run         : yes"), std::string::npos);
-  EXPECT_NE(output.find("Propagate X     : no"), std::string::npos);
-  EXPECT_NE(output.find("Propagate Y     : yes"), std::string::npos);
-  EXPECT_NE(output.find("Time step          : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Unconventional model run"), std::string::npos);
+  EXPECT_NE(output.find("Dry run"), std::string::npos);
+  EXPECT_EQ(output.find("Propagate X"), std::string::npos);
+  EXPECT_NE(output.find("Time step              : 3600 s"), std::string::npos);
 }
 
 /**
@@ -317,9 +316,9 @@ TEST(RunConfigTest, ReportConfigNoLeap) {
   reportRunConfig(config, ss);
   std::string output = ss.str();
 
-  EXPECT_NE(output.find("Calendar type      : NoLeap"), std::string::npos);
-  EXPECT_NE(output.find("Screen output      : no"), std::string::npos);
-  EXPECT_NE(output.find("Log file           : no"), std::string::npos);
+  EXPECT_NE(output.find("Calendar type        : NoLeap"), std::string::npos);
+  EXPECT_NE(output.find("Screen output        : no"), std::string::npos);
+  EXPECT_NE(output.find("Log file             : no"), std::string::npos);
 }
 
 /**
@@ -333,7 +332,7 @@ TEST(RunConfigTest, ReportConfigThreeSixtyDay) {
   reportRunConfig(config, ss);
   std::string output = ss.str();
 
-  EXPECT_NE(output.find("Calendar type      : ThreeSixtyDay"),
+  EXPECT_NE(output.find("Calendar type        : ThreeSixtyDay"),
             std::string::npos);
 }
 
@@ -344,7 +343,7 @@ TEST(RunConfigTest, MissingFileDefaults) {
   // Ensure calendar is something else before test
   TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
 
-  const auto config = loadRunConfig("non_existent_run_config.yml");
+  const auto config = loadRunConfig("non_existent_run_config.yml", std::cerr);
   EXPECT_FALSE(config.has_value());
 
   // Manually reset for other tests
@@ -366,7 +365,7 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   file << "time_step: 3600.0\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::ThreeSixtyDay);
   EXPECT_TRUE(config->produceStdOut);
@@ -392,7 +391,7 @@ TEST(RunConfigTest, PartialConfig) {
   file << "time_step: 3600.0\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::Standard);
   EXPECT_FALSE(config->produceStdOut);
@@ -416,7 +415,7 @@ TEST(RunConfigTest, TimeStepFailure) {
   file.close();
 
   // Should abort program
-  EXPECT_DEATH(loadRunConfig(filename),
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
                "Missing or invalid mandatory time step.");
 
   std::remove(filename.c_str());
@@ -433,7 +432,8 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
   file.close();
 
   // Should abort program
-  EXPECT_DEATH(loadRunConfig(filename), "Missing or invalid mandatory fields.");
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing or invalid mandatory fields.");
 
   std::remove(filename.c_str());
 }
@@ -452,7 +452,7 @@ TEST(RunConfigTest, BottomDepthDefault) {
   // bottom_depth is missing
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->bottomDepth, InputFieldOption::FromGrid);
 
@@ -473,7 +473,7 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   file << "time_step: 3600.0\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->bottomDepth, InputFieldOption::None);
 
@@ -495,7 +495,8 @@ TEST(RunConfigTest, FromGridRejection) {
   file.close();
 
   // Should abort because water_levels: from_grid is invalid
-  EXPECT_DEATH(loadRunConfig(filename), "Missing or invalid mandatory fields.");
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing or invalid mandatory fields.");
 
   std::remove(filename.c_str());
 }
@@ -514,7 +515,7 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   file << "time_step: 3600.0\n";
   file.close();
 
-  const auto config = loadRunConfig(filename);
+  const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
   EXPECT_EQ(config->waterLevels, InputFieldOption::None);
   EXPECT_EQ(config->currents, InputFieldOption::FromFile);

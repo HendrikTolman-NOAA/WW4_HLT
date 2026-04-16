@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-15
+ * @date Last update, 2026-04-16
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -36,21 +36,21 @@ std::string capturedProgramName;
 } // namespace
 
 void w4core_init(const ww4_utils::DateTime &startTime,
-                 const std::string &programName) {
+                 std::string_view programName, std::ostream &os) {
   try {
     //
     // 0.  General initialization --------------------------------------------
     // 0.0 Capture program name
     //
-    capturedProgramName = programName;
+    capturedProgramName = std::string(programName);
 
     //
     // 0.1 Load configuration from ww4_run_config.yml file
     //
-    auto config = ww4_utils::loadRunConfig("ww4_run_config.yml");
+    const auto config = ww4_utils::loadRunConfig("ww4_run_config.yml", os);
     if (!config) {
       ww4_utils::ww4_std_out::extcde(
-          1, std::cerr,
+          1, os,
           "Run-time configuration file 'ww4_run_config.yml' not found or could "
           "not be opened.",
           __FILE__, __LINE__);
@@ -74,27 +74,26 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       //
       // 0.4.1 Initial standard output
       //
-      ww4_utils::ww4_std_out::writeInitialOutput(std::cout,
-                                                 capturedProgramName);
+      ww4_utils::ww4_std_out::writeInitialOutput(os, capturedProgramName);
 
       //
       // 0.4.2 Report out run start time
       //
-      std::cout << "  Run starts at       : "
-                << ww4_utils::TimeManagement::toFormattedString(
-                       ww4_utils::TimeManagement::getPresentDateTime())
-                << std::endl;
+      os << "  Run starts at       : "
+         << ww4_utils::TimeManagement::toFormattedString(
+                ww4_utils::TimeManagement::getPresentDateTime())
+         << std::endl;
 
       //
       // 0.4.3 Identify being in initialization routine
       //
-      std::cout << "\n  Initialization (w4core_init) starting: "
-                << ww4_utils::TimeManagement::toFormattedString(startTime)
-                << std::endl;
+      os << "\n  Initialization (w4core_init) starting: "
+         << ww4_utils::TimeManagement::toFormattedString(startTime)
+         << std::endl;
       //
       // 0.4.4 Report out run time configuration
       //
-      ww4_utils::reportRunConfig(globalRunConfig, std::cout);
+      ww4_utils::reportRunConfig(globalRunConfig, os);
     }
 
     //
@@ -135,10 +134,10 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     //
 
   } catch (const std::exception &e) {
-    ww4_utils::ww4_std_out::extcde(1, std::cerr, e.what(), __FILE__, __LINE__);
+    ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);
   } catch (...) {
-    ww4_utils::ww4_std_out::extcde(
-        1, std::cerr, "Unknown exception in w4core_init", __FILE__, __LINE__);
+    ww4_utils::ww4_std_out::extcde(1, os, "Unknown exception in w4core_init",
+                                   __FILE__, __LINE__);
   }
 }
 

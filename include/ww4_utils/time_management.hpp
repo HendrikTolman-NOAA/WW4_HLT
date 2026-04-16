@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-04-15
+ * @date Last update, 2026-04-16
  *
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
@@ -44,7 +44,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-30
+ * @date Last update, 2026-04-16
  */
 struct DateTime {
   int ymd;    ///< Current date in YYYYMMDD format.
@@ -71,7 +71,7 @@ using DateArray = std::array<int, 8>;
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-30
+ * @date Last update, 2026-04-16
  */
 class TimeManagement {
 public:
@@ -170,7 +170,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last Update, 2026-03-30
+   * @date Last update, 2026-04-16
    */
   static void getSystemDateArray(DateArray &dateArray) noexcept;
 
@@ -186,7 +186,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last Update, 2026-03-30
+   * @date Last update, 2026-04-16
    */
   static void getElapsedTimeSince(const DateArray &referenceDate,
                                   double &elapsedTime) noexcept;
@@ -198,7 +198,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last Update, 2026-03-30
+   * @date Last update, 2026-04-16
    */
   static DateTime getPresentDateTime() noexcept;
 

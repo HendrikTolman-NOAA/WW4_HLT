@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-15
+ * @date Last update, 2026-04-16
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -44,7 +44,7 @@ namespace ww4_core {
  * @date 2026-04-03
  */
 void w4core_init(const ww4_utils::DateTime &startTime,
-                 const std::string &programName);
+                 std::string_view programName, std::ostream &os);
 
 /**
  * @brief Resets the internal state of the core module.

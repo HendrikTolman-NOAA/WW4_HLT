@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last Update, 2026-04-07
+ * @date Last update, 2026-04-16
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -30,18 +30,17 @@
 namespace ww4_core {
 
 void w4core_wave(const ww4_utils::DateTime &startTime,
-                 const ww4_utils::DateTime &endTime) {
+                 const ww4_utils::DateTime &endTime, std::ostream &os) {
   try {
     //
     // 0.  Report starting time stepping -------------------------------------
     // 0.1 To standard output (if requested)
     //
     if (getRunConfig().produceStdOut) {
-      std::cout << "\n  Time stepping (w4core_wave) from: "
-                << ww4_utils::TimeManagement::toFormattedString(startTime)
-                << " to: "
-                << ww4_utils::TimeManagement::toFormattedString(endTime)
-                << std::endl;
+      os << "\n  Time stepping (w4core_wave) from: "
+         << ww4_utils::TimeManagement::toFormattedString(startTime)
+         << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
+         << std::endl;
     }
     //
     // 0.2 To log file (if requested)  likely to be temporarily as the
@@ -61,10 +60,10 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     std::this_thread::sleep_for(std::chrono::seconds(2));
   } catch (const std::exception &e) {
-    ww4_utils::ww4_std_out::extcde(1, std::cerr, e.what(), __FILE__, __LINE__);
+    ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);
   } catch (...) {
-    ww4_utils::ww4_std_out::extcde(
-        1, std::cerr, "Unknown exception in w4core_wave", __FILE__, __LINE__);
+    ww4_utils::ww4_std_out::extcde(1, os, "Unknown exception in w4core_wave",
+                                   __FILE__, __LINE__);
   }
 }
 

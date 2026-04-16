@@ -11,7 +11,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
  * @date Last update, 2026-04-16
@@ -111,7 +111,8 @@ std::string_view cleanValue(std::string_view s);
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  */
-std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept;
+std::optional<RunConfig> loadRunConfig(std::string_view filename,
+                                       std::ostream &os) noexcept;
 
 /**
  * @brief Reports the current configuration to the provided output stream.
@@ -120,7 +121,7 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept;
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  */
-void reportRunConfig(const RunConfig &config, std::ostream &os = std::cout);
+void reportRunConfig(const RunConfig &config, std::ostream &os);
 
 } // namespace ww4_utils
 
