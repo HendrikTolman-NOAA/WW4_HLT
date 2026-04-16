@@ -13,7 +13,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-15
+ * @date Last update, 2026-04-16
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -340,20 +340,22 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     calType = "ThreeSixtyDay";
   }
 
-  os << "     Calendar type      : " << calType << std::endl;
-  os << "     Screen output      : " << (config.produceStdOut ? "yes" : "no")
+  os << "     Calendar type        : " << calType << std::endl;
+  os << "     Screen output        : " << (config.produceStdOut ? "yes" : "no")
      << std::endl;
-  os << "     Log file           : " << (config.produceLogFile ? "yes" : "no")
+  os << "     Log file             : " << (config.produceLogFile ? "yes" : "no")
      << std::endl;
 
   const bool isConventional = !config.dryRun && config.propagateX &&
                               config.propagateY && config.propagateTheta &&
                               config.propagateK && config.sourceTerms;
 
-  os << "     Conventional model run : " << (isConventional ? "yes" : "no")
+  os << "     Conventional model run"
      << std::endl;
 
   if (!isConventional) {
+    os << "     Unconventional model run"
+
     os << "        Dry run         : " << (config.dryRun ? "yes" : "no")
        << std::endl;
     os << "        Propagate X     : " << (config.propagateX ? "yes" : "no")
