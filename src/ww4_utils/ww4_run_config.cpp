@@ -357,19 +357,18 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
         os << "     Unconventional model run"
            << std::endl;
            if (config.dryRun) {
-                os << "        Dry run         : " << (config.dryRun ? "yes" : "no")
-                                                   << std::endl;
+                os << "        Dry run" << std::endl;
            } else {
-    os << "        Propagate X     : " << (config.propagateX ? "yes" : "no")
-       << std::endl;
-    os << "        Propagate Y     : " << (config.propagateY ? "yes" : "no")
-       << std::endl;
-    os << "        Propagate Theta : " << (config.propagateTheta ? "yes" : "no")
-       << std::endl;
-    os << "        Propagate K     : " << (config.propagateK ? "yes" : "no")
-       << std::endl;
-    os << "        Source terms    : " << (config.sourceTerms ? "yes" : "no")
-       << std::endl;
+        os << "        Propagate X       : " << (config.propagateX ? "yes" : "no")
+           << std::endl;
+        os << "        Propagate Y       : " << (config.propagateY ? "yes" : "no")
+           << std::endl;
+        os << "        Propagate Theta   : " << (config.propagateTheta ? "yes" : "no")
+           << std::endl;
+        os << "        Propagate K       : " << (config.propagateK ? "yes" : "no")
+           << std::endl;
+        os << "        Source terms      : " << (config.sourceTerms ? "yes" : "no")
+           << std::endl;
            }
   }
 
