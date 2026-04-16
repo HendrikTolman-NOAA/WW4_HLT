@@ -121,7 +121,7 @@ void reportOutput(const OutputConfig &oc, std::string_view label,
          << TimeManagement::toFormattedString(*oc.startTime) << std::endl;
     }
     if (oc.endTime) {
-     :wchar_t os << "        End time        : "
+      os << "        End time        : "
          << TimeManagement::toFormattedString(*oc.endTime) << std::endl;
     }
   } else {
