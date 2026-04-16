@@ -14,7 +14,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-15
+ * @date Last update, 2026-04-16
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
@@ -119,7 +119,6 @@ std::optional<RunConfig> loadRunConfig(std::string_view filename) noexcept;
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-07
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os = std::cout);
 
