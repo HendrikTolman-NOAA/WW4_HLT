@@ -385,7 +385,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << inputOptionToString(config.waterLevels) << std::endl;
   os << "     Currents             : " << inputOptionToString(config.currents)
      << std::endl;
-  os << "     Winds  : " << inputOptionToString(config.winds) << std::endl;
+  os << "     Winds                : " << inputOptionToString(config.winds) << std::endl;
   os << "     Ice concentrations   : "
      << inputOptionToString(config.iceConcentrations) << std::endl;
 
