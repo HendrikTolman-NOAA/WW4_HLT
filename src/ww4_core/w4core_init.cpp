@@ -79,7 +79,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       //
       // 0.4.2 Report out run start time
       //
-      os << "  Run starts at       : "
+      os << "  Run starts at "
          << ww4_utils::TimeManagement::toFormattedString(
                 ww4_utils::TimeManagement::getPresentDateTime())
          << std::endl;
@@ -112,7 +112,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       //
       // 0.5.3 Report out run start time
       //
-      logFile << "  Run starts at       : "
+      logFile << "  Run starts at "
               << ww4_utils::TimeManagement::toFormattedString(
                      ww4_utils::TimeManagement::getPresentDateTime())
               << std::endl;
