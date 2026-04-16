@@ -374,6 +374,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Model input:" << std::endl;
 
+  os << "     Bottom depth       : " << inputOptionToString(config.bottomDepth)
+     << std::endl;
   os << "     Water levels       : " << inputOptionToString(config.waterLevels)
      << std::endl;
   os << "     Currents           : " << inputOptionToString(config.currents)
@@ -382,8 +384,6 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << std::endl;
   os << "     Ice concentrations : "
      << inputOptionToString(config.iceConcentrations) << std::endl;
-  os << "     Bottom depth       : " << inputOptionToString(config.bottomDepth)
-     << std::endl;
 
   os << "     Time step          : " << config.timeStep << " s" << std::endl;
 

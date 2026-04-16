@@ -60,6 +60,9 @@ time_step: 3600.0
 # Note: water_levels, currents, winds, and ice_concentrations are mandatory.
 #       bottom_depth is optional and defaults to "from_grid".
 
+# Bottom depth option.
+bottom_depth: "from_grid"
+
 # Water levels option.
 water_levels: "none"
 
@@ -71,9 +74,6 @@ winds: "none"
 
 # Ice concentrations option.
 ice_concentrations: "none"
-
-# Bottom depth option.
-bottom_depth: "from_grid"
 
 # Data output options.
 # For each output type, track if requested ("yes"/"no"), start/end times,
