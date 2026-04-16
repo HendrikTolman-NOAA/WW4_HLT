@@ -47,7 +47,7 @@ void writeFinalOutput(std::ostream &os, std::string_view programName,
        << std::setw(10) << *initTime << " s\n";
   }
   if (elapsedTotal.has_value()) {
-    os << "  Elapsed time        :" << std::fixed << std::setprecision(2)
+    os << "  Elapsed time " << std::fixed << std::setprecision(2)
        << std::setw(10) << *elapsedTotal << " s\n";
   }
 
