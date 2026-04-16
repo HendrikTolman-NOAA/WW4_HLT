@@ -394,11 +394,6 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Model output:" << std::endl;
 
-  if (config.outputApi) {
-    os << "     API output requested" << std::endl;
-  } else {
-    os << "     API output not requested" << std::endl;
-  }
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);
@@ -406,6 +401,11 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   reportOutput(config.outputTracks, "Track", os);
   reportOutput(config.outputRestart, "Restart file", os);
 
+  if (config.outputApi) {
+    os << "\n     API output requested" << std::endl;
+  } else {
+    os << "\n     API output not requested" << std::endl;
+  }
   os << std::endl;
 }
 
