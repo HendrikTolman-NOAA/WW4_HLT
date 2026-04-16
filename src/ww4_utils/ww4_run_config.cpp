@@ -110,10 +110,9 @@ void updateOutputConfig(OutputConfig &oc, std::string_view key_suffix,
  */
 void reportOutput(const OutputConfig &oc, std::string_view label,
                   std::ostream &os) {
-  if (!oc.requested)
-    os << "     " << label << " not requested " << std::endl; 
-  } else {
-    os << "     " << label << " requested " << std::endl; 
+  os << "     " << label << " output : " << (oc.requested ? "yes" : "no")
+     << std::endl;
+  if (oc.requested) {
     os << "        Interval        : " << oc.interval << " s" << std::endl;
     os << "        At first time   : " << (oc.atFirstTime ? "yes" : "no")
        << std::endl;
