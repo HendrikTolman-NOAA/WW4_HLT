@@ -63,12 +63,18 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     // 2.  API output --------------------------------------------------------
     //
-    if (getRunConfig().outputApi) {
-      if (getRunConfig().produceStdOut) {
+    if (getRunConfig().produceStdOut) {
+      if (getRunConfig().outputApi) {
         os << "     Generating API output" << std::endl;
+      } else {
+        os << "     No API output generated" << std::endl;
       }
-      if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+    }
+    if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+      if (getRunConfig().outputApi) {
         getLogFileStream() << "     Generating API output" << std::endl;
+      } else {
+        getLogFileStream() << "     No API output generated" << std::endl;
       }
     }
   } catch (const std::exception &e) {

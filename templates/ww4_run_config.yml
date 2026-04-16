@@ -115,3 +115,7 @@ output_restart_interval: 86400.0
 # output_restart_start: "20260101 000000"
 # output_restart_end: "20260102 000000"
 output_restart_at_first: "yes"
+
+# Output type 6: API output
+# Options: "no" (default), "yes"
+output_api: "no"
