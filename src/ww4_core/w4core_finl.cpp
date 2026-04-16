@@ -73,7 +73,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
       //
       // 3.2 Report out run end time
       //
-      getLogFileStream() << "  Run ends at  "
+      getLogFileStream() << "  Run ends at "
                          << ww4_utils::TimeManagement::toFormattedString(
                                 ww4_utils::TimeManagement::getPresentDateTime())
                          << std::endl;
