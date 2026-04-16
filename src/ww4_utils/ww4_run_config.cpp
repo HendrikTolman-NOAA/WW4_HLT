@@ -111,7 +111,7 @@ void updateOutputConfig(OutputConfig &oc, std::string_view key_suffix,
 void reportOutput(const OutputConfig &oc, std::string_view label,
                   std::ostream &os) {
   if (oc.requested) {
-    os << "     " << label << " output"
+    os << "\n     " << label << " output"
                   << std::endl;
     os << "        Interval          : " << oc.interval << " s" << std::endl;
     os << "        At first time     : " << (oc.atFirstTime ? "yes" : "no")
@@ -125,7 +125,7 @@ void reportOutput(const OutputConfig &oc, std::string_view label,
          << TimeManagement::toFormattedString(*oc.endTime) << std::endl;
     }
   } else {
-     os << "     " << label << " output not requested " << std::endl;
+     os << "\n     " << label << " output not requested " << std::endl;
 
   }
 }
