@@ -110,9 +110,9 @@ void updateOutputConfig(OutputConfig &oc, std::string_view key_suffix,
  */
 void reportOutput(const OutputConfig &oc, std::string_view label,
                   std::ostream &os) {
-  os << "     " << label << " output : " << (oc.requested ? "yes" : "no")
-     << std::endl;
   if (oc.requested) {
+    os << "     " << label << " output : "
+                  << std::endl;
     os << "        Interval        : " << oc.interval << " s" << std::endl;
     os << "        At first time   : " << (oc.atFirstTime ? "yes" : "no")
        << std::endl;
@@ -121,9 +121,12 @@ void reportOutput(const OutputConfig &oc, std::string_view label,
          << TimeManagement::toFormattedString(*oc.startTime) << std::endl;
     }
     if (oc.endTime) {
-      os << "        End time        : "
+     :wchar_t os << "        End time        : "
          << TimeManagement::toFormattedString(*oc.endTime) << std::endl;
     }
+  } else {
+     os << "     " << label << " output not requexted " << std::endl;
+
   }
 }
 
@@ -387,7 +390,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "     Ice concentrations   : "
      << inputOptionToString(config.iceConcentrations) << std::endl;
 
-  os << "\n  Model output:" << std::endl;
+       os << "\n  Model output:" << std::endl;
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);
