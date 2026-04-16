@@ -48,7 +48,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
       //
       // 2.2 Report out run end time
       //
-      os << "  Run ends at         : "
+      os << "  Run ends at "
          << ww4_utils::TimeManagement::toFormattedString(
                 ww4_utils::TimeManagement::getPresentDateTime())
          << std::endl;
@@ -65,7 +65,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     // 3.1 Initial line
     //
     if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-      getLogFileStream() << "\n  Finalization (w4core_finl) starting:"
+      getLogFileStream() << "\n  Finalization (w4core_finl) starting: "
                          << ww4_utils::TimeManagement::toFormattedString(
                                 endTime)
                          << std::endl;
@@ -73,7 +73,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
       //
       // 3.2 Report out run end time
       //
-      getLogFileStream() << "  Run ends at         : "
+      getLogFileStream() << "  Run ends at  "
                          << ww4_utils::TimeManagement::toFormattedString(
                                 ww4_utils::TimeManagement::getPresentDateTime())
                          << std::endl;
