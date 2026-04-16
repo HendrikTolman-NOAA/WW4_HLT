@@ -404,7 +404,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   if (config.outputApi) {
     os << "\n     API output requested" << std::endl;
   } else {
-    os << "\n     API output not requested" << std::endl;
+    os << "\n     No API output" << std::endl;
   }
   os << std::endl;
 }
