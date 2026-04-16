@@ -26,6 +26,10 @@ produce_std_out: "yes"
 # Options: "yes" (default), "no"
 produce_log_file: "yes"
 
+# Mandatory model time step in seconds.
+# This parameter must be positive and non-zero.
+time_step: 3600.0
+
 # Option for a dry run (no computations).
 # Options: "no" (default), "yes"
 dry_run: "no"
@@ -49,10 +53,6 @@ propagate_k: "yes"
 # Option for processing source terms.
 # Options: "yes" (default), "no"
 source_terms: "yes"
-
-# Mandatory model time step in seconds.
-# This parameter must be positive and non-zero.
-time_step: 3600.0
 
 # Mandatory input field options.
 # Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"

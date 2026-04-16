@@ -372,6 +372,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
            }
   }
 
+  os << "     Time step          : " << config.timeStep << " s" << std::endl;
+
   os << "\n  Model input:" << std::endl;
 
   os << "     Bottom depth       : " << inputOptionToString(config.bottomDepth)
@@ -384,8 +386,6 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << std::endl;
   os << "     Ice concentrations : "
      << inputOptionToString(config.iceConcentrations) << std::endl;
-
-  os << "     Time step          : " << config.timeStep << " s" << std::endl;
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);
