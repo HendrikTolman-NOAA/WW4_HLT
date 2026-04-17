@@ -19,6 +19,7 @@
 #include "ww4_utils/ww4_run_config.hpp"
 #include "ww4_utils/ww4_stand_alone_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
+#include <algorithm>
 #include <charconv>
 #include <fstream>
 #include <iostream>
@@ -27,6 +28,59 @@
 namespace ww4_utils {
 
 namespace {
+
+/**
+ * @brief Helper to parse a homogeneous data string.
+ * @param s The string to parse (format: "YYYYMMDD HHMMSS val1 val2 ...").
+ * @return A HomogeneousDataPoint if successful.
+ */
+std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
+  if (s.empty())
+    return std::nullopt;
+
+  const size_t firstSpace = s.find(' ');
+  if (firstSpace == std::string_view::npos)
+    return std::nullopt;
+
+  const size_t secondSpace = s.find(' ', firstSpace + 1);
+  if (secondSpace == std::string_view::npos)
+    return std::nullopt;
+
+  const std::string_view dateTimePart = s.substr(0, secondSpace);
+  const auto dt = parseDateTimeString(dateTimePart);
+  if (!dt)
+    return std::nullopt;
+
+  HomogeneousDataPoint dp;
+  dp.time = *dt;
+
+  std::string_view remaining = s.substr(secondSpace);
+  while (!remaining.empty()) {
+    const size_t firstNotSpace = remaining.find_first_not_of(' ');
+    if (firstNotSpace == std::string_view::npos)
+      break;
+    remaining = remaining.substr(firstNotSpace);
+    const size_t nextSpace = remaining.find(' ');
+    const std::string_view valStr = remaining.substr(0, nextSpace);
+
+    double val = 0.0;
+    if (std::from_chars(valStr.data(), valStr.data() + valStr.size(), val).ec ==
+        std::errc()) {
+      dp.values.push_back(val);
+    } else {
+      return std::nullopt;
+    }
+
+    if (nextSpace == std::string_view::npos)
+      break;
+    remaining = remaining.substr(nextSpace);
+  }
+
+  if (dp.values.empty())
+    return std::nullopt;
+
+  return dp;
+}
 
 /**
  * @brief Helper to parse InputFieldOption from string.
@@ -104,6 +158,32 @@ void updateOutputConfig(OutputConfig &oc, const std::string_view key_suffix,
 }
 
 /**
+ * @brief Helper to echo a homogeneous data series.
+ * @param processed Vector of data points.
+ * @param fieldName Name of the field.
+ * @param option Echo level.
+ * @param os Output stream.
+ */
+void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
+                         std::string_view /*fieldName*/, EchoOption option,
+                         std::ostream &os) {
+  if (processed.empty() || option == EchoOption::None)
+    return;
+
+  if (option == EchoOption::Summary) {
+    os << "        Number of data points: " << processed.size() << std::endl;
+  } else if (option == EchoOption::Full) {
+    for (const auto &dp : processed) {
+      os << "        " << TimeManagement::toFormattedString(dp.time) << " :";
+      for (const auto val : dp.values) {
+        os << " " << val;
+      }
+      os << std::endl;
+    }
+  }
+}
+
+/**
  * @brief Helper to report OutputConfig settings.
  * @param oc The OutputConfig structure to report.
  * @param label The label for the output type.
@@ -175,16 +255,19 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     if (lineView[first] == '-') {
       const std::string_view value = cleanValue(lineView.substr(first + 1));
       if (!value.empty()) {
-        if (lastKey == "water_levels") {
-          config.homogeneousWaterLevels.emplace_back(value);
-        } else if (lastKey == "currents") {
-          config.homogeneousCurrents.emplace_back(value);
-        } else if (lastKey == "winds") {
-          config.homogeneousWinds.emplace_back(value);
-        } else if (lastKey == "ice_concentrations") {
-          config.homogeneousIceConcentrations.emplace_back(value);
-        } else if (lastKey == "bottom_depth") {
-          config.homogeneousBottomDepth.emplace_back(value);
+        auto dp = parseHomogeneousString(value);
+        if (dp) {
+          if (lastKey == "water_levels") {
+            config.homogeneousWaterLevels.push_back(*dp);
+          } else if (lastKey == "currents") {
+            config.homogeneousCurrents.push_back(*dp);
+          } else if (lastKey == "winds") {
+            config.homogeneousWinds.push_back(*dp);
+          } else if (lastKey == "ice_concentrations") {
+            config.homogeneousIceConcentrations.push_back(*dp);
+          } else if (lastKey == "bottom_depth") {
+            config.homogeneousBottomDepth.push_back(*dp);
+          }
         }
       }
       continue;
@@ -419,14 +502,34 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "     Bottom depth         : "
      << inputOptionToString(config.bottomDepth) << std::endl;
+  if (config.bottomDepth == InputFieldOption::Homogeneous) {
+    echoHomogeneousData(config.homogeneousBottomDepth, "bottom depth",
+                        config.echoHomInput, os);
+  }
   os << "     Water levels         : "
      << inputOptionToString(config.waterLevels) << std::endl;
+  if (config.waterLevels == InputFieldOption::Homogeneous) {
+    echoHomogeneousData(config.homogeneousWaterLevels, "water levels",
+                        config.echoHomInput, os);
+  }
   os << "     Currents             : " << inputOptionToString(config.currents)
      << std::endl;
+  if (config.currents == InputFieldOption::Homogeneous) {
+    echoHomogeneousData(config.homogeneousCurrents, "currents",
+                        config.echoHomInput, os);
+  }
   os << "     Winds                : " << inputOptionToString(config.winds)
      << std::endl;
+  if (config.winds == InputFieldOption::Homogeneous) {
+    echoHomogeneousData(config.homogeneousWinds, "winds", config.echoHomInput,
+                        os);
+  }
   os << "     Ice concentrations   : "
      << inputOptionToString(config.iceConcentrations) << std::endl;
+  if (config.iceConcentrations == InputFieldOption::Homogeneous) {
+    echoHomogeneousData(config.homogeneousIceConcentrations,
+                        "ice concentrations", config.echoHomInput, os);
+  }
 
   os << "\n  Model output:" << std::endl;
 

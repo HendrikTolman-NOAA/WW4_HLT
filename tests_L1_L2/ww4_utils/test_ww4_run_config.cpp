@@ -34,7 +34,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "produce_log_file: \"no\"\n";
   file << "water_levels: \"from_file\"\n";
   file << "currents: \"from_coupling\"\n";
-  file << "winds: \"homogeneous\"\n";
+  file << "winds: \"none\"\n";
   file << "ice_concentrations: \"none\"\n";
   file << "bottom_depth: \"from_grid\"\n";
   file << "time_step: 1800.0\n";
@@ -48,7 +48,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
   EXPECT_FALSE(config->produceLogFile);
   EXPECT_EQ(config->waterLevels, InputFieldOption::FromFile);
   EXPECT_EQ(config->currents, InputFieldOption::FromCoupling);
-  EXPECT_EQ(config->winds, InputFieldOption::Homogeneous);
+  EXPECT_EQ(config->winds, InputFieldOption::None);
   EXPECT_EQ(config->iceConcentrations, InputFieldOption::None);
   EXPECT_EQ(config->bottomDepth, InputFieldOption::FromGrid);
   EXPECT_EQ(TimeManagement::getCalendarType(),
@@ -535,7 +535,7 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   file << "water_levels: \"none\"\n";
   file << "currents: \"from_file\"\n";
   file << "winds: \"from_coupling\"\n";
-  file << "ice_concentrations: \"homogeneous\"\n";
+  file << "ice_concentrations: \"none\"\n";
   file << "bottom_depth: \"from_grid\"\n";
   file << "time_step: 3600.0\n";
   file.close();
@@ -545,7 +545,7 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   EXPECT_EQ(config->waterLevels, InputFieldOption::None);
   EXPECT_EQ(config->currents, InputFieldOption::FromFile);
   EXPECT_EQ(config->winds, InputFieldOption::FromCoupling);
-  EXPECT_EQ(config->iceConcentrations, InputFieldOption::Homogeneous);
+  EXPECT_EQ(config->iceConcentrations, InputFieldOption::None);
   EXPECT_EQ(config->bottomDepth, InputFieldOption::FromGrid);
 
   std::remove(filename.c_str());

@@ -26,17 +26,6 @@
 namespace ww4_core {
 
 /**
- * @struct HomogeneousDataPoint
- * @brief Data point for a homogeneous input field.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-struct HomogeneousDataPoint {
-  ww4_utils::DateTime time;   ///< Time of the data point.
-  std::vector<double> values; ///< Values of the data point.
-};
-
-/**
  * @brief Processes and validates homogeneous input data for the model.
  * @details Parses homogeneous input data from the run configuration,
  *          validates its availability and temporal consistency,
@@ -49,16 +38,6 @@ struct HomogeneousDataPoint {
 void w4core_hom_input(std::ostream &os);
 
 /**
- * @brief Echoes the processed homogeneous input data to the provided stream.
- * @param os Output stream to write to.
- * @param option Level of detail for echoing.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-17
- */
-void echoInputData(std::ostream &os, ww4_utils::EchoOption option);
-
-/**
  * @brief Resets all internal input data storage.
  * @details Clears vectors containing processed homogeneous data.
  */
@@ -68,32 +47,36 @@ void resetInputData() noexcept;
  * @brief Accessor for processed homogeneous water levels.
  * @return Reference to the vector of data points.
  */
-const std::vector<HomogeneousDataPoint> &getHomogeneousWaterLevels() noexcept;
+const std::vector<ww4_utils::HomogeneousDataPoint> &
+getHomogeneousWaterLevels() noexcept;
 
 /**
  * @brief Accessor for processed homogeneous currents.
  * @return Reference to the vector of data points.
  */
-const std::vector<HomogeneousDataPoint> &getHomogeneousCurrents() noexcept;
+const std::vector<ww4_utils::HomogeneousDataPoint> &
+getHomogeneousCurrents() noexcept;
 
 /**
  * @brief Accessor for processed homogeneous winds.
  * @return Reference to the vector of data points.
  */
-const std::vector<HomogeneousDataPoint> &getHomogeneousWinds() noexcept;
+const std::vector<ww4_utils::HomogeneousDataPoint> &
+getHomogeneousWinds() noexcept;
 
 /**
  * @brief Accessor for processed homogeneous ice concentrations.
  * @return Reference to the vector of data points.
  */
-const std::vector<HomogeneousDataPoint> &
+const std::vector<ww4_utils::HomogeneousDataPoint> &
 getHomogeneousIceConcentrations() noexcept;
 
 /**
  * @brief Accessor for processed homogeneous bottom depth.
  * @return Reference to the vector of data points.
  */
-const std::vector<HomogeneousDataPoint> &getHomogeneousBottomDepth() noexcept;
+const std::vector<ww4_utils::HomogeneousDataPoint> &
+getHomogeneousBottomDepth() noexcept;
 
 } // namespace ww4_core
 
