@@ -64,26 +64,21 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     ww4_utils::TimeManagement::setCalendarType(globalRunConfig.calendarType);
 
     //
-    // 0.3 Process homogenious input field data (needs calendar to be initialized)
-    //
-    w4core_hom_input(os);
-
-    //
-    // 0.4 Initialize profiling
+    // 0.3 Initialize profiling
     //
     ww4_utils::TimeManagement::initializeProfiling();
 
     //
-    // 0.5 Initial standard output if requested
+    // 0.4 Initial standard output if requested
     //
     if (globalRunConfig.produceStdOut) {
       //
-      // 0.5.1 Initial standard output
+      // 0.4.1 Initial standard output
       //
       ww4_utils::ww4_std_out::writeInitialOutput(os, capturedProgramName);
 
       //
-      // 0.5.2 Report out run start time
+      // 0.4.2 Report out run start time
       //
       os << "  Run starts at "
          << ww4_utils::TimeManagement::toFormattedString(
@@ -91,32 +86,32 @@ void w4core_init(const ww4_utils::DateTime &startTime,
          << std::endl;
 
       //
-      // 0.5.3 Identify being in initialization routine
+      // 0.4.3 Identify being in initialization routine
       //
       os << "\n  Initialization (w4core_init) starting: "
          << ww4_utils::TimeManagement::toFormattedString(startTime)
          << std::endl;
       //
-      // 0.5.4 Report out run time configuration
+      // 0.4.4 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, os);
     }
 
     //
-    // 0.6 Start log file if requested
+    // 0.5 Start log file if requested
     //
     if (globalRunConfig.produceLogFile) {
       //
-      // 0.6.1 Open log file
+      // 0.5.1 Open log file
       //
       logFile.open("log.ww4");
       //
-      // 0.6.2 Initial log file output
+      // 0.5.2 Initial log file output
       //
       ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
 
       //
-      // 0.6.3 Report out run start time
+      // 0.5.3 Report out run start time
       //
       logFile << "  Run starts at "
               << ww4_utils::TimeManagement::toFormattedString(
@@ -124,13 +119,13 @@ void w4core_init(const ww4_utils::DateTime &startTime,
               << std::endl;
 
       //
-      // 0.6.4 Identify being in initialization routine
+      // 0.5.4 Identify being in initialization routine
       //
       logFile << "\n  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
       //
-      // 0.6.5 Report out run time configuration
+      // 0.5.5 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
     }
@@ -140,7 +135,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     //
     // 1.1 Process input
     //
-    // w4core_hom_input(os);
+    w4core_hom_input(os);
     //
     // 1.2 Echo input to log file (if requested)
     //
