@@ -19,6 +19,7 @@
  */
 
 #include "ww4_core/w4core_init.hpp"
+#include "ww4_core/w4core_input.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
@@ -130,8 +131,40 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     }
 
     //
-    // 1.  XXXXXXXXX ---------------------------------------------------------
+    // 1.  Process model input  ----------------------------------------------
     //
+    // 1.1 Process input
+    //
+    w4core_input(os);
+    //
+    // 1.2 Echo input to log file (if requested)
+    //
+    if (globalRunConfig.produceLogFile && logFile.is_open()) {
+      if (globalRunConfig.echoInput != ww4_utils::EchoOption::None) {
+        logFile << "\n  Input data (w4core_input) summary:" << std::endl;
+        const auto &wl = getHomogeneousWaterLevels();
+        const auto &cur = getHomogeneousCurrents();
+        const auto &wind = getHomogeneousWinds();
+        const auto &ice = getHomogeneousIceConcentrations();
+        const auto &depth = getHomogeneousBottomDepth();
+
+        if (!wl.empty())
+          logFile << "     Number of data points for water levels: " << wl.size()
+                  << std::endl;
+        if (!cur.empty())
+          logFile << "     Number of data points for currents: " << cur.size()
+                  << std::endl;
+        if (!wind.empty())
+          logFile << "     Number of data points for winds: " << wind.size()
+                  << std::endl;
+        if (!ice.empty())
+          logFile << "     Number of data points for ice concentrations: "
+                  << ice.size() << std::endl;
+        if (!depth.empty())
+          logFile << "     Number of data points for bottom depth: "
+                  << depth.size() << std::endl;
+      }
+    }
 
   } catch (const std::exception &e) {
     ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);
@@ -153,6 +186,7 @@ void resetInternalState() noexcept {
   if (logFile.is_open()) {
     logFile.close();
   }
+  resetInputData();
 }
 
 } // namespace ww4_core

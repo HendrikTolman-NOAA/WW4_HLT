@@ -20,6 +20,7 @@
 
 #include "ww4_core/w4core_finl.hpp"
 #include "ww4_core/w4core_init.hpp"
+#include "ww4_core/w4core_input.hpp"
 #include "ww4_utils/memory_utils.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
@@ -95,6 +96,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     //
     ww4_utils::TimeManagement::reset();
     ww4_utils::resetMemoryStatusPath();
+    resetInputData();
     resetInternalState();
   } catch (const std::exception &e) {
     ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);

@@ -75,6 +75,42 @@ winds: "none"
 # Ice concentrations option.
 ice_concentrations: "none"
 
+# Option for echoing model input data back to standard output and log files.
+# Options: "none", "summary" (default), "full"
+# "none"    : No echoing of input data.
+# "summary" : Produce a summary of input data (e.g., number of points).
+# "full"    : Full reproduction of user-provided input data.
+echo_input: "summary"
+
+# Homogeneous input data lists.
+# Used when an input field option is set to "homogeneous".
+# Format: "- YYYYMMDD HHMMSS val1 [val2 ...]"
+# Multiple data points can be provided for each field.
+# Time stamps must be non-decreasing.
+
+# Example homogeneous data for water levels:
+# water_levels: "homogeneous"
+# - 20260101 000000 0.5
+# - 20260101 120000 0.7
+# - 20260102 000000 0.6
+
+# Example homogeneous data for currents (U and V components):
+# currents: "homogeneous"
+# - 20260101 000000 0.1 0.05
+# - 20260102 000000 0.15 0.08
+
+# Example homogeneous data for winds (U and V components):
+# winds: "homogeneous"
+# - 20260101 000000 5.0 2.0
+
+# Example homogeneous data for ice concentrations:
+# ice_concentrations: "homogeneous"
+# - 20260101 000000 0.8
+
+# Example homogeneous data for bottom depth:
+# bottom_depth: "homogeneous"
+# - 20260101 000000 50.0
+
 # Data output options.
 # For each output type, track if requested ("yes"/"no"), start/end times,
 # and output interval (mandatory if requested, in seconds).
