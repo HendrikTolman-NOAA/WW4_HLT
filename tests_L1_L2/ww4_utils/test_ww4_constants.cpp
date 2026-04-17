@@ -22,7 +22,7 @@ namespace testing {
  * @test VerifyMathematicalConstants
  * @brief Ensures all mathematical constants are correctly defined.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  */
 TEST(WW4ConstantsTest, VerifyMathematicalConstants) {
   static_assert(PI == 3.14159265358979323846);
@@ -46,7 +46,7 @@ TEST(WW4ConstantsTest, VerifyMathematicalConstants) {
  * @test VerifyPhysicalConstants
  * @brief Ensures all physical constants match WW3 values.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  */
 TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
   static_assert(GRAV == 9.806);
@@ -72,7 +72,7 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
  * @test VerifyDerivedConstants
  * @brief Ensures derived constants are correctly calculated.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  */
 TEST(WW4ConstantsTest, VerifyDerivedConstants) {
   EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * TPI * TPI * TPI));
@@ -83,7 +83,7 @@ TEST(WW4ConstantsTest, VerifyDerivedConstants) {
  * @test VerifyModelConstants
  * @brief Ensures model-specific constants are correctly defined.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  */
 TEST(WW4ConstantsTest, VerifyModelConstants) {
   static_assert(UNDEF == -999.9);
@@ -103,7 +103,7 @@ TEST(WW4ConstantsTest, VerifyModelConstants) {
  * @test VerifyConstantsConsistency
  * @brief Ensures mathematical relations between constants are maintained.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  */
 TEST(WW4ConstantsTest, VerifyConstantsConsistency) {
   EXPECT_NEAR(DERA * RADE, 1.0, 1e-15);
