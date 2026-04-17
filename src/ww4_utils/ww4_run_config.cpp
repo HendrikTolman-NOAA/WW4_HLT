@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-17
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -153,6 +153,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     return std::nullopt;
   }
 
+  std::string lastKey = "";
   std::string line;
   while (std::getline(file, line)) {
     const std::string_view lineFullView(line);
@@ -171,6 +172,24 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     if (first == std::string_view::npos)
       continue;
 
+    if (lineView[first] == '-') {
+      const std::string_view value = cleanValue(lineView.substr(first + 1));
+      if (!value.empty()) {
+        if (lastKey == "water_levels") {
+          config.homogeneousWaterLevels.emplace_back(value);
+        } else if (lastKey == "currents") {
+          config.homogeneousCurrents.emplace_back(value);
+        } else if (lastKey == "winds") {
+          config.homogeneousWinds.emplace_back(value);
+        } else if (lastKey == "ice_concentrations") {
+          config.homogeneousIceConcentrations.emplace_back(value);
+        } else if (lastKey == "bottom_depth") {
+          config.homogeneousBottomDepth.emplace_back(value);
+        }
+      }
+      continue;
+    }
+
     const size_t colonPos = lineView.find(':');
     if (colonPos == std::string_view::npos)
       continue;
@@ -181,6 +200,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     const std::string_view key = (kend != std::string_view::npos)
                                      ? key_raw.substr(0, kend + 1)
                                      : key_raw;
+    lastKey = std::string(key);
 
     const std::string_view value = cleanValue(lineView.substr(colonPos + 1));
 
@@ -250,6 +270,14 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       config.iceConcentrations = parseInputOption(value);
     } else if (key == "bottom_depth") {
       config.bottomDepth = parseInputOption(value, true);
+    } else if (key == "echo_hom_input") {
+      if (value == "none") {
+        config.echoHomInput = EchoOption::None;
+      } else if (value == "summary") {
+        config.echoHomInput = EchoOption::Summary;
+      } else if (value == "full") {
+        config.echoHomInput = EchoOption::Full;
+      }
     } else if (key == "time_step") {
       if (std::from_chars(value.data(), value.data() + value.size(),
                           config.timeStep)
@@ -352,6 +380,14 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "     Log file             : " << (config.produceLogFile ? "yes" : "no")
      << std::endl;
 
+  std::string echoStr = "summary";
+  if (config.echoHomInput == EchoOption::None) {
+    echoStr = "none";
+  } else if (config.echoHomInput == EchoOption::Full) {
+    echoStr = "full";
+  }
+  os << "     Echo input           : " << echoStr << std::endl;
+
   const bool isConventional = !config.dryRun && config.propagateX &&
                               config.propagateY && config.propagateTheta &&
                               config.propagateK && config.sourceTerms;
@@ -393,7 +429,6 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << inputOptionToString(config.iceConcentrations) << std::endl;
 
   os << "\n  Model output:" << std::endl;
-
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);

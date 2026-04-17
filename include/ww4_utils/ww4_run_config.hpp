@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-17
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
@@ -24,6 +24,7 @@
 #include <iostream>
 #include <optional>
 #include <string_view>
+#include <vector>
 
 namespace ww4_utils {
 
@@ -40,6 +41,18 @@ enum class InputFieldOption {
   FromCoupling, ///< Input from coupling.
   Homogeneous,  ///< Homogeneous field.
   FromGrid      ///< Static data read as part of the grid data.
+};
+
+/**
+ * @enum EchoOption
+ * @brief Options for echoing input data to standard output and log files.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+enum class EchoOption {
+  None,    ///< No echoing of input data.
+  Summary, ///< Produce a summary of the input data.
+  Full     ///< Full reproduction of the user input data.
 };
 
 /**
@@ -83,6 +96,19 @@ struct RunConfig {
       InputFieldOption::Undefined; ///< Ice concentrations option.
   InputFieldOption bottomDepth =
       InputFieldOption::FromGrid; ///< Bottom depth option.
+
+  EchoOption echoHomInput = EchoOption::Summary; ///< Echo input flag.
+
+  std::vector<std::string> homogeneousWaterLevels; ///< Raw homogeneous water
+                                                   ///< levels data.
+  std::vector<std::string>
+      homogeneousCurrents;                   ///< Raw homogeneous currents data.
+  std::vector<std::string> homogeneousWinds; ///< Raw homogeneous winds data.
+  std::vector<std::string> homogeneousIceConcentrations; ///< Raw homogeneous
+                                                         ///< ice concentrations
+                                                         ///< data.
+  std::vector<std::string>
+      homogeneousBottomDepth; ///< Raw homogeneous bottom depth data.
 
   double timeStep = -1.0; ///< Model time step in seconds.
 

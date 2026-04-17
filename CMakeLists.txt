@@ -86,6 +86,7 @@ target_link_options(ww4_utils PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 add_library(
     ww4_core
     src/ww4_core/w4core_init.cpp
+    src/ww4_core/w4core_hom_input.cpp
     src/ww4_core/w4core_wave.cpp
     src/ww4_core/w4core_finl.cpp
 )
@@ -133,6 +134,9 @@ target_link_libraries(test_w4core_time PRIVATE ww4_core ww4_utils GTest::gtest_m
 add_executable(test_w4core_wave_output tests_L1_L2/ww4_core/test_w4core_wave_output.cpp)
 target_link_libraries(test_w4core_wave_output PRIVATE ww4_core ww4_utils GTest::gtest_main)
 
+add_executable(test_w4core_hom_input tests_L1_L2/ww4_core/test_w4core_hom_input.cpp)
+target_link_libraries(test_w4core_hom_input PRIVATE ww4_core ww4_utils GTest::gtest_main)
+
 set(WW4_TEST_TARGETS
     test_time_management
     test_memory_utils
@@ -142,6 +146,7 @@ set(WW4_TEST_TARGETS
     test_ww4_run_config
     test_w4core_time
     test_w4core_wave_output
+    test_w4core_hom_input
 )
 
 foreach(test_target IN LISTS WW4_TEST_TARGETS)
@@ -158,3 +163,4 @@ gtest_discover_tests(test_ww4_stand_alone_config)
 gtest_discover_tests(test_ww4_run_config)
 gtest_discover_tests(test_w4core_time)
 gtest_discover_tests(test_w4core_wave_output)
+gtest_discover_tests(test_w4core_hom_input)
