@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-17
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
@@ -97,7 +97,7 @@ struct RunConfig {
   InputFieldOption bottomDepth =
       InputFieldOption::FromGrid; ///< Bottom depth option.
 
-  EchoOption echoInput = EchoOption::Summary; ///< Echo input flag.
+  EchoOption echoHomInput = EchoOption::Summary; ///< Echo input flag.
 
   std::vector<std::string> homogeneousWaterLevels; ///< Raw homogeneous water
                                                    ///< levels data.

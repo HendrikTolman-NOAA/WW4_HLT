@@ -80,7 +80,7 @@ ice_concentrations: "none"
 # "none"    : No echoing of input data.
 # "summary" : Produce a summary of input data (e.g., number of points).
 # "full"    : Full reproduction of user-provided input data.
-echo_input: "summary"
+echo_hom_input: "summary"
 
 # Homogeneous input data lists.
 # Used when an input field option is set to "homogeneous".

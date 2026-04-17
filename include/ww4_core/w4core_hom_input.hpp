@@ -3,20 +3,21 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_input.hpp
- * @brief Input data processing for the WAVEWATCH IV core.
+ * @file w4core_hom_input.hpp
+ * @brief Homogeneous input data processing for the WAVEWATCH IV core.
  * @details This header defines the structures and routines for processing
- *          homogeneous and other input data in WW4.
+ *          homogeneous input data in WW4.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-16
+ * @date Initial, 2026-04-16
+ * @date Last update, 2026-04-17
  */
 
-#ifndef WW4_CORE_W4CORE_INPUT_HPP
-#define WW4_CORE_W4CORE_INPUT_HPP
+#ifndef WW4_CORE_W4CORE_HOM_INPUT_HPP
+#define WW4_CORE_W4CORE_HOM_INPUT_HPP
 
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
@@ -37,24 +38,26 @@ struct HomogeneousDataPoint {
 };
 
 /**
- * @brief Processes and validates all input data for the model.
+ * @brief Processes and validates homogeneous input data for the model.
  * @details Parses homogeneous input data from the run configuration,
  *          validates its availability and temporal consistency,
  *          and echoes it according to user preference.
  * @param os Output stream for reporting and echoing.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-16
+ * @date Initial, 2026-04-16
+ * @date Last update, 2026-04-17
  */
-void w4core_input(std::ostream &os);
+void w4core_hom_input(std::ostream &os);
 
 /**
- * @brief Echoes the processed input data to the provided stream.
+ * @brief Echoes the processed homogeneous input data to the provided stream.
  * @param os Output stream to write to.
  * @param option Level of detail for echoing.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-16
+ * @date Initial, 2026-04-16
+ * @date Last update, 2026-04-17
  */
 void echoInputData(std::ostream &os, ww4_utils::EchoOption option);
 
@@ -97,4 +100,4 @@ const std::vector<HomogeneousDataPoint> &getHomogeneousBottomDepth() noexcept;
 
 } // namespace ww4_core
 
-#endif // WW4_CORE_W4CORE_INPUT_HPP
+#endif // WW4_CORE_W4CORE_HOM_INPUT_HPP

@@ -3,18 +3,19 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_input.cpp
- * @brief Implementation of input data processing for WW4 core.
- * @details This file implements the w4core_input routine and its helpers.
+ * @file w4core_hom_input.cpp
+ * @brief Implementation of homogeneous input data processing for WW4 core.
+ * @details This file implements the w4core_hom_input routine and its helpers.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-16
+ * @date Initial, 2026-04-16
+ * @date Last update, 2026-04-17
  */
 
-#include "ww4_core/w4core_input.hpp"
+#include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/ww4_stand_alone_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
@@ -163,25 +164,24 @@ void echoSeries(const std::vector<HomogeneousDataPoint> &processed,
 
 } // namespace
 
-void w4core_input(std::ostream &os) {
+void w4core_hom_input(std::ostream &os) {
   const auto &config = getRunConfig();
 
   // Reset before processing
   resetInputData();
 
   processSeries(config.homogeneousWaterLevels, waterLevels, "water levels",
-                config.waterLevels, std::cerr);
+                config.waterLevels, os);
   processSeries(config.homogeneousCurrents, currents, "currents",
-                config.currents, std::cerr);
-  processSeries(config.homogeneousWinds, winds, "winds", config.winds,
-                std::cerr);
+                config.currents, os);
+  processSeries(config.homogeneousWinds, winds, "winds", config.winds, os);
   processSeries(config.homogeneousIceConcentrations, iceConcentrations,
-                "ice concentrations", config.iceConcentrations, std::cerr);
+                "ice concentrations", config.iceConcentrations, os);
   processSeries(config.homogeneousBottomDepth, bottomDepth, "bottom depth",
-                config.bottomDepth, std::cerr);
+                config.bottomDepth, os);
 
   if (config.produceStdOut) {
-    echoInputData(os, config.echoInput);
+    echoInputData(os, config.echoHomInput);
   }
 }
 
@@ -189,7 +189,7 @@ void echoInputData(std::ostream &os, ww4_utils::EchoOption option) {
   if (option == ww4_utils::EchoOption::None)
     return;
 
-  os << "\n  Input data (w4core_input) processing:" << std::endl;
+  os << "\n  Input data (w4core_hom_input) processing:" << std::endl;
   echoSeries(waterLevels, "water levels", option, os);
   echoSeries(currents, "currents", option, os);
   echoSeries(winds, "winds", option, os);

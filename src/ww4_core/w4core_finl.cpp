@@ -12,15 +12,15 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-17
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
 #include "ww4_core/w4core_finl.hpp"
+#include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_core/w4core_init.hpp"
-#include "ww4_core/w4core_input.hpp"
 #include "ww4_utils/memory_utils.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
@@ -96,7 +96,6 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     //
     ww4_utils::TimeManagement::reset();
     ww4_utils::resetMemoryStatusPath();
-    resetInputData();
     resetInternalState();
   } catch (const std::exception &e) {
     ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);

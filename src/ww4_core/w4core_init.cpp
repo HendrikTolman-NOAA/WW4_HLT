@@ -12,14 +12,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-17
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
 #include "ww4_core/w4core_init.hpp"
-#include "ww4_core/w4core_input.hpp"
+#include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
@@ -135,12 +135,12 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     //
     // 1.1 Process input
     //
-    w4core_input(os);
+    w4core_hom_input(os);
     //
     // 1.2 Echo input to log file (if requested)
     //
     if (globalRunConfig.produceLogFile && logFile.is_open()) {
-      echoInputData(logFile, globalRunConfig.echoInput);
+      echoInputData(logFile, globalRunConfig.echoHomInput);
     }
 
   } catch (const std::exception &e) {
