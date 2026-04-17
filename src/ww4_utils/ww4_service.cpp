@@ -35,10 +35,11 @@ Dispersion wavenumber_Beji(double omega, double h) {
   double tmp = 1.55 + 1.3 * kh0 + 0.216 * kh0 * kh0;
 
   // Calculate KH using the approximation
-  double kh = kh0 *
-              (1.0 + std::pow(kh0, 1.09) *
-                         (1.0 / std::exp(std::min(ww4_constants::KDMAX, tmp)))) /
-              std::sqrt(std::tanh(std::min(ww4_constants::KDMAX, kh0)));
+  double kh =
+      kh0 *
+      (1.0 + std::pow(kh0, 1.09) *
+                 (1.0 / std::exp(std::min(ww4_constants::KDMAX, tmp)))) /
+      std::sqrt(std::tanh(std::min(ww4_constants::KDMAX, kh0)));
 
   double k = kh / h;
 
@@ -71,10 +72,10 @@ double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
   double dlon = (lon2 - lon1) * ww4_constants::DERA;
 
   // Compute the haversine of the central angle
-  double a =
-      std::pow(std::sin(dlat / 2.0), 2) + std::cos(lat1 * ww4_constants::DERA) *
-                                              std::cos(lat2 * ww4_constants::DERA) *
-                                              std::pow(std::sin(dlon / 2.0), 2);
+  double a = std::pow(std::sin(dlat / 2.0), 2) +
+             std::cos(lat1 * ww4_constants::DERA) *
+                 std::cos(lat2 * ww4_constants::DERA) *
+                 std::pow(std::sin(dlon / 2.0), 2);
 
   // Compute the angular distance (c), ensuring no precision issues
   double c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(std::max(0.0, 1.0 - a)));
