@@ -1,0 +1,160 @@
+# @file ww4_run_config.yml
+# @brief YAML template for WAVEWATCH IV (WW4) run-time configuration.
+# @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
+#
+# @details This file provides a template for configuring run-time settings
+#          for WAVEWATCH IV. Most inputs are optional and have default
+#          settings as indicated below. Mandatory inputs are also indicated.
+#
+#          To use this file, copy it to the root directory of the repository
+#          or the directory from which the executable is run.
+#
+#          Note: All YAML files in the root directory of the clone are
+#          automatically ignored by Git. This allows for local testing without
+#          adding customized input files to the repository.
+
+# Calendar type for the simulation.
+# Options: "Standard" (default), "NoLeap", "ThreeSixtyDay"
+# Note: "Standard" refers to the normal Gregorian calendar.
+calendar_type: "Standard"
+
+# Option for producing standard program output to the screen.
+# Options: "yes" (default), "no"
+produce_std_out: "yes"
+
+# Option for producing a log file.
+# Options: "yes" (default), "no"
+produce_log_file: "yes"
+
+# Mandatory model time step in seconds.
+# This parameter must be positive and non-zero.
+time_step: 3600.0
+
+# Option for a dry run (no computations).
+# Options: "no" (default), "yes"
+dry_run: "no"
+
+# Option for propagation in x-direction.
+# Options: "yes" (default), "no"
+propagate_x: "yes"
+
+# Option for propagation in y-direction.
+# Options: "yes" (default), "no"
+propagate_y: "yes"
+
+# Option for propagation in theta-direction.
+# Options: "yes" (default), "no"
+propagate_theta: "yes"
+
+# Option for propagation in k-direction.
+# Options: "yes" (default), "no"
+propagate_k: "yes"
+
+# Option for processing source terms.
+# Options: "yes" (default), "no"
+source_terms: "yes"
+
+# Mandatory input field options.
+# Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"
+# Note: "from_grid" is only valid for bottom depth.
+# Note: water_levels, currents, winds, and ice_concentrations are mandatory.
+#       bottom_depth is optional and defaults to "from_grid".
+
+# Bottom depth option.
+bottom_depth: "from_grid"
+
+# Water levels option.
+water_levels: "none"
+
+# Currents option.
+currents: "none"
+
+# Winds option.
+winds: "none"
+
+# Ice concentrations option.
+ice_concentrations: "none"
+
+# Option for echoing model input data back to standard output and log files.
+# Options: "none", "summary" (default), "full"
+# "none"    : No echoing of input data.
+# "summary" : Produce a summary of input data (e.g., number of points).
+# "full"    : Full reproduction of user-provided input data.
+echo_hom_input: "summary"
+
+# Homogeneous input data lists.
+# Used when an input field option is set to "homogeneous".
+# Format: "- YYYYMMDD HHMMSS val1 [val2 ...]"
+# Multiple data points can be provided for each field.
+# Time stamps must be non-decreasing.
+
+# Example homogeneous data for water levels (relative to datum in meters):
+# Expected to be a small often positive number.
+# water_levels: "homogeneous"
+# - 20260101 000000 0.5
+# - 20260101 120000 0.7
+# - 20260102 000000 0.6
+
+# Example homogeneous data for currents (speed [m/s] and direction [deg]):
+# currents: "homogeneous"
+# - 20260101 000000 0.5 45.0
+# - 20260102 000000 0.8 50.0
+
+# Example homogeneous data for winds (speed [m/s], direction [deg],
+# and optional air-sea temperature difference [deg C]):
+# winds: "homogeneous"
+# - 20260101 000000 10.0 270.0 -2.0
+
+# Example homogeneous data for ice concentrations (fraction 0.0 to 1.0):
+# ice_concentrations: "homogeneous"
+# - 20260101 000000 0.8
+
+# Example homogeneous data for bottom depth (relative to datum in meters):
+# Should generally be a negative number.
+# bottom_depth: "homogeneous"
+# - 20260101 000000 -500.0
+
+# Data output options.
+# For each output type, track if requested ("yes"/"no"), start/end times,
+# and output interval (mandatory if requested, in seconds).
+# "at_first" flag determines if output at the first time is requested (default: "yes").
+# All output types default to "no" (requested: "no").
+
+# Output type 1: Gridded fields
+output_fields_requested: "no"
+output_fields_interval: 3600.0
+# output_fields_start: "20260101 000000"
+# output_fields_end: "20260102 000000"
+output_fields_at_first: "yes"
+
+# Output type 2: Point output
+output_points_requested: "no"
+output_points_interval: 3600.0
+# output_points_start: "20260101 000000"
+# output_points_end: "20260102 000000"
+output_points_at_first: "yes"
+
+# Output type 3: Nesting data
+output_nesting_requested: "no"
+output_nesting_interval: 3600.0
+# output_nesting_start: "20260101 000000"
+# output_nesting_end: "20260102 000000"
+output_nesting_at_first: "yes"
+
+# Output type 4: Track output
+output_tracks_requested: "no"
+output_tracks_interval: 3600.0
+# output_tracks_start: "20260101 000000"
+# output_tracks_end: "20260102 000000"
+output_tracks_at_first: "yes"
+
+# Output type 5: Restart files
+output_restart_requested: "no"
+output_restart_interval: 86400.0
+# output_restart_start: "20260101 000000"
+# output_restart_end: "20260102 000000"
+output_restart_at_first: "yes"
+
+# Output type 6: API output
+# Options: "no" (default), "yes"
+output_api: "no"

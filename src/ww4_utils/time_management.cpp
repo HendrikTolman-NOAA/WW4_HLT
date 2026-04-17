@@ -12,12 +12,9 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-31
- *
- * @note This file is converted from WAVEWATCH III (WW3) source file
- *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
+ * @date Last update, 2026-04-16
  */
 
 #include "ww4_utils/time_management.hpp"
@@ -25,7 +22,6 @@
 #include <charconv>
 #include <chrono>
 #include <cmath>
-#include <format>
 #include <iomanip>
 #include <sstream>
 
@@ -43,6 +39,13 @@ void TimeManagement::setCalendarType(const CalendarType type) noexcept {
 
 TimeManagement::CalendarType TimeManagement::getCalendarType() noexcept {
   return m_calendarType;
+}
+
+void TimeManagement::reset() noexcept {
+  m_calendarType = CalendarType::Standard;
+  m_profilingBase = {0, 0, 0, 0, 0, 0, 0, 0};
+  m_profilingInitialized = false;
+  m_steadyBase = std::chrono::steady_clock::time_point();
 }
 
 void TimeManagement::incrementDateTime(DateTime &time,
@@ -219,7 +222,7 @@ int TimeManagement::getDayOfYear(const int ymd) noexcept {
 }
 
 void TimeManagement::dateTimeToDateArray(const DateTime &time,
-                                         const std::span<int, 8> dateArray,
+                                         DateArray &dateArray,
                                          int &errorCode) noexcept {
   dateArray[0] = time.ymd / 10000;
   dateArray[1] = (time.ymd / 100) % 100;
@@ -233,9 +236,9 @@ void TimeManagement::dateTimeToDateArray(const DateTime &time,
   errorCode = 0;
 }
 
-void TimeManagement::dateArrayToDateTime(
-    const std::span<const int, 8> dateArray, DateTime &time,
-    int &errorCode) noexcept {
+void TimeManagement::dateArrayToDateTime(const DateArray &dateArray,
+                                         DateTime &time,
+                                         int &errorCode) noexcept {
   const int ymd_val = dateArray[0] * 10000 + dateArray[1] * 100 + dateArray[2];
   const double hms_val = static_cast<double>(dateArray[4]) * 10000.0 +
                          static_cast<double>(dateArray[5]) * 100.0 +
@@ -246,9 +249,9 @@ void TimeManagement::dateArrayToDateTime(
   errorCode = 0;
 }
 
-void TimeManagement::dateArrayToJulianDay(
-    const std::span<const int, 8> dateArray, double &julian,
-    int &errorCode) noexcept {
+void TimeManagement::dateArrayToJulianDay(const DateArray &dateArray,
+                                          double &julian,
+                                          int &errorCode) noexcept {
   const int year = dateArray[0];
   const int month = dateArray[1];
   const int day = dateArray[2];
@@ -280,7 +283,7 @@ void TimeManagement::dateArrayToJulianDay(
 }
 
 void TimeManagement::julianDayToDateArray(const double julian,
-                                          const std::span<int, 8> dateArray,
+                                          DateArray &dateArray,
                                           int &errorCode) noexcept {
   if (m_calendarType == CalendarType::Standard && julian < 0.0) {
     errorCode = 1;
@@ -370,8 +373,11 @@ std::string TimeManagement::toFormattedString(const DateTime &time) {
   const int imi = (static_cast<int>(time.hms) / 100) % 100;
   const int is = static_cast<int>(std::fmod(time.hms, 100.0));
 
-  return std::format("{:04d}/{:02d}/{:02d} {:02d}:{:02d}:{:02d} UTC", iy, imo,
-                     id, ih, imi, is);
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(4) << iy << "/" << std::setw(2) << imo
+      << "/" << std::setw(2) << id << " " << std::setw(2) << ih << ":"
+      << std::setw(2) << imi << ":" << std::setw(2) << is << " UTC";
+  return oss.str();
 }
 
 std::string TimeManagement::toIsoString(const DateTime &time) {
@@ -382,14 +388,17 @@ std::string TimeManagement::toIsoString(const DateTime &time) {
   const int imi = (static_cast<int>(time.hms) / 100) % 100;
   const int is = static_cast<int>(std::fmod(time.hms, 100.0));
 
-  return std::format("{}-{:02}-{:02}T{:02}:{:02}:{:02}", iy, imo, id, ih, imi,
-                     is);
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(4) << iy << "-" << std::setw(2) << imo
+      << "-" << std::setw(2) << id << "T" << std::setw(2) << ih << ":"
+      << std::setw(2) << imi << ":" << std::setw(2) << is;
+  return oss.str();
 }
 
 void TimeManagement::parseUnitsToDateArray(const std::string_view units,
-                                           const std::span<int, 8> dateArray,
+                                           DateArray &dateArray,
                                            int &errorCode) noexcept {
-  std::fill(dateArray.begin(), dateArray.end(), 0);
+  dateArray.fill(0);
   errorCode = 1;
 
   const size_t since_pos = units.find("since ");
@@ -438,15 +447,13 @@ void TimeManagement::parseUnitsToDateArray(const std::string_view units,
   }
 }
 
-double
-TimeManagement::differenceInSeconds(const std::span<const int, 8> t1,
-                                    const std::span<const int, 8> t2) noexcept {
+double TimeManagement::differenceInSeconds(const DateArray &t1,
+                                           const DateArray &t2) noexcept {
   const double diff_s = 86400.0 * differenceInDays(t1, t2);
   return diff_s;
 }
 
-void TimeManagement::getSystemDateArray(
-    const std::span<int, 8> dateArray) noexcept {
+void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
   const auto now = std::chrono::system_clock::now();
   const auto dp = std::chrono::floor<std::chrono::days>(now);
   const std::chrono::year_month_day ymd_sys{dp};
@@ -464,8 +471,8 @@ void TimeManagement::getSystemDateArray(
   dateArray[7] = static_cast<int>(hms_sys.subseconds().count());
 }
 
-void TimeManagement::getElapsedTimeSince(
-    const std::span<const int, 8> referenceDate, double &elapsedTime) noexcept {
+void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
+                                         double &elapsedTime) noexcept {
   DateArray now_dat{};
   getSystemDateArray(now_dat);
   const double elapsed_val = differenceInSeconds(referenceDate, now_dat);
@@ -481,9 +488,8 @@ DateTime TimeManagement::getPresentDateTime() noexcept {
   return dt_val;
 }
 
-double
-TimeManagement::differenceInDays(const std::span<const int, 8> t1,
-                                 const std::span<const int, 8> t2) noexcept {
+double TimeManagement::differenceInDays(const DateArray &t1,
+                                        const DateArray &t2) noexcept {
   if (m_calendarType == CalendarType::ThreeSixtyDay) {
     const int ad =
         (t2[0] - t1[0]) * 360 + (t2[1] - t1[1]) * 30 + (t2[2] - t1[2]);

@@ -15,6 +15,7 @@ Users can manually copy the templates from this directory to the desired locatio
     cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
     ```
 2.  Edit `ww4_compile_config.yml` to specify your compiler and preferred options.
+3.  Copy `templates/ww4_run_config.yml` to the root directory and modify run-time settings.
 
 ## Automatic usage
 

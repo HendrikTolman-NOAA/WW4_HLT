@@ -5,7 +5,7 @@
 #
 # @file ww4_clean_all
 # @brief A tool to remove all compilation output, including executables and libraries.
-# @details This script removes the 'build' and 'exe' directories in the repository root.
+# @details This script removes the 'build' and 'exe' directories and the log file.
 #
 # Usage
 # -----
@@ -15,10 +15,10 @@
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
 #               of the National Weather Service.
-# @author Main Author(s): Aldgisl (AI Persona), Hendrik Tolman
+# @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
 # @author Contributors: Jules (Agentic AI)
 # @date Initial, 2026-03-30
-# @date Last Update, 2026-03-31
+# @date Last Update, 2026-04-07
 
 # Identify the repository root (parent of the directory containing this script)
 TOOLS_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -52,6 +52,19 @@ if [ -d "$EXE_DIR" ]; then
     fi
 else
     echo "No executable directory found."
+fi
+
+# Remove log file from the root directory
+if [ -f "$ACTIVE_CLONE/log.ww4" ]; then
+    echo "Removing log file: $ACTIVE_CLONE/log.ww4"
+    rm -f "$ACTIVE_CLONE/log.ww4"
+    if [ $? -eq 0 ]; then
+        echo "Log file removed."
+    else
+        echo "Error removing log file."
+    fi
+else
+    echo "No log file found."
 fi
 
 echo -e "\nClean all complete."

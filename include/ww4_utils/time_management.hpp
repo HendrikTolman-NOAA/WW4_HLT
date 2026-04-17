@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-31
+ * @date Last update, 2026-04-16
  *
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
@@ -26,7 +26,6 @@
 
 #include <array>
 #include <chrono>
-#include <span>
 #include <string>
 #include <string_view>
 
@@ -45,7 +44,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-30
+ * @date Last update, 2026-04-16
  */
 struct DateTime {
   int ymd;    ///< Current date in YYYYMMDD format.
@@ -72,7 +71,7 @@ using DateArray = std::array<int, 8>;
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-30
+ * @date Last update, 2026-04-16
  */
 class TimeManagement {
 public:
@@ -102,6 +101,14 @@ public:
    * @return The currently set calendar type.
    */
   static CalendarType getCalendarType() noexcept;
+
+  /**
+   * @brief Resets all persistent static members to their default values.
+   * @details Used during program finalization to ensure no stale data remains.
+   * @post m_calendarType, m_profilingBase, m_profilingInitialized, and
+   *       m_steadyBase are reset.
+   */
+  static void reset() noexcept;
 
   /**
    * @brief Increment a date and time with a given number of seconds.
@@ -149,8 +156,8 @@ public:
    * @param t2 Second date/time array (DATE_AND_TIME format).
    * @return Difference (t2 - t1) in seconds.
    */
-  static double differenceInSeconds(const std::span<const int, 8> t1,
-                                    const std::span<const int, 8> t2) noexcept;
+  static double differenceInSeconds(const DateArray &t1,
+                                    const DateArray &t2) noexcept;
 
   /**
    * @brief Captures the present date and time.
@@ -163,9 +170,9 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last Update, 2026-03-30
+   * @date Last update, 2026-04-16
    */
-  static void getSystemDateArray(const std::span<int, 8> dateArray) noexcept;
+  static void getSystemDateArray(DateArray &dateArray) noexcept;
 
   /**
    * @brief Calculates the elapsed time since a reference date.
@@ -179,9 +186,9 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last Update, 2026-03-30
+   * @date Last update, 2026-04-16
    */
-  static void getElapsedTimeSince(const std::span<const int, 8> referenceDate,
+  static void getElapsedTimeSince(const DateArray &referenceDate,
                                   double &elapsedTime) noexcept;
 
   /**
@@ -191,7 +198,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last Update, 2026-03-30
+   * @date Last update, 2026-04-16
    */
   static DateTime getPresentDateTime() noexcept;
 
@@ -313,8 +320,7 @@ public:
    * @param[out] errorCode Error code (0 for success).
    * @post dateArray is populated, errorCode is set.
    */
-  static void dateTimeToDateArray(const DateTime &time,
-                                  const std::span<int, 8> dateArray,
+  static void dateTimeToDateArray(const DateTime &time, DateArray &dateArray,
                                   int &errorCode) noexcept;
 
   /**
@@ -327,8 +333,8 @@ public:
    * @param[out] errorCode Error code (0 for success).
    * @post time is populated, errorCode is set.
    */
-  static void dateArrayToDateTime(const std::span<const int, 8> dateArray,
-                                  DateTime &time, int &errorCode) noexcept;
+  static void dateArrayToDateTime(const DateArray &dateArray, DateTime &time,
+                                  int &errorCode) noexcept;
 
   /**
    * @brief Convert DateArray to Julian Day.
@@ -340,8 +346,8 @@ public:
    * @param[out] errorCode Error code (0 for success, -1/1 for errors).
    * @post julian is populated, errorCode is set.
    */
-  static void dateArrayToJulianDay(const std::span<const int, 8> dateArray,
-                                   double &julian, int &errorCode) noexcept;
+  static void dateArrayToJulianDay(const DateArray &dateArray, double &julian,
+                                   int &errorCode) noexcept;
 
   /**
    * @brief Convert Julian Day to DateArray.
@@ -353,8 +359,7 @@ public:
    * @param[out] errorCode Error code (0 for success).
    * @post dateArray is populated, errorCode is set.
    */
-  static void julianDayToDateArray(const double julian,
-                                   const std::span<int, 8> dateArray,
+  static void julianDayToDateArray(const double julian, DateArray &dateArray,
                                    int &errorCode) noexcept;
 
   /**
@@ -366,8 +371,8 @@ public:
    * @param t2 Second date array.
    * @return Difference (t2 - t1) in days.
    */
-  static double differenceInDays(const std::span<const int, 8> t1,
-                                 const std::span<const int, 8> t2) noexcept;
+  static double differenceInDays(const DateArray &t1,
+                                 const DateArray &t2) noexcept;
 
   /**
    * @brief Convert time units attribute to DateArray.
@@ -380,7 +385,7 @@ public:
    * @post dateArray is populated if successful, errorCode is set.
    */
   static void parseUnitsToDateArray(const std::string_view units,
-                                    const std::span<int, 8> dateArray,
+                                    DateArray &dateArray,
                                     int &errorCode) noexcept;
 
   /**
