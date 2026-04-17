@@ -96,6 +96,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     //
     ww4_utils::TimeManagement::reset();
     ww4_utils::resetMemoryStatusPath();
+    resetInputData();
     resetInternalState();
   } catch (const std::exception &e) {
     ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);

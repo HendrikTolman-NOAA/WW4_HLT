@@ -12,8 +12,7 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-16
- * @date Last update, 2026-04-17
+ * @date 2026-04-17
  */
 
 #ifndef WW4_CORE_W4CORE_HOM_INPUT_HPP
@@ -45,8 +44,7 @@ struct HomogeneousDataPoint {
  * @param os Output stream for reporting and echoing.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-16
- * @date Last update, 2026-04-17
+ * @date 2026-04-17
  */
 void w4core_hom_input(std::ostream &os);
 
@@ -56,8 +54,7 @@ void w4core_hom_input(std::ostream &os);
  * @param option Level of detail for echoing.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-16
- * @date Last update, 2026-04-17
+ * @date 2026-04-17
  */
 void echoInputData(std::ostream &os, ww4_utils::EchoOption option);
 
