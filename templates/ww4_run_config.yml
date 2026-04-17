@@ -107,9 +107,9 @@ echo_hom_input: "summary"
 # ice_concentrations: "homogeneous"
 # - 20260101 000000 0.8
 
-# Example homogeneous data for bottom depth:
+# Example homogeneous data for bottom depth (datum relative, meters):
 # bottom_depth: "homogeneous"
-# - 20260101 000000 50.0
+# - 20260101 000000 -5000.0
 
 # Data output options.
 # For each output type, track if requested ("yes"/"no"), start/end times,

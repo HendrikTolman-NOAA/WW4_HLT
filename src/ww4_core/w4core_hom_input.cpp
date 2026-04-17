@@ -25,6 +25,8 @@
 
 namespace ww4_core {
 
+using namespace ww4_utils;
+
 namespace {
 
 std::vector<HomogeneousDataPoint> waterLevels;
@@ -34,67 +36,14 @@ std::vector<HomogeneousDataPoint> iceConcentrations;
 std::vector<HomogeneousDataPoint> bottomDepth;
 
 /**
- * @brief Helper to parse a homogeneous data string.
- * @param s The string to parse (format: "YYYYMMDD HHMMSS val1 val2 ...").
- * @return A HomogeneousDataPoint if successful.
- */
-std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
-  if (s.empty())
-    return std::nullopt;
-
-  const size_t firstSpace = s.find(' ');
-  if (firstSpace == std::string_view::npos)
-    return std::nullopt;
-
-  const size_t secondSpace = s.find(' ', firstSpace + 1);
-  if (secondSpace == std::string_view::npos)
-    return std::nullopt;
-
-  const std::string_view dateTimePart = s.substr(0, secondSpace);
-  const auto dt = ww4_utils::parseDateTimeString(dateTimePart);
-  if (!dt)
-    return std::nullopt;
-
-  HomogeneousDataPoint dp;
-  dp.time = *dt;
-
-  std::string_view remaining = s.substr(secondSpace);
-  while (!remaining.empty()) {
-    const size_t firstNotSpace = remaining.find_first_not_of(' ');
-    if (firstNotSpace == std::string_view::npos)
-      break;
-    remaining = remaining.substr(firstNotSpace);
-    const size_t nextSpace = remaining.find(' ');
-    const std::string_view valStr = remaining.substr(0, nextSpace);
-
-    double val = 0.0;
-    if (std::from_chars(valStr.data(), valStr.data() + valStr.size(), val).ec ==
-        std::errc()) {
-      dp.values.push_back(val);
-    } else {
-      return std::nullopt;
-    }
-
-    if (nextSpace == std::string_view::npos)
-      break;
-    remaining = remaining.substr(nextSpace);
-  }
-
-  if (dp.values.empty())
-    return std::nullopt;
-
-  return dp;
-}
-
-/**
- * @brief Helper to process a data series.
- * @param rawStrings Vector of raw input strings.
- * @param processed Vector to store parsed data points.
+ * @brief Helper to validate and process a data series.
+ * @param source Vector of pre-parsed data points from RunConfig.
+ * @param processed Vector to store validated data points.
  * @param fieldName Name of the field for error reporting.
  * @param option The input option for this field.
  * @param os Output stream for reporting.
  */
-void processSeries(const std::vector<std::string> &rawStrings,
+void processSeries(const std::vector<HomogeneousDataPoint> &source,
                    std::vector<HomogeneousDataPoint> &processed,
                    std::string_view fieldName,
                    ww4_utils::InputFieldOption option, std::ostream &os) {
@@ -103,18 +52,17 @@ void processSeries(const std::vector<std::string> &rawStrings,
     return;
   }
 
-  for (const auto &raw : rawStrings) {
-    auto dp = parseHomogeneousString(raw);
-    if (!dp) {
-      ww4_utils::ww4_std_out::extcde(1, os,
-                                     "Failed to parse homogeneous data for " +
-                                         std::string(fieldName),
-                                     __FILE__, __LINE__);
-    }
+  if (source.empty()) {
+    ww4_utils::ww4_std_out::extcde(1, os,
+                                   "No data provided for homogeneous field: " +
+                                       std::string(fieldName),
+                                   __FILE__, __LINE__);
+  }
 
+  for (const auto &dp : source) {
     if (!processed.empty()) {
       const double diff = ww4_utils::TimeManagement::differenceInSeconds(
-          processed.back().time, dp->time);
+          processed.back().time, dp.time);
       if (diff < 0.0) {
         ww4_utils::ww4_std_out::extcde(1, os,
                                        "Time stamps go backward in data for " +
@@ -122,42 +70,43 @@ void processSeries(const std::vector<std::string> &rawStrings,
                                        __FILE__, __LINE__);
       }
     }
-    processed.push_back(*dp);
-  }
 
-  if (processed.empty()) {
-    ww4_utils::ww4_std_out::extcde(1, os,
-                                   "No data provided for homogeneous field: " +
-                                       std::string(fieldName),
-                                   __FILE__, __LINE__);
-  }
-}
-
-/**
- * @brief Helper to echo a data series.
- * @param processed Vector of data points.
- * @param fieldName Name of the field.
- * @param option Echo level.
- * @param os Output stream.
- */
-void echoSeries(const std::vector<HomogeneousDataPoint> &processed,
-                std::string_view fieldName, ww4_utils::EchoOption option,
-                std::ostream &os) {
-  if (processed.empty() || option == ww4_utils::EchoOption::None)
-    return;
-
-  os << "     Homogeneous data for " << fieldName << ":" << std::endl;
-  if (option == ww4_utils::EchoOption::Summary) {
-    os << "        Number of data points: " << processed.size() << std::endl;
-  } else if (option == ww4_utils::EchoOption::Full) {
-    for (const auto &dp : processed) {
-      os << "        " << ww4_utils::TimeManagement::toFormattedString(dp.time)
-         << " :";
-      for (const auto val : dp.values) {
-        os << " " << val;
+    // Field-specific validation
+    if (fieldName == "water levels" || fieldName == "bottom depth") {
+      if (dp.values.size() != 1) {
+        ww4_utils::ww4_std_out::extcde(1, os,
+                                       "Homogeneous " + std::string(fieldName) +
+                                           " requires 1 value.",
+                                       __FILE__, __LINE__);
       }
-      os << std::endl;
+    } else if (fieldName == "currents") {
+      if (dp.values.size() != 2) {
+        ww4_utils::ww4_std_out::extcde(
+            1, os, "Homogeneous currents requires 2 values (speed, direction).",
+            __FILE__, __LINE__);
+      }
+    } else if (fieldName == "winds") {
+      if (dp.values.size() < 2 || dp.values.size() > 3) {
+        ww4_utils::ww4_std_out::extcde(1, os,
+                                       "Homogeneous winds requires 2 or 3 "
+                                       "values (speed, direction, [temp]).",
+                                       __FILE__, __LINE__);
+      }
+    } else if (fieldName == "ice concentrations") {
+      if (dp.values.size() != 1) {
+        ww4_utils::ww4_std_out::extcde(1, os,
+                                       "Homogeneous ice concentrations "
+                                       "requires 1 value.",
+                                       __FILE__, __LINE__);
+      }
+      if (dp.values[0] < 0.0 || dp.values[0] > 1.0) {
+        ww4_utils::ww4_std_out::extcde(
+            1, os, "Ice concentration must be between 0.0 and 1.0.", __FILE__,
+            __LINE__);
+      }
     }
+
+    processed.push_back(dp);
   }
 }
 
@@ -178,22 +127,12 @@ void w4core_hom_input(std::ostream &os) {
                 "ice concentrations", config.iceConcentrations, os);
   processSeries(config.homogeneousBottomDepth, bottomDepth, "bottom depth",
                 config.bottomDepth, os);
-
-  if (config.produceStdOut) {
-    echoInputData(os, config.echoHomInput);
-  }
 }
 
 void echoInputData(std::ostream &os, ww4_utils::EchoOption option) {
-  if (option == ww4_utils::EchoOption::None)
-    return;
-
-  os << "\n  Input data (w4core_hom_input) processing:" << std::endl;
-  echoSeries(waterLevels, "water levels", option, os);
-  echoSeries(currents, "currents", option, os);
-  echoSeries(winds, "winds", option, os);
-  echoSeries(iceConcentrations, "ice concentrations", option, os);
-  echoSeries(bottomDepth, "bottom depth", option, os);
+  // Silent routine, echoing now handled in ww4_utils::reportRunConfig
+  (void)os;
+  (void)option;
 }
 
 void resetInputData() noexcept {

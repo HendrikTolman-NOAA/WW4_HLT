@@ -56,6 +56,17 @@ enum class EchoOption {
 };
 
 /**
+ * @struct HomogeneousDataPoint
+ * @brief Data point for a homogeneous input field.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+struct HomogeneousDataPoint {
+  DateTime time;              ///< Time of the data point.
+  std::vector<double> values; ///< Values of the data point.
+};
+
+/**
  * @struct OutputConfig
  * @brief Configuration for a specific output type.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
@@ -99,16 +110,16 @@ struct RunConfig {
 
   EchoOption echoHomInput = EchoOption::Summary; ///< Echo input flag.
 
-  std::vector<std::string> homogeneousWaterLevels; ///< Raw homogeneous water
-                                                   ///< levels data.
-  std::vector<std::string>
-      homogeneousCurrents;                   ///< Raw homogeneous currents data.
-  std::vector<std::string> homogeneousWinds; ///< Raw homogeneous winds data.
-  std::vector<std::string> homogeneousIceConcentrations; ///< Raw homogeneous
-                                                         ///< ice concentrations
-                                                         ///< data.
-  std::vector<std::string>
-      homogeneousBottomDepth; ///< Raw homogeneous bottom depth data.
+  std::vector<HomogeneousDataPoint>
+      homogeneousWaterLevels; ///< Homogeneous water levels data.
+  std::vector<HomogeneousDataPoint>
+      homogeneousCurrents; ///< Homogeneous currents data.
+  std::vector<HomogeneousDataPoint>
+      homogeneousWinds; ///< Homogeneous winds data.
+  std::vector<HomogeneousDataPoint>
+      homogeneousIceConcentrations; ///< Homogeneous ice concentrations data.
+  std::vector<HomogeneousDataPoint>
+      homogeneousBottomDepth; ///< Homogeneous bottom depth data.
 
   double timeStep = -1.0; ///< Model time step in seconds.
 
