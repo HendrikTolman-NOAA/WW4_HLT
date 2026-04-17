@@ -129,12 +129,6 @@ void w4core_hom_input(std::ostream &os) {
                 config.bottomDepth, os);
 }
 
-void echoInputData(std::ostream &os, ww4_utils::EchoOption option) {
-  // Silent routine, echoing now handled in ww4_utils::reportRunConfig
-  (void)os;
-  (void)option;
-}
-
 void resetInputData() noexcept {
   waterLevels.clear();
   currents.clear();

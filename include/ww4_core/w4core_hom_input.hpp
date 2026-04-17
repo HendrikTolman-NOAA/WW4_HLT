@@ -38,16 +38,6 @@ namespace ww4_core {
 void w4core_hom_input(std::ostream &os);
 
 /**
- * @brief Echoes the processed homogeneous input data to the provided stream.
- * @param os Output stream to write to.
- * @param option Level of detail for echoing.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-17
- */
-void echoInputData(std::ostream &os, ww4_utils::EchoOption option);
-
-/**
  * @brief Resets all internal input data storage.
  * @details Clears vectors containing processed homogeneous data.
  */
