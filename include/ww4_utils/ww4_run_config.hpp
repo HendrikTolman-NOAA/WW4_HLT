@@ -102,11 +102,10 @@ struct RunConfig {
   std::vector<std::string> homogeneousWaterLevels; ///< Raw homogeneous water
                                                    ///< levels data.
   std::vector<std::string>
-      homogeneousCurrents; ///< Raw homogeneous currents data.
-  std::vector<std::string>
-      homogeneousWinds; ///< Raw homogeneous winds data.
-  std::vector<std::string> homogeneousIceConcentrations; ///< Raw homogeneous ice
-                                                         ///< concentrations
+      homogeneousCurrents;                   ///< Raw homogeneous currents data.
+  std::vector<std::string> homogeneousWinds; ///< Raw homogeneous winds data.
+  std::vector<std::string> homogeneousIceConcentrations; ///< Raw homogeneous
+                                                         ///< ice concentrations
                                                          ///< data.
   std::vector<std::string>
       homogeneousBottomDepth; ///< Raw homogeneous bottom depth data.

@@ -72,8 +72,10 @@ echo_input: "full"
   EXPECT_NEAR(wl[1].values[0], 0.6, 1e-6);
 
   std::string output = ss.str();
-  EXPECT_NE(output.find("Input data (w4core_input) processing:"), std::string::npos);
-  EXPECT_NE(output.find("Homogeneous data for water levels:"), std::string::npos);
+  EXPECT_NE(output.find("Input data (w4core_input) processing:"),
+            std::string::npos);
+  EXPECT_NE(output.find("Homogeneous data for water levels:"),
+            std::string::npos);
   EXPECT_NE(output.find("2026/01/01 00:00:00 UTC : 0.5"), std::string::npos);
   EXPECT_NE(output.find("2026/01/01 12:00:00 UTC : 0.6"), std::string::npos);
 }
@@ -93,7 +95,8 @@ bottom_depth: "from_grid"
 
   ww4_utils::DateTime startTime{20260101, 0.0};
   std::stringstream ss;
-  EXPECT_DEATH(ww4_core::w4core_init(startTime, "test_input", ss), "Time stamps go backward");
+  EXPECT_DEATH(ww4_core::w4core_init(startTime, "test_input", ss),
+               "Time stamps go backward");
 }
 
 TEST_F(W4CoreInputTest, MissingDataForHomogeneousField) {
@@ -109,7 +112,8 @@ bottom_depth: "from_grid"
 
   ww4_utils::DateTime startTime{20260101, 0.0};
   std::stringstream ss;
-  EXPECT_DEATH(ww4_core::w4core_init(startTime, "test_input", ss), "No data provided for homogeneous field");
+  EXPECT_DEATH(ww4_core::w4core_init(startTime, "test_input", ss),
+               "No data provided for homogeneous field");
 }
 
 } // namespace

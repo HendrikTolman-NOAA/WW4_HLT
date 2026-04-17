@@ -19,6 +19,7 @@
 #define WW4_CORE_W4CORE_INPUT_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_run_config.hpp"
 #include <iostream>
 #include <vector>
 
@@ -31,7 +32,7 @@ namespace ww4_core {
  * @author Contributors: Jules (Agentic AI)
  */
 struct HomogeneousDataPoint {
-  ww4_utils::DateTime time;  ///< Time of the data point.
+  ww4_utils::DateTime time;   ///< Time of the data point.
   std::vector<double> values; ///< Values of the data point.
 };
 
@@ -46,6 +47,16 @@ struct HomogeneousDataPoint {
  * @date 2026-04-16
  */
 void w4core_input(std::ostream &os);
+
+/**
+ * @brief Echoes the processed input data to the provided stream.
+ * @param os Output stream to write to.
+ * @param option Level of detail for echoing.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-16
+ */
+void echoInputData(std::ostream &os, ww4_utils::EchoOption option);
 
 /**
  * @brief Resets all internal input data storage.
@@ -75,7 +86,8 @@ const std::vector<HomogeneousDataPoint> &getHomogeneousWinds() noexcept;
  * @brief Accessor for processed homogeneous ice concentrations.
  * @return Reference to the vector of data points.
  */
-const std::vector<HomogeneousDataPoint> &getHomogeneousIceConcentrations() noexcept;
+const std::vector<HomogeneousDataPoint> &
+getHomogeneousIceConcentrations() noexcept;
 
 /**
  * @brief Accessor for processed homogeneous bottom depth.

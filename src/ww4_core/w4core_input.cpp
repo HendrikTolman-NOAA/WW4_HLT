@@ -17,10 +17,10 @@
 #include "ww4_core/w4core_input.hpp"
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/ww4_stand_alone_config.hpp"
-#include <optional>
 #include "ww4_utils/ww4_std_out.hpp"
 #include <charconv>
 #include <iostream>
+#include <optional>
 #include <sstream>
 
 namespace ww4_core {
@@ -106,29 +106,30 @@ void processSeries(const std::vector<std::string> &rawStrings,
   for (const auto &raw : rawStrings) {
     auto dp = parseHomogeneousString(raw);
     if (!dp) {
-      ww4_utils::ww4_std_out::extcde(
-          1, os, "Failed to parse homogeneous data for " + std::string(fieldName),
-          __FILE__, __LINE__);
+      ww4_utils::ww4_std_out::extcde(1, os,
+                                     "Failed to parse homogeneous data for " +
+                                         std::string(fieldName),
+                                     __FILE__, __LINE__);
     }
 
     if (!processed.empty()) {
       const double diff = ww4_utils::TimeManagement::differenceInSeconds(
           processed.back().time, dp->time);
       if (diff < 0.0) {
-        ww4_utils::ww4_std_out::extcde(
-            1, os,
-            "Time stamps go backward in data for " + std::string(fieldName),
-            __FILE__, __LINE__);
+        ww4_utils::ww4_std_out::extcde(1, os,
+                                       "Time stamps go backward in data for " +
+                                           std::string(fieldName),
+                                       __FILE__, __LINE__);
       }
     }
     processed.push_back(*dp);
   }
 
   if (processed.empty()) {
-    ww4_utils::ww4_std_out::extcde(
-        1, os,
-        "No data provided for homogeneous field: " + std::string(fieldName),
-        __FILE__, __LINE__);
+    ww4_utils::ww4_std_out::extcde(1, os,
+                                   "No data provided for homogeneous field: " +
+                                       std::string(fieldName),
+                                   __FILE__, __LINE__);
   }
 }
 
@@ -172,21 +173,28 @@ void w4core_input(std::ostream &os) {
                 config.waterLevels, std::cerr);
   processSeries(config.homogeneousCurrents, currents, "currents",
                 config.currents, std::cerr);
-  processSeries(config.homogeneousWinds, winds, "winds", config.winds, std::cerr);
+  processSeries(config.homogeneousWinds, winds, "winds", config.winds,
+                std::cerr);
   processSeries(config.homogeneousIceConcentrations, iceConcentrations,
                 "ice concentrations", config.iceConcentrations, std::cerr);
   processSeries(config.homogeneousBottomDepth, bottomDepth, "bottom depth",
                 config.bottomDepth, std::cerr);
 
-  if (config.produceStdOut &&
-      config.echoInput != ww4_utils::EchoOption::None) {
-    os << "\n  Input data (w4core_input) processing:" << std::endl;
-    echoSeries(waterLevels, "water levels", config.echoInput, os);
-    echoSeries(currents, "currents", config.echoInput, os);
-    echoSeries(winds, "winds", config.echoInput, os);
-    echoSeries(iceConcentrations, "ice concentrations", config.echoInput, os);
-    echoSeries(bottomDepth, "bottom depth", config.echoInput, os);
+  if (config.produceStdOut) {
+    echoInputData(os, config.echoInput);
   }
+}
+
+void echoInputData(std::ostream &os, ww4_utils::EchoOption option) {
+  if (option == ww4_utils::EchoOption::None)
+    return;
+
+  os << "\n  Input data (w4core_input) processing:" << std::endl;
+  echoSeries(waterLevels, "water levels", option, os);
+  echoSeries(currents, "currents", option, os);
+  echoSeries(winds, "winds", option, os);
+  echoSeries(iceConcentrations, "ice concentrations", option, os);
+  echoSeries(bottomDepth, "bottom depth", option, os);
 }
 
 void resetInputData() noexcept {
@@ -209,7 +217,8 @@ const std::vector<HomogeneousDataPoint> &getHomogeneousWinds() noexcept {
   return winds;
 }
 
-const std::vector<HomogeneousDataPoint> &getHomogeneousIceConcentrations() noexcept {
+const std::vector<HomogeneousDataPoint> &
+getHomogeneousIceConcentrations() noexcept {
   return iceConcentrations;
 }
 

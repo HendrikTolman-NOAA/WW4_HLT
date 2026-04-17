@@ -430,7 +430,6 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Model output:" << std::endl;
 
-
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);
   reportOutput(config.outputNesting, "Nesting data", os);
