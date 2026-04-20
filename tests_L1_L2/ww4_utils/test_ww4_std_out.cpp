@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-20
  */
 
 #include "ww4_utils/ww4_std_out.hpp"
@@ -105,6 +105,30 @@ TEST(StdOutTest, ExtcdeTermination) {
       extcde(expectedExitCode, std::cerr, errorMsg, "test.cpp", 123),
       ::testing::ExitedWithCode(expectedExitCode),
       "WW4 ERROR: Fatal program error.*WW4 ERROR: FILE=test.cpp LINE=123");
+}
+
+/**
+ * @test Verify the output formatting of writeWarnngOutput.
+ */
+TEST(StdOutTest, WriteWarnngOutputFormatting) {
+  std::stringstream ss;
+  writeWarnngOutput(ss, "Warning message", "main.cpp", 42);
+  std::string output = ss.str();
+
+  EXPECT_NE(output.find("WW4 WARNING: Warning message"), std::string::npos);
+  EXPECT_NE(output.find("WW4 WARNING: FILE=main.cpp LINE=42"),
+            std::string::npos);
+}
+
+/**
+ * @test Verify warnng calls writeWarnngOutput.
+ */
+TEST(StdOutTest, WarnngReporting) {
+  std::stringstream ss;
+  warnng(ss, "Another warning");
+  std::string output = ss.str();
+
+  EXPECT_NE(output.find("WW4 WARNING: Another warning"), std::string::npos);
 }
 
 int main(int argc, char **argv) {

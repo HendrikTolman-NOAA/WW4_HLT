@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -22,12 +22,25 @@
 #define WW4_CORE_W4CORE_WAVE_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include <optional>
 
 /**
  * @namespace ww4_core
  * @brief Core routines for WAVEWATCH IV.
  */
 namespace ww4_core {
+
+/**
+ * @struct WaveTimeData
+ * @brief Structure to hold model time and time step information.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-20
+ */
+struct WaveTimeData {
+  double timeStep = -1.0;                       ///< Model time step.
+  std::optional<ww4_utils::DateTime> modelTime; ///< Current model time.
+};
 
 /**
  * @brief Time stepping routine for the WAVEWATCH IV core.

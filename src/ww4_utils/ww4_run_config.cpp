@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-17
+ * @date Last update, 2026-04-20
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -495,8 +495,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     }
   }
 
-  os << "     Time step            : " << config.timeStep << " s"
-     << std::endl;
+  os << "     Time step            : " << config.timeStep << " s" << std::endl;
 
   os << "\n  Model input:" << std::endl;
 

@@ -34,6 +34,7 @@ namespace {
 ww4_utils::RunConfig globalRunConfig;
 std::ofstream logFile;
 std::string capturedProgramName;
+WaveTimeData waveTimeData;
 } // namespace
 
 void w4core_init(const ww4_utils::DateTime &startTime,
@@ -141,20 +142,24 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     ww4_utils::ww4_std_out::extcde(1, os, "Unknown exception in w4core_init",
                                    __FILE__, __LINE__);
   }
-    //
-    // 2.  Set up data strucures ---------------------------------------------
-    // 2.1 Set up the global and local (domain) grids
-    //
-    // 2.2  Set up the spectral data structures
-    //
-    //
-    // 3.  Data initialization -----------------------------------------------
-    //     This only needs to be the intial conditions, Input and output are
-    //     initialized as part of their update procedures in w4core_wave
-    //
-    //
-    //     End of w4core_init ------------------------------------------------
-    //
+  //
+  // 2.  Set up data strucures ---------------------------------------------
+  // 2.1 Set up the global and local (domain) grids
+  //
+  // 2.2  Set up the spectral data structures
+  //
+  //
+  // 3.  Data initialization -----------------------------------------------
+  //     This only needs to be the intial conditions, Input and output are
+  //     initialized as part of their update procedures in w4core_wave
+  //
+  // 3.1 Initialize model time and time step
+  //
+  waveTimeData.modelTime = startTime;
+  waveTimeData.timeStep = globalRunConfig.timeStep;
+  //
+  //     End of w4core_init ------------------------------------------------
+  //
 }
 
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
@@ -163,12 +168,15 @@ std::ofstream &getLogFileStream() { return logFile; }
 
 const std::string &getProgramName() { return capturedProgramName; }
 
+const WaveTimeData &getWaveTimeData() { return waveTimeData; }
+
 void resetInternalState() noexcept {
   globalRunConfig = ww4_utils::RunConfig();
   capturedProgramName.clear();
   if (logFile.is_open()) {
     logFile.close();
   }
+  waveTimeData = WaveTimeData();
   resetInputData();
 }
 

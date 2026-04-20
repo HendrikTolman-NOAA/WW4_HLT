@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-20
  *
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
@@ -44,11 +44,29 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-20
  */
 struct DateTime {
   int ymd;    ///< Current date in YYYYMMDD format.
   double hms; ///< Current time in HHMMSS.ssssss format.
+
+  /**
+   * @brief Equality operator for DateTime.
+   * @param other The other DateTime to compare with.
+   * @return true if both ymd and hms are equal.
+   */
+  constexpr bool operator==(const DateTime &other) const noexcept {
+    return ymd == other.ymd && hms == other.hms;
+  }
+
+  /**
+   * @brief Inequality operator for DateTime.
+   * @param other The other DateTime to compare with.
+   * @return true if either ymd or hms are different.
+   */
+  constexpr bool operator!=(const DateTime &other) const noexcept {
+    return !(*this == other);
+  }
 };
 
 /**

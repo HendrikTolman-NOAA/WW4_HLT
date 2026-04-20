@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-20
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -149,7 +149,7 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
   EXPECT_NE(output.find("At first time     : no"), std::string::npos);
   EXPECT_NE(output.find("Start time        : 2026/01/01 00:00:00 UTC"),
             std::string::npos);
-  EXPECT_NE(output.find("Time step              : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
   EXPECT_NE(output.find("Point output not requested"), std::string::npos);
 }
 
@@ -276,7 +276,7 @@ TEST(RunConfigTest, ReportConfigStandard) {
   EXPECT_NE(output.find("Winds                : none"), std::string::npos);
   EXPECT_NE(output.find("Ice concentrations   : none"), std::string::npos);
   EXPECT_NE(output.find("Bottom depth         : from_grid"), std::string::npos);
-  EXPECT_NE(output.find("Time step              : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
 }
 
 /**
@@ -325,7 +325,7 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   EXPECT_NE(output.find("Unconventional model run"), std::string::npos);
   EXPECT_NE(output.find("Dry run"), std::string::npos);
   EXPECT_EQ(output.find("Propagate X"), std::string::npos);
-  EXPECT_NE(output.find("Time step              : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
 }
 
 /**

@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-17
+ * @date Last update, 2026-04-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -94,6 +94,14 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     //
     // 4.  Release persistent model data -------------------------------------
     //
+    // 4.1 Check model time versus end time
+    //
+    if (getWaveTimeData().modelTime.has_value() &&
+        *getWaveTimeData().modelTime != endTime) {
+      ww4_utils::ww4_std_out::warnng(os, "Model time does not match end time.",
+                                     __FILE__, __LINE__);
+    }
+
     ww4_utils::TimeManagement::reset();
     ww4_utils::resetMemoryStatusPath();
     resetInputData();
