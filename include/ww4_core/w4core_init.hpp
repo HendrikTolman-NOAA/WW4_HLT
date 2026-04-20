@@ -78,6 +78,12 @@ std::ofstream &getLogFileStream();
  */
 const WaveTimeData &getWaveTimeData();
 
+/**
+ * @brief Updates the model time in the wave time data.
+ * @param[in] time The new model time.
+ */
+void updateWaveModelTime(const ww4_utils::DateTime &time);
+
 } // namespace ww4_core
 
 #endif // WW4_CORE_W4CORE_INIT_HPP

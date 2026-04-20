@@ -70,6 +70,58 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
 }
 
 /**
+ * @test Verify that w4core_wave fails if endTime is before startTime.
+ */
+TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
+  // Create dummy run configuration file
+  std::ofstream runFile("ww4_run_config.yml");
+  runFile << "calendar_type: \"Standard\"\n";
+  runFile << "water_levels: none\n";
+  runFile << "currents: none\n";
+  runFile << "winds: none\n";
+  runFile << "ice_concentrations: none\n";
+  runFile << "time_step: 3600.0\n";
+  runFile << "bottom_depth: none\n";
+  runFile.close();
+
+  ww4_core::w4core_init(startTime, "test_program", std::cout);
+
+  ww4_utils::DateTime earlierEndTime = {19680606, 0.0};
+  EXPECT_DEATH(ww4_core::w4core_wave(startTime, earlierEndTime, std::cerr),
+               "End time before start time.");
+
+  ww4_core::resetInternalState();
+  std::remove("ww4_run_config.yml");
+  std::remove("log.ww4");
+}
+
+/**
+ * @test Verify that w4core_wave handles startTime == endTime correctly.
+ */
+TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
+  // Create dummy run configuration file
+  std::ofstream runFile("ww4_run_config.yml");
+  runFile << "calendar_type: \"Standard\"\n";
+  runFile << "water_levels: none\n";
+  runFile << "currents: none\n";
+  runFile << "winds: none\n";
+  runFile << "ice_concentrations: none\n";
+  runFile << "time_step: 3600.0\n";
+  runFile << "bottom_depth: none\n";
+  runFile.close();
+
+  ww4_core::w4core_init(startTime, "test_program", std::cout);
+
+  // If startTime == endTime, the loop should not execute
+  EXPECT_NO_THROW(ww4_core::w4core_wave(startTime, startTime, std::cout));
+  EXPECT_EQ(*ww4_core::getWaveTimeData().modelTime, startTime);
+
+  ww4_core::resetInternalState();
+  std::remove("ww4_run_config.yml");
+  std::remove("log.ww4");
+}
+
+/**
  * @test Verify that w4core_wave fails if model time is not initialized.
  */
 TEST_F(W4CoreTimeTest, WaveFailsIfNoInit) {

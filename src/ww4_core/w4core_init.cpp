@@ -170,6 +170,10 @@ const std::string &getProgramName() { return capturedProgramName; }
 
 const WaveTimeData &getWaveTimeData() { return waveTimeData; }
 
+void updateWaveModelTime(const ww4_utils::DateTime &time) {
+  waveTimeData.modelTime = time;
+}
+
 void resetInternalState() noexcept {
   globalRunConfig = ww4_utils::RunConfig();
   capturedProgramName.clear();
