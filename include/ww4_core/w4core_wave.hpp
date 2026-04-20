@@ -38,7 +38,7 @@ namespace ww4_core {
  * @date 2026-04-20
  */
 struct WaveTimeData {
-  double timeStep = -1.0;                        ///< Model time step.
+  double timeStep = -1.0;                       ///< Model time step.
   std::optional<ww4_utils::DateTime> modelTime; ///< Current model time.
 };
 

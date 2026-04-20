@@ -495,8 +495,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     }
   }
 
-  os << "     Time step            : " << config.timeStep << " s"
-     << std::endl;
+  os << "     Time step            : " << config.timeStep << " s" << std::endl;
 
   os << "\n  Model input:" << std::endl;
 
