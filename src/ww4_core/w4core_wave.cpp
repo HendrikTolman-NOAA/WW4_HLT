@@ -29,30 +29,37 @@
 
 namespace ww4_core {
 
+namespace {
+/**
+ * @brief Helper function to log a message to standard output and log file.
+ * @param os The standard output stream.
+ * @param msg The message to log.
+ * @param indent Number of spaces to indent the message.
+ */
+void logMessage(std::ostream &os, std::string_view msg, int indent = 2) {
+  const std::string indentStr(indent, ' ');
+  if (getRunConfig().produceStdOut) {
+    os << indentStr << msg << std::endl;
+  }
+  if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+    getLogFileStream() << indentStr << msg << std::endl;
+  }
+}
+} // namespace
+
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os) {
   try {
     //
     // 1.  General initialization  -------------------------------------------
-    // 1.1 Output to standard output (if requested)
+    // 1.1 Output to standard output and log file (if requested)
     //
-    if (getRunConfig().produceStdOut) {
-      os << "\n  Time stepping (w4core_wave) from: "
-         << ww4_utils::TimeManagement::toFormattedString(startTime)
-         << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-         << std::endl;
-    }
-    //
-    // 1.2 Output to  log file (if requested)  likely to be temporarily as the
-    //     eventually the log file will be to consice for this output
-    //
-    if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-      getLogFileStream()
-          << "\n  Time stepping (w4core_wave) from: "
-          << ww4_utils::TimeManagement::toFormattedString(startTime)
-          << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-          << std::endl;
-    }
+    std::string initMsg =
+        "\n  Time stepping (w4core_wave) from: " +
+        ww4_utils::TimeManagement::toFormattedString(startTime) +
+        " to: " + ww4_utils::TimeManagement::toFormattedString(endTime);
+    logMessage(os, initMsg, 0);
+
     //
     // 1.3 Check consistency of starting and ending times
     // 1.3.1 Starting versus ending time
@@ -83,8 +90,36 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                *getWaveTimeData().modelTime, endTime) > 0.001) {
       //
       // 3.  Determine time step -----------------------------------------------
+      // 3.0 Step from message
+      //
+      logMessage(os,
+                 "Step from " + ww4_utils::TimeManagement::toFormattedString(
+                                    *getWaveTimeData().modelTime));
+      //
       // 3.1 Update the inputs and next time/timestep when next input is needed
       //
+      if (getRunConfig().waterLevels != ww4_utils::InputFieldOption::None &&
+          getRunConfig().waterLevels !=
+              ww4_utils::InputFieldOption::Undefined) {
+        logMessage(os, "Updating water levels", 4);
+      }
+
+      if (getRunConfig().currents != ww4_utils::InputFieldOption::None &&
+          getRunConfig().currents != ww4_utils::InputFieldOption::Undefined) {
+        logMessage(os, "Updating currents", 4);
+      }
+
+      if (getRunConfig().winds != ww4_utils::InputFieldOption::None &&
+          getRunConfig().winds != ww4_utils::InputFieldOption::Undefined) {
+        logMessage(os, "Updating winds", 4);
+      }
+
+      if (getRunConfig().iceConcentrations !=
+              ww4_utils::InputFieldOption::None &&
+          getRunConfig().iceConcentrations !=
+              ww4_utils::InputFieldOption::Undefined) {
+        logMessage(os, "Updating ice concentrations", 4);
+      }
       //
       // 3.2 Find the next time/timestep for which output is requested
       //
@@ -104,6 +139,25 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 6.  Perform output ----------------------------------------------------
       //
+      if (getRunConfig().outputFields.requested) {
+        logMessage(os, "Performing fields output", 4);
+      }
+
+      if (getRunConfig().outputPoints.requested) {
+        logMessage(os, "Performing points output", 4);
+      }
+
+      if (getRunConfig().outputNesting.requested) {
+        logMessage(os, "Performing nesting output", 4);
+      }
+
+      if (getRunConfig().outputTracks.requested) {
+        logMessage(os, "Performing tracks output", 4);
+      }
+
+      if (getRunConfig().outputRestart.requested) {
+        logMessage(os, "Performing restart output", 4);
+      }
       //
       //     End of the basic time stepping loop starting at 2 ---------------
       //
