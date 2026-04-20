@@ -91,6 +91,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 3.3 Set the time step for this cycle of the time step loop
       //
+      double actualTimeStep = getWaveTimeData().timeStep;
       //
       // 4.  Propagate the solution (the actual model) -------------------------
       //
@@ -107,8 +108,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //     End of the basic time stepping loop starting at 2 ---------------
       //
       ww4_utils::DateTime nextTime = *getWaveTimeData().modelTime;
-      ww4_utils::TimeManagement::incrementDateTime(nextTime,
-                                                   getWaveTimeData().timeStep);
+      ww4_utils::TimeManagement::incrementDateTime(nextTime, actualTimeStep);
       updateWaveModelTime(nextTime);
     }
     //
