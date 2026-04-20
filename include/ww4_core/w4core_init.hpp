@@ -21,6 +21,7 @@
 #ifndef WW4_CORE_W4CORE_INIT_HPP
 #define WW4_CORE_W4CORE_INIT_HPP
 
+#include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
 #include <fstream>
@@ -70,6 +71,12 @@ const ww4_utils::RunConfig &getRunConfig();
  * @return A reference to the std::ofstream for the log file.
  */
 std::ofstream &getLogFileStream();
+
+/**
+ * @brief Provides access to the wave time data.
+ * @return A reference to the WaveTimeData structure.
+ */
+const WaveTimeData &getWaveTimeData();
 
 } // namespace ww4_core
 

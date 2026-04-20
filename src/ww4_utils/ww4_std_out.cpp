@@ -84,12 +84,40 @@ void writeExtcdeOutput(std::ostream &os, std::optional<std::string_view> msg,
   os << std::flush;
 }
 
+void writeWarnngOutput(std::ostream &os, std::string_view msg,
+                       std::optional<std::string_view> file,
+                       std::optional<int> line) {
+  const std::string prefix = "WW4 WARNING:";
+
+  os << prefix << " " << msg << "\n";
+
+  std::string context;
+  if (file.has_value()) {
+    context += " FILE=";
+    context += *file;
+  }
+  if (line.has_value()) {
+    context += " LINE=";
+    context += std::to_string(*line);
+  }
+
+  if (!context.empty()) {
+    os << prefix << context << "\n";
+  }
+  os << std::flush;
+}
+
 [[noreturn]] void extcde(int exitCode, std::ostream &os,
                          std::optional<std::string_view> msg,
                          std::optional<std::string_view> file,
                          std::optional<int> line) {
   writeExtcdeOutput(os, msg, file, line);
   std::exit(exitCode);
+}
+
+void warnng(std::ostream &os, std::string_view msg,
+            std::optional<std::string_view> file, std::optional<int> line) {
+  writeWarnngOutput(os, msg, file, line);
 }
 
 } // namespace ww4_std_out

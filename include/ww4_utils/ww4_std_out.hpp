@@ -81,6 +81,19 @@ void writeExtcdeOutput(std::ostream &os,
                        std::optional<int> line = std::nullopt);
 
 /**
+ * @brief Writes a warning message to the provided output stream in the standard
+ *        WAVEWATCH format.
+ * @details Heritage from WARNNG in WAVEWATCH III w3servmd.F90.
+ * @param os The output stream to write to.
+ * @param msg The warning message to report.
+ * @param file Optional source file name where the warning occurred.
+ * @param line Optional line number in the source file.
+ */
+void writeWarnngOutput(std::ostream &os, std::string_view msg,
+                       std::optional<std::string_view> file = std::nullopt,
+                       std::optional<int> line = std::nullopt);
+
+/**
  * @brief Performs a program stop with an exit code.
  * @details Heritage from EXTCDE in WAVEWATCH III w3servmd.F90.
  *          Calls writeExtcdeOutput and then std::exit.
@@ -94,6 +107,19 @@ void writeExtcdeOutput(std::ostream &os,
                          std::optional<std::string_view> msg = std::nullopt,
                          std::optional<std::string_view> file = std::nullopt,
                          std::optional<int> line = std::nullopt);
+
+/**
+ * @brief Reports a warning and continues execution.
+ * @details Heritage from WARNNG in WAVEWATCH III w3servmd.F90.
+ *          Calls writeWarnngOutput.
+ * @param os The output stream to write to (defaults to std::cout).
+ * @param msg The warning message to report.
+ * @param file Optional source file name where the warning occurred.
+ * @param line Optional line number in the source file.
+ */
+void warnng(std::ostream &os, std::string_view msg,
+            std::optional<std::string_view> file = std::nullopt,
+            std::optional<int> line = std::nullopt);
 
 } // namespace ww4_std_out
 } // namespace ww4_utils

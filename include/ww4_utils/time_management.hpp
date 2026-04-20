@@ -49,6 +49,24 @@ namespace ww4_utils {
 struct DateTime {
   int ymd;    ///< Current date in YYYYMMDD format.
   double hms; ///< Current time in HHMMSS.ssssss format.
+
+  /**
+   * @brief Equality operator for DateTime.
+   * @param other The other DateTime to compare with.
+   * @return true if both ymd and hms are equal.
+   */
+  constexpr bool operator==(const DateTime &other) const noexcept {
+    return ymd == other.ymd && hms == other.hms;
+  }
+
+  /**
+   * @brief Inequality operator for DateTime.
+   * @param other The other DateTime to compare with.
+   * @return true if either ymd or hms are different.
+   */
+  constexpr bool operator!=(const DateTime &other) const noexcept {
+    return !(*this == other);
+  }
 };
 
 /**

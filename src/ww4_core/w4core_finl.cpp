@@ -94,6 +94,14 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     //
     // 4.  Release persistent model data -------------------------------------
     //
+    // 4.1 Check model time versus end time
+    //
+    if (getWaveTimeData().modelTime.has_value() &&
+        *getWaveTimeData().modelTime != endTime) {
+      ww4_utils::ww4_std_out::warnng(os, "Model time does not match end time.",
+                                     __FILE__, __LINE__);
+    }
+
     ww4_utils::TimeManagement::reset();
     ww4_utils::resetMemoryStatusPath();
     resetInputData();

@@ -60,6 +60,16 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     // 1.3.2 Starting versus model time
     //
+    if (!getWaveTimeData().modelTime.has_value()) {
+      ww4_utils::ww4_std_out::extcde(1, os, "Model time not initialized.",
+                                     __FILE__, __LINE__);
+    }
+
+    if (*getWaveTimeData().modelTime != startTime) {
+      ww4_utils::ww4_std_out::extcde(
+          1, os, "Start time does not match model time.", __FILE__, __LINE__);
+    }
+    //
     //
     // 2.  Loop to get to ending time ----------------------------------------
     //     The loop starts here
