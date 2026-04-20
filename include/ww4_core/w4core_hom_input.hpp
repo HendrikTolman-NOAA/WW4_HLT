@@ -12,7 +12,7 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-17
+ * @date Last update, 2026-04-20
  */
 
 #ifndef WW4_CORE_W4CORE_HOM_INPUT_HPP

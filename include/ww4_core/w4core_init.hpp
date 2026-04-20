@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -21,6 +21,7 @@
 #ifndef WW4_CORE_W4CORE_INIT_HPP
 #define WW4_CORE_W4CORE_INIT_HPP
 
+#include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
 #include <fstream>
@@ -64,6 +65,12 @@ const std::string &getProgramName();
  * @return A reference to the RunConfig structure.
  */
 const ww4_utils::RunConfig &getRunConfig();
+
+/**
+ * @brief Provides access to the wave model data structure.
+ * @return A reference to the WaveTimeData structure.
+ */
+WaveTimeData &getWaveTimeData();
 
 /**
  * @brief Provides access to the log file stream.

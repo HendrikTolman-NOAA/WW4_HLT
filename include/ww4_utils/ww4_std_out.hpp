@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-20
  * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
  *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
@@ -94,6 +94,33 @@ void writeExtcdeOutput(std::ostream &os,
                          std::optional<std::string_view> msg = std::nullopt,
                          std::optional<std::string_view> file = std::nullopt,
                          std::optional<int> line = std::nullopt);
+
+/**
+ * @brief Writes a warning message to the provided output stream in the standard
+ *        WAVEWATCH format.
+ * @details Heritage from WARNNG in WAVEWATCH III w3servmd.F90.
+ * @param os The output stream to write to.
+ * @param msg Optional warning message to report.
+ * @param file Optional source file name where the warning occurred.
+ * @param line Optional line number in the source file.
+ */
+void writeWarnngOutput(std::ostream &os,
+                       std::optional<std::string_view> msg = std::nullopt,
+                       std::optional<std::string_view> file = std::nullopt,
+                       std::optional<int> line = std::nullopt);
+
+/**
+ * @brief Issues a warning message.
+ * @details Heritage from WARNNG in WAVEWATCH III w3servmd.F90.
+ *          Calls writeWarnngOutput.
+ * @param os The output stream to write to (defaults to std::cout).
+ * @param msg Optional warning message to report.
+ * @param file Optional source file name where the warning occurred.
+ * @param line Optional line number in the source file.
+ */
+void warnng(std::ostream &os, std::optional<std::string_view> msg = std::nullopt,
+            std::optional<std::string_view> file = std::nullopt,
+            std::optional<int> line = std::nullopt);
 
 } // namespace ww4_std_out
 } // namespace ww4_utils

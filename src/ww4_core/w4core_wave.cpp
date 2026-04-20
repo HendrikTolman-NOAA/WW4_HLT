@@ -60,6 +60,17 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     // 1.3.2 Starting versus model time
     //
+    if (!getWaveTimeData().modelTime.has_value()) {
+      ww4_utils::ww4_std_out::extcde(1, os, "Model time not set in w4core_wave",
+                                     __FILE__, __LINE__);
+    }
+
+    if (*getWaveTimeData().modelTime != startTime) {
+      ww4_utils::ww4_std_out::extcde(
+          1, os, "Starting time does not match model time in w4core_wave",
+          __FILE__, __LINE__);
+    }
+
     //
     // 2.  Loop to get to ending time ----------------------------------------
     //     The loop starts here
@@ -85,6 +96,11 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     // 6.  Perform output ----------------------------------------------------
     //
+    //
+    // 7.  Update model time to ending time (stub implementation) -----------
+    //
+    getWaveTimeData().modelTime = endTime;
+
     //
     //     End of the basit cime stepping loop starting at 2 -----------------
     //

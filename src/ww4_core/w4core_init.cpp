@@ -32,6 +32,7 @@ namespace ww4_core {
 
 namespace {
 ww4_utils::RunConfig globalRunConfig;
+WaveTimeData globalWaveTimeData;
 std::ofstream logFile;
 std::string capturedProgramName;
 } // namespace
@@ -57,6 +58,12 @@ void w4core_init(const ww4_utils::DateTime &startTime,
           __FILE__, __LINE__);
     }
     globalRunConfig = *config;
+
+    //
+    // 1.1a Initialize wave model data
+    //
+    globalWaveTimeData.timeStep = globalRunConfig.timeStep;
+    globalWaveTimeData.modelTime = startTime;
 
     //
     // 1.2 Initialize calendar type in time management service
@@ -159,12 +166,15 @@ void w4core_init(const ww4_utils::DateTime &startTime,
 
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
 
+WaveTimeData &getWaveTimeData() { return globalWaveTimeData; }
+
 std::ofstream &getLogFileStream() { return logFile; }
 
 const std::string &getProgramName() { return capturedProgramName; }
 
 void resetInternalState() noexcept {
   globalRunConfig = ww4_utils::RunConfig();
+  globalWaveTimeData = WaveTimeData();
   capturedProgramName.clear();
   if (logFile.is_open()) {
     logFile.close();
