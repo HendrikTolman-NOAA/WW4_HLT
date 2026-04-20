@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-17
+ * @date Last update, 2026-04-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -40,13 +40,13 @@ void w4core_init(const ww4_utils::DateTime &startTime,
                  std::string_view programName, std::ostream &os) {
   try {
     //
-    // 0.  General initialization --------------------------------------------
-    // 0.0 Capture program name
+    // 1.  General initialization --------------------------------------------
+    // 1.0 Capture program name
     //
     capturedProgramName = std::string(programName);
 
     //
-    // 0.1 Load configuration from ww4_run_config.yml file
+    // 1.1 Load configuration from ww4_run_config.yml file
     //
     const auto config = ww4_utils::loadRunConfig("ww4_run_config.yml", os);
     if (!config) {
@@ -59,31 +59,31 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     globalRunConfig = *config;
 
     //
-    // 0.2 Initialize calendar type in time management service
+    // 1.2 Initialize calendar type in time management service
     //
     ww4_utils::TimeManagement::setCalendarType(globalRunConfig.calendarType);
 
     //
-    // 0.3 Initialize profiling
+    // 1.3 Initialize profiling
     //
     ww4_utils::TimeManagement::initializeProfiling();
 
     //
-    // 0.4 Process homogeneous input data silently
+    // 1.4 Process homogeneous input data silently
     //
     w4core_hom_input(os);
 
     //
-    // 0.5 Initial standard output if requested
+    // 1.5 Initial standard output if requested
     //
     if (globalRunConfig.produceStdOut) {
       //
-      // 0.5.1 Initial standard output
+      // 1.5.1 Initial standard output
       //
       ww4_utils::ww4_std_out::writeInitialOutput(os, capturedProgramName);
 
       //
-      // 0.5.2 Report out run start time
+      // 1.5.2 Report out run start time
       //
       os << "  Run starts at "
          << ww4_utils::TimeManagement::toFormattedString(
@@ -91,32 +91,32 @@ void w4core_init(const ww4_utils::DateTime &startTime,
          << std::endl;
 
       //
-      // 0.5.3 Identify being in initialization routine
+      // 1.5.3 Identify being in initialization routine
       //
       os << "\n  Initialization (w4core_init) starting: "
          << ww4_utils::TimeManagement::toFormattedString(startTime)
          << std::endl;
       //
-      // 0.5.4 Report out run time configuration
+      // 1.5.4 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, os);
     }
 
     //
-    // 0.6 Start log file if requested
+    // 1.6 Start log file if requested
     //
     if (globalRunConfig.produceLogFile) {
       //
-      // 0.6.1 Open log file
+      // 1.6.1 Open log file
       //
       logFile.open("log.ww4");
       //
-      // 0.6.2 Initial log file output
+      // 1.6.2 Initial log file output
       //
       ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
 
       //
-      // 0.6.3 Report out run start time
+      // 1.6.3 Report out run start time
       //
       logFile << "  Run starts at "
               << ww4_utils::TimeManagement::toFormattedString(
@@ -124,13 +124,13 @@ void w4core_init(const ww4_utils::DateTime &startTime,
               << std::endl;
 
       //
-      // 0.6.4 Identify being in initialization routine
+      // 1.6.4 Identify being in initialization routine
       //
       logFile << "\n  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
       //
-      // 0.6.5 Report out run time configuration
+      // 1.6.5 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
     }
@@ -141,6 +141,20 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     ww4_utils::ww4_std_out::extcde(1, os, "Unknown exception in w4core_init",
                                    __FILE__, __LINE__);
   }
+    //
+    // 2.  Set up data strucures ---------------------------------------------
+    // 2.1 Set up the global and local (domain) grids
+    //
+    // 2.2  Set up the spectral data structures
+    //
+    //
+    // 3.  Data initialization -----------------------------------------------
+    //     This only needs to be the intial conditions, Input and output are
+    //     initialized as part of their update procedures in w4core_wave
+    //
+    //
+    //     End of w4core_init ------------------------------------------------
+    //
 }
 
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
