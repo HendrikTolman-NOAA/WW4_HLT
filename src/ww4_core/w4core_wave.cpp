@@ -129,21 +129,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       double outputTimeStep = ww4_utils::TimeManagement::differenceInSeconds(
           *getWaveTimeData().modelTime, endTime);
 
-      if (*getWaveTimeData().modelTime == startTime &&
-          consecutiveZeroSteps == 0) {
-        if ((getRunConfig().outputFields.requested &&
-             getRunConfig().outputFields.atFirstTime) ||
-            (getRunConfig().outputPoints.requested &&
-             getRunConfig().outputPoints.atFirstTime) ||
-            (getRunConfig().outputNesting.requested &&
-             getRunConfig().outputNesting.atFirstTime) ||
-            (getRunConfig().outputTracks.requested &&
-             getRunConfig().outputTracks.atFirstTime) ||
-            (getRunConfig().outputRestart.requested &&
-             getRunConfig().outputRestart.atFirstTime)) {
-          outputTimeStep = 0.0;
-        }
-      }
 
       //
       // 3.3 Set the time step for this cycle of the time step loop
