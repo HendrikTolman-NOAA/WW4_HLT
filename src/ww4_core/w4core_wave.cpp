@@ -76,12 +76,10 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           1, os, "Start time does not match model time.", __FILE__, __LINE__);
     }
     //
-    //
     // 2.  Loop to get to ending time ----------------------------------------
     // 2.1 Initialize tracking of reported interpolation times
     //
     ww4_utils::InputUpdateState inputState;
-
     //
     // 2.2 The loop starts here
     //
@@ -113,7 +111,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                                  inputState, getRunConfig(), os,
                                  getLogFileStream());
 
-      // Update the internal state with possibly updated input time tags
       updateWaveInputTime(ww4_utils::InputType::WaterLevels,
                           waveTime.waterLevels);
       updateWaveInputTime(ww4_utils::InputType::Currents, waveTime.currents);
@@ -126,10 +123,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       double inputTimeStep =
           ww4_utils::computeInputTimeStep(*getWaveTimeData().modelTime, endTime,
                                           getWaveTimeData(), getRunConfig());
-
-      if (getRunConfig().produceStdOut) {
-        os << "    Input time step: " << inputTimeStep << std::endl;
-      }
 
       //
       // 3.2 Find the next time/timestep for which output is requested
