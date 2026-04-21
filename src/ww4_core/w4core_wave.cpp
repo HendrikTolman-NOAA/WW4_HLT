@@ -22,6 +22,7 @@
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_input_utils.hpp"
+#include "ww4_utils/ww4_output_utils.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
 #include <chrono>
 #include <exception>
@@ -76,6 +77,22 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           1, os, "Start time does not match model time.", __FILE__, __LINE__);
     }
     //
+    // 1.4 Assess and update output configurations
+    //
+    ww4_utils::assessOutputConfig(getMutableRunConfig().outputFields, startTime,
+                                  false);
+    ww4_utils::assessOutputConfig(getMutableRunConfig().outputPoints, startTime,
+                                  false);
+    ww4_utils::assessOutputConfig(getMutableRunConfig().outputNesting,
+                                  startTime, false);
+    ww4_utils::assessOutputConfig(getMutableRunConfig().outputTracks, startTime,
+                                  false);
+    ww4_utils::assessOutputConfig(getMutableRunConfig().outputRestart,
+                                  startTime, false);
+    ww4_utils::assessOutputConfig(getMutableRunConfig().outputApi, startTime,
+                                  true, endTime);
+
+    //
     // 2.  Loop to get to ending time ----------------------------------------
     // 2.1 Initialize tracking of reported interpolation times
     //
@@ -127,8 +144,32 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 3.2 Find the next time/timestep for which output is requested
       //
-      double outputTimeStep = ww4_utils::TimeManagement::differenceInSeconds(
-          *getWaveTimeData().modelTime, endTime);
+      double outputTimeStep = ww4_utils::computeNextOutputStep(
+          getRunConfig().outputFields, *getWaveTimeData().modelTime);
+      outputTimeStep = std::min(
+          outputTimeStep,
+          ww4_utils::computeNextOutputStep(getRunConfig().outputPoints,
+                                           *getWaveTimeData().modelTime));
+      outputTimeStep = std::min(
+          outputTimeStep,
+          ww4_utils::computeNextOutputStep(getRunConfig().outputNesting,
+                                           *getWaveTimeData().modelTime));
+      outputTimeStep = std::min(
+          outputTimeStep,
+          ww4_utils::computeNextOutputStep(getRunConfig().outputTracks,
+                                           *getWaveTimeData().modelTime));
+      outputTimeStep = std::min(
+          outputTimeStep,
+          ww4_utils::computeNextOutputStep(getRunConfig().outputRestart,
+                                           *getWaveTimeData().modelTime));
+      outputTimeStep =
+          std::min(outputTimeStep,
+                   ww4_utils::computeNextOutputStep(
+                       getRunConfig().outputApi, *getWaveTimeData().modelTime));
+
+      outputTimeStep = std::min(outputTimeStep,
+                                ww4_utils::TimeManagement::differenceInSeconds(
+                                    *getWaveTimeData().modelTime, endTime));
 
       //
       // 3.3 Set the time step for this cycle of the time step loop
@@ -179,49 +220,76 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 6.  Perform output ----------------------------------------------------
       //
-      if (getRunConfig().outputFields.requested) {
+      if (ww4_utils::isOutputDue(getRunConfig().outputFields,
+                                 *getWaveTimeData().modelTime)) {
         if (getRunConfig().produceStdOut) {
           os << "    Performing fields output" << std::endl;
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Performing fields output" << std::endl;
         }
+        ww4_utils::updateOutputTime(getMutableRunConfig().outputFields,
+                                    *getWaveTimeData().modelTime);
       }
 
-      if (getRunConfig().outputPoints.requested) {
+      if (ww4_utils::isOutputDue(getRunConfig().outputPoints,
+                                 *getWaveTimeData().modelTime)) {
         if (getRunConfig().produceStdOut) {
           os << "    Performing points output" << std::endl;
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Performing points output" << std::endl;
         }
+        ww4_utils::updateOutputTime(getMutableRunConfig().outputPoints,
+                                    *getWaveTimeData().modelTime);
       }
 
-      if (getRunConfig().outputNesting.requested) {
+      if (ww4_utils::isOutputDue(getRunConfig().outputNesting,
+                                 *getWaveTimeData().modelTime)) {
         if (getRunConfig().produceStdOut) {
           os << "    Performing nesting output" << std::endl;
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Performing nesting output" << std::endl;
         }
+        ww4_utils::updateOutputTime(getMutableRunConfig().outputNesting,
+                                    *getWaveTimeData().modelTime);
       }
 
-      if (getRunConfig().outputTracks.requested) {
+      if (ww4_utils::isOutputDue(getRunConfig().outputTracks,
+                                 *getWaveTimeData().modelTime)) {
         if (getRunConfig().produceStdOut) {
           os << "    Performing tracks output" << std::endl;
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Performing tracks output" << std::endl;
         }
+        ww4_utils::updateOutputTime(getMutableRunConfig().outputTracks,
+                                    *getWaveTimeData().modelTime);
       }
 
-      if (getRunConfig().outputRestart.requested) {
+      if (ww4_utils::isOutputDue(getRunConfig().outputRestart,
+                                 *getWaveTimeData().modelTime)) {
         if (getRunConfig().produceStdOut) {
           os << "    Performing restart output" << std::endl;
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Performing restart output" << std::endl;
         }
+        ww4_utils::updateOutputTime(getMutableRunConfig().outputRestart,
+                                    *getWaveTimeData().modelTime);
+      }
+
+      if (ww4_utils::isOutputDue(getRunConfig().outputApi,
+                                 *getWaveTimeData().modelTime)) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Performing API output" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Performing API output" << std::endl;
+        }
+        ww4_utils::updateOutputTime(getMutableRunConfig().outputApi,
+                                    *getWaveTimeData().modelTime);
       }
       //
       //     End of the basic time stepping loop starting at 2 ---------------

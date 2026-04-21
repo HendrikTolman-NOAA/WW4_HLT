@@ -79,6 +79,7 @@ add_library(
     src/ww4_utils/ww4_stand_alone_config.cpp
     src/ww4_utils/ww4_run_config.cpp
     src/ww4_utils/ww4_input_utils.cpp
+    src/ww4_utils/ww4_output_utils.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
@@ -128,6 +129,9 @@ target_link_libraries(test_ww4_stand_alone_config PRIVATE ww4_utils GTest::gtest
 add_executable(test_ww4_run_config tests_L1_L2/ww4_utils/test_ww4_run_config.cpp)
 target_link_libraries(test_ww4_run_config PRIVATE ww4_utils GTest::gtest_main)
 
+add_executable(test_ww4_output_utils tests_L1_L2/ww4_utils/test_ww4_output_utils.cpp)
+target_link_libraries(test_ww4_output_utils PRIVATE ww4_utils GTest::gtest_main)
+
 add_executable(test_w4core_time tests_L1_L2/ww4_core/test_w4core_time.cpp)
 target_link_libraries(test_w4core_time PRIVATE ww4_core ww4_utils GTest::gtest_main)
 
@@ -153,6 +157,7 @@ set(WW4_TEST_TARGETS
     test_ww4_logfile
     test_ww4_stand_alone_config
     test_ww4_run_config
+    test_ww4_output_utils
     test_w4core_time
     test_w4core_wave_output
     test_w4core_zero_step
@@ -173,6 +178,7 @@ gtest_discover_tests(test_ww4_std_out)
 gtest_discover_tests(test_ww4_logfile)
 gtest_discover_tests(test_ww4_stand_alone_config)
 gtest_discover_tests(test_ww4_run_config)
+gtest_discover_tests(test_ww4_output_utils)
 gtest_discover_tests(test_w4core_time)
 gtest_discover_tests(test_w4core_wave_output)
 gtest_discover_tests(test_w4core_zero_step)
