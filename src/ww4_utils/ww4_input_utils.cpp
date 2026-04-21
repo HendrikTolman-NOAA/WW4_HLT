@@ -51,11 +51,16 @@ void processField(std::string_view fieldName, InputFieldOption option,
     return;
   }
 
-  if (produceStdOut) {
-    ww4_std_out::writeUpdatingField(os, fieldName);
-  }
-  if (produceLogFile) {
-    ww4_logfile::writeUpdatingField(logStream, fieldName);
+  const bool skipUpdateMessage =
+      (fieldName == "bottom depth" && option == InputFieldOption::FromGrid);
+
+  if (!skipUpdateMessage) {
+    if (produceStdOut) {
+      ww4_std_out::writeUpdatingField(os, fieldName);
+    }
+    if (produceLogFile) {
+      ww4_logfile::writeUpdatingField(logStream, fieldName);
+    }
   }
 
   if (option == InputFieldOption::Homogeneous) {

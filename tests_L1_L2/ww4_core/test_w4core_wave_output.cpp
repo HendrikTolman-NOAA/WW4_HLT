@@ -94,3 +94,26 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
     EXPECT_NE(output.find("API output requested"), std::string::npos);
   }
 }
+
+/**
+ * @test Verify that bottom depth from grid is not reported as updated.
+ */
+TEST_F(W4CoreWaveOutputTest, DoesNotReportBottomDepthFromGrid) {
+  std::ofstream runFile("ww4_run_config.yml");
+  runFile << "calendar_type: \"Standard\"\n";
+  runFile << "water_levels: none\n";
+  runFile << "currents: none\n";
+  runFile << "winds: none\n";
+  runFile << "ice_concentrations: none\n";
+  runFile << "time_step: 3600.0\n";
+  runFile << "bottom_depth: from_grid\n";
+  runFile.close();
+
+  std::stringstream ss;
+  ww4_core::w4core_init(startTime, "test_program", ss);
+  ww4_core::w4core_wave(startTime, endTime, ss);
+
+  std::string output = ss.str();
+  // It should NOT contain "Updating bottom depth"
+  EXPECT_EQ(output.find("Updating bottom depth"), std::string::npos);
+}
