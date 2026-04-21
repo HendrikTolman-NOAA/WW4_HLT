@@ -127,8 +127,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 3.3 Set the time step for this cycle of the time step loop
       //
-      double actualTimeStep =
-          std::min(inputTimeStep, getRunConfig().timeStep);
+      double actualTimeStep = std::min(inputTimeStep, getRunConfig().timeStep);
       if (actualTimeStep < 0.001) {
         actualTimeStep = 0.001;
       }

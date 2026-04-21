@@ -121,7 +121,8 @@ double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                config.produceStdOut, os, config.produceLogFile, logStream);
 
   // Calculate minimum maxStep for inputs only
-  double inputTimeStep = TimeManagement::differenceInSeconds(modelTime, endTime);
+  double inputTimeStep =
+      TimeManagement::differenceInSeconds(modelTime, endTime);
 
   if (config.waterLevels != InputFieldOption::None &&
       config.waterLevels != InputFieldOption::Undefined) {
