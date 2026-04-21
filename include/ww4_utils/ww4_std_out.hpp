@@ -24,6 +24,7 @@
 #define WW4_UTILS_WW4_STD_OUT_HPP
 
 #include "ww4_utils/memory_utils.hpp"
+#include "ww4_utils/time_management.hpp"
 #include <iostream>
 #include <optional>
 #include <string>
@@ -120,6 +121,22 @@ void writeWarnngOutput(std::ostream &os, std::string_view msg,
 void warnng(std::ostream &os, std::string_view msg,
             std::optional<std::string_view> file = std::nullopt,
             std::optional<int> line = std::nullopt);
+
+/**
+ * @brief Writes a message identifying that an input field is being updated.
+ * @param os The output stream to write to.
+ * @param fieldName The name of the field being updated.
+ */
+void writeUpdatingField(std::ostream &os, std::string_view fieldName);
+
+/**
+ * @brief Writes interpolation interval information for an input field.
+ * @param os The output stream to write to.
+ * @param time1 First interpolation time tag.
+ * @param time2 Second interpolation time tag.
+ */
+void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
+                            const DateTime &time2);
 
 } // namespace ww4_std_out
 } // namespace ww4_utils

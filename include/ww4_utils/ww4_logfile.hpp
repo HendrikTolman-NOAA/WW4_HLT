@@ -23,6 +23,7 @@
 #define WW4_UTILS_WW4_LOGFILE_HPP
 
 #include "ww4_utils/memory_utils.hpp"
+#include "ww4_utils/time_management.hpp"
 #include <iostream>
 #include <optional>
 #include <string>
@@ -59,6 +60,22 @@ void writeInitialOutput(std::ostream &os, std::string_view programName);
 void writeFinalOutput(std::ostream &os, std::string_view programName,
                       std::optional<double> initTime = std::nullopt,
                       std::optional<double> elapsedTotal = std::nullopt);
+
+/**
+ * @brief Writes a message identifying that an input field is being updated.
+ * @param os The output stream to write to.
+ * @param fieldName The name of the field being updated.
+ */
+void writeUpdatingField(std::ostream &os, std::string_view fieldName);
+
+/**
+ * @brief Writes interpolation interval information for an input field.
+ * @param os The output stream to write to.
+ * @param time1 First interpolation time tag.
+ * @param time2 Second interpolation time tag.
+ */
+void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
+                            const DateTime &time2);
 
 } // namespace ww4_logfile
 } // namespace ww4_utils

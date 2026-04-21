@@ -12,10 +12,10 @@
  * @date 2026-04-21
  */
 
-#include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_input_update.hpp"
 #include <fstream>
 #include <gtest/gtest.h>
 
@@ -60,8 +60,8 @@ bottom_depth: "none"
   std::stringstream ss;
   ww4_core::w4core_init(startTime, "test", ss);
 
-  ww4_core::w4core_hom_winds(endTime);
-  const auto &data = ww4_core::getWaveTimeData().winds;
+  ww4_utils::intTimeData data;
+  ww4_utils::ww4_hom_winds(startTime, endTime, data);
 
   ASSERT_TRUE(data.time1.has_value());
   ASSERT_TRUE(data.time2.has_value());
@@ -91,8 +91,8 @@ bottom_depth: "none"
   std::stringstream ss;
   ww4_core::w4core_init(startTime, "test", ss);
 
-  ww4_core::w4core_hom_winds(endTime);
-  const auto &data = ww4_core::getWaveTimeData().winds;
+  ww4_utils::intTimeData data;
+  ww4_utils::ww4_hom_winds(startTime, endTime, data);
 
   ASSERT_TRUE(data.time1.has_value());
   ASSERT_TRUE(data.time2.has_value());
@@ -121,8 +121,8 @@ bottom_depth: "none"
   std::stringstream ss;
   ww4_core::w4core_init(startTime, "test", ss);
 
-  ww4_core::w4core_hom_winds(endTime);
-  const auto &data = ww4_core::getWaveTimeData().winds;
+  ww4_utils::intTimeData data;
+  ww4_utils::ww4_hom_winds(startTime, endTime, data);
 
   ASSERT_TRUE(data.time1.has_value());
   ASSERT_TRUE(data.time2.has_value());
@@ -134,12 +134,6 @@ bottom_depth: "none"
 }
 
 TEST_F(W4CoreInputCyclingTest, CyclingEmptyData) {
-  // Note: w4core_hom_input fails if homogeneous is set but no data
-  // But updateHomogeneousInputCycling should handle empty series if called.
-  // We can't easily test empty series with w4core_init due to validation.
-  // We can mock it if we could access processed data directly, but it's
-  // private. Let's test the validation failure instead to ensure it's still
-  // there.
   writeYaml(R"(
 calendar_type: "Standard"
 time_step: 3600.0

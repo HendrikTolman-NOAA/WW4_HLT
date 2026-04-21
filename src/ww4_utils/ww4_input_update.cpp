@@ -3,31 +3,26 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_hom_input.cpp
- * @brief Implementation of homogeneous input data processing for WW4 core.
- * @details This file implements the w4core_hom_input routine and its helpers.
+ * @file ww4_input_update.cpp
+ * @brief Implementation of input data processing for WW4.
+ * @details This file implements the ww4_input_update routine and its helpers.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial 2026-04-17
- * @date Last update 2026-04-21
+ * @date 2026-04-21
  */
 
-#include "ww4_core/w4core_hom_input.hpp"
-#include "ww4_core/w4core_init.hpp"
-#include "ww4_core/w4core_wave.hpp"
-#include "ww4_utils/ww4_stand_alone_config.hpp"
+#include "ww4_utils/ww4_input_update.hpp"
+#include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
 #include <charconv>
 #include <iostream>
 #include <optional>
-#include <sstream>
+#include <vector>
 
-namespace ww4_core {
-
-using namespace ww4_utils;
+namespace ww4_utils {
 
 namespace {
 
@@ -115,26 +110,18 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
 /**
  * @brief Helper to cycle through homogeneous input data.
  * @param series The vector of homogeneous data points.
- * @param type The input type to update.
+ * @param modelTime Current model time.
  * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
  */
 void updateHomogeneousInputCycling(
-    const std::vector<HomogeneousDataPoint> &series, InputType type,
-    const DateTime &endTime) {
-
-  const auto &waveTimeData = getWaveTimeData();
-  if (!waveTimeData.modelTime.has_value()) {
-    return;
-  }
-  const DateTime modelTime = *waveTimeData.modelTime;
-
-  InputTimeData data;
+    const std::vector<HomogeneousDataPoint> &series, const DateTime &modelTime,
+    const DateTime &endTime, intTimeData &data) {
 
   if (series.empty()) {
     data.time1 = modelTime;
     data.time2 = endTime;
     data.maxStep = TimeManagement::differenceInSeconds(modelTime, endTime);
-    updateWaveInputTime(type, data);
     return;
   }
 
@@ -186,15 +173,11 @@ void updateHomogeneousInputCycling(
     data.maxStep = TimeManagement::differenceInSeconds(modelTime, endTime);
     data.time2 = endTime;
   }
-
-  updateWaveInputTime(type, data);
 }
 
 } // namespace
 
-void w4core_hom_input(std::ostream &os) {
-  const auto &config = getRunConfig();
-
+void ww4_input_update(const RunConfig &config, std::ostream &os) {
   // Reset before processing
   resetInputData();
 
@@ -238,21 +221,29 @@ const std::vector<HomogeneousDataPoint> &getHomogeneousBottomDepth() noexcept {
   return bottomDepth;
 }
 
-void w4core_hom_water_levels(const DateTime &endTime) {
-  updateHomogeneousInputCycling(waterLevels, InputType::WaterLevels, endTime);
+void ww4_hom_water_levels(const DateTime &modelTime, const DateTime &endTime,
+                          intTimeData &data) {
+  updateHomogeneousInputCycling(waterLevels, modelTime, endTime, data);
 }
 
-void w4core_hom_currents(const DateTime &endTime) {
-  updateHomogeneousInputCycling(currents, InputType::Currents, endTime);
+void ww4_hom_currents(const DateTime &modelTime, const DateTime &endTime,
+                      intTimeData &data) {
+  updateHomogeneousInputCycling(currents, modelTime, endTime, data);
 }
 
-void w4core_hom_winds(const DateTime &endTime) {
-  updateHomogeneousInputCycling(winds, InputType::Winds, endTime);
+void ww4_hom_winds(const DateTime &modelTime, const DateTime &endTime,
+                   intTimeData &data) {
+  updateHomogeneousInputCycling(winds, modelTime, endTime, data);
 }
 
-void w4core_hom_ice(const DateTime &endTime) {
-  updateHomogeneousInputCycling(iceConcentrations, InputType::IceConcentrations,
-                                endTime);
+void ww4_hom_ice(const DateTime &modelTime, const DateTime &endTime,
+                 intTimeData &data) {
+  updateHomogeneousInputCycling(iceConcentrations, modelTime, endTime, data);
 }
 
-} // namespace ww4_core
+void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
+                          intTimeData &data) {
+  updateHomogeneousInputCycling(bottomDepth, modelTime, endTime, data);
+}
+
+} // namespace ww4_utils

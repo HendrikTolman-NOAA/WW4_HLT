@@ -22,6 +22,7 @@
 #define WW4_CORE_W4CORE_WAVE_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_input_utils.hpp"
 #include <optional>
 
 /**
@@ -29,36 +30,6 @@
  * @brief Core routines for WAVEWATCH IV.
  */
 namespace ww4_core {
-
-/**
- * @struct InputTimeData
- * @brief Structure to hold time tags for model inputs.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
- */
-struct InputTimeData {
-  std::optional<ww4_utils::DateTime> time1; ///< First time tag.
-  std::optional<ww4_utils::DateTime> time2; ///< Second time tag.
-  double maxStep = -1.0;                    ///< Maximum model time step.
-};
-
-/**
- * @struct WaveTimeData
- * @brief Structure to hold model time and time step information.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-20
- * @date Last update, 2026-04-21
- */
-struct WaveTimeData {
-  double timeStep = -1.0;                       ///< Model time step.
-  std::optional<ww4_utils::DateTime> modelTime; ///< Current model time.
-  InputTimeData waterLevels;                    ///< Time data for water levels.
-  InputTimeData currents;                       ///< Time data for currents.
-  InputTimeData winds;                          ///< Time data for winds.
-  InputTimeData iceConcentrations; ///< Time data for ice concentrations.
-};
 
 /**
  * @brief Time stepping routine for the WAVEWATCH IV core.
