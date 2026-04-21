@@ -78,7 +78,15 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     //
     // 2.  Loop to get to ending time ----------------------------------------
-    //     The loop starts here
+    // 2.1 Initialize tracking of reported interpolation times
+    //
+    std::optional<ww4_utils::DateTime> lastWlTime1, lastWlTime2;
+    std::optional<ww4_utils::DateTime> lastCuTime1, lastCuTime2;
+    std::optional<ww4_utils::DateTime> lastWiTime1, lastWiTime2;
+    std::optional<ww4_utils::DateTime> lastIcTime1, lastIcTime2;
+
+    //
+    // 2.2 The loop starts here
     //
     while (ww4_utils::TimeManagement::differenceInSeconds(
                *getWaveTimeData().modelTime, endTime) > 0.001) {
@@ -115,20 +123,25 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           w4core_hom_water_levels(endTime);
           const auto &wl = getWaveTimeData().waterLevels;
           if (wl.time1.has_value() && wl.time2.has_value()) {
-            if (getRunConfig().produceStdOut) {
-              os << "      Interpolation from "
-                 << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
-                 << " to "
-                 << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
-                 << std::endl;
-            }
-            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-              getLogFileStream()
-                  << "      Interpolation from "
-                  << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
-                  << " to "
-                  << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
-                  << std::endl;
+            if (wl.time1 != lastWlTime1 || wl.time2 != lastWlTime2) {
+              if (getRunConfig().produceStdOut) {
+                os << "      Interpolation from "
+                   << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
+                   << " to "
+                   << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
+                   << std::endl;
+              }
+              if (getRunConfig().produceLogFile &&
+                  getLogFileStream().is_open()) {
+                getLogFileStream()
+                    << "      Interpolation from "
+                    << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
+                    << " to "
+                    << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
+                    << std::endl;
+              }
+              lastWlTime1 = wl.time1;
+              lastWlTime2 = wl.time2;
             }
           }
         }
@@ -147,20 +160,25 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           w4core_hom_currents(endTime);
           const auto &cu = getWaveTimeData().currents;
           if (cu.time1.has_value() && cu.time2.has_value()) {
-            if (getRunConfig().produceStdOut) {
-              os << "      Interpolation from "
-                 << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
-                 << " to "
-                 << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
-                 << std::endl;
-            }
-            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-              getLogFileStream()
-                  << "      Interpolation from "
-                  << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
-                  << " to "
-                  << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
-                  << std::endl;
+            if (cu.time1 != lastCuTime1 || cu.time2 != lastCuTime2) {
+              if (getRunConfig().produceStdOut) {
+                os << "      Interpolation from "
+                   << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
+                   << " to "
+                   << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
+                   << std::endl;
+              }
+              if (getRunConfig().produceLogFile &&
+                  getLogFileStream().is_open()) {
+                getLogFileStream()
+                    << "      Interpolation from "
+                    << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
+                    << " to "
+                    << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
+                    << std::endl;
+              }
+              lastCuTime1 = cu.time1;
+              lastCuTime2 = cu.time2;
             }
           }
         }
@@ -178,20 +196,25 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           w4core_hom_winds(endTime);
           const auto &wi = getWaveTimeData().winds;
           if (wi.time1.has_value() && wi.time2.has_value()) {
-            if (getRunConfig().produceStdOut) {
-              os << "      Interpolation from "
-                 << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
-                 << " to "
-                 << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
-                 << std::endl;
-            }
-            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-              getLogFileStream()
-                  << "      Interpolation from "
-                  << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
-                  << " to "
-                  << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
-                  << std::endl;
+            if (wi.time1 != lastWiTime1 || wi.time2 != lastWiTime2) {
+              if (getRunConfig().produceStdOut) {
+                os << "      Interpolation from "
+                   << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
+                   << " to "
+                   << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
+                   << std::endl;
+              }
+              if (getRunConfig().produceLogFile &&
+                  getLogFileStream().is_open()) {
+                getLogFileStream()
+                    << "      Interpolation from "
+                    << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
+                    << " to "
+                    << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
+                    << std::endl;
+              }
+              lastWiTime1 = wi.time1;
+              lastWiTime2 = wi.time2;
             }
           }
         }
@@ -212,20 +235,25 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           w4core_hom_ice(endTime);
           const auto &ic = getWaveTimeData().iceConcentrations;
           if (ic.time1.has_value() && ic.time2.has_value()) {
-            if (getRunConfig().produceStdOut) {
-              os << "      Interpolation from "
-                 << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
-                 << " to "
-                 << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
-                 << std::endl;
-            }
-            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-              getLogFileStream()
-                  << "      Interpolation from "
-                  << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
-                  << " to "
-                  << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
-                  << std::endl;
+            if (ic.time1 != lastIcTime1 || ic.time2 != lastIcTime2) {
+              if (getRunConfig().produceStdOut) {
+                os << "      Interpolation from "
+                   << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
+                   << " to "
+                   << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
+                   << std::endl;
+              }
+              if (getRunConfig().produceLogFile &&
+                  getLogFileStream().is_open()) {
+                getLogFileStream()
+                    << "      Interpolation from "
+                    << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
+                    << " to "
+                    << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
+                    << std::endl;
+              }
+              lastIcTime1 = ic.time1;
+              lastIcTime2 = ic.time2;
             }
           }
         }
