@@ -12,13 +12,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-21
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
 #include "ww4_core/w4core_wave.hpp"
+#include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
@@ -109,6 +110,28 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Updating water levels" << std::endl;
         }
+        if (getRunConfig().waterLevels ==
+            ww4_utils::InputFieldOption::Homogeneous) {
+          w4core_hom_water_levels(endTime);
+          const auto &wl = getWaveTimeData().waterLevels;
+          if (wl.time1.has_value() && wl.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
+                  << std::endl;
+            }
+          }
+        }
       }
 
       if (getRunConfig().currents != ww4_utils::InputFieldOption::None &&
@@ -119,6 +142,28 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Updating currents" << std::endl;
         }
+        if (getRunConfig().currents ==
+            ww4_utils::InputFieldOption::Homogeneous) {
+          w4core_hom_currents(endTime);
+          const auto &cu = getWaveTimeData().currents;
+          if (cu.time1.has_value() && cu.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
+                  << std::endl;
+            }
+          }
+        }
       }
 
       if (getRunConfig().winds != ww4_utils::InputFieldOption::None &&
@@ -128,6 +173,27 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Updating winds" << std::endl;
+        }
+        if (getRunConfig().winds == ww4_utils::InputFieldOption::Homogeneous) {
+          w4core_hom_winds(endTime);
+          const auto &wi = getWaveTimeData().winds;
+          if (wi.time1.has_value() && wi.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
+                  << std::endl;
+            }
+          }
         }
       }
 
@@ -141,6 +207,28 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Updating ice concentrations" << std::endl;
         }
+        if (getRunConfig().iceConcentrations ==
+            ww4_utils::InputFieldOption::Homogeneous) {
+          w4core_hom_ice(endTime);
+          const auto &ic = getWaveTimeData().iceConcentrations;
+          if (ic.time1.has_value() && ic.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
+                  << std::endl;
+            }
+          }
+        }
       }
       //
       // 3.2 Find the next time/timestep for which output is requested
@@ -149,6 +237,47 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       // 3.3 Set the time step for this cycle of the time step loop
       //
       double actualTimeStep = getWaveTimeData().timeStep;
+
+      if (getRunConfig().waterLevels != ww4_utils::InputFieldOption::None &&
+          getRunConfig().waterLevels !=
+              ww4_utils::InputFieldOption::Undefined) {
+        if (getWaveTimeData().waterLevels.maxStep > 0.0) {
+          actualTimeStep =
+              std::min(actualTimeStep, getWaveTimeData().waterLevels.maxStep);
+        }
+      }
+
+      if (getRunConfig().currents != ww4_utils::InputFieldOption::None &&
+          getRunConfig().currents != ww4_utils::InputFieldOption::Undefined) {
+        if (getWaveTimeData().currents.maxStep > 0.0) {
+          actualTimeStep =
+              std::min(actualTimeStep, getWaveTimeData().currents.maxStep);
+        }
+      }
+
+      if (getRunConfig().winds != ww4_utils::InputFieldOption::None &&
+          getRunConfig().winds != ww4_utils::InputFieldOption::Undefined) {
+        if (getWaveTimeData().winds.maxStep > 0.0) {
+          actualTimeStep =
+              std::min(actualTimeStep, getWaveTimeData().winds.maxStep);
+        }
+      }
+
+      if (getRunConfig().iceConcentrations !=
+              ww4_utils::InputFieldOption::None &&
+          getRunConfig().iceConcentrations !=
+              ww4_utils::InputFieldOption::Undefined) {
+        if (getWaveTimeData().iceConcentrations.maxStep > 0.0) {
+          actualTimeStep = std::min(
+              actualTimeStep, getWaveTimeData().iceConcentrations.maxStep);
+        }
+      }
+
+      // Ensure actualTimeStep is at least a minimum value (e.g., 0.001) if
+      // everything else is zero
+      if (actualTimeStep < 0.001) {
+        actualTimeStep = 0.001;
+      }
       //
       // 4.  Propagate the solution (the actual model) -------------------------
       //

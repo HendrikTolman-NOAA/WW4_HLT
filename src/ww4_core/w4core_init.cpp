@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-21
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -172,6 +172,23 @@ const WaveTimeData &getWaveTimeData() { return waveTimeData; }
 
 void updateWaveModelTime(const ww4_utils::DateTime &time) {
   waveTimeData.modelTime = time;
+}
+
+void updateWaveInputTime(InputType type, const InputTimeData &data) {
+  switch (type) {
+  case InputType::WaterLevels:
+    waveTimeData.waterLevels = data;
+    break;
+  case InputType::Currents:
+    waveTimeData.currents = data;
+    break;
+  case InputType::Winds:
+    waveTimeData.winds = data;
+    break;
+  case InputType::IceConcentrations:
+    waveTimeData.iceConcentrations = data;
+    break;
+  }
 }
 
 void resetInternalState() noexcept {

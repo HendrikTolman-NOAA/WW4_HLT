@@ -12,7 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-17
+ * @date Initial, 2026-04-17
+ * @date Last update, 2026-04-21
  */
 
 #ifndef WW4_CORE_W4CORE_HOM_INPUT_HPP
@@ -33,7 +34,8 @@ namespace ww4_core {
  * @param os Output stream for reporting and echoing.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-17
+ * @date Initial, 2026-04-17
+ * @date Last update, 2026-04-21
  */
 void w4core_hom_input(std::ostream &os);
 
@@ -77,6 +79,31 @@ getHomogeneousIceConcentrations() noexcept;
  */
 const std::vector<ww4_utils::HomogeneousDataPoint> &
 getHomogeneousBottomDepth() noexcept;
+
+/**
+ * @brief Cycle through homogeneous water levels to find interpolation interval.
+ * @param endTime Simulation end time for capping max step.
+ */
+void w4core_hom_water_levels(const ww4_utils::DateTime &endTime);
+
+/**
+ * @brief Cycle through homogeneous currents to find interpolation interval.
+ * @param endTime Simulation end time for capping max step.
+ */
+void w4core_hom_currents(const ww4_utils::DateTime &endTime);
+
+/**
+ * @brief Cycle through homogeneous winds to find interpolation interval.
+ * @param endTime Simulation end time for capping max step.
+ */
+void w4core_hom_winds(const ww4_utils::DateTime &endTime);
+
+/**
+ * @brief Cycle through homogeneous ice concentrations to find interpolation
+ * interval.
+ * @param endTime Simulation end time for capping max step.
+ */
+void w4core_hom_ice(const ww4_utils::DateTime &endTime);
 
 } // namespace ww4_core
 

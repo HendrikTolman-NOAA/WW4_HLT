@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-21
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -32,6 +32,17 @@
  * @brief Core routines for WAVEWATCH IV.
  */
 namespace ww4_core {
+
+/**
+ * @enum InputType
+ * @brief Types of model inputs for time management.
+ */
+enum class InputType {
+  WaterLevels,       ///< Water levels input.
+  Currents,          ///< Currents input.
+  Winds,             ///< Winds input.
+  IceConcentrations, ///< Ice concentrations input.
+};
 
 /**
  * @brief Initialization routine for the WAVEWATCH IV core.
@@ -83,6 +94,13 @@ const WaveTimeData &getWaveTimeData();
  * @param[in] time The new model time.
  */
 void updateWaveModelTime(const ww4_utils::DateTime &time);
+
+/**
+ * @brief Updates the input time data for a specific input type.
+ * @param[in] type The input type to update.
+ * @param[in] data The new input time data.
+ */
+void updateWaveInputTime(InputType type, const InputTimeData &data);
 
 } // namespace ww4_core
 
