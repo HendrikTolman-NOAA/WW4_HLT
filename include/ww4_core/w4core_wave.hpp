@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-21
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -35,7 +35,7 @@ namespace ww4_core {
  * @brief Structure to hold time tags for model inputs.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-20
+ * @date 2026-04-21
  */
 struct InputTimeData {
   std::optional<ww4_utils::DateTime> time1; ///< First time tag.
@@ -48,7 +48,7 @@ struct InputTimeData {
  * @brief Structure to hold model time and time step information.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-21
  */
 struct WaveTimeData {
   double timeStep = -1.0;                       ///< Model time step.
