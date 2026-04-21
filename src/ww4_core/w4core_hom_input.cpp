@@ -11,11 +11,12 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-17
+ * @date 2026-04-21
  */
 
 #include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_core/w4core_init.hpp"
+#include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/ww4_stand_alone_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
 #include <charconv>

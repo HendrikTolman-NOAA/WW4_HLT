@@ -48,6 +48,7 @@ struct InputTimeData {
  * @brief Structure to hold model time and time step information.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-20
  * @date Last update, 2026-04-21
  */
 struct WaveTimeData {
