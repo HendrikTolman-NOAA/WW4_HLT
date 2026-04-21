@@ -129,7 +129,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       double outputTimeStep = ww4_utils::TimeManagement::differenceInSeconds(
           *getWaveTimeData().modelTime, endTime);
 
-
       //
       // 3.3 Set the time step for this cycle of the time step loop
       //
