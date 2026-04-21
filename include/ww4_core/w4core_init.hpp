@@ -34,6 +34,17 @@
 namespace ww4_core {
 
 /**
+ * @enum InputType
+ * @brief Types of model inputs for time management.
+ */
+enum class InputType {
+  WaterLevels,       ///< Water levels input.
+  Currents,          ///< Currents input.
+  Winds,             ///< Winds input.
+  IceConcentrations, ///< Ice concentrations input.
+};
+
+/**
  * @brief Initialization routine for the WAVEWATCH IV core.
  * @details Performs all necessary setup for the wave model core.
  *          Follows the architectural design of the initialization in
@@ -83,6 +94,13 @@ const WaveTimeData &getWaveTimeData();
  * @param[in] time The new model time.
  */
 void updateWaveModelTime(const ww4_utils::DateTime &time);
+
+/**
+ * @brief Updates the input time data for a specific input type.
+ * @param[in] type The input type to update.
+ * @param[in] data The new input time data.
+ */
+void updateWaveInputTime(InputType type, const InputTimeData &data);
 
 } // namespace ww4_core
 

@@ -110,6 +110,84 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
   }
 }
 
+/**
+ * @brief Helper to cycle through homogeneous input data.
+ * @param series The vector of homogeneous data points.
+ * @param type The input type to update.
+ * @param endTime Simulation end time for capping max step.
+ */
+void updateHomogeneousInputCycling(
+    const std::vector<HomogeneousDataPoint> &series, InputType type,
+    const DateTime &endTime) {
+
+  const auto &waveTimeData = getWaveTimeData();
+  if (!waveTimeData.modelTime.has_value()) {
+    return;
+  }
+  const DateTime modelTime = *waveTimeData.modelTime;
+
+  InputTimeData data;
+
+  if (series.empty()) {
+    data.time1 = modelTime;
+    data.time2 = endTime;
+    data.maxStep = TimeManagement::differenceInSeconds(modelTime, endTime);
+    updateWaveInputTime(type, data);
+    return;
+  }
+
+  // Find the interval around the present model time.
+  // The first and second time tags should be around the present model time,
+  // where the first time tag can be equal to the model time.
+
+  // Case 1: If the first time of the homogeneous input is after the present
+  // model time, set the first time to the present model time, and the second
+  // time to the first time for which the homogeneous input is defined.
+  if (TimeManagement::differenceInSeconds(modelTime, series.front().time) >
+      0.001) {
+    data.time1 = modelTime;
+    data.time2 = series.front().time;
+  }
+  // Case 2: If the last time for the input is before the model time,
+  // set the second time to the ending time of the run.
+  // (time1 will be the last data point time).
+  else if (TimeManagement::differenceInSeconds(series.back().time, modelTime) >
+           -0.001) {
+    data.time1 = series.back().time;
+    data.time2 = endTime;
+  }
+  // Case 3: Model time is within the range of the input data.
+  else {
+    for (size_t i = 0; i < series.size() - 1; ++i) {
+      if (TimeManagement::differenceInSeconds(series[i].time, modelTime) >=
+              -0.001 &&
+          TimeManagement::differenceInSeconds(modelTime, series[i + 1].time) >
+              0.001) {
+        data.time1 = series[i].time;
+        data.time2 = series[i + 1].time;
+        break;
+      }
+    }
+  }
+
+  // Ensure time2 is not before modelTime
+  if (data.time2.has_value() &&
+      TimeManagement::differenceInSeconds(modelTime, *data.time2) < 0.0) {
+    data.time2 = endTime;
+  }
+
+  // Calculate maxStep: the time interval from the present model time to the
+  // second time tag.
+  if (data.time2.has_value()) {
+    data.maxStep = TimeManagement::differenceInSeconds(modelTime, *data.time2);
+  } else {
+    data.maxStep = TimeManagement::differenceInSeconds(modelTime, endTime);
+    data.time2 = endTime;
+  }
+
+  updateWaveInputTime(type, data);
+}
+
 } // namespace
 
 void w4core_hom_input(std::ostream &os) {
@@ -156,6 +234,23 @@ getHomogeneousIceConcentrations() noexcept {
 
 const std::vector<HomogeneousDataPoint> &getHomogeneousBottomDepth() noexcept {
   return bottomDepth;
+}
+
+void w4core_hom_water_levels(const DateTime &endTime) {
+  updateHomogeneousInputCycling(waterLevels, InputType::WaterLevels, endTime);
+}
+
+void w4core_hom_currents(const DateTime &endTime) {
+  updateHomogeneousInputCycling(currents, InputType::Currents, endTime);
+}
+
+void w4core_hom_winds(const DateTime &endTime) {
+  updateHomogeneousInputCycling(winds, InputType::Winds, endTime);
+}
+
+void w4core_hom_ice(const DateTime &endTime) {
+  updateHomogeneousInputCycling(iceConcentrations, InputType::IceConcentrations,
+                                endTime);
 }
 
 } // namespace ww4_core

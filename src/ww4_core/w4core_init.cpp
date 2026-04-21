@@ -174,6 +174,23 @@ void updateWaveModelTime(const ww4_utils::DateTime &time) {
   waveTimeData.modelTime = time;
 }
 
+void updateWaveInputTime(InputType type, const InputTimeData &data) {
+  switch (type) {
+  case InputType::WaterLevels:
+    waveTimeData.waterLevels = data;
+    break;
+  case InputType::Currents:
+    waveTimeData.currents = data;
+    break;
+  case InputType::Winds:
+    waveTimeData.winds = data;
+    break;
+  case InputType::IceConcentrations:
+    waveTimeData.iceConcentrations = data;
+    break;
+  }
+}
+
 void resetInternalState() noexcept {
   globalRunConfig = ww4_utils::RunConfig();
   capturedProgramName.clear();
