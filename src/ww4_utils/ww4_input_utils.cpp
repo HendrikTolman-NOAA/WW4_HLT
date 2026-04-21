@@ -160,8 +160,8 @@ double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
     }
   }
 
-  if (inputTimeStep < 0.001) {
-    inputTimeStep = 0.001;
+  if (inputTimeStep < 0.0) {
+    inputTimeStep = 0.0;
   }
 
   return inputTimeStep;

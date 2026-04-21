@@ -407,7 +407,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   }
 
   // Time step validation
-  if (config.timeStep <= 0.0) {
+  if (config.timeStep < 0.0) {
     os << "WW4 ERROR: Mandatory time step missing or invalid "
           "in configuration."
        << std::endl;

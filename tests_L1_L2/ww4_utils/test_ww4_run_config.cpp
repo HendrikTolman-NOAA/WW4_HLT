@@ -436,7 +436,7 @@ TEST(RunConfigTest, TimeStepFailure) {
   file << "winds: none\n";
   file << "ice_concentrations: none\n";
   // time_step is missing or invalid
-  file << "time_step: 0.0\n";
+  file << "time_step: -1.0\n";
   file.close();
 
   // Should abort program
