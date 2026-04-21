@@ -113,6 +113,24 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         if (getRunConfig().waterLevels ==
             ww4_utils::InputFieldOption::Homogeneous) {
           w4core_hom_water_levels(endTime);
+          const auto &wl = getWaveTimeData().waterLevels;
+          if (wl.time1.has_value() && wl.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*wl.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*wl.time2)
+                  << std::endl;
+            }
+          }
         }
       }
 
@@ -127,6 +145,24 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         if (getRunConfig().currents ==
             ww4_utils::InputFieldOption::Homogeneous) {
           w4core_hom_currents(endTime);
+          const auto &cu = getWaveTimeData().currents;
+          if (cu.time1.has_value() && cu.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*cu.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*cu.time2)
+                  << std::endl;
+            }
+          }
         }
       }
 
@@ -140,6 +176,24 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         }
         if (getRunConfig().winds == ww4_utils::InputFieldOption::Homogeneous) {
           w4core_hom_winds(endTime);
+          const auto &wi = getWaveTimeData().winds;
+          if (wi.time1.has_value() && wi.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*wi.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*wi.time2)
+                  << std::endl;
+            }
+          }
         }
       }
 
@@ -156,6 +210,24 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         if (getRunConfig().iceConcentrations ==
             ww4_utils::InputFieldOption::Homogeneous) {
           w4core_hom_ice(endTime);
+          const auto &ic = getWaveTimeData().iceConcentrations;
+          if (ic.time1.has_value() && ic.time2.has_value()) {
+            if (getRunConfig().produceStdOut) {
+              os << "      Interpolation from "
+                 << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
+                 << " to "
+                 << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
+                 << std::endl;
+            }
+            if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+              getLogFileStream()
+                  << "      Interpolation from "
+                  << ww4_utils::TimeManagement::toFormattedString(*ic.time1)
+                  << " to "
+                  << ww4_utils::TimeManagement::toFormattedString(*ic.time2)
+                  << std::endl;
+            }
+          }
         }
       }
       //

@@ -182,6 +182,12 @@ bottom_depth: "none"
   // time.
   EXPECT_EQ(ww4_core::getWaveTimeData().modelTime->ymd, 20260101);
   EXPECT_NEAR(ww4_core::getWaveTimeData().modelTime->hms, 10000.0, 1e-6);
+
+  std::string output = ss.str();
+  EXPECT_NE(output.find("Updating winds"), std::string::npos);
+  EXPECT_NE(output.find("Interpolation from 2026/01/01 00:00:00 UTC to "
+                        "2026/01/01 00:30:00 UTC"),
+            std::string::npos);
 }
 
 } // namespace
