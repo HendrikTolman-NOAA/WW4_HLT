@@ -79,7 +79,6 @@ add_library(
     src/ww4_utils/ww4_stand_alone_config.cpp
     src/ww4_utils/ww4_run_config.cpp
     src/ww4_utils/ww4_input_utils.cpp
-    src/ww4_utils/ww4_input_update.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
