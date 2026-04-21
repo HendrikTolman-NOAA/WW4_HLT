@@ -107,7 +107,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       // 3.1 Update the inputs and next time/timestep when next input is needed
       //
       ww4_utils::waveTimeData waveTime = getWaveTimeData();
-      double actualTimeStep = ww4_utils::updateAllInputs(
+      double inputTimeStep = ww4_utils::updateAllInputs(
           *waveTime.modelTime, endTime, waveTime, inputState, getRunConfig(),
           os, getLogFileStream());
 
@@ -127,8 +127,10 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 3.3 Set the time step for this cycle of the time step loop
       //
-      // actualTimeStep is already calculated by updateAllInputs
-      //
+      double actualTimeStep = std::min(inputTimeStep, getRunConfig().timeStep);
+      if (actualTimeStep < 0.001) {
+        actualTimeStep = 0.001;
+      }
 
       //
       // 4.  Propagate the solution (the actual model) -------------------------
@@ -136,6 +138,12 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       // Sleep for 0.1 seconds until we have something to do here
       //
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      //
+      // 4.1 Update the model time --------------------------------------------
+      //
+      ww4_utils::DateTime nextTime = *getWaveTimeData().modelTime;
+      ww4_utils::TimeManagement::incrementDateTime(nextTime, actualTimeStep);
+      updateWaveModelTime(nextTime);
       //
       // 5.  Placeholder for in-line data assimilation -------------------------
       //
@@ -189,9 +197,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       //     End of the basic time stepping loop starting at 2 ---------------
       //
-      ww4_utils::DateTime nextTime = *getWaveTimeData().modelTime;
-      ww4_utils::TimeManagement::incrementDateTime(nextTime, actualTimeStep);
-      updateWaveModelTime(nextTime);
     }
     //
   } catch (const std::exception &e) {
