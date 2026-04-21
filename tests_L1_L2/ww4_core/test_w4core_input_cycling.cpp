@@ -15,7 +15,7 @@
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_input_update.hpp"
+#include "ww4_utils/ww4_input_utils.hpp"
 #include <fstream>
 #include <gtest/gtest.h>
 

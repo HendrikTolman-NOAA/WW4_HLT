@@ -109,9 +109,9 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       // 3.1 Update the inputs and next time/timestep when next input is needed
       //
       ww4_utils::waveTimeData waveTime = getWaveTimeData();
-      double inputTimeStep = ww4_utils::updateAllInputs(
-          *waveTime.modelTime, endTime, waveTime, inputState, getRunConfig(),
-          os, getLogFileStream());
+      ww4_utils::updateAllInputs(*waveTime.modelTime, endTime, waveTime,
+                                 inputState, getRunConfig(), os,
+                                 getLogFileStream());
 
       // Update the internal state with possibly updated input time tags
       updateWaveInputTime(ww4_utils::InputType::WaterLevels,
@@ -122,6 +122,14 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                           waveTime.iceConcentrations);
       updateWaveInputTime(ww4_utils::InputType::BottomDepth,
                           waveTime.bottomDepth);
+
+      double inputTimeStep =
+          ww4_utils::computeInputTimeStep(*getWaveTimeData().modelTime, endTime,
+                                          getWaveTimeData(), getRunConfig());
+
+      if (getRunConfig().produceStdOut) {
+        os << "    Input time step: " << inputTimeStep << std::endl;
+      }
 
       //
       // 3.2 Find the next time/timestep for which output is requested
@@ -136,7 +144,8 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           std::min({inputTimeStep, outputTimeStep, getRunConfig().timeStep});
 
       if (actualTimeStep < 0.0) {
-        actualTimeStep = 0.0;
+        ww4_utils::ww4_std_out::extcde(1, os, "Negative time step detected.",
+                                       __FILE__, __LINE__);
       } else if (actualTimeStep > 0.0 && actualTimeStep < 0.001) {
         actualTimeStep = 0.001;
       }
