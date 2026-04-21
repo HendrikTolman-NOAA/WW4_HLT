@@ -140,6 +140,9 @@ target_link_libraries(test_w4core_hom_input PRIVATE ww4_core ww4_utils GTest::gt
 add_executable(test_w4core_input_cycling tests_L1_L2/ww4_core/test_w4core_input_cycling.cpp)
 target_link_libraries(test_w4core_input_cycling PRIVATE ww4_core ww4_utils GTest::gtest_main)
 
+add_executable(test_interpolation_output tests_L1_L2/ww4_core/test_interpolation_output.cpp)
+target_link_libraries(test_interpolation_output PRIVATE ww4_core ww4_utils GTest::gtest_main)
+
 set(WW4_TEST_TARGETS
     test_time_management
     test_memory_utils
@@ -151,6 +154,7 @@ set(WW4_TEST_TARGETS
     test_w4core_wave_output
     test_w4core_hom_input
     test_w4core_input_cycling
+    test_interpolation_output
 )
 
 foreach(test_target IN LISTS WW4_TEST_TARGETS)
@@ -169,3 +173,4 @@ gtest_discover_tests(test_w4core_time)
 gtest_discover_tests(test_w4core_wave_output)
 gtest_discover_tests(test_w4core_hom_input)
 gtest_discover_tests(test_w4core_input_cycling)
+gtest_discover_tests(test_interpolation_output)
