@@ -83,8 +83,65 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                *getWaveTimeData().modelTime, endTime) > 0.001) {
       //
       // 3.  Determine time step -----------------------------------------------
+      // 3.0 Step from message
+      //
+      if (getRunConfig().produceStdOut) {
+        os << "  Step from "
+           << ww4_utils::TimeManagement::toFormattedString(
+                  *getWaveTimeData().modelTime)
+           << std::endl;
+      }
+      if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+        getLogFileStream() << "  Step from "
+                           << ww4_utils::TimeManagement::toFormattedString(
+                                  *getWaveTimeData().modelTime)
+                           << std::endl;
+      }
+      //
       // 3.1 Update the inputs and next time/timestep when next input is needed
       //
+      if (getRunConfig().waterLevels != ww4_utils::InputFieldOption::None &&
+          getRunConfig().waterLevels !=
+              ww4_utils::InputFieldOption::Undefined) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Updating water levels" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Updating water levels" << std::endl;
+        }
+      }
+
+      if (getRunConfig().currents != ww4_utils::InputFieldOption::None &&
+          getRunConfig().currents != ww4_utils::InputFieldOption::Undefined) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Updating currents" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Updating currents" << std::endl;
+        }
+      }
+
+      if (getRunConfig().winds != ww4_utils::InputFieldOption::None &&
+          getRunConfig().winds != ww4_utils::InputFieldOption::Undefined) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Updating winds" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Updating winds" << std::endl;
+        }
+      }
+
+      if (getRunConfig().iceConcentrations !=
+              ww4_utils::InputFieldOption::None &&
+          getRunConfig().iceConcentrations !=
+              ww4_utils::InputFieldOption::Undefined) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Updating ice concentrations" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Updating ice concentrations" << std::endl;
+        }
+      }
       //
       // 3.2 Find the next time/timestep for which output is requested
       //
@@ -104,6 +161,50 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 6.  Perform output ----------------------------------------------------
       //
+      if (getRunConfig().outputFields.requested) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Performing fields output" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Performing fields output" << std::endl;
+        }
+      }
+
+      if (getRunConfig().outputPoints.requested) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Performing points output" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Performing points output" << std::endl;
+        }
+      }
+
+      if (getRunConfig().outputNesting.requested) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Performing nesting output" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Performing nesting output" << std::endl;
+        }
+      }
+
+      if (getRunConfig().outputTracks.requested) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Performing tracks output" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Performing tracks output" << std::endl;
+        }
+      }
+
+      if (getRunConfig().outputRestart.requested) {
+        if (getRunConfig().produceStdOut) {
+          os << "    Performing restart output" << std::endl;
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    Performing restart output" << std::endl;
+        }
+      }
       //
       //     End of the basic time stepping loop starting at 2 ---------------
       //
