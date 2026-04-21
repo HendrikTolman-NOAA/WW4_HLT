@@ -120,50 +120,50 @@ double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                waveTime.bottomDepth, state.lastBdTime1, state.lastBdTime2,
                config.produceStdOut, os, config.produceLogFile, logStream);
 
-  // Calculate minimum maxStep
-  double actualTimeStep = waveTime.timeStep;
+  // Calculate minimum maxStep for inputs only
+  double inputTimeStep = TimeManagement::differenceInSeconds(modelTime, endTime);
 
   if (config.waterLevels != InputFieldOption::None &&
       config.waterLevels != InputFieldOption::Undefined) {
     if (waveTime.waterLevels.maxStep > 0.0) {
-      actualTimeStep = std::min(actualTimeStep, waveTime.waterLevels.maxStep);
+      inputTimeStep = std::min(inputTimeStep, waveTime.waterLevels.maxStep);
     }
   }
 
   if (config.currents != InputFieldOption::None &&
       config.currents != InputFieldOption::Undefined) {
     if (waveTime.currents.maxStep > 0.0) {
-      actualTimeStep = std::min(actualTimeStep, waveTime.currents.maxStep);
+      inputTimeStep = std::min(inputTimeStep, waveTime.currents.maxStep);
     }
   }
 
   if (config.winds != InputFieldOption::None &&
       config.winds != InputFieldOption::Undefined) {
     if (waveTime.winds.maxStep > 0.0) {
-      actualTimeStep = std::min(actualTimeStep, waveTime.winds.maxStep);
+      inputTimeStep = std::min(inputTimeStep, waveTime.winds.maxStep);
     }
   }
 
   if (config.iceConcentrations != InputFieldOption::None &&
       config.iceConcentrations != InputFieldOption::Undefined) {
     if (waveTime.iceConcentrations.maxStep > 0.0) {
-      actualTimeStep =
-          std::min(actualTimeStep, waveTime.iceConcentrations.maxStep);
+      inputTimeStep =
+          std::min(inputTimeStep, waveTime.iceConcentrations.maxStep);
     }
   }
 
   if (config.bottomDepth != InputFieldOption::None &&
       config.bottomDepth != InputFieldOption::Undefined) {
     if (waveTime.bottomDepth.maxStep > 0.0) {
-      actualTimeStep = std::min(actualTimeStep, waveTime.bottomDepth.maxStep);
+      inputTimeStep = std::min(inputTimeStep, waveTime.bottomDepth.maxStep);
     }
   }
 
-  if (actualTimeStep < 0.001) {
-    actualTimeStep = 0.001;
+  if (inputTimeStep < 0.001) {
+    inputTimeStep = 0.001;
   }
 
-  return actualTimeStep;
+  return inputTimeStep;
 }
 
 } // namespace ww4_utils
