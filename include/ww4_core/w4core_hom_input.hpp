@@ -12,7 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
+ * @date Initial, 2026-04-03
+ * @date Last update, 2026-04-21
  */
 
 #ifndef WW4_CORE_W4CORE_HOM_INPUT_HPP
@@ -33,7 +34,8 @@ namespace ww4_core {
  * @param os Output stream for reporting and echoing.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
+ * @date Initial, 2026-04-03
+ * @date Last update, 2026-04-21
  */
 void w4core_hom_input(std::ostream &os);
 
