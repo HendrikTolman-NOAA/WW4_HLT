@@ -78,6 +78,8 @@ add_library(
     src/ww4_utils/ww4_logfile.cpp
     src/ww4_utils/ww4_stand_alone_config.cpp
     src/ww4_utils/ww4_run_config.cpp
+    src/ww4_utils/ww4_input_utils.cpp
+    src/ww4_utils/ww4_input_update.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
@@ -86,7 +88,6 @@ target_link_options(ww4_utils PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 add_library(
     ww4_core
     src/ww4_core/w4core_init.cpp
-    src/ww4_core/w4core_hom_input.cpp
     src/ww4_core/w4core_wave.cpp
     src/ww4_core/w4core_finl.cpp
 )

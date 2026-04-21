@@ -23,6 +23,7 @@
 
 #include "ww4_core/w4core_wave.hpp"
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_input_utils.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
 #include <fstream>
 #include <iostream>
@@ -32,17 +33,6 @@
  * @brief Core routines for WAVEWATCH IV.
  */
 namespace ww4_core {
-
-/**
- * @enum InputType
- * @brief Types of model inputs for time management.
- */
-enum class InputType {
-  WaterLevels,       ///< Water levels input.
-  Currents,          ///< Currents input.
-  Winds,             ///< Winds input.
-  IceConcentrations, ///< Ice concentrations input.
-};
 
 /**
  * @brief Initialization routine for the WAVEWATCH IV core.
@@ -85,9 +75,9 @@ std::ofstream &getLogFileStream();
 
 /**
  * @brief Provides access to the wave time data.
- * @return A reference to the WaveTimeData structure.
+ * @return A reference to the waveTimeData structure.
  */
-const WaveTimeData &getWaveTimeData();
+const ww4_utils::waveTimeData &getWaveTimeData();
 
 /**
  * @brief Updates the model time in the wave time data.
@@ -100,7 +90,8 @@ void updateWaveModelTime(const ww4_utils::DateTime &time);
  * @param[in] type The input type to update.
  * @param[in] data The new input time data.
  */
-void updateWaveInputTime(InputType type, const InputTimeData &data);
+void updateWaveInputTime(ww4_utils::InputType type,
+                         const ww4_utils::intTimeData &data);
 
 } // namespace ww4_core
 

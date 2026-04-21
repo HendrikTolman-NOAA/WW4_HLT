@@ -57,5 +57,15 @@ void writeFinalOutput(std::ostream &os, std::string_view programName,
      << std::endl;
 }
 
+void writeUpdatingField(std::ostream &os, std::string_view fieldName) {
+  os << "    Updating " << fieldName << std::endl;
+}
+
+void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
+                            const DateTime &time2) {
+  os << "      Interpolation from " << TimeManagement::toFormattedString(time1)
+     << " to " << TimeManagement::toFormattedString(time2) << std::endl;
+}
+
 } // namespace ww4_logfile
 } // namespace ww4_utils

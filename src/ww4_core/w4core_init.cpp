@@ -19,8 +19,8 @@
  */
 
 #include "ww4_core/w4core_init.hpp"
-#include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_input_update.hpp"
 #include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
 #include "ww4_utils/ww4_std_out.hpp"
@@ -34,7 +34,7 @@ namespace {
 ww4_utils::RunConfig globalRunConfig;
 std::ofstream logFile;
 std::string capturedProgramName;
-WaveTimeData waveTimeData;
+ww4_utils::waveTimeData waveTimeData;
 } // namespace
 
 void w4core_init(const ww4_utils::DateTime &startTime,
@@ -72,7 +72,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     //
     // 1.4 Process homogeneous input data silently
     //
-    w4core_hom_input(os);
+    ww4_utils::ww4_input_update(globalRunConfig, os);
 
     //
     // 1.5 Initial standard output if requested
@@ -168,25 +168,29 @@ std::ofstream &getLogFileStream() { return logFile; }
 
 const std::string &getProgramName() { return capturedProgramName; }
 
-const WaveTimeData &getWaveTimeData() { return waveTimeData; }
+const ww4_utils::waveTimeData &getWaveTimeData() { return waveTimeData; }
 
 void updateWaveModelTime(const ww4_utils::DateTime &time) {
   waveTimeData.modelTime = time;
 }
 
-void updateWaveInputTime(InputType type, const InputTimeData &data) {
+void updateWaveInputTime(ww4_utils::InputType type,
+                         const ww4_utils::intTimeData &data) {
   switch (type) {
-  case InputType::WaterLevels:
+  case ww4_utils::InputType::WaterLevels:
     waveTimeData.waterLevels = data;
     break;
-  case InputType::Currents:
+  case ww4_utils::InputType::Currents:
     waveTimeData.currents = data;
     break;
-  case InputType::Winds:
+  case ww4_utils::InputType::Winds:
     waveTimeData.winds = data;
     break;
-  case InputType::IceConcentrations:
+  case ww4_utils::InputType::IceConcentrations:
     waveTimeData.iceConcentrations = data;
+    break;
+  case ww4_utils::InputType::BottomDepth:
+    waveTimeData.bottomDepth = data;
     break;
   }
 }
@@ -197,8 +201,8 @@ void resetInternalState() noexcept {
   if (logFile.is_open()) {
     logFile.close();
   }
-  waveTimeData = WaveTimeData();
-  resetInputData();
+  waveTimeData = ww4_utils::waveTimeData();
+  ww4_utils::resetInputData();
 }
 
 } // namespace ww4_core

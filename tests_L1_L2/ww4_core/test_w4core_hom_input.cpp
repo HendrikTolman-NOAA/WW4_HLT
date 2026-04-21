@@ -4,7 +4,7 @@
  *       +--------------------------------------------------------+
  *
  * @file test_w4core_hom_input.cpp
- * @brief Unit tests for w4core_hom_input.
+ * @brief Unit tests for homogeneous input data processing.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -12,9 +12,9 @@
  * @date 2026-04-17
  */
 
-#include "ww4_core/w4core_hom_input.hpp"
 #include "ww4_core/w4core_init.hpp"
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_input_update.hpp"
 #include <fstream>
 #include <gtest/gtest.h>
 #include <iostream>
@@ -59,7 +59,7 @@ echo_hom_input: "full"
   std::stringstream ss;
   ww4_core::w4core_init(startTime, "test_input", ss);
 
-  const auto &wl = ww4_core::getHomogeneousWaterLevels();
+  const auto &wl = ww4_utils::getHomogeneousWaterLevels();
   ASSERT_EQ(wl.size(), 2);
   EXPECT_EQ(wl[0].time.ymd, 20260101);
   EXPECT_NEAR(wl[0].time.hms, 0.0, 1e-6);
@@ -123,11 +123,11 @@ echo_hom_input: "full"
   std::stringstream ss;
   ww4_core::w4core_init(startTime, "test_input", ss);
 
-  const auto &wl = ww4_core::getHomogeneousWaterLevels();
+  const auto &wl = ww4_utils::getHomogeneousWaterLevels();
   ASSERT_EQ(wl.size(), 1);
   EXPECT_NEAR(wl[0].values[0], 0.5, 1e-6);
 
-  const auto &wi = ww4_core::getHomogeneousWinds();
+  const auto &wi = ww4_utils::getHomogeneousWinds();
   ASSERT_EQ(wi.size(), 1);
   ASSERT_EQ(wi[0].values.size(), 2);
   EXPECT_NEAR(wi[0].values[0], 10.0, 1e-6);
@@ -209,6 +209,33 @@ bottom_depth: "from_grid"
   EXPECT_EXIT(ww4_core::w4core_init(startTime, "test_input", std::cerr),
               ::testing::ExitedWithCode(1),
               "Homogeneous winds requires 2 or 3 values");
+}
+
+TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
+  writeYaml(R"(
+calendar_type: "Standard"
+time_step: 3600.0
+water_levels: "none"
+currents: "none"
+winds: "none"
+ice_concentrations: "none"
+bottom_depth: "homogeneous"
+- 20260101 000000 -10.0
+echo_hom_input: "full"
+)");
+
+  ww4_utils::DateTime startTime{20260101, 0.0};
+  std::stringstream ss;
+  ww4_core::w4core_init(startTime, "test_input", ss);
+
+  const auto &bd = ww4_utils::getHomogeneousBottomDepth();
+  ASSERT_EQ(bd.size(), 1);
+  EXPECT_NEAR(bd[0].values[0], -10.0, 1e-6);
+
+  std::string output = ss.str();
+  EXPECT_NE(output.find("Bottom depth         : homogeneous"),
+            std::string::npos);
+  EXPECT_NE(output.find("2026/01/01 00:00:00 UTC : -10"), std::string::npos);
 }
 
 } // namespace
