@@ -102,7 +102,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
            << std::endl;
       }
       if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-        getLogFileStream() << "  Computation step starting  "
+        getLogFileStream() << "  Computation step starting "
                            << ww4_utils::TimeManagement::toFormattedString(
                                   *getWaveTimeData().modelTime)
                            << std::endl;
