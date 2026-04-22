@@ -68,6 +68,12 @@ const std::string &getProgramName();
 const ww4_utils::RunConfig &getRunConfig();
 
 /**
+ * @brief Provides access to the loaded run-time configuration for modification.
+ * @return A mutable reference to the RunConfig structure.
+ */
+ww4_utils::RunConfig &getMutableRunConfig();
+
+/**
  * @brief Provides access to the log file stream.
  * @return A reference to the std::ofstream for the log file.
  */

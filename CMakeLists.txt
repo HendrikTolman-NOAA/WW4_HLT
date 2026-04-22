@@ -13,7 +13,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI)
 #@date Initial : 2026-03-20
-#@date Last update : 2026-04-16
+#@date Last update : 2026-04-21
 
 cmake_minimum_required(VERSION 3.20)
 
@@ -79,6 +79,7 @@ add_library(
     src/ww4_utils/ww4_stand_alone_config.cpp
     src/ww4_utils/ww4_run_config.cpp
     src/ww4_utils/ww4_input_utils.cpp
+    src/ww4_utils/ww4_output_utils.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
@@ -146,6 +147,9 @@ target_link_libraries(test_w4core_input_cycling PRIVATE ww4_core ww4_utils GTest
 add_executable(test_interpolation_output tests_L1_L2/ww4_core/test_interpolation_output.cpp)
 target_link_libraries(test_interpolation_output PRIVATE ww4_core ww4_utils GTest::gtest_main)
 
+add_executable(test_ww4_output_utils tests_L1_L2/ww4_utils/test_ww4_output_utils.cpp)
+target_link_libraries(test_ww4_output_utils PRIVATE ww4_utils GTest::gtest_main)
+
 set(WW4_TEST_TARGETS
     test_time_management
     test_memory_utils
@@ -159,6 +163,7 @@ set(WW4_TEST_TARGETS
     test_w4core_hom_input
     test_w4core_input_cycling
     test_interpolation_output
+    test_ww4_output_utils
 )
 
 foreach(test_target IN LISTS WW4_TEST_TARGETS)
@@ -179,3 +184,4 @@ gtest_discover_tests(test_w4core_zero_step)
 gtest_discover_tests(test_w4core_hom_input)
 gtest_discover_tests(test_w4core_input_cycling)
 gtest_discover_tests(test_interpolation_output)
+gtest_discover_tests(test_ww4_output_utils)

@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-21
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -368,7 +368,9 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
         config.timeStep = -1.0;
       }
     } else if (key == "output_api") {
-      config.outputApi = (value == "yes");
+      config.outputApi.requested = (value == "yes");
+    } else if (key.starts_with("output_api_")) {
+      updateOutputConfig(config.outputApi, key.substr(11), value);
     } else if (key.starts_with("output_fields_")) {
       updateOutputConfig(config.outputFields, key.substr(14), value);
     } else if (key.starts_with("output_points_")) {
@@ -419,7 +421,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   bool outputValid = true;
   auto validateOutput = [&](const OutputConfig &oc,
                             const std::string_view name) {
-    if (oc.requested && oc.interval <= 0.0) {
+    if (oc.requested && name != "output_api" && oc.interval <= 0.0) {
       os << "WW4 ERROR: Mandatory interval missing or invalid for "
             "requested output: "
          << name << std::endl;
@@ -429,6 +431,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   };
 
   outputValid &= validateOutput(config.outputFields, "output_fields");
+  outputValid &= validateOutput(config.outputApi, "output_api");
   outputValid &= validateOutput(config.outputPoints, "output_points");
   outputValid &= validateOutput(config.outputNesting, "output_nesting");
   outputValid &= validateOutput(config.outputTracks, "output_tracks");
@@ -537,12 +540,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   reportOutput(config.outputNesting, "Nesting data", os);
   reportOutput(config.outputTracks, "Track", os);
   reportOutput(config.outputRestart, "Restart file", os);
+  reportOutput(config.outputApi, "API", os);
 
-  if (config.outputApi) {
-    os << "\n     API output requested" << std::endl;
-  } else {
-    os << "\n     No API output" << std::endl;
-  }
   os << std::endl;
 }
 

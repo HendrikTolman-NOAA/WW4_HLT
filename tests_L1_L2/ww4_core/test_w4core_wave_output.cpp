@@ -65,9 +65,8 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
     ww4_core::w4core_wave(startTime, endTime, ss);
 
     std::string output = ss.str();
-    EXPECT_EQ(output.find("No API output generated"), std::string::npos);
-    EXPECT_EQ(output.find("Generating API output"), std::string::npos);
-    EXPECT_NE(output.find("No API output"), std::string::npos);
+    EXPECT_EQ(output.find("Performing API output"), std::string::npos);
+    EXPECT_NE(output.find("API output not requested"), std::string::npos);
   }
 
   ww4_core::resetInternalState();
@@ -90,8 +89,8 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
     ww4_core::w4core_wave(startTime, endTime, ss);
 
     std::string output = ss.str();
-    EXPECT_EQ(output.find("Generating API output"), std::string::npos);
-    EXPECT_NE(output.find("API output requested"), std::string::npos);
+    EXPECT_NE(output.find("Performing API output"), std::string::npos);
+    EXPECT_NE(output.find("API output"), std::string::npos);
   }
 }
 

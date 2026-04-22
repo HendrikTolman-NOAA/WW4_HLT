@@ -1,0 +1,119 @@
+/**
+ *       +--------------------------------------------------------+
+ *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
+ *       +--------------------------------------------------------+
+ *
+ * @file ww4_output_utils.cpp
+ * @brief Implementation of model output orchestration routines.
+ * @details This file implements routines for managing model output time data.
+ * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
+ * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
+ * Weather Service.
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-21
+ */
+
+#include "ww4_utils/ww4_output_utils.hpp"
+#include "ww4_utils/ww4_run_config.hpp"
+#include <algorithm>
+
+namespace ww4_utils {
+
+void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
+                        RunConfig &config) {
+  auto assess = [&](OutputConfig &oc, bool isApi) {
+    if (!oc.requested)
+      return;
+
+    if (!oc.startTime) {
+      oc.startTime = modelTime;
+    }
+
+    if (isApi) {
+      oc.actualTime = endTime;
+    } else {
+      if (oc.atFirstTime) {
+        oc.actualTime = oc.startTime;
+      } else {
+        oc.actualTime = oc.startTime;
+        TimeManagement::incrementDateTime(*oc.actualTime, oc.interval);
+      }
+    }
+
+    // Deactivate if past endTime
+    if (oc.actualTime.has_value()) {
+      if (TimeManagement::differenceInSeconds(*oc.actualTime, endTime) <
+          -0.001) {
+        oc.requested = false;
+      } else if (oc.endTime.has_value() &&
+                 TimeManagement::differenceInSeconds(*oc.actualTime,
+                                                     *oc.endTime) < -0.001) {
+        oc.requested = false;
+      }
+    }
+  };
+
+  assess(config.outputFields, false);
+  assess(config.outputPoints, false);
+  assess(config.outputNesting, false);
+  assess(config.outputTracks, false);
+  assess(config.outputRestart, false);
+  assess(config.outputApi, true);
+}
+
+double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
+                             const RunConfig &config) {
+  double minStep = TimeManagement::differenceInSeconds(modelTime, endTime);
+
+  auto check = [&](const OutputConfig &oc) {
+    if (oc.requested && oc.actualTime.has_value()) {
+      double step =
+          TimeManagement::differenceInSeconds(modelTime, *oc.actualTime);
+      if (step >= 0.0) {
+        minStep = std::min(minStep, step);
+      }
+    }
+  };
+
+  check(config.outputFields);
+  check(config.outputPoints);
+  check(config.outputNesting);
+  check(config.outputTracks);
+  check(config.outputRestart);
+  check(config.outputApi);
+
+  return std::max(0.0, minStep);
+}
+
+void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
+                             RunConfig &config) {
+  auto update = [&](OutputConfig &oc) {
+    if (!oc.requested || !oc.actualTime.has_value())
+      return;
+
+    if (*oc.actualTime == modelTime) {
+      TimeManagement::incrementDateTime(*oc.actualTime, oc.interval);
+    }
+
+    // Deactivate if past endTime
+    if (TimeManagement::differenceInSeconds(*oc.actualTime, endTime) < -0.001) {
+      oc.requested = false;
+    } else if (oc.endTime.has_value() &&
+               TimeManagement::differenceInSeconds(*oc.actualTime,
+                                                   *oc.endTime) < -0.001) {
+      oc.requested = false;
+    }
+  };
+
+  update(config.outputFields);
+  update(config.outputPoints);
+  update(config.outputNesting);
+  update(config.outputTracks);
+  update(config.outputRestart);
+  // API output is typically one-shot at the end, interval is -1.0 so update
+  // will just pass.
+  update(config.outputApi);
+}
+
+} // namespace ww4_utils
