@@ -93,16 +93,16 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                *getWaveTimeData().modelTime, endTime) > 0.001) {
       //
       // 3.  Determine time step -----------------------------------------------
-      // 3.0 Step from message
+      // 3.0 Computation step message
       //
       if (getRunConfig().produceStdOut) {
-        os << "  Step from "
+        os << "  Computation step starting "
            << ww4_utils::TimeManagement::toFormattedString(
                   *getWaveTimeData().modelTime)
            << std::endl;
       }
       if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-        getLogFileStream() << "  Step from "
+        getLogFileStream() << "  Computation step starting  "
                            << ww4_utils::TimeManagement::toFormattedString(
                                   *getWaveTimeData().modelTime)
                            << std::endl;
