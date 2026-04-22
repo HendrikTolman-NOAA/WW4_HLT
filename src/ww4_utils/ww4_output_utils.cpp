@@ -88,8 +88,10 @@ void updateOutputTime(OutputConfig &oc, const DateTime &modelTime) {
   }
 }
 
-double computeMinOutputStep(const RunConfig &config, const OutputConfig &apiConfig,
-                            const DateTime &modelTime, const DateTime &endTime) {
+double computeMinOutputStep(const RunConfig &config,
+                            const OutputConfig &apiConfig,
+                            const DateTime &modelTime,
+                            const DateTime &endTime) {
   double outputTimeStep = computeNextOutputStep(config.outputFields, modelTime);
 
   outputTimeStep = std::min(

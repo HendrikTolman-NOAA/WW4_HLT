@@ -91,7 +91,8 @@ void updateOutputTime(OutputConfig &oc, const DateTime &modelTime);
  * @return The minimum time in seconds until the next output is due.
  * @date 2026-04-21
  */
-double computeMinOutputStep(const RunConfig &config, const OutputConfig &apiConfig,
+double computeMinOutputStep(const RunConfig &config,
+                            const OutputConfig &apiConfig,
                             const DateTime &modelTime, const DateTime &endTime);
 
 } // namespace ww4_utils
