@@ -38,10 +38,10 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     // 1.1 Output to standard output (if requested)
     //
     if (getRunConfig().produceStdOut) {
-      os << "\n  Time stepping (w4core_wave) from: "
+      os << "  Time stepping (w4core_wave) from: "
          << ww4_utils::TimeManagement::toFormattedString(startTime)
          << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-         << std::endl;
+         << "\n" << std::endl;
     }
     //
     // 1.2 Output to  log file (if requested)  likely to be temporarily as the
@@ -49,10 +49,10 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
       getLogFileStream()
-          << "\n  Time stepping (w4core_wave) from: "
+          << "  Time stepping (w4core_wave) from: "
           << ww4_utils::TimeManagement::toFormattedString(startTime)
           << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-          << std::endl;
+          << "\n" << std::endl;
     }
     //
     // 1.3 Check consistency of starting and ending times
