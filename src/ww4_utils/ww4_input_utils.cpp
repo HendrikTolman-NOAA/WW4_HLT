@@ -12,7 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-22
+ * @date Initial, 2026-04-21
+ * @date Last update, 2026-04-22
  */
 
 #include "ww4_utils/ww4_input_utils.hpp"
