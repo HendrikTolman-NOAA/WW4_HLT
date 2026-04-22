@@ -23,11 +23,11 @@ calendar_type: "Standard"
 produce_std_out: "yes"
 
 # Option for the level of output to standard output during time stepping.
-# Options: "none", "summary", "full" (default)
+# Options: "none", "summary" (default), "full"
 # "none"    : No output in the time stepping loop.
 # "summary" : Output only if input field updated or output produced.
 # "full"    : Standard full output for every step.
-screen_output_level: "full"
+screen_output_level: "summary"
 
 # Option for producing a log file.
 # Options: "yes" (default), "no"

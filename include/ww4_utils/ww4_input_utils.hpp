@@ -20,6 +20,7 @@
 #define WW4_UTILS_WW4_INPUT_UTILS_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_logfile.hpp"
 #include "ww4_utils/ww4_run_config.hpp"
 #include <iostream>
 #include <optional>
@@ -183,14 +184,14 @@ void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
  * @param[in] config The run configuration.
  * @param[in,out] headerPrinted Flag to track if the step header was printed.
  * @param[in] os Output stream for reporting.
- * @param[in] logStream Output stream for log file.
+ * @param[in,out] logData Data for tabular log output.
  * @return The time step (seconds) from the present model time to the next
  * update.
  */
 double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                        waveTimeData &waveTime, InputUpdateState &state,
                        const RunConfig &config, bool &headerPrinted,
-                       std::ostream &os, std::ostream &logStream);
+                       std::ostream &os, ww4_logfile::LogTableData &logData);
 
 /**
  * @brief Computes the minimum input time step based on active fields.

@@ -45,8 +45,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
          << std::endl;
     }
     //
-    // 1.2 Output to  log file (if requested)  likely to be temporarily as the
-    //     eventually the log file will be to consice for this output
+    // 1.2 Output to  log file (if requested)
     //
     if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
       getLogFileStream()
@@ -107,19 +106,14 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
            << std::endl;
         headerPrinted = true;
       }
-      if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-        getLogFileStream() << "  Computation step starting "
-                           << ww4_utils::TimeManagement::toFormattedString(
-                                  *getWaveTimeData().modelTime)
-                           << std::endl;
-      }
       //
       // 3.1 Update the inputs and next time/timestep when next input is needed
       //
+      ww4_utils::ww4_logfile::LogTableData logData;
       ww4_utils::waveTimeData waveTime = getWaveTimeData();
       ww4_utils::updateAllInputs(*waveTime.modelTime, endTime, waveTime,
                                  inputState, getRunConfig(), headerPrinted, os,
-                                 getLogFileStream());
+                                 logData);
 
       updateWaveInputTime(ww4_utils::InputType::WaterLevels,
                           waveTime.waterLevels);
@@ -189,7 +183,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 6.  Perform output ----------------------------------------------------
       //
-      auto printOutput = [&](const std::string_view msg) {
+      auto printOutput = [&](const std::string_view msg, bool &logFlag) {
         if (getRunConfig().produceStdOut &&
             getRunConfig().screenOutputLevel !=
                 ww4_utils::ScreenOutputLevel::None) {
@@ -207,43 +201,50 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           }
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-          getLogFileStream() << "    " << msg << std::endl;
+          logFlag = true;
         }
       };
 
       if (getRunConfig().outputFields.requested &&
           getRunConfig().outputFields.actualTime ==
               getWaveTimeData().modelTime) {
-        printOutput("Performing fields output");
+        printOutput("Performing fields output", logData.fieldsPerformed);
       }
 
       if (getRunConfig().outputPoints.requested &&
           getRunConfig().outputPoints.actualTime ==
               getWaveTimeData().modelTime) {
-        printOutput("Performing points output");
+        printOutput("Performing points output", logData.pointsPerformed);
       }
 
       if (getRunConfig().outputNesting.requested &&
           getRunConfig().outputNesting.actualTime ==
               getWaveTimeData().modelTime) {
-        printOutput("Performing nesting output");
+        printOutput("Performing nesting output", logData.nestingPerformed);
       }
 
       if (getRunConfig().outputTracks.requested &&
           getRunConfig().outputTracks.actualTime ==
               getWaveTimeData().modelTime) {
-        printOutput("Performing tracks output");
+        printOutput("Performing tracks output", logData.tracksPerformed);
       }
 
       if (getRunConfig().outputRestart.requested &&
           getRunConfig().outputRestart.actualTime ==
               getWaveTimeData().modelTime) {
-        printOutput("Performing restart output");
+        printOutput("Performing restart output", logData.restartPerformed);
       }
 
       if (getRunConfig().outputApi.requested &&
           getRunConfig().outputApi.actualTime == getWaveTimeData().modelTime) {
-        printOutput("Performing API output");
+        printOutput("Performing API output", logData.apiPerformed);
+      }
+
+      // 6.05 Tabular log output
+      if (getRunConfig().produceLogFile && getLogFileStream().is_open() &&
+          logData.anyAction()) {
+        ww4_utils::ww4_logfile::writeLogTableLine(
+            getLogFileStream(), *getWaveTimeData().modelTime, logData);
       }
 
       // 6.1 Update next actual output times

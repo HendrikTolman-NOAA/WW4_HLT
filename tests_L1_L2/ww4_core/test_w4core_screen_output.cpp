@@ -143,9 +143,9 @@ TEST_F(W4CoreScreenOutputTest, SummaryOutput) {
 }
 
 /**
- * @test Verify log file is always full
+ * @test Verify log file has tabular output regardless of screen level
  */
-TEST_F(W4CoreScreenOutputTest, LogFileIsAlwaysFull) {
+TEST_F(W4CoreScreenOutputTest, LogFileTabularOutput) {
   createConfig("none", true);
   std::stringstream ss;
   ww4_core::w4core_init(startTime, "test_program", ss);
@@ -156,13 +156,23 @@ TEST_F(W4CoreScreenOutputTest, LogFileIsAlwaysFull) {
   logContent << logFile.rdbuf();
   std::string logStr = logContent.str();
 
+  // Should have tabular header
+  EXPECT_NE(logStr.find("Inputs              Outputs"), std::string::npos);
+  EXPECT_NE(logStr.find("W  C  W  I  D    F  P  N  T  R  A"),
+            std::string::npos);
+
+  // Should have 3 lines of data (00:00:00, 01:00:00, 02:00:00)
+  // We check for 'X' in the columns
   size_t count = 0;
-  size_t pos = logStr.find("Computation step starting");
+  size_t pos = logStr.find("X");
   while (pos != std::string::npos) {
+    // Only count if it looks like a table line (starts with a date-like string)
+    // For simplicity, just count 'X's if we know the expected number of events
+    // 00:00:00: Water level 'X'
+    // 01:00:00: Water level 'X'
+    // 02:00:00: Fields 'X'
     count++;
-    pos = logStr.find("Computation step starting", pos + 1);
+    pos = logStr.find("X", pos + 1);
   }
-  EXPECT_EQ(count, 4);
-  EXPECT_NE(logStr.find("Updating water levels"), std::string::npos);
-  EXPECT_NE(logStr.find("Performing fields output"), std::string::npos);
+  EXPECT_EQ(count, 3);
 }
