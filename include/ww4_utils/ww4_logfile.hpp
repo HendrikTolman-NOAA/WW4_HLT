@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-22
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -39,6 +39,43 @@ namespace ww4_utils {
  * @brief Routines for log file output.
  */
 namespace ww4_logfile {
+
+/**
+ * @struct LogTableData
+ * @brief Data structure for tabular log output tracking.
+ */
+struct LogTableData {
+  bool wlUpdated = false;        ///< Water level update flag.
+  bool cuUpdated = false;        ///< Currents update flag.
+  bool wiUpdated = false;        ///< Winds update flag.
+  bool icUpdated = false;        ///< Ice concentrations update flag.
+  bool bdUpdated = false;        ///< Bottom depth update flag.
+  bool fieldsPerformed = false;  ///< Gridded fields output flag.
+  bool pointsPerformed = false;  ///< Point output flag.
+  bool nestingPerformed = false; ///< Nesting data output flag.
+  bool tracksPerformed = false;  ///< Track output flag.
+  bool restartPerformed = false; ///< Restart file output flag.
+  bool apiPerformed = false;     ///< API output flag.
+
+  /**
+   * @brief Checks if any action (input update or output) occurred.
+   * @return True if any flag is set.
+   */
+  bool anyAction() const {
+    return wlUpdated || cuUpdated || wiUpdated || icUpdated || bdUpdated ||
+           fieldsPerformed || pointsPerformed || nestingPerformed ||
+           tracksPerformed || restartPerformed || apiPerformed;
+  }
+
+  /**
+   * @brief Resets all flags to false.
+   */
+  void reset() {
+    wlUpdated = cuUpdated = wiUpdated = icUpdated = bdUpdated = false;
+    fieldsPerformed = pointsPerformed = nestingPerformed = tracksPerformed =
+        restartPerformed = apiPerformed = false;
+  }
+};
 
 /**
  * @brief Writes the initial log entry to the provided output stream.
@@ -76,6 +113,27 @@ void writeUpdatingField(std::ostream &os, std::string_view fieldName);
  */
 void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
                             const DateTime &time2);
+
+/**
+ * @brief Writes the header of the tabular log output.
+ * @param os The output stream to write to.
+ */
+void writeLogTableHeader(std::ostream &os);
+
+/**
+ * @brief Adds a data line to the tabular log output.
+ * @param os The output stream to write to.
+ * @param time The time stamp for the end of the interval.
+ * @param data The data flags for the line.
+ */
+void writeLogTableLine(std::ostream &os, const DateTime &time,
+                       const LogTableData &data);
+
+/**
+ * @brief Writes the footer of the tabular log output.
+ * @param os The output stream to write to.
+ */
+void writeLogTableFooter(std::ostream &os);
 
 } // namespace ww4_logfile
 } // namespace ww4_utils

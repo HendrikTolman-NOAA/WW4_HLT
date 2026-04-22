@@ -189,14 +189,14 @@ void updateHomogeneousInputCycling(
  * @param[in] config The run configuration.
  * @param[in,out] headerPrinted Flag to track if the step header was printed.
  * @param[in,out] os Standard output stream.
- * @param[in,out] logStream Log file stream.
+ * @param[in,out] logData Data for tabular log output.
  */
 void processField(std::string_view fieldName, InputFieldOption option,
                   const DateTime &modelTime, const DateTime &endTime,
                   intTimeData &data, std::optional<DateTime> &lastTime1,
                   std::optional<DateTime> &lastTime2, const RunConfig &config,
                   bool &headerPrinted, std::ostream &os,
-                  std::ostream &logStream) {
+                  ww4_logfile::LogTableData &logData) {
 
   if (option == InputFieldOption::None ||
       option == InputFieldOption::Undefined) {
@@ -232,9 +232,16 @@ void processField(std::string_view fieldName, InputFieldOption option,
           }
         }
         if (config.produceLogFile) {
-          ww4_logfile::writeUpdatingField(logStream, fieldName);
-          ww4_logfile::writeInterpolationInfo(logStream, *data.time1,
-                                              *data.time2);
+          if (fieldName == "water levels")
+            logData.wlUpdated = true;
+          else if (fieldName == "currents")
+            logData.cuUpdated = true;
+          else if (fieldName == "winds")
+            logData.wiUpdated = true;
+          else if (fieldName == "ice concentrations")
+            logData.icUpdated = true;
+          else if (fieldName == "bottom depth")
+            logData.bdUpdated = true;
         }
         lastTime1 = data.time1;
         lastTime2 = data.time2;
@@ -317,27 +324,27 @@ void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
 double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                        waveTimeData &waveTime, InputUpdateState &state,
                        const RunConfig &config, bool &headerPrinted,
-                       std::ostream &os, std::ostream &logStream) {
+                       std::ostream &os, ww4_logfile::LogTableData &logData) {
 
   processField("water levels", config.waterLevels, modelTime, endTime,
                waveTime.waterLevels, state.lastWlTime1, state.lastWlTime2,
-               config, headerPrinted, os, logStream);
+               config, headerPrinted, os, logData);
 
   processField("currents", config.currents, modelTime, endTime,
                waveTime.currents, state.lastCuTime1, state.lastCuTime2, config,
-               headerPrinted, os, logStream);
+               headerPrinted, os, logData);
 
   processField("winds", config.winds, modelTime, endTime, waveTime.winds,
                state.lastWiTime1, state.lastWiTime2, config, headerPrinted, os,
-               logStream);
+               logData);
 
   processField("ice concentrations", config.iceConcentrations, modelTime,
                endTime, waveTime.iceConcentrations, state.lastIcTime1,
-               state.lastIcTime2, config, headerPrinted, os, logStream);
+               state.lastIcTime2, config, headerPrinted, os, logData);
 
   processField("bottom depth", config.bottomDepth, modelTime, endTime,
                waveTime.bottomDepth, state.lastBdTime1, state.lastBdTime2,
-               config, headerPrinted, os, logStream);
+               config, headerPrinted, os, logData);
 
   return computeInputTimeStep(modelTime, endTime, waveTime, config);
 }

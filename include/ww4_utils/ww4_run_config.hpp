@@ -111,7 +111,7 @@ struct RunConfig {
   EchoOption echoHomInput = EchoOption::Summary; ///< Echo input flag.
 
   ScreenOutputLevel screenOutputLevel =
-      ScreenOutputLevel::Full; ///< Screen output level.
+      ScreenOutputLevel::Summary; ///< Screen output level.
 
   std::vector<HomogeneousDataPoint>
       homogeneousWaterLevels; ///< Homogeneous water levels data.

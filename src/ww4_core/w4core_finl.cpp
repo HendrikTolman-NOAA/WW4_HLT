@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-21
+ * @date Last update, 2026-04-22
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -81,12 +81,17 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
                          << std::endl;
 
       //
-      // 3.3 Run time summary
+      // 3.3 Write tabular log footer
+      //
+      ww4_utils::ww4_logfile::writeLogTableFooter(getLogFileStream());
+
+      //
+      // 3.4 Run time summary
       //
       ww4_utils::ww4_logfile::writeFinalOutput(
           getLogFileStream(), getProgramName(), std::nullopt, runTime);
       //
-      // 3.4 Close log file
+      // 3.5 Close log file
       //
       getLogFileStream().close();
     }
