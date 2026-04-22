@@ -58,6 +58,32 @@ TEST(RunConfigTest, NonDefaultConfig) {
 }
 
 /**
+ * @test Verify screen_output_level parsing and reporting.
+ */
+TEST(RunConfigTest, ScreenOutputLevelConfig) {
+  const std::string filename = "test_run_screen_level.yml";
+  std::ofstream file(filename);
+  file << "water_levels: none\n";
+  file << "currents: none\n";
+  file << "winds: none\n";
+  file << "ice_concentrations: none\n";
+  file << "time_step: 3600.0\n";
+  file << "screen_output_level: summary\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename, std::cerr);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->screenOutputLevel, ScreenOutputLevel::Summary);
+
+  std::stringstream ss;
+  reportRunConfig(*config, ss);
+  std::string output = ss.str();
+  EXPECT_NE(output.find("Screen output level  : summary"), std::string::npos);
+
+  std::remove(filename.c_str());
+}
+
+/**
  * @test Verify data output configuration parsing.
  */
 TEST(RunConfigTest, OutputConfigParsing) {

@@ -147,6 +147,9 @@ target_link_libraries(test_w4core_input_cycling PRIVATE ww4_core ww4_utils GTest
 add_executable(test_interpolation_output tests_L1_L2/ww4_core/test_interpolation_output.cpp)
 target_link_libraries(test_interpolation_output PRIVATE ww4_core ww4_utils GTest::gtest_main)
 
+add_executable(test_w4core_screen_output tests_L1_L2/ww4_core/test_w4core_screen_output.cpp)
+target_link_libraries(test_w4core_screen_output PRIVATE ww4_core ww4_utils GTest::gtest_main)
+
 add_executable(test_ww4_output_utils tests_L1_L2/ww4_utils/test_ww4_output_utils.cpp)
 target_link_libraries(test_ww4_output_utils PRIVATE ww4_utils GTest::gtest_main)
 
@@ -163,6 +166,7 @@ set(WW4_TEST_TARGETS
     test_w4core_hom_input
     test_w4core_input_cycling
     test_interpolation_output
+    test_w4core_screen_output
     test_ww4_output_utils
 )
 
@@ -184,4 +188,5 @@ gtest_discover_tests(test_w4core_zero_step)
 gtest_discover_tests(test_w4core_hom_input)
 gtest_discover_tests(test_w4core_input_cycling)
 gtest_discover_tests(test_interpolation_output)
+gtest_discover_tests(test_w4core_screen_output)
 gtest_discover_tests(test_ww4_output_utils)

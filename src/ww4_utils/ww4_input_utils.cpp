@@ -12,7 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
+ * @date Initial, 2026-04-21
+ * @date Last update, 2026-04-22
  */
 
 #include "ww4_utils/ww4_input_utils.hpp"
@@ -185,16 +186,16 @@ void updateHomogeneousInputCycling(
  * @param[in,out] data Data structure for this field.
  * @param[in,out] lastTime1 Tracker for last reported time1.
  * @param[in,out] lastTime2 Tracker for last reported time2.
- * @param[in] produceStdOut Flag to produce standard output.
+ * @param[in] config The run configuration.
+ * @param[in,out] headerPrinted Flag to track if the step header was printed.
  * @param[in,out] os Standard output stream.
- * @param[in] produceLogFile Flag to produce log file output.
  * @param[in,out] logStream Log file stream.
  */
 void processField(std::string_view fieldName, InputFieldOption option,
                   const DateTime &modelTime, const DateTime &endTime,
                   intTimeData &data, std::optional<DateTime> &lastTime1,
-                  std::optional<DateTime> &lastTime2, bool produceStdOut,
-                  std::ostream &os, bool produceLogFile,
+                  std::optional<DateTime> &lastTime2, const RunConfig &config,
+                  bool &headerPrinted, std::ostream &os,
                   std::ostream &logStream) {
 
   if (option == InputFieldOption::None ||
@@ -217,16 +218,21 @@ void processField(std::string_view fieldName, InputFieldOption option,
 
     if (data.time1.has_value() && data.time2.has_value()) {
       if (data.time1 != lastTime1 || data.time2 != lastTime2) {
-        if (produceStdOut) {
-          ww4_std_out::writeUpdatingField(os, fieldName);
+        if (config.produceStdOut &&
+            config.screenOutputLevel != ScreenOutputLevel::None) {
+          if (config.screenOutputLevel == ScreenOutputLevel::Summary &&
+              !headerPrinted) {
+            os << "  Computation step starting "
+               << TimeManagement::toFormattedString(modelTime) << std::endl;
+            headerPrinted = true;
+          }
+          if (headerPrinted) {
+            ww4_std_out::writeUpdatingField(os, fieldName);
+            ww4_std_out::writeInterpolationInfo(os, *data.time1, *data.time2);
+          }
         }
-        if (produceLogFile) {
+        if (config.produceLogFile) {
           ww4_logfile::writeUpdatingField(logStream, fieldName);
-        }
-        if (produceStdOut) {
-          ww4_std_out::writeInterpolationInfo(os, *data.time1, *data.time2);
-        }
-        if (produceLogFile) {
           ww4_logfile::writeInterpolationInfo(logStream, *data.time1,
                                               *data.time2);
         }
@@ -310,29 +316,28 @@ void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
 
 double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                        waveTimeData &waveTime, InputUpdateState &state,
-                       const RunConfig &config, std::ostream &os,
-                       std::ostream &logStream) {
+                       const RunConfig &config, bool &headerPrinted,
+                       std::ostream &os, std::ostream &logStream) {
 
   processField("water levels", config.waterLevels, modelTime, endTime,
                waveTime.waterLevels, state.lastWlTime1, state.lastWlTime2,
-               config.produceStdOut, os, config.produceLogFile, logStream);
+               config, headerPrinted, os, logStream);
 
   processField("currents", config.currents, modelTime, endTime,
-               waveTime.currents, state.lastCuTime1, state.lastCuTime2,
-               config.produceStdOut, os, config.produceLogFile, logStream);
+               waveTime.currents, state.lastCuTime1, state.lastCuTime2, config,
+               headerPrinted, os, logStream);
 
   processField("winds", config.winds, modelTime, endTime, waveTime.winds,
-               state.lastWiTime1, state.lastWiTime2, config.produceStdOut, os,
-               config.produceLogFile, logStream);
+               state.lastWiTime1, state.lastWiTime2, config, headerPrinted, os,
+               logStream);
 
   processField("ice concentrations", config.iceConcentrations, modelTime,
                endTime, waveTime.iceConcentrations, state.lastIcTime1,
-               state.lastIcTime2, config.produceStdOut, os,
-               config.produceLogFile, logStream);
+               state.lastIcTime2, config, headerPrinted, os, logStream);
 
   processField("bottom depth", config.bottomDepth, modelTime, endTime,
                waveTime.bottomDepth, state.lastBdTime1, state.lastBdTime2,
-               config.produceStdOut, os, config.produceLogFile, logStream);
+               config, headerPrinted, os, logStream);
 
   return computeInputTimeStep(modelTime, endTime, waveTime, config);
 }

@@ -12,7 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
+ * @date Initial, 2026-04-21
+ * @date Last update, 2026-04-22
  */
 
 #ifndef WW4_UTILS_WW4_INPUT_UTILS_HPP
@@ -180,6 +181,7 @@ void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
  * @param[in,out] waveTime Global wave time data to update.
  * @param[in,out] state Persistent state for reporting interpolation intervals.
  * @param[in] config The run configuration.
+ * @param[in,out] headerPrinted Flag to track if the step header was printed.
  * @param[in] os Output stream for reporting.
  * @param[in] logStream Output stream for log file.
  * @return The time step (seconds) from the present model time to the next
@@ -187,8 +189,8 @@ void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
  */
 double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                        waveTimeData &waveTime, InputUpdateState &state,
-                       const RunConfig &config, std::ostream &os,
-                       std::ostream &logStream);
+                       const RunConfig &config, bool &headerPrinted,
+                       std::ostream &os, std::ostream &logStream);
 
 /**
  * @brief Computes the minimum input time step based on active fields.
