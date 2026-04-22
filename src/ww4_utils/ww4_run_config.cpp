@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-21
+ * @date Last update, 2026-04-22
  */
 
 #include "ww4_utils/ww4_run_config.hpp"
@@ -363,6 +363,14 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       } else if (value == "full") {
         config.echoHomInput = EchoOption::Full;
       }
+    } else if (key == "screen_output_level") {
+      if (value == "none") {
+        config.screenOutputLevel = ScreenOutputLevel::None;
+      } else if (value == "summary") {
+        config.screenOutputLevel = ScreenOutputLevel::Summary;
+      } else if (value == "full") {
+        config.screenOutputLevel = ScreenOutputLevel::Full;
+      }
     } else if (key == "time_step") {
       if (std::from_chars(value.data(), value.data() + value.size(),
                           config.timeStep)
@@ -475,6 +483,14 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     echoStr = "full";
   }
   os << "     Echo input           : " << echoStr << std::endl;
+
+  std::string screenStr = "full";
+  if (config.screenOutputLevel == ScreenOutputLevel::None) {
+    screenStr = "none";
+  } else if (config.screenOutputLevel == ScreenOutputLevel::Summary) {
+    screenStr = "summary";
+  }
+  os << "     Screen output level  : " << screenStr << std::endl;
 
   const bool isConventional = !config.dryRun && config.propagateX &&
                               config.propagateY && config.propagateTheta &&

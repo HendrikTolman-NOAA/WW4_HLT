@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-21
+ * @date Last update, 2026-04-22
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -41,7 +41,8 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       os << "  Time stepping (w4core_wave) from: "
          << ww4_utils::TimeManagement::toFormattedString(startTime)
          << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-         << "\n" << std::endl;
+         << "\n"
+         << std::endl;
     }
     //
     // 1.2 Output to  log file (if requested)  likely to be temporarily as the
@@ -52,7 +53,8 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           << "  Time stepping (w4core_wave) from: "
           << ww4_utils::TimeManagement::toFormattedString(startTime)
           << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-          << "\n" << std::endl;
+          << "\n"
+          << std::endl;
     }
     //
     // 1.3 Check consistency of starting and ending times
@@ -95,11 +97,15 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       // 3.  Determine time step -----------------------------------------------
       // 3.0 Computation step message
       //
-      if (getRunConfig().produceStdOut) {
+      bool headerPrinted = false;
+      if (getRunConfig().produceStdOut &&
+          getRunConfig().screenOutputLevel ==
+              ww4_utils::ScreenOutputLevel::Full) {
         os << "  Computation step starting "
            << ww4_utils::TimeManagement::toFormattedString(
                   *getWaveTimeData().modelTime)
            << std::endl;
+        headerPrinted = true;
       }
       if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
         getLogFileStream() << "  Computation step starting "
@@ -112,7 +118,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       ww4_utils::waveTimeData waveTime = getWaveTimeData();
       ww4_utils::updateAllInputs(*waveTime.modelTime, endTime, waveTime,
-                                 inputState, getRunConfig(), os,
+                                 inputState, getRunConfig(), headerPrinted, os,
                                  getLogFileStream());
 
       updateWaveInputTime(ww4_utils::InputType::WaterLevels,
@@ -183,69 +189,61 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 6.  Perform output ----------------------------------------------------
       //
+      auto printOutput = [&](const std::string_view msg) {
+        if (getRunConfig().produceStdOut &&
+            getRunConfig().screenOutputLevel !=
+                ww4_utils::ScreenOutputLevel::None) {
+          if (getRunConfig().screenOutputLevel ==
+                  ww4_utils::ScreenOutputLevel::Summary &&
+              !headerPrinted) {
+            os << "  Computation step starting "
+               << ww4_utils::TimeManagement::toFormattedString(
+                      *getWaveTimeData().modelTime)
+               << std::endl;
+            headerPrinted = true;
+          }
+          if (headerPrinted) {
+            os << "    " << msg << std::endl;
+          }
+        }
+        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+          getLogFileStream() << "    " << msg << std::endl;
+        }
+      };
+
       if (getRunConfig().outputFields.requested &&
           getRunConfig().outputFields.actualTime ==
               getWaveTimeData().modelTime) {
-        if (getRunConfig().produceStdOut) {
-          os << "    Performing fields output" << std::endl;
-        }
-        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-          getLogFileStream() << "    Performing fields output" << std::endl;
-        }
+        printOutput("Performing fields output");
       }
 
       if (getRunConfig().outputPoints.requested &&
           getRunConfig().outputPoints.actualTime ==
               getWaveTimeData().modelTime) {
-        if (getRunConfig().produceStdOut) {
-          os << "    Performing points output" << std::endl;
-        }
-        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-          getLogFileStream() << "    Performing points output" << std::endl;
-        }
+        printOutput("Performing points output");
       }
 
       if (getRunConfig().outputNesting.requested &&
           getRunConfig().outputNesting.actualTime ==
               getWaveTimeData().modelTime) {
-        if (getRunConfig().produceStdOut) {
-          os << "    Performing nesting output" << std::endl;
-        }
-        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-          getLogFileStream() << "    Performing nesting output" << std::endl;
-        }
+        printOutput("Performing nesting output");
       }
 
       if (getRunConfig().outputTracks.requested &&
           getRunConfig().outputTracks.actualTime ==
               getWaveTimeData().modelTime) {
-        if (getRunConfig().produceStdOut) {
-          os << "    Performing tracks output" << std::endl;
-        }
-        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-          getLogFileStream() << "    Performing tracks output" << std::endl;
-        }
+        printOutput("Performing tracks output");
       }
 
       if (getRunConfig().outputRestart.requested &&
           getRunConfig().outputRestart.actualTime ==
               getWaveTimeData().modelTime) {
-        if (getRunConfig().produceStdOut) {
-          os << "    Performing restart output" << std::endl;
-        }
-        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-          getLogFileStream() << "    Performing restart output" << std::endl;
-        }
+        printOutput("Performing restart output");
       }
 
       if (getRunConfig().outputApi.requested &&
           getRunConfig().outputApi.actualTime == getWaveTimeData().modelTime) {
-        if (getRunConfig().produceStdOut) {
-          os << "    Performing API output" << std::endl;
-        }
-        if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-          getLogFileStream() << "    Performing API output" << std::endl;
-        }
+        printOutput("Performing API output");
       }
 
       // 6.1 Update next actual output times

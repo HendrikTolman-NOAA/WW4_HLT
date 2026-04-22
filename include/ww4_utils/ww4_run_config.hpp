@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-21
+ * @date Last update, 2026-04-22
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
@@ -42,6 +42,19 @@ enum class InputFieldOption {
   FromCoupling, ///< Input from coupling.
   Homogeneous,  ///< Homogeneous field.
   FromGrid      ///< Static data read as part of the grid data.
+};
+
+/**
+ * @enum ScreenOutputLevel
+ * @brief Options for the level of output to standard output during time
+ * stepping.
+ * @author Main Author(s): Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+enum class ScreenOutputLevel {
+  None,    ///< No output in the time stepping loop.
+  Summary, ///< Output if input field updated or output produced.
+  Full     ///< Standard full output for every step.
 };
 
 /**
@@ -96,6 +109,9 @@ struct RunConfig {
       InputFieldOption::FromGrid; ///< Bottom depth option.
 
   EchoOption echoHomInput = EchoOption::Summary; ///< Echo input flag.
+
+  ScreenOutputLevel screenOutputLevel =
+      ScreenOutputLevel::Full; ///< Screen output level.
 
   std::vector<HomogeneousDataPoint>
       homogeneousWaterLevels; ///< Homogeneous water levels data.
