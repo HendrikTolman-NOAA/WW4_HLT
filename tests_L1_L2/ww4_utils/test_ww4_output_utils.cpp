@@ -136,10 +136,15 @@ TEST(WW4OutputUtilsTest, ComputeMinOutputStep) {
   config.outputPoints.actualTime = {20260421, 0.0};
   TimeManagement::incrementDateTime(*config.outputPoints.actualTime, 1800.0);
 
+  OutputConfig apiConfig;
+  apiConfig.requested = true;
+  apiConfig.actualTime = {20260421, 0.0};
+  TimeManagement::incrementDateTime(*apiConfig.actualTime, 900.0);
+
   DateTime modelTime = {20260421, 0.0};
   DateTime endTime = {20260421, 0.0};
   TimeManagement::incrementDateTime(endTime, 7200.0);
 
-  double step = computeMinOutputStep(config, modelTime, endTime);
-  EXPECT_DOUBLE_EQ(step, 1800.0);
+  double step = computeMinOutputStep(config, apiConfig, modelTime, endTime);
+  EXPECT_DOUBLE_EQ(step, 900.0);
 }

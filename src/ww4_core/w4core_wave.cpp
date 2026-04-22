@@ -89,8 +89,10 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                                   false);
     ww4_utils::assessOutputConfig(getMutableRunConfig().outputRestart,
                                   startTime, false);
-    ww4_utils::assessOutputConfig(getMutableRunConfig().outputApi, startTime,
-                                  true, endTime);
+
+    ww4_utils::OutputConfig apiConfig;
+    apiConfig.requested = getRunConfig().outputApi;
+    ww4_utils::assessOutputConfig(apiConfig, startTime, true, endTime);
 
     //
     // 2.  Loop to get to ending time ----------------------------------------
@@ -145,7 +147,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       // 3.2 Find the next time/timestep for which output is requested
       //
       double outputTimeStep = ww4_utils::computeMinOutputStep(
-          getRunConfig(), *getWaveTimeData().modelTime, endTime);
+          getRunConfig(), apiConfig, *getWaveTimeData().modelTime, endTime);
 
       //
       // 3.3 Set the time step for this cycle of the time step loop
@@ -256,16 +258,14 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                                     *getWaveTimeData().modelTime);
       }
 
-      if (ww4_utils::isOutputDue(getRunConfig().outputApi,
-                                 *getWaveTimeData().modelTime)) {
+      if (ww4_utils::isOutputDue(apiConfig, *getWaveTimeData().modelTime)) {
         if (getRunConfig().produceStdOut) {
           os << "    Performing API output" << std::endl;
         }
         if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
           getLogFileStream() << "    Performing API output" << std::endl;
         }
-        ww4_utils::updateOutputTime(getMutableRunConfig().outputApi,
-                                    *getWaveTimeData().modelTime);
+        ww4_utils::updateOutputTime(apiConfig, *getWaveTimeData().modelTime);
       }
       //
       //     End of the basic time stepping loop starting at 2 ---------------

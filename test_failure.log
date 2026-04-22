@@ -1,0 +1,8 @@
+Running main() from /app/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = W4CoreWaveOutputTest.ReportsApiOutputStatus
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from W4CoreWaveOutputTest
+[ RUN      ] W4CoreWaveOutputTest.ReportsApiOutputStatus
+/app/tests_L1_L2/ww4_core/test_w4core_wave_output.cpp:70: Failure
+Expected: (output.find("API output not requested")) != (std::string::npos), actual: 18446744073709551615 vs 18446744073709551615

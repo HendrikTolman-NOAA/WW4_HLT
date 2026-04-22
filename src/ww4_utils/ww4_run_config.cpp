@@ -368,9 +368,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
         config.timeStep = -1.0;
       }
     } else if (key == "output_api") {
-      config.outputApi.requested = (value == "yes");
-    } else if (key.starts_with("output_api_")) {
-      updateOutputConfig(config.outputApi, key.substr(11), value);
+      config.outputApi = (value == "yes");
     } else if (key.starts_with("output_fields_")) {
       updateOutputConfig(config.outputFields, key.substr(14), value);
     } else if (key.starts_with("output_points_")) {
@@ -539,8 +537,12 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   reportOutput(config.outputNesting, "Nesting data", os);
   reportOutput(config.outputTracks, "Track", os);
   reportOutput(config.outputRestart, "Restart file", os);
-  reportOutput(config.outputApi, "API", os);
 
+  if (config.outputApi) {
+    os << "\n     API output requested" << std::endl;
+  } else {
+    os << "\n     No API output" << std::endl;
+  }
   os << std::endl;
 }
 

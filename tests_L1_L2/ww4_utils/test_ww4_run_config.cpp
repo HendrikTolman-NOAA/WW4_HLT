@@ -297,7 +297,7 @@ TEST(RunConfigTest, ApiOutputConfig) {
 
   const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
-  EXPECT_TRUE(config->outputApi.requested);
+  EXPECT_TRUE(config->outputApi);
 
   std::stringstream ss;
   reportRunConfig(*config, ss);

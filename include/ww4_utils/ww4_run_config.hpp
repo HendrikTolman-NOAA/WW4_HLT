@@ -110,7 +110,7 @@ struct RunConfig {
 
   double timeStep = -1.0; ///< Model time step in seconds.
 
-  OutputConfig outputApi; ///< API output configuration.
+  bool outputApi = false; ///< API output flag.
 
   OutputConfig outputFields;  ///< Gridded fields output configuration.
   OutputConfig outputPoints;  ///< Point output configuration.
