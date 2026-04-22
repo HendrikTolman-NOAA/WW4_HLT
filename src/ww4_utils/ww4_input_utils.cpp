@@ -202,18 +202,6 @@ void processField(std::string_view fieldName, InputFieldOption option,
     return;
   }
 
-  const bool skipUpdateMessage =
-      (fieldName == "bottom depth" && option == InputFieldOption::FromGrid);
-
-  if (!skipUpdateMessage) {
-    if (produceStdOut) {
-      ww4_std_out::writeUpdatingField(os, fieldName);
-    }
-    if (produceLogFile) {
-      ww4_logfile::writeUpdatingField(logStream, fieldName);
-    }
-  }
-
   if (option == InputFieldOption::Homogeneous) {
     if (fieldName == "water levels") {
       ww4_hom_water_levels(modelTime, endTime, data);
@@ -229,6 +217,12 @@ void processField(std::string_view fieldName, InputFieldOption option,
 
     if (data.time1.has_value() && data.time2.has_value()) {
       if (data.time1 != lastTime1 || data.time2 != lastTime2) {
+        if (produceStdOut) {
+          ww4_std_out::writeUpdatingField(os, fieldName);
+        }
+        if (produceLogFile) {
+          ww4_logfile::writeUpdatingField(logStream, fieldName);
+        }
         if (produceStdOut) {
           ww4_std_out::writeInterpolationInfo(os, *data.time1, *data.time2);
         }

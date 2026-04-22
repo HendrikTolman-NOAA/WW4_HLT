@@ -193,9 +193,11 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
                   std::ostream &os) {
   if (oc.requested) {
     os << "\n     " << label << " output" << std::endl;
-    os << "        Interval          : " << oc.interval << " s" << std::endl;
-    os << "        At first time     : " << (oc.atFirstTime ? "yes" : "no")
-       << std::endl;
+    if (label != "API") {
+      os << "        Interval          : " << oc.interval << " s" << std::endl;
+      os << "        At first time     : " << (oc.atFirstTime ? "yes" : "no")
+         << std::endl;
+    }
     if (oc.startTime) {
       os << "        Start time        : "
          << TimeManagement::toFormattedString(*oc.startTime) << std::endl;
