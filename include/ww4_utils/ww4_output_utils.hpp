@@ -23,6 +23,8 @@
 
 namespace ww4_utils {
 
+struct RunConfig;
+
 /**
  * @struct OutputConfig
  * @brief Configuration for a specific output type.
@@ -80,6 +82,17 @@ bool isOutputDue(const OutputConfig &oc, const DateTime &modelTime);
  * @date 2026-04-21
  */
 void updateOutputTime(OutputConfig &oc, const DateTime &modelTime);
+
+/**
+ * @brief Computes the minimum next output time step across all output types.
+ * @param[in] config The run configuration containing all output settings.
+ * @param[in] modelTime The current model time.
+ * @param[in] endTime The simulation end time.
+ * @return The minimum time in seconds until the next output is due.
+ * @date 2026-04-21
+ */
+double computeMinOutputStep(const RunConfig &config, const DateTime &modelTime,
+                            const DateTime &endTime);
 
 } // namespace ww4_utils
 

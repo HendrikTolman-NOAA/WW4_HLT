@@ -14,6 +14,7 @@
  */
 
 #include "ww4_utils/ww4_output_utils.hpp"
+#include "ww4_utils/ww4_run_config.hpp"
 #include <algorithm>
 
 namespace ww4_utils {
@@ -79,8 +80,37 @@ void updateOutputTime(OutputConfig &oc, const DateTime &modelTime) {
 
   if (std::abs(TimeManagement::differenceInSeconds(modelTime, *oc.actualTime)) <
       0.001) {
-    TimeManagement::incrementDateTime(*oc.actualTime, oc.interval);
+    if (oc.interval > 0.0) {
+      TimeManagement::incrementDateTime(*oc.actualTime, oc.interval);
+    } else {
+      oc.requested = false;
+    }
   }
+}
+
+double computeMinOutputStep(const RunConfig &config, const DateTime &modelTime,
+                            const DateTime &endTime) {
+  double outputTimeStep = computeNextOutputStep(config.outputFields, modelTime);
+
+  outputTimeStep = std::min(
+      outputTimeStep, computeNextOutputStep(config.outputPoints, modelTime));
+
+  outputTimeStep = std::min(
+      outputTimeStep, computeNextOutputStep(config.outputNesting, modelTime));
+
+  outputTimeStep = std::min(
+      outputTimeStep, computeNextOutputStep(config.outputTracks, modelTime));
+
+  outputTimeStep = std::min(
+      outputTimeStep, computeNextOutputStep(config.outputRestart, modelTime));
+
+  outputTimeStep = std::min(outputTimeStep,
+                            computeNextOutputStep(config.outputApi, modelTime));
+
+  outputTimeStep = std::min(
+      outputTimeStep, TimeManagement::differenceInSeconds(modelTime, endTime));
+
+  return outputTimeStep;
 }
 
 } // namespace ww4_utils

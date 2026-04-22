@@ -14,6 +14,7 @@
  */
 
 #include "ww4_utils/ww4_output_utils.hpp"
+#include "ww4_utils/ww4_run_config.hpp"
 #include <gtest/gtest.h>
 
 using namespace ww4_utils;
@@ -123,4 +124,22 @@ TEST(WW4OutputUtilsTest, AssessOutputConfigHandlesEndTime) {
   assessOutputConfig(oc, modelTime, false);
 
   EXPECT_FALSE(oc.requested);
+}
+
+TEST(WW4OutputUtilsTest, ComputeMinOutputStep) {
+  RunConfig config;
+  config.outputFields.requested = true;
+  config.outputFields.actualTime = {20260421, 0.0};
+  TimeManagement::incrementDateTime(*config.outputFields.actualTime, 3600.0);
+
+  config.outputPoints.requested = true;
+  config.outputPoints.actualTime = {20260421, 0.0};
+  TimeManagement::incrementDateTime(*config.outputPoints.actualTime, 1800.0);
+
+  DateTime modelTime = {20260421, 0.0};
+  DateTime endTime = {20260421, 0.0};
+  TimeManagement::incrementDateTime(endTime, 7200.0);
+
+  double step = computeMinOutputStep(config, modelTime, endTime);
+  EXPECT_DOUBLE_EQ(step, 1800.0);
 }

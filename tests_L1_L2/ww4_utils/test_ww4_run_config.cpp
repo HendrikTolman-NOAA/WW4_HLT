@@ -291,7 +291,8 @@ TEST(RunConfigTest, ApiOutputConfig) {
   file << "ice_concentrations: none\n";
   file << "time_step: 3600.0\n";
   file << "output_api: yes\n";
-  file << "output_api_interval: 3600.0\n";
+  // file << "output_api_interval: 3600.0\n"; // Interval no longer mandatory
+  // for API
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);

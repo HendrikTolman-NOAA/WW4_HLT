@@ -435,7 +435,6 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   outputValid &= validateOutput(config.outputNesting, "output_nesting");
   outputValid &= validateOutput(config.outputTracks, "output_tracks");
   outputValid &= validateOutput(config.outputRestart, "output_restart");
-  outputValid &= validateOutput(config.outputApi, "output_api");
 
   if (!outputValid) {
     ww4_std_out::extcde(1, os,

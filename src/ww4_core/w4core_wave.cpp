@@ -144,32 +144,8 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       //
       // 3.2 Find the next time/timestep for which output is requested
       //
-      double outputTimeStep = ww4_utils::computeNextOutputStep(
-          getRunConfig().outputFields, *getWaveTimeData().modelTime);
-      outputTimeStep = std::min(
-          outputTimeStep,
-          ww4_utils::computeNextOutputStep(getRunConfig().outputPoints,
-                                           *getWaveTimeData().modelTime));
-      outputTimeStep = std::min(
-          outputTimeStep,
-          ww4_utils::computeNextOutputStep(getRunConfig().outputNesting,
-                                           *getWaveTimeData().modelTime));
-      outputTimeStep = std::min(
-          outputTimeStep,
-          ww4_utils::computeNextOutputStep(getRunConfig().outputTracks,
-                                           *getWaveTimeData().modelTime));
-      outputTimeStep = std::min(
-          outputTimeStep,
-          ww4_utils::computeNextOutputStep(getRunConfig().outputRestart,
-                                           *getWaveTimeData().modelTime));
-      outputTimeStep =
-          std::min(outputTimeStep,
-                   ww4_utils::computeNextOutputStep(
-                       getRunConfig().outputApi, *getWaveTimeData().modelTime));
-
-      outputTimeStep = std::min(outputTimeStep,
-                                ww4_utils::TimeManagement::differenceInSeconds(
-                                    *getWaveTimeData().modelTime, endTime));
+      double outputTimeStep = ww4_utils::computeMinOutputStep(
+          getRunConfig(), *getWaveTimeData().modelTime, endTime);
 
       //
       // 3.3 Set the time step for this cycle of the time step loop
