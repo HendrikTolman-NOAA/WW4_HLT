@@ -295,11 +295,11 @@ TEST(RunConfigTest, ApiOutputConfig) {
 
   const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
-  EXPECT_TRUE(config->outputApi);
+  EXPECT_TRUE(config->outputApi.requested);
 
   std::stringstream ss;
   reportRunConfig(*config, ss);
-  EXPECT_NE(ss.str().find("API output requested"), std::string::npos);
+  EXPECT_NE(ss.str().find("API output"), std::string::npos);
 
   std::remove(filename.c_str());
 }

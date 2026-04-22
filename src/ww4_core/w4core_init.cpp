@@ -164,6 +164,8 @@ void w4core_init(const ww4_utils::DateTime &startTime,
 
 const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
 
+ww4_utils::RunConfig &getMutableRunConfig() { return globalRunConfig; }
+
 std::ofstream &getLogFileStream() { return logFile; }
 
 const std::string &getProgramName() { return capturedProgramName; }

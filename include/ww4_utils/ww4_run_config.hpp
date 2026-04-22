@@ -14,13 +14,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-21
  */
 
 #ifndef WW4_UTILS_WW4_RUN_CONFIG_HPP
 #define WW4_UTILS_WW4_RUN_CONFIG_HPP
 
 #include "ww4_utils/time_management.hpp"
+#include "ww4_utils/ww4_output_utils.hpp"
 #include <iostream>
 #include <optional>
 #include <string_view>
@@ -67,20 +68,6 @@ struct HomogeneousDataPoint {
 };
 
 /**
- * @struct OutputConfig
- * @brief Configuration for a specific output type.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
- */
-struct OutputConfig {
-  bool requested = false;            ///< Is this output requested?
-  std::optional<DateTime> startTime; ///< Start time for output.
-  std::optional<DateTime> endTime;   ///< End time for output.
-  double interval = -1.0;            ///< Output interval in seconds.
-  bool atFirstTime = true;           ///< Output at first time?
-};
-
-/**
  * @struct RunConfig
  * @brief Configuration for the run-time environment.
  * @details Stores the calendar type, output preferences, and input options.
@@ -123,7 +110,7 @@ struct RunConfig {
 
   double timeStep = -1.0; ///< Model time step in seconds.
 
-  bool outputApi = false; ///< API output flag.
+  OutputConfig outputApi; ///< API output configuration.
 
   OutputConfig outputFields;  ///< Gridded fields output configuration.
   OutputConfig outputPoints;  ///< Point output configuration.
