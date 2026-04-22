@@ -22,16 +22,16 @@ calendar_type: "Standard"
 # Options: "yes" (default), "no"
 produce_std_out: "yes"
 
-# Option for producing a log file.
-# Options: "yes" (default), "no"
-produce_log_file: "yes"
-
 # Option for the level of output to standard output during time stepping.
 # Options: "none", "summary", "full" (default)
 # "none"    : No output in the time stepping loop.
 # "summary" : Output only if input field updated or output produced.
 # "full"    : Standard full output for every step.
 screen_output_level: "full"
+
+# Option for producing a log file.
+# Options: "yes" (default), "no"
+produce_log_file: "yes"
 
 # Mandatory model time step in seconds.
 # This parameter must be positive and non-zero.
