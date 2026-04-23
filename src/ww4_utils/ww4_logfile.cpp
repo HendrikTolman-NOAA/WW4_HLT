@@ -83,15 +83,14 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
                        const LogTableData &data) {
   auto mark = [](bool b) { return b ? 'X' : ' '; };
 
-  os << "  | " << TimeManagement::toFormattedString(time) << " |"
-     << "  " << mark(data.wlUpdated) << "   " << mark(data.cuUpdated) << "   "
+  os << "  | " << TimeManagement::toFormattedString(time) << " |" << "  "
+     << mark(data.wlUpdated) << "   " << mark(data.cuUpdated) << "   "
      << mark(data.wiUpdated) << "   " << mark(data.icUpdated) << "   "
-     << mark(data.bdUpdated) << "  |"
-     << "  " << mark(data.fieldsPerformed) << "   "
-     << mark(data.pointsPerformed) << "   " << mark(data.nestingPerformed)
-     << "   " << mark(data.tracksPerformed) << "   "
-     << mark(data.restartPerformed) << "   " << mark(data.apiPerformed) << "  |"
-     << std::endl;
+     << mark(data.bdUpdated) << "  |" << "  " << mark(data.fieldsPerformed)
+     << "   " << mark(data.pointsPerformed) << "   "
+     << mark(data.nestingPerformed) << "   " << mark(data.tracksPerformed)
+     << "   " << mark(data.restartPerformed) << "   " << mark(data.apiPerformed)
+     << "  |" << std::endl;
 }
 
 void writeLogTableFooter(std::ostream &os) {
