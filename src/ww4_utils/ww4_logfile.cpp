@@ -72,7 +72,7 @@ void writeLogTableHeader(std::ostream &os) {
         "------+\n"
      << "  |          Time           |       Inputs        |         Outputs   "
         "      |\n"
-     << "  |      (end of step)      | WLV CUR WND ICE DPT | FLD PNT NST TRK "
+     << "  |    (at end of step)     | WLV CUR WND ICE DPT | FLD PNT NST TRK "
         "RST API |\n"
      << "  +-------------------------+---------------------+-------------------"
         "------+"
