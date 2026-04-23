@@ -117,12 +117,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
 
       //
-      // 1.6.3 Write tabular log header
-      //
-      ww4_utils::ww4_logfile::writeLogTableHeader(logFile);
-
-      //
-      // 1.6.4 Report out run start time
+      // 1.6.3 Report out run start time
       //
       logFile << "  Run starts at "
               << ww4_utils::TimeManagement::toFormattedString(
@@ -130,15 +125,20 @@ void w4core_init(const ww4_utils::DateTime &startTime,
               << std::endl;
 
       //
-      // 1.6.5 Identify being in initialization routine
+      // 1.6.4 Identify being in initialization routine
       //
       logFile << "\n  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
       //
-      // 1.6.6 Report out run time configuration
+      // 1.6.5 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
+
+      //
+      // 1.6.6 Write tabular log header
+      //
+      ww4_utils::ww4_logfile::writeLogTableHeader(logFile);
     }
 
   } catch (const std::exception &e) {
