@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update, 2026-04-22
+ * @date Last update, 2026-04-23
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -68,12 +68,14 @@ void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
 }
 
 void writeLogTableHeader(std::ostream &os) {
-  os << " ---------------------------------------------------------------------"
-        "---------\n"
-     << "  Time                    Inputs              Outputs\n"
-     << "                          W  C  W  I  D    F  P  N  T  R  A\n"
-     << " ---------------------------------------------------------------------"
-        "---------"
+  os << "  +-------------------------+---------------------+-------------------"
+        "------+\n"
+     << "  |          Time           |       Inputs        |         Outputs   "
+        "      |\n"
+     << "  |                         | WLV CUR WND ICE DPT | FLD PNT NST TRK "
+        "RST API |\n"
+     << "  +-------------------------+---------------------+-------------------"
+        "------+"
      << std::endl;
 }
 
@@ -81,19 +83,19 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
                        const LogTableData &data) {
   auto mark = [](bool b) { return b ? 'X' : ' '; };
 
-  os << "  " << TimeManagement::toFormattedString(time) << "     "
-     << mark(data.wlUpdated) << "  " << mark(data.cuUpdated) << "  "
-     << mark(data.wiUpdated) << "  " << mark(data.icUpdated) << "  "
-     << mark(data.bdUpdated) << "    " << mark(data.fieldsPerformed) << "  "
-     << mark(data.pointsPerformed) << "  " << mark(data.nestingPerformed)
-     << "  " << mark(data.tracksPerformed) << "  "
-     << mark(data.restartPerformed) << "  " << mark(data.apiPerformed)
-     << std::endl;
+  os << "  | " << TimeManagement::toFormattedString(time) << " |" << "  "
+     << mark(data.wlUpdated) << "   " << mark(data.cuUpdated) << "   "
+     << mark(data.wiUpdated) << "   " << mark(data.icUpdated) << "   "
+     << mark(data.bdUpdated) << "  |" << "  " << mark(data.fieldsPerformed)
+     << "   " << mark(data.pointsPerformed) << "   "
+     << mark(data.nestingPerformed) << "   " << mark(data.tracksPerformed)
+     << "   " << mark(data.restartPerformed) << "   " << mark(data.apiPerformed)
+     << "  |" << std::endl;
 }
 
 void writeLogTableFooter(std::ostream &os) {
-  os << " ---------------------------------------------------------------------"
-        "---------"
+  os << "  +-------------------------+---------------------+-------------------"
+        "------+"
      << std::endl;
 }
 

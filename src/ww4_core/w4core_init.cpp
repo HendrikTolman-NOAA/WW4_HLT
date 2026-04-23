@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-22
+ * @date Last update, 2026-04-23
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -117,12 +117,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
       ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
 
       //
-      // 1.6.3 Write tabular log header
-      //
-      ww4_utils::ww4_logfile::writeLogTableHeader(logFile);
-
-      //
-      // 1.6.4 Report out run start time
+      // 1.6.3 Report out run start time
       //
       logFile << "  Run starts at "
               << ww4_utils::TimeManagement::toFormattedString(
@@ -130,15 +125,20 @@ void w4core_init(const ww4_utils::DateTime &startTime,
               << std::endl;
 
       //
-      // 1.6.5 Identify being in initialization routine
+      // 1.6.4 Identify being in initialization routine
       //
       logFile << "\n  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
       //
-      // 1.6.6 Report out run time configuration
+      // 1.6.5 Report out run time configuration
       //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
+
+      //
+      // 1.6.6 Write tabular log header
+      //
+      ww4_utils::ww4_logfile::writeLogTableHeader(logFile);
     }
 
   } catch (const std::exception &e) {

@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-22
+ * @date Last update, 2026-04-23
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -47,14 +47,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
     //
     // 1.2 Output to  log file (if requested)
     //
-    if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-      getLogFileStream()
-          << "  Time stepping (w4core_wave) from: "
-          << ww4_utils::TimeManagement::toFormattedString(startTime)
-          << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
-          << "\n"
-          << std::endl;
-    }
     //
     // 1.3 Check consistency of starting and ending times
     // 1.3.1 Starting versus ending time

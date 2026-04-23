@@ -10,7 +10,7 @@
  * Weather Service.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-22
+ * @date Last update, 2026-04-23
  */
 
 #include "ww4_core/w4core_finl.hpp"
@@ -157,8 +157,8 @@ TEST_F(W4CoreScreenOutputTest, LogFileTabularOutput) {
   std::string logStr = logContent.str();
 
   // Should have tabular header
-  EXPECT_NE(logStr.find("Inputs              Outputs"), std::string::npos);
-  EXPECT_NE(logStr.find("W  C  W  I  D    F  P  N  T  R  A"),
+  EXPECT_NE(logStr.find("Inputs        |         Outputs"), std::string::npos);
+  EXPECT_NE(logStr.find("WLV CUR WND ICE DPT | FLD PNT NST TRK RST API"),
             std::string::npos);
 
   // Should have 3 lines of data (00:00:00, 01:00:00, 02:00:00)

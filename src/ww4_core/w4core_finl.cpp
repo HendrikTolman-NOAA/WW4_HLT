@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-22
+ * @date Last update, 2026-04-23
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -63,9 +63,16 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
 
     //
     // 3.  Final log file output (if requested) ------------------------------
-    // 3.1 Initial line
     //
     if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+      //
+      // 3.1 Write tabular log footer
+      //
+      ww4_utils::ww4_logfile::writeLogTableFooter(getLogFileStream());
+
+      //
+      // 3.2 Initial line
+      //
       getLogFileStream() << "\n  Finalization (w4core_finl) starting: "
                          << ww4_utils::TimeManagement::toFormattedString(
                                 endTime)
@@ -73,17 +80,12 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
                          << std::endl;
 
       //
-      // 3.2 Report out run end time
+      // 3.3 Report out run end time
       //
       getLogFileStream() << "  Run ends at "
                          << ww4_utils::TimeManagement::toFormattedString(
                                 ww4_utils::TimeManagement::getPresentDateTime())
                          << std::endl;
-
-      //
-      // 3.3 Write tabular log footer
-      //
-      ww4_utils::ww4_logfile::writeLogTableFooter(getLogFileStream());
 
       //
       // 3.4 Run time summary
