@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update, 2026-04-20
+ * @date Last update, 2026-04-29
  */
 
 #include "ww4_utils/ww4_std_out.hpp"
@@ -129,9 +129,4 @@ TEST(StdOutTest, WarnngReporting) {
   std::string output = ss.str();
 
   EXPECT_NE(output.find("WW4 WARNING: Another warning"), std::string::npos);
-}
-
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }
