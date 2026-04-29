@@ -80,6 +80,7 @@ add_library(
     src/ww4_utils/ww4_run_config.cpp
     src/ww4_utils/ww4_input_utils.cpp
     src/ww4_utils/ww4_output_utils.cpp
+    src/ww4_utils/ww4_service.cpp
 )
 target_include_directories(ww4_utils PUBLIC include)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
@@ -174,6 +175,11 @@ foreach(test_target IN LISTS WW4_TEST_TARGETS)
     target_compile_options(${test_target} PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
     target_link_options(${test_target} PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 endforeach()
+add_executable(test_ww4_service tests_L1_L2/ww4_utils/test_ww4_service.cpp)
+target_link_libraries(test_ww4_service PRIVATE ww4_utils GTest::gtest_main)
+
+add_executable(test_ww4_constants tests_L1_L2/ww4_utils/test_ww4_constants.cpp)
+target_link_libraries(test_ww4_constants PRIVATE ww4_utils GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(test_time_management)
@@ -190,3 +196,5 @@ gtest_discover_tests(test_w4core_input_cycling)
 gtest_discover_tests(test_interpolation_output)
 gtest_discover_tests(test_w4core_screen_output)
 gtest_discover_tests(test_ww4_output_utils)
+gtest_discover_tests(test_ww4_service)
+gtest_discover_tests(test_ww4_constants)
