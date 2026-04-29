@@ -48,6 +48,10 @@ else()
         # Suppress unknown warning option and conversion errors for LLVM-based compilers (Clang, IntelLLVM)
         if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
             list(APPEND WW4_COMMON_COMPILE_OPTIONS -Wno-unknown-warning-option -Wno-character-conversion)
+            # Suppress Intel LLVM driver warning about unsupported options (e.g., -Winline)
+            if(CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
+                list(APPEND WW4_COMMON_COMPILE_OPTIONS -diag-disable=10430)
+            endif()
         endif()
     endif()
     if(WW4_USE_SANITIZERS)
@@ -70,16 +74,20 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-# Suppress warnings from GTest itself for Clang/IntelLLVM during compilation
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
-    set(OLD_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-warning-option -Wno-character-conversion")
-endif()
-
 FetchContent_MakeAvailable(googletest)
 
+# Suppress warnings from GTest itself for Clang/IntelLLVM during compilation
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
-    set(CMAKE_CXX_FLAGS "${OLD_CMAKE_CXX_FLAGS}")
+    set(GTEST_SUPPRESS_FLAGS -Wno-unknown-warning-option -Wno-character-conversion)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
+        list(APPEND GTEST_SUPPRESS_FLAGS -diag-disable=10430)
+    endif()
+    foreach(target gtest gtest_main gmock gmock_main)
+        if(TARGET ${target})
+            target_compile_options(${target} INTERFACE ${GTEST_SUPPRESS_FLAGS})
+            target_compile_options(${target} PRIVATE ${GTEST_SUPPRESS_FLAGS})
+        endif()
+    endforeach()
 endif()
 
 # Library
