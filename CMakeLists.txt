@@ -13,7 +13,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI)
 #@date Initial : 2026-03-20
-#@date Last update : 2026-04-23
+#@date Last update : 2026-04-29
 
 cmake_minimum_required(VERSION 3.20)
 
