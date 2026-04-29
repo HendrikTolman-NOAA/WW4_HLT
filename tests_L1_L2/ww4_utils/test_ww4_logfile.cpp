@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update, 2026-04-16
+ * @date Last update, 2026-04-23
  */
 
 #include "ww4_utils/ww4_logfile.hpp"
@@ -48,9 +48,4 @@ TEST(LogFileTest, FinalOutputWithMetrics) {
   EXPECT_NE(output.find("  End of program "), std::string::npos);
   EXPECT_NE(output.find("WAVEWATCH IV program Program shell"),
             std::string::npos);
-}
-
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }
