@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_output_utils.hpp
+ * @file ww4_output_utils.h
  * @brief Utility structures and routines for model output processing.
  * @details This header defines the OutputConfig structure and routines for
  *          managing model output time data.
@@ -15,10 +15,9 @@
  * @date 2026-04-21
  */
 
-#ifndef WW4_UTILS_WW4_OUTPUT_UTILS_HPP
-#define WW4_UTILS_WW4_OUTPUT_UTILS_HPP
+#pragma once
 
-#include "ww4_utils/time_management.hpp"
+#include "ww4_utils/time_management.h"
 #include <optional>
 
 namespace ww4_utils {
@@ -70,5 +69,3 @@ void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
                              RunConfig &config);
 
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_WW4_OUTPUT_UTILS_HPP

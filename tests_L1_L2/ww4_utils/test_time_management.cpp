@@ -17,7 +17,7 @@
  * @date Last update, 2026-04-16
  */
 
-#include "ww4_utils/time_management.hpp"
+#include "ww4_utils/time_management.h"
 #include <chrono>
 #include <gtest/gtest.h>
 #include <string>

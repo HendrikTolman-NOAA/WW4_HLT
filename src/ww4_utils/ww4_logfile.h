@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_logfile.hpp
+ * @file ww4_logfile.h
  * @brief Routines for log file output.
  * @details This header defines routines for managing log file output,
  *          duplicating the formats from WAVEWATCH III, updated for
@@ -19,11 +19,10 @@
  *       Original author: Hendrik L. Tolman.
  */
 
-#ifndef WW4_UTILS_WW4_LOGFILE_HPP
-#define WW4_UTILS_WW4_LOGFILE_HPP
+#pragma once
 
-#include "ww4_utils/memory_utils.hpp"
-#include "ww4_utils/time_management.hpp"
+#include "ww4_utils/memory_utils.h"
+#include "ww4_utils/time_management.h"
 #include <iostream>
 #include <optional>
 #include <string>
@@ -137,5 +136,3 @@ void writeLogTableFooter(std::ostream &os);
 
 } // namespace ww4_logfile
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_WW4_LOGFILE_HPP

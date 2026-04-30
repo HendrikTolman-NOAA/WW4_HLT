@@ -4,7 +4,7 @@
  *       +--------------------------------------------------------+
  *
  * @file test_ww4_constants.cpp
- * @brief Unit tests for WW4 constants in ww4_constants.hpp.
+ * @brief Unit tests for WW4 constants in ww4_constants.h.
  * @details Verifies the values of mathematical and physical constants.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -12,7 +12,7 @@
  * @date 2026-04-17
  */
 
-#include "ww4_utils/ww4_constants.hpp"
+#include "ww4_utils/ww4_constants.h"
 #include <gtest/gtest.h>
 
 namespace ww4_constants {

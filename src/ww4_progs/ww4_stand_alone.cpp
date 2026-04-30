@@ -19,12 +19,12 @@
  *       Original author of WW3 stand-alone shell: Hendrik L. Tolman.
  */
 
-#include "ww4_core/w4core_finl.hpp"
-#include "ww4_core/w4core_init.hpp"
-#include "ww4_core/w4core_wave.hpp"
-#include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_stand_alone_config.hpp"
-#include "ww4_utils/ww4_std_out.hpp"
+#include "ww4_core/w4core_finl.h"
+#include "ww4_core/w4core_init.h"
+#include "ww4_core/w4core_wave.h"
+#include "ww4_utils/time_management.h"
+#include "ww4_utils/ww4_stand_alone_config.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <exception>
 #include <filesystem>
 #include <iostream>

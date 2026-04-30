@@ -18,7 +18,7 @@
  *       Original author: Hendrik L. Tolman.
  */
 
-#include "ww4_utils/ww4_logfile.hpp"
+#include "ww4_utils/ww4_logfile.h"
 #include <iomanip>
 
 namespace ww4_utils {

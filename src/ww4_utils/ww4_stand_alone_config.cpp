@@ -16,8 +16,8 @@
  * @date Last update, 2026-04-16
  */
 
-#include "ww4_utils/ww4_stand_alone_config.hpp"
-#include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_utils/ww4_stand_alone_config.h"
+#include "ww4_utils/ww4_run_config.h"
 #include <charconv>
 #include <fstream>
 #include <string>

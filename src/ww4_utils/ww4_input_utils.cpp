@@ -16,10 +16,10 @@
  * @date Last update, 2026-04-22
  */
 
-#include "ww4_utils/ww4_input_utils.hpp"
-#include "ww4_utils/ww4_logfile.hpp"
-#include "ww4_utils/ww4_run_config.hpp"
-#include "ww4_utils/ww4_std_out.hpp"
+#include "ww4_utils/ww4_input_utils.h"
+#include "ww4_utils/ww4_logfile.h"
+#include "ww4_utils/ww4_run_config.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <algorithm>
 #include <iostream>
 #include <vector>

@@ -16,9 +16,9 @@
  * @date Last update, 2026-04-22
  */
 
-#include "ww4_utils/ww4_run_config.hpp"
-#include "ww4_utils/ww4_stand_alone_config.hpp"
-#include "ww4_utils/ww4_std_out.hpp"
+#include "ww4_utils/ww4_run_config.h"
+#include "ww4_utils/ww4_stand_alone_config.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <algorithm>
 #include <charconv>
 #include <fstream>

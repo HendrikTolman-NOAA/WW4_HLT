@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file time_management.hpp
+ * @file time_management.h
  * @brief Routines for management of date and time.
  * @details This header defines the DateTime structure and TimeManagement class,
  *          providing utilities for calendar calculations, time increments,
@@ -21,8 +21,7 @@
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
  */
 
-#ifndef WW4_UTILS_TIME_MANAGEMENT_HPP
-#define WW4_UTILS_TIME_MANAGEMENT_HPP
+#pragma once
 
 #include <array>
 #include <chrono>
@@ -433,5 +432,3 @@ private:
 };
 
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_TIME_MANAGEMENT_HPP

@@ -14,7 +14,7 @@
  * @date Last update, 2026-04-29
  */
 
-#include "ww4_utils/ww4_std_out.hpp"
+#include "ww4_utils/ww4_std_out.h"
 #include <gtest/gtest.h>
 #include <sstream>
 

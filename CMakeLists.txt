@@ -60,9 +60,6 @@ else()
     endif()
 endif()
 
-# Include directories
-include_directories(include)
-
 # Google Test
 include(FetchContent)
 FetchContent_Declare(
@@ -103,7 +100,7 @@ add_library(
     src/ww4_utils/ww4_output_utils.cpp
     src/ww4_utils/ww4_service.cpp
 )
-target_include_directories(ww4_utils PUBLIC include)
+target_include_directories(ww4_utils PUBLIC src)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_utils PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
@@ -113,7 +110,7 @@ add_library(
     src/ww4_core/w4core_wave.cpp
     src/ww4_core/w4core_finl.cpp
 )
-target_include_directories(ww4_core PUBLIC include)
+target_include_directories(ww4_core PUBLIC src)
 target_link_libraries(ww4_core PUBLIC ww4_utils)
 target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})

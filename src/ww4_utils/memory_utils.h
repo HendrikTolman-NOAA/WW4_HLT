@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file memory_utils.hpp
+ * @file memory_utils.h
  * @brief Utilities for capturing memory usage of the current process.
  * @details This header defines the MemoryUsage structure and MemoryUtils class,
  *          providing functionality to read process memory metrics from the
@@ -17,8 +17,7 @@
  * @date Last update, 2026-04-16
  */
 
-#ifndef WW4_UTILS_MEMORY_UTILS_HPP
-#define WW4_UTILS_MEMORY_UTILS_HPP
+#pragma once
 
 #include <cstdint>
 #include <optional>
@@ -79,5 +78,3 @@ public:
 };
 
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_MEMORY_UTILS_HPP

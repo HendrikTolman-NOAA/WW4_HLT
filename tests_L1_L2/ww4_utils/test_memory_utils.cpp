@@ -16,7 +16,7 @@
  * @date Last update, 2026-04-16
  */
 
-#include "ww4_utils/memory_utils.hpp"
+#include "ww4_utils/memory_utils.h"
 #include <fstream>
 #include <gtest/gtest.h>
 #include <vector>

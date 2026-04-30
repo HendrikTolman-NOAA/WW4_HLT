@@ -16,7 +16,7 @@
  * @date Last update, 2026-04-21
  */
 
-#include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_utils/ww4_run_config.h"
 #include <fstream>
 #include <gtest/gtest.h>
 #include <sstream>

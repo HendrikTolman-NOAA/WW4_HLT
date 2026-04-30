@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_service.hpp
+ * @file ww4_service.h
  * @brief Common mathematical and physical constants for WAVEWATCH IV.
  * @details This header defines a set of shared constants used across the WW4
  *          model.
@@ -16,10 +16,9 @@
  * @date Last update, 2026-04-17
  */
 
-#ifndef WW4_UTILS_WW4_SERVICE_HPP
-#define WW4_UTILS_WW4_SERVICE_HPP
+#pragma once
 
-#include "ww4_utils/ww4_constants.hpp"
+#include "ww4_utils/ww4_constants.h"
 #include <cmath>
 
 namespace ww4_utils {
@@ -111,5 +110,3 @@ double dist_on_sphere(double lon1, double lat1, double lon2, double lat2);
 } // namespace ww4_service
 
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_WW4_SERVICE_HPP

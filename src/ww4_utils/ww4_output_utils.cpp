@@ -14,8 +14,8 @@
  * @date 2026-04-21
  */
 
-#include "ww4_utils/ww4_output_utils.hpp"
-#include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_utils/ww4_output_utils.h"
+#include "ww4_utils/ww4_run_config.h"
 #include <algorithm>
 
 namespace ww4_utils {

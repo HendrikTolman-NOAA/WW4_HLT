@@ -13,10 +13,10 @@
  * @date 2026-04-21
  */
 
-#include "ww4_core/w4core_finl.hpp"
-#include "ww4_core/w4core_init.hpp"
-#include "ww4_core/w4core_wave.hpp"
-#include "ww4_utils/time_management.hpp"
+#include "ww4_core/w4core_finl.h"
+#include "ww4_core/w4core_init.h"
+#include "ww4_core/w4core_wave.h"
+#include "ww4_utils/time_management.h"
 #include <cstdio>
 #include <fstream>
 #include <gtest/gtest.h>

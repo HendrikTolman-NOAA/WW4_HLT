@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_finl.hpp
+ * @file w4core_finl.h
  * @brief Finalization routine for the WAVEWATCH IV core.
  * @details This header defines the finalization routine for the WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -18,10 +18,9 @@
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
-#ifndef WW4_CORE_W4CORE_FINL_HPP
-#define WW4_CORE_W4CORE_FINL_HPP
+#pragma once
 
-#include "ww4_utils/time_management.hpp"
+#include "ww4_utils/time_management.h"
 
 /**
  * @namespace ww4_core
@@ -42,5 +41,3 @@ namespace ww4_core {
 void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os);
 
 } // namespace ww4_core
-
-#endif // WW4_CORE_W4CORE_FINL_HPP

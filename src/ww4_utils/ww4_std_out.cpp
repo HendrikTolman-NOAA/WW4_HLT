@@ -19,7 +19,7 @@
  *       Original author: Hendrik L. Tolman.
  */
 
-#include "ww4_utils/ww4_std_out.hpp"
+#include "ww4_utils/ww4_std_out.h"
 #include <cstdlib>
 #include <iomanip>
 

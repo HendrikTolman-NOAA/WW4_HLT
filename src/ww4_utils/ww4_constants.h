@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_constants.hpp
+ * @file ww4_constants.h
  * @brief Common mathematical and physical constants for WAVEWATCH IV.
  * @details This header defines a set of shared constants used across the WW4
- *          model, moved from ww4_service.hpp.
+ *          model, moved from ww4_service.h.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -15,8 +15,7 @@
  * @date 2026-04-17
  */
 
-#ifndef WW4_UTILS_WW4_CONSTANTS_HPP
-#define WW4_UTILS_WW4_CONSTANTS_HPP
+#pragma once
 
 /**
  * @namespace ww4_constants
@@ -86,5 +85,3 @@ constexpr double KDMAX = 20.0;
 constexpr double JONSWAP_FACTOR = 0.06175;
 
 } // namespace ww4_constants
-
-#endif // WW4_UTILS_WW4_CONSTANTS_HPP

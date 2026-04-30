@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_wave.hpp
+ * @file w4core_wave.h
  * @brief Time stepping routine for the WAVEWATCH IV core.
  * @details This header defines the time stepping routine for the WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -18,11 +18,10 @@
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
-#ifndef WW4_CORE_W4CORE_WAVE_HPP
-#define WW4_CORE_W4CORE_WAVE_HPP
+#pragma once
 
-#include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_input_utils.hpp"
+#include "ww4_utils/time_management.h"
+#include "ww4_utils/ww4_input_utils.h"
 #include <optional>
 
 /**
@@ -46,5 +45,3 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os);
 
 } // namespace ww4_core
-
-#endif // WW4_CORE_W4CORE_WAVE_HPP

@@ -18,13 +18,13 @@
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
-#include "ww4_core/w4core_finl.hpp"
-#include "ww4_core/w4core_init.hpp"
-#include "ww4_utils/memory_utils.hpp"
-#include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_input_utils.hpp"
-#include "ww4_utils/ww4_logfile.hpp"
-#include "ww4_utils/ww4_std_out.hpp"
+#include "ww4_core/w4core_finl.h"
+#include "ww4_core/w4core_init.h"
+#include "ww4_utils/memory_utils.h"
+#include "ww4_utils/time_management.h"
+#include "ww4_utils/ww4_input_utils.h"
+#include "ww4_utils/ww4_logfile.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <exception>
 #include <iostream>
 

@@ -14,7 +14,7 @@
  * @date Last update, 2026-04-29
  */
 
-#include "ww4_utils/ww4_logfile.hpp"
+#include "ww4_utils/ww4_logfile.h"
 #include <gtest/gtest.h>
 #include <sstream>
 
