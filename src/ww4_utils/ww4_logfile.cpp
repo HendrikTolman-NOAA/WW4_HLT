@@ -24,6 +24,24 @@
 namespace ww4_utils {
 namespace ww4_logfile {
 
+bool LogTableData::anyAction() const {
+  return wlUpdated || cuUpdated || wiUpdated || icUpdated || bdUpdated ||
+         fieldsPerformed || pointsPerformed || nestingPerformed ||
+         tracksPerformed || restartPerformed || apiPerformed;
+}
+
+void LogTableData::reset() {
+  wlUpdated = cuUpdated = wiUpdated = icUpdated = bdUpdated = false;
+  fieldsPerformed = pointsPerformed = nestingPerformed = tracksPerformed =
+      restartPerformed = apiPerformed = false;
+}
+
+/**
+ * @brief Writes the initial log entry to the provided output stream.
+ * @details Duplicates the initial log formatting from WW3.
+ * @param os The output stream to write to (e.g., an std::ofstream).
+ * @param programName The name of the executable program.
+ */
 void writeInitialOutput(std::ostream &os, std::string_view programName) {
   const std::string mid =
       "*** WAVEWATCH IV program " + std::string(programName) + " ***";
@@ -38,6 +56,15 @@ void writeInitialOutput(std::ostream &os, std::string_view programName) {
      << std::endl;
 }
 
+/**
+ * @brief Writes the final log entry to the provided output stream.
+ * @details Duplicates the final log formatting from WW3.
+ *          Optionally includes execution times and memory usage.
+ * @param os The output stream to write to.
+ * @param programName The name of the executable program.
+ * @param initTime Optional initialization time in seconds.
+ * @param elapsedTotal Optional total elapsed time in seconds.
+ */
 void writeFinalOutput(std::ostream &os, std::string_view programName,
                       std::optional<double> initTime,
                       std::optional<double> elapsedTotal) {
@@ -57,16 +84,31 @@ void writeFinalOutput(std::ostream &os, std::string_view programName,
      << std::endl;
 }
 
+/**
+ * @brief Writes a message identifying that an input field is being updated.
+ * @param os The output stream to write to.
+ * @param fieldName The name of the field being updated.
+ */
 void writeUpdatingField(std::ostream &os, std::string_view fieldName) {
   os << "    Updating " << fieldName << std::endl;
 }
 
+/**
+ * @brief Writes interpolation interval information for an input field.
+ * @param os The output stream to write to.
+ * @param time1 First interpolation time tag.
+ * @param time2 Second interpolation time tag.
+ */
 void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
                             const DateTime &time2) {
   os << "      Interpolation from " << TimeManagement::toFormattedString(time1)
      << " to " << TimeManagement::toFormattedString(time2) << std::endl;
 }
 
+/**
+ * @brief Writes the header of the tabular log output.
+ * @param os The output stream to write to.
+ */
 void writeLogTableHeader(std::ostream &os) {
   os << "  +-------------------------+---------------------+-------------------"
         "------+\n"
@@ -79,6 +121,12 @@ void writeLogTableHeader(std::ostream &os) {
      << std::endl;
 }
 
+/**
+ * @brief Adds a data line to the tabular log output.
+ * @param os The output stream to write to.
+ * @param time The time stamp for the end of the interval.
+ * @param data The data flags for the line.
+ */
 void writeLogTableLine(std::ostream &os, const DateTime &time,
                        const LogTableData &data) {
   auto mark = [](bool b) { return b ? 'X' : ' '; };
@@ -93,6 +141,10 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
      << "  |" << std::endl;
 }
 
+/**
+ * @brief Writes the footer of the tabular log output.
+ * @param os The output stream to write to.
+ */
 void writeLogTableFooter(std::ostream &os) {
   os << "  +-------------------------+---------------------+-------------------"
         "------+"

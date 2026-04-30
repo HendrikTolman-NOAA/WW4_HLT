@@ -20,6 +20,12 @@
 
 namespace ww4_utils {
 
+/**
+ * @brief Assesses and initializes output configurations.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param config Run configuration to update.
+ */
 void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
                         RunConfig &config) {
   auto assess = [&](OutputConfig &oc, bool isApi) {
@@ -62,6 +68,13 @@ void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
   assess(config.outputApi, true);
 }
 
+/**
+ * @brief Computes the minimum time step to the next requested output.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param config Run configuration.
+ * @return Minimum time step in seconds.
+ */
 double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
                              const RunConfig &config) {
   double minStep = TimeManagement::differenceInSeconds(modelTime, endTime);
@@ -86,6 +99,12 @@ double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
   return std::max(0.0, minStep);
 }
 
+/**
+ * @brief Updates actual output times after output has been performed.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param config Run configuration to update.
+ */
 void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
                              RunConfig &config) {
   auto update = [&](OutputConfig &oc) {

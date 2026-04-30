@@ -26,6 +26,14 @@
 namespace ww4_utils {
 namespace ww4_std_out {
 
+/**
+ * @brief Writes the initial banner to the provided output stream.
+ * @details Duplicates the initial Fortran FORMAT statements from WW3.
+ *          Identified as format 900 in ww3_shel.F90 and ww3_multi.F90.
+ * @param os The output stream to write to (e.g., std::cout).
+ * @param programName The name of the executable program to identify in the
+ *        banner.
+ */
 void writeInitialOutput(std::ostream &os, std::string_view programName) {
   const std::string mid =
       "*** WAVEWATCH IV program " + std::string(programName) + " ***";
@@ -40,6 +48,17 @@ void writeInitialOutput(std::ostream &os, std::string_view programName) {
      << std::endl;
 }
 
+/**
+ * @brief Writes the final footer to the provided output stream.
+ * @details Duplicates the final Fortran FORMAT statements from WW3.
+ *          Identified as format 999 in ww3_shel.F90 and ww3_multi.F90.
+ *          Optionally includes execution times and memory usage.
+ * @param os The output stream to write to (e.g., std::cout).
+ * @param programName The name of the executable program to identify in the
+ *        footer.
+ * @param initTime Optional initialization time in seconds.
+ * @param elapsedTotal Optional total elapsed time in seconds.
+ */
 void writeFinalOutput(std::ostream &os, std::string_view programName,
                       std::optional<double> initTime,
                       std::optional<double> elapsedTotal) {
@@ -59,6 +78,15 @@ void writeFinalOutput(std::ostream &os, std::string_view programName,
      << std::endl;
 }
 
+/**
+ * @brief Writes an error message to the provided output stream in the standard
+ *        WAVEWATCH format.
+ * @details Heritage from EXTCDE in WAVEWATCH III w3servmd.F90.
+ * @param os The output stream to write to.
+ * @param msg Optional error message to report.
+ * @param file Optional source file name where the error occurred.
+ * @param line Optional line number in the source file.
+ */
 void writeExtcdeOutput(std::ostream &os, std::optional<std::string_view> msg,
                        std::optional<std::string_view> file,
                        std::optional<int> line) {
@@ -84,6 +112,15 @@ void writeExtcdeOutput(std::ostream &os, std::optional<std::string_view> msg,
   os << std::flush;
 }
 
+/**
+ * @brief Writes a warning message to the provided output stream in the standard
+ *        WAVEWATCH format.
+ * @details Heritage from WARNNG in WAVEWATCH III w3servmd.F90.
+ * @param os The output stream to write to.
+ * @param msg The warning message to report.
+ * @param file Optional source file name where the warning occurred.
+ * @param line Optional line number in the source file.
+ */
 void writeWarnngOutput(std::ostream &os, std::string_view msg,
                        std::optional<std::string_view> file,
                        std::optional<int> line) {
@@ -107,6 +144,16 @@ void writeWarnngOutput(std::ostream &os, std::string_view msg,
   os << std::flush;
 }
 
+/**
+ * @brief Performs a program stop with an exit code.
+ * @details Heritage from EXTCDE in WAVEWATCH III w3servmd.F90.
+ *          Calls writeExtcdeOutput and then std::exit.
+ * @param exitCode The exit code to return to the environment.
+ * @param os The output stream to write to (defaults to std::cerr).
+ * @param msg Optional error message to report.
+ * @param file Optional source file name where the error occurred.
+ * @param line Optional line number in the source file.
+ */
 [[noreturn]] void extcde(int exitCode, std::ostream &os,
                          std::optional<std::string_view> msg,
                          std::optional<std::string_view> file,
@@ -115,15 +162,35 @@ void writeWarnngOutput(std::ostream &os, std::string_view msg,
   std::exit(exitCode);
 }
 
+/**
+ * @brief Reports a warning and continues execution.
+ * @details Heritage from WARNNG in WAVEWATCH III w3servmd.F90.
+ *          Calls writeWarnngOutput.
+ * @param os The output stream to write to (defaults to std::cout).
+ * @param msg The warning message to report.
+ * @param file Optional source file name where the warning occurred.
+ * @param line Optional line number in the source file.
+ */
 void warnng(std::ostream &os, std::string_view msg,
             std::optional<std::string_view> file, std::optional<int> line) {
   writeWarnngOutput(os, msg, file, line);
 }
 
+/**
+ * @brief Writes a message identifying that an input field is being updated.
+ * @param os The output stream to write to.
+ * @param fieldName The name of the field being updated.
+ */
 void writeUpdatingField(std::ostream &os, std::string_view fieldName) {
   os << "    Updating " << fieldName << std::endl;
 }
 
+/**
+ * @brief Writes interpolation interval information for an input field.
+ * @param os The output stream to write to.
+ * @param time1 First interpolation time tag.
+ * @param time2 Second interpolation time tag.
+ */
 void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
                             const DateTime &time2) {
   os << "      Interpolation from " << TimeManagement::toFormattedString(time1)

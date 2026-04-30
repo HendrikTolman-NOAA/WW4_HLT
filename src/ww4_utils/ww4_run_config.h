@@ -134,34 +134,11 @@ struct RunConfig {
   OutputConfig outputRestart; ///< Restart file output configuration.
 };
 
-/**
- * @brief Internal helper to trim whitespace and quotes from a string.
- * @param s The string view to clean.
- * @return A cleaned string view.
- */
 std::string_view cleanValue(std::string_view s);
 
-/**
- * @brief Loads the run-time configuration from a YAML file.
- * @details Reads the specified YAML file from the current directory,
- *          extracts the configuration settings, and updates the
- *          TimeManagement calendar type.
- * @param filename The name of the YAML file to load.
- * @return A RunConfig structure containing the loaded (or default) settings,
- *         or std::nullopt if the file could not be opened.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
- */
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
 
-/**
- * @brief Reports the current configuration to the provided output stream.
- * @param config The RunConfig structure to report.
- * @param os The output stream to write to (default: std::cout).
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
- */
 void reportRunConfig(const RunConfig &config, std::ostream &os);
 
 } // namespace ww4_utils

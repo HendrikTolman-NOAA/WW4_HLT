@@ -51,6 +51,18 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
   return DateTime{ymd, hms};
 }
 
+/**
+ * @brief Loads the stand-alone configuration from a YAML file.
+ * @details Reads the specified YAML file from the current directory,
+ *          extracts the start and end times, and validates that the
+ *          end time is not before the start time.
+ * @param filename The name of the YAML file to load.
+ * @return A StandAloneConfig structure if successful, or std::nullopt
+ *         if an error occurred (e.g., file not found, invalid format,
+ *         or validation failure).
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ */
 std::optional<StandAloneConfig>
 loadStandAloneConfig(const std::string_view filename,
                      [[maybe_unused]] std::ostream &os) noexcept {
@@ -120,6 +132,14 @@ loadStandAloneConfig(const std::string_view filename,
   return config;
 }
 
+/**
+ * @brief Reports the stand-alone configuration to the provided output stream.
+ * @param config The StandAloneConfig structure to report.
+ * @param os The output stream to write to (default: std::cout).
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-09
+ */
 void reportStandAloneConfig(const StandAloneConfig &config, std::ostream &os) {
   os << "\n  Stand-alone configuration settings :" << std::endl;
   os << "     Start time         : "

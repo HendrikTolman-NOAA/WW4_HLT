@@ -23,6 +23,19 @@ namespace ww4_utils {
 
 namespace ww4_service {
 
+/**
+ * @brief Calculate wavenumber and group velocity using Beji (2013).
+ * @details Ported from WW3 routine WAVNU3 in w3dispmd.ftn.
+ *          Calculates wavenumber (k) and group velocity (cg) using the
+ *          improved Eckart formula by Beji (2013).
+ *          Original author in WW3: Aron Roland.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-13
+ * @param omega Intrinsic frequency (rad/s).
+ * @param h Water depth (m).
+ * @return Dispersion struct containing k and cg.
+ */
 Dispersion wavenumber_Beji(double omega, double h) {
   if (h <= 0.0 || omega <= 0.0) {
     return {0.0, 0.0};
@@ -52,6 +65,21 @@ Dispersion wavenumber_Beji(double omega, double h) {
   return {k, cg};
 }
 
+/**
+ * @brief Calculate 5-parameter JONSWAP spectrum.
+ * @details Ported from WW3 routine EJ5P in w3srcemd.f90.
+ *          Original author in WW3: G. Ph. van Vledder.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-10
+ * @param f Frequency (Hz).
+ * @param fp Peak frequency (Hz).
+ * @param alpha Phillip's constant.
+ * @param gamma Peak enhancement factor.
+ * @param siga Sigma_a (for f <= fp).
+ * @param sigb Sigma_b (for f > fp).
+ * @return Spectral density E(f).
+ */
 double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
                   double sigb) {
   if (f <= 0.0 || fp <= 0.0) {
@@ -66,6 +94,21 @@ double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
          std::exp(-1.25 * std::pow(f_ratio, 4)) * std::pow(gamma, r);
 }
 
+/**
+ * @brief Calculate the haversine distance between two points on a sphere.
+ * @details Ported from WW3 routine DIST_HAVERSINE in w3servmd.F90.
+ *          Method: R.W. Sinnott, "Virtues of the Haversine",
+ *                  Sky and Telescope, vol. 68, no. 2, 1984, p. 159.
+ *          Original author in WW3: D. A. Honegger (USACE/ERDC).
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-10
+ * @param lon1 Longitude of 1st point (degrees).
+ * @param lat1 Latitude of 1st point (degrees).
+ * @param lon2 Longitude of 2nd point (degrees).
+ * @param lat2 Latitude of 2nd point (degrees).
+ * @return Spherical distance (radians).
+ */
 double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
   // Compute differences in latitude and longitude in radians
   double dlat = (lat2 - lat1) * ww4_constants::DERA;
@@ -84,6 +127,20 @@ double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
   return c;
 }
 
+/**
+ * @brief Calculate the spherical distance between two points in meters.
+ * @details Ported from WW3 routine DIST_SPHERE in w3srcemd.f90.
+ *          Uses the haversine formula for computation.
+ *          Original author in WW3: Fabrice Ardhuin.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-04-10
+ * @param lon1 Longitude of 1st point (degrees).
+ * @param lat1 Latitude of 1st point (degrees).
+ * @param lon2 Longitude of 2nd point (degrees).
+ * @param lat2 Latitude of 2nd point (degrees).
+ * @return Spherical distance (meters).
+ */
 double dist_on_sphere(double lon1, double lat1, double lon2, double lat2) {
   // Compute the haversine distance in radians
   double dist_rad = dist_Haversine(lon1, lat1, lon2, lat2);

@@ -40,31 +40,12 @@ struct OutputConfig {
   std::optional<DateTime> actualTime; ///< Next scheduled output time.
 };
 
-/**
- * @brief Assesses and initializes output configurations.
- * @param modelTime Current model time.
- * @param endTime Simulation end time.
- * @param config Run configuration to update.
- */
 void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
                         RunConfig &config);
 
-/**
- * @brief Computes the minimum time step to the next requested output.
- * @param modelTime Current model time.
- * @param endTime Simulation end time.
- * @param config Run configuration.
- * @return Minimum time step in seconds.
- */
 double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
                              const RunConfig &config);
 
-/**
- * @brief Updates actual output times after output has been performed.
- * @param modelTime Current model time.
- * @param endTime Simulation end time.
- * @param config Run configuration to update.
- */
 void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
                              RunConfig &config);
 
