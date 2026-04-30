@@ -12,18 +12,18 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-23
+ * @date Last update : 2026-04-30
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
-#include "ww4_core/w4core_init.hpp"
-#include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_input_utils.hpp"
-#include "ww4_utils/ww4_logfile.hpp"
-#include "ww4_utils/ww4_run_config.hpp"
-#include "ww4_utils/ww4_std_out.hpp"
+#include "ww4_core/w4core_init.h"
+#include "ww4_utils/time_management.h"
+#include "ww4_utils/ww4_input_utils.h"
+#include "ww4_utils/ww4_logfile.h"
+#include "ww4_utils/ww4_run_config.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <exception>
 #include <fstream>
 #include <iostream>

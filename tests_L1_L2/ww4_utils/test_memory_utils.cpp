@@ -13,10 +13,10 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last update, 2026-04-16
+ * @date Last update : 2026-04-30
  */
 
-#include "ww4_utils/memory_utils.hpp"
+#include "ww4_utils/memory_utils.h"
 #include <fstream>
 #include <gtest/gtest.h>
 #include <vector>

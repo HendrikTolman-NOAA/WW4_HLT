@@ -13,10 +13,10 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last update, 2026-04-16
+ * @date Last update : 2026-04-30
  */
 
-#include "ww4_utils/ww4_stand_alone_config.hpp"
+#include "ww4_utils/ww4_stand_alone_config.h"
 #include <fstream>
 #include <gtest/gtest.h>
 #include <sstream>

@@ -12,9 +12,9 @@
  * @date 2026-04-17
  */
 
-#include "ww4_core/w4core_init.hpp"
-#include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_input_utils.hpp"
+#include "ww4_core/w4core_init.h"
+#include "ww4_utils/time_management.h"
+#include "ww4_utils/ww4_input_utils.h"
 #include <fstream>
 #include <gtest/gtest.h>
 #include <iostream>

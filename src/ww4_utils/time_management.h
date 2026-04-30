@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file time_management.hpp
+ * @file time_management.h
  * @brief Routines for management of date and time.
  * @details This header defines the DateTime structure and TimeManagement class,
  *          providing utilities for calendar calculations, time increments,
@@ -15,14 +15,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update, 2026-04-20
+ * @date Last update : 2026-04-30
  *
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
  */
 
-#ifndef WW4_UTILS_TIME_MANAGEMENT_HPP
-#define WW4_UTILS_TIME_MANAGEMENT_HPP
+#pragma once
 
 #include <array>
 #include <chrono>
@@ -44,7 +43,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update, 2026-04-20
+ * @date Last update : 2026-04-30
  */
 struct DateTime {
   int ymd;    ///< Current date in YYYYMMDD format.
@@ -89,7 +88,7 @@ using DateArray = std::array<int, 8>;
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update, 2026-04-16
+ * @date Last update : 2026-04-30
  */
 class TimeManagement {
 public:
@@ -188,7 +187,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last update, 2026-04-16
+   * @date Last update : 2026-04-30
    */
   static void getSystemDateArray(DateArray &dateArray) noexcept;
 
@@ -204,7 +203,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last update, 2026-04-16
+   * @date Last update : 2026-04-30
    */
   static void getElapsedTimeSince(const DateArray &referenceDate,
                                   double &elapsedTime) noexcept;
@@ -216,7 +215,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last update, 2026-04-16
+   * @date Last update : 2026-04-30
    */
   static DateTime getPresentDateTime() noexcept;
 
@@ -433,5 +432,3 @@ private:
 };
 
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_TIME_MANAGEMENT_HPP

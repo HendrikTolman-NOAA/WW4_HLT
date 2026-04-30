@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_std_out.hpp
+ * @file ww4_std_out.h
  * @brief Routines for standard screen output.
  * @details This header defines routines for managing screen output to std_out,
  *          duplicating the formats from WAVEWATCH III, updated for
@@ -14,17 +14,16 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update, 2026-04-20
+ * @date Last update : 2026-04-30
  * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
  *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
  */
 
-#ifndef WW4_UTILS_WW4_STD_OUT_HPP
-#define WW4_UTILS_WW4_STD_OUT_HPP
+#pragma once
 
-#include "ww4_utils/memory_utils.hpp"
-#include "ww4_utils/time_management.hpp"
+#include "ww4_utils/memory_utils.h"
+#include "ww4_utils/time_management.h"
 #include <iostream>
 #include <optional>
 #include <string>
@@ -140,5 +139,3 @@ void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
 
 } // namespace ww4_std_out
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_WW4_STD_OUT_HPP

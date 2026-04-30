@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_init.hpp
+ * @file w4core_init.h
  * @brief Initialization routine for the WAVEWATCH IV core.
  * @details This header defines the initialization routine for the WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -12,19 +12,18 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update, 2026-04-21
+ * @date Last update : 2026-04-30
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
-#ifndef WW4_CORE_W4CORE_INIT_HPP
-#define WW4_CORE_W4CORE_INIT_HPP
+#pragma once
 
-#include "ww4_core/w4core_wave.hpp"
-#include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_input_utils.hpp"
-#include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_core/w4core_wave.h"
+#include "ww4_utils/time_management.h"
+#include "ww4_utils/ww4_input_utils.h"
+#include "ww4_utils/ww4_run_config.h"
 #include <fstream>
 #include <iostream>
 
@@ -100,5 +99,3 @@ void updateWaveInputTime(ww4_utils::InputType type,
                          const ww4_utils::intTimeData &data);
 
 } // namespace ww4_core
-
-#endif // WW4_CORE_W4CORE_INIT_HPP

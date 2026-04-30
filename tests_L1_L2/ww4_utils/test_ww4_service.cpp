@@ -4,16 +4,16 @@
  *       +--------------------------------------------------------+
  *
  * @file test_ww4_service.cpp
- * @brief Unit tests for WW4 service routines in ww4_service.hpp.
+ * @brief Unit tests for WW4 service routines in ww4_service.h.
  * @details Verifies the mathematical routines and dispersion calculations.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @date Initial, 2026-04-10
- * @date Last update, 2026-04-17
+ * @date Last update : 2026-04-30
  */
 
-#include "ww4_utils/ww4_service.hpp"
+#include "ww4_utils/ww4_service.h"
 #include <gtest/gtest.h>
 
 namespace ww4_utils {

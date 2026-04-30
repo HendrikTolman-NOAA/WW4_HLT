@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_input_utils.hpp
+ * @file ww4_input_utils.h
  * @brief Utility structures and routines for model input processing.
  * @details This header defines structures and routines for managing model
  *          input time data and orchestration of input updates.
@@ -13,15 +13,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update, 2026-04-22
+ * @date Last update : 2026-04-30
  */
 
-#ifndef WW4_UTILS_WW4_INPUT_UTILS_HPP
-#define WW4_UTILS_WW4_INPUT_UTILS_HPP
+#pragma once
 
-#include "ww4_utils/time_management.hpp"
-#include "ww4_utils/ww4_logfile.hpp"
-#include "ww4_utils/ww4_run_config.hpp"
+#include "ww4_utils/time_management.h"
+#include "ww4_utils/ww4_logfile.h"
+#include "ww4_utils/ww4_run_config.h"
 #include <iostream>
 #include <optional>
 #include <vector>
@@ -206,5 +205,3 @@ double computeInputTimeStep(const DateTime &modelTime, const DateTime &endTime,
                             const RunConfig &config);
 
 } // namespace ww4_utils
-
-#endif // WW4_UTILS_WW4_INPUT_UTILS_HPP
