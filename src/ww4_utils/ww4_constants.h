@@ -26,7 +26,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  * @date Initial, 2026-04-09
- * @date Last update, 2026-04-17
+ * @date Last update : 2026-04-30
  */
 namespace ww4_constants {
 
