@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_std_out.h"
@@ -21,9 +21,6 @@
 using namespace ww4_utils::ww4_std_out;
 using ww4_utils::MemoryUsage;
 
-/**
- * @test Verify the initial output banner for a Program shell.
- */
 TEST(StdOutTest, InitialOutputProgramShell) {
   std::stringstream ss;
   writeInitialOutput(ss, "Program shell");
@@ -38,9 +35,6 @@ TEST(StdOutTest, InitialOutputProgramShell) {
       std::string::npos);
 }
 
-/**
- * @test Verify the final output footer for a Program shell with metrics.
- */
 TEST(StdOutTest, FinalOutputProgramShellWithMetrics) {
   std::stringstream ss;
   writeFinalOutput(ss, "Program shell", 1.23, 4.56);
@@ -55,9 +49,6 @@ TEST(StdOutTest, FinalOutputProgramShellWithMetrics) {
             std::string::npos);
 }
 
-/**
- * @test Verify metrics are omitted when not provided.
- */
 TEST(StdOutTest, FinalOutputWithoutMetrics) {
   std::stringstream ss;
   writeFinalOutput(ss, "Program shell");
@@ -68,9 +59,6 @@ TEST(StdOutTest, FinalOutputWithoutMetrics) {
   EXPECT_NE(output.find("  End of program "), std::string::npos);
 }
 
-/**
- * @test Verify the output formatting of writeExtcdeOutput.
- */
 TEST(StdOutTest, WriteExtcdeOutputFormatting) {
   std::stringstream ss;
   writeExtcdeOutput(ss, "Fatal error", "main.cpp", 42);
@@ -80,9 +68,6 @@ TEST(StdOutTest, WriteExtcdeOutputFormatting) {
   EXPECT_NE(output.find("WW4 ERROR: FILE=main.cpp LINE=42"), std::string::npos);
 }
 
-/**
- * @test Verify writeExtcdeOutput with only message.
- */
 TEST(StdOutTest, WriteExtcdeOutputOnlyMessage) {
   std::stringstream ss;
   writeExtcdeOutput(ss, "Simple error");
@@ -92,9 +77,6 @@ TEST(StdOutTest, WriteExtcdeOutputOnlyMessage) {
   EXPECT_EQ(output.find("FILE="), std::string::npos);
 }
 
-/**
- * @test Verify extcde performs program stop with correct exit code and output.
- */
 TEST(StdOutTest, ExtcdeTermination) {
   const int expectedExitCode = 1;
   const std::string errorMsg = "Fatal program error";
@@ -107,9 +89,6 @@ TEST(StdOutTest, ExtcdeTermination) {
       "WW4 ERROR: Fatal program error.*WW4 ERROR: FILE=test.cpp LINE=123");
 }
 
-/**
- * @test Verify the output formatting of writeWarnngOutput.
- */
 TEST(StdOutTest, WriteWarnngOutputFormatting) {
   std::stringstream ss;
   writeWarnngOutput(ss, "Warning message", "main.cpp", 42);
@@ -120,9 +99,6 @@ TEST(StdOutTest, WriteWarnngOutputFormatting) {
             std::string::npos);
 }
 
-/**
- * @test Verify warnng calls writeWarnngOutput.
- */
 TEST(StdOutTest, WarnngReporting) {
   std::stringstream ss;
   warnng(ss, "Another warning");

@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -28,8 +28,24 @@
 #include <iostream>
 #include <thread>
 
+/**
+ * @namespace ww4_core
+ * @brief Core routines for WAVEWATCH IV.
+ */
 namespace ww4_core {
 
+/**
+ * @brief Time stepping routine for the WAVEWATCH IV core.
+ * @details Performs a single time step or a sequence of time steps for the
+ *          wave model core. Follows the architectural design of the
+ *          time stepping in ww3_multi.F90 from WAVEWATCH III.
+ * @param[in] startTime Simulation start time.
+ * @param[in] endTime Simulation end time.
+ * @param[in] os Output stream for reporting.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-05-01
+ */
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os) {
   try {

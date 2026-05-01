@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/memory_utils.h"
@@ -23,9 +23,6 @@
 
 namespace ww4_utils {
 
-/**
- * @test Verify that MemoryUsage struct initializes fields to zero.
- */
 TEST(MemoryUtilsTest, DefaultInitialization) {
   const MemoryUsage usage{};
   EXPECT_EQ(usage.vmPeak, 0);
@@ -34,9 +31,6 @@ TEST(MemoryUtilsTest, DefaultInitialization) {
   EXPECT_EQ(usage.vmRSS, 0);
 }
 
-/**
- * @test Verify that captureMemoryUsage returns valid non-zero metrics.
- */
 TEST(MemoryUtilsTest, CaptureMemoryUsage) {
   const auto usage = MemoryUtils::captureMemoryUsage();
 
@@ -50,9 +44,6 @@ TEST(MemoryUtilsTest, CaptureMemoryUsage) {
   EXPECT_GE(usage->vmHWM, usage->vmRSS);
 }
 
-/**
- * @test Verify that memory usage is captured correctly even after allocation.
- */
 TEST(MemoryUtilsTest, MemoryIncreaseAfterAllocation) {
   const auto before = MemoryUtils::captureMemoryUsage();
   ASSERT_TRUE(before.has_value());
@@ -72,9 +63,6 @@ TEST(MemoryUtilsTest, MemoryIncreaseAfterAllocation) {
   ASSERT_TRUE(after.has_value());
 }
 
-/**
- * @test Verify that captureMemoryHWM returns a valid non-zero metric.
- */
 TEST(MemoryUtilsTest, CaptureMemoryHWM) {
   const auto hwm = MemoryUtils::captureMemoryHWM();
 
@@ -82,9 +70,6 @@ TEST(MemoryUtilsTest, CaptureMemoryHWM) {
   EXPECT_GT(*hwm, 0);
 }
 
-/**
- * @test Verify parsing of extremely large memory values (mocked).
- */
 TEST(MemoryUtilsTest, MockLargeValues) {
   const char *mockPath = "mock_status.txt";
   {

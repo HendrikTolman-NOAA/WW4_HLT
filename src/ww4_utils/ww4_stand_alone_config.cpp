@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_stand_alone_config.h"
@@ -22,7 +22,23 @@
 #include <fstream>
 #include <string>
 
+/**
+ * @namespace ww4_utils
+ * @brief Utilities for WAVEWATCH IV.
+ */
 namespace ww4_utils {
+
+/**
+ * @struct StandAloneConfig
+ * @brief Configuration for the ww4_stand_alone program.
+ * @details Stores the start and end times for the simulation.
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ * @var StandAloneConfig::startTime
+ * @brief Simulation start time.
+ * @var StandAloneConfig::endTime
+ * @brief Simulation end time.
+ */
 
 /**
  * @brief Internal helper to parse a date-time string in "YYYYMMDD HHMMSS"
@@ -51,6 +67,19 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
   return DateTime{ymd, hms};
 }
 
+/**
+ * @brief Loads the stand-alone configuration from a YAML file.
+ * @details Reads the specified YAML file from the current directory,
+ *          extracts the start and end times, and validates that the
+ *          end time is not before the start time.
+ * @param filename The name of the YAML file to load.
+ * @param os Output stream for reporting.
+ * @return A StandAloneConfig structure if successful, or std::nullopt
+ *         if an error occurred (e.g., file not found, invalid format,
+ *         or validation failure).
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ */
 std::optional<StandAloneConfig>
 loadStandAloneConfig(const std::string_view filename,
                      [[maybe_unused]] std::ostream &os) noexcept {
@@ -77,11 +106,11 @@ loadStandAloneConfig(const std::string_view filename,
 
     // Trim leading whitespace
     const size_t first = lineView.find_first_not_of(" \t");
-    if (first == std::string::npos)
+    if (first == std::string_view::npos)
       continue;
 
     const size_t colonPos = lineView.find(':');
-    if (colonPos == std::string::npos)
+    if (colonPos == std::string_view::npos)
       continue;
 
     const std::string_view key_raw = lineView.substr(first, colonPos - first);
@@ -120,6 +149,14 @@ loadStandAloneConfig(const std::string_view filename,
   return config;
 }
 
+/**
+ * @brief Reports the stand-alone configuration to the provided output stream.
+ * @param config The StandAloneConfig structure to report.
+ * @param os The output stream to write to (default: std::cout).
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ * @date 2026-05-01
+ */
 void reportStandAloneConfig(const StandAloneConfig &config, std::ostream &os) {
   os << "\n  Stand-alone configuration settings :" << std::endl;
   os << "     Start time         : "

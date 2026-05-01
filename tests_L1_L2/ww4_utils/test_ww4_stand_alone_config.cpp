@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_stand_alone_config.h"
@@ -23,9 +23,6 @@
 
 using namespace ww4_utils;
 
-/**
- * @test Verify loading a valid configuration.
- */
 TEST(StandAloneConfigTest, ValidConfig) {
   const std::string filename = "test_valid_config.yml";
   std::ofstream file(filename);
@@ -43,9 +40,6 @@ TEST(StandAloneConfigTest, ValidConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify the parseDateTimeString helper function directly.
- */
 TEST(StandAloneConfigTest, ParseDateTimeString) {
   // Valid case
   auto dt = parseDateTimeString("19680606 060000");
@@ -75,9 +69,6 @@ TEST(StandAloneConfigTest, ParseDateTimeString) {
   EXPECT_FALSE(parseDateTimeString("19680606 ABCDEF").has_value());
 }
 
-/**
- * @test Verify handling of empty date-time values.
- */
 TEST(StandAloneConfigTest, EmptyDateTime) {
   const std::string filename = "test_empty_dt.yml";
   std::ofstream file(filename);
@@ -91,9 +82,6 @@ TEST(StandAloneConfigTest, EmptyDateTime) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify handling of short date-time values.
- */
 TEST(StandAloneConfigTest, ShortDateTime) {
   const std::string filename = "test_short_dt.yml";
   std::ofstream file(filename);
@@ -107,9 +95,6 @@ TEST(StandAloneConfigTest, ShortDateTime) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify handling of non-numeric date-time parts.
- */
 TEST(StandAloneConfigTest, NonNumericDateTime) {
   const std::string filename = "test_non_numeric_dt.yml";
   std::ofstream file(filename);
@@ -123,9 +108,6 @@ TEST(StandAloneConfigTest, NonNumericDateTime) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify handling of non-numeric time part.
- */
 TEST(StandAloneConfigTest, NonNumericTimePart) {
   const std::string filename = "test_non_numeric_time.yml";
   std::ofstream file(filename);
@@ -139,9 +121,6 @@ TEST(StandAloneConfigTest, NonNumericTimePart) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify that equal start and end times are valid.
- */
 TEST(StandAloneConfigTest, EqualTimes) {
   const std::string filename = "test_equal_times.yml";
   std::ofstream file(filename);
@@ -157,9 +136,6 @@ TEST(StandAloneConfigTest, EqualTimes) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify that end time before start time is invalid.
- */
 TEST(StandAloneConfigTest, InvalidTimeOrder) {
   const std::string filename = "test_invalid_order.yml";
   std::ofstream file(filename);
@@ -173,9 +149,6 @@ TEST(StandAloneConfigTest, InvalidTimeOrder) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify handling of missing required fields.
- */
 TEST(StandAloneConfigTest, MissingFields) {
   const std::string filename = "test_missing_fields.yml";
   std::ofstream file(filename);
@@ -188,9 +161,6 @@ TEST(StandAloneConfigTest, MissingFields) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify handling of malformed date-time strings.
- */
 TEST(StandAloneConfigTest, MalformedDateTime) {
   const std::string filename = "test_malformed.yml";
   std::ofstream file(filename);
@@ -204,17 +174,11 @@ TEST(StandAloneConfigTest, MalformedDateTime) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify behavior with non-existent file.
- */
 TEST(StandAloneConfigTest, NonExistentFile) {
   const auto config = loadStandAloneConfig("non_existent.yml", std::cerr);
   EXPECT_FALSE(config.has_value());
 }
 
-/**
- * @test Verify reportStandAloneConfig formatting.
- */
 TEST(StandAloneConfigTest, ReportConfig) {
   StandAloneConfig config;
   config.startTime = {19680606, 60000.0};
@@ -232,10 +196,6 @@ TEST(StandAloneConfigTest, ReportConfig) {
             std::string::npos);
 }
 
-/**
- * @test Verify loading configuration with comments, blank lines, and
- * whitespace.
- */
 TEST(StandAloneConfigTest, RobustParsingConfig) {
   const std::string filename = "test_standalone_robust.yml";
   std::ofstream file(filename);

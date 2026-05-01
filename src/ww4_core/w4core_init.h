@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -27,74 +27,25 @@
 #include <fstream>
 #include <iostream>
 
-/**
- * @namespace ww4_core
- * @brief Core routines for WAVEWATCH IV.
- */
 namespace ww4_core {
 
-/**
- * @brief Initialization routine for the WAVEWATCH IV core.
- * @details Performs all necessary setup for the wave model core.
- *          Follows the architectural design of the initialization in
- *          ww3_multi.F90 from WAVEWATCH III.
- * @param[in] startTime Simulation start time.
- * @param[in] programName Name of the program to identify in output banners.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-03
- */
 void w4core_init(const ww4_utils::DateTime &startTime,
                  std::string_view programName, std::ostream &os);
 
-/**
- * @brief Resets the internal state of the core module.
- * @details Clears global configuration, program name, and ensures log file
- *          stream is reset. Used during program finalization.
- */
 void resetInternalState() noexcept;
 
-/**
- * @brief Provides access to the captured program name.
- * @return A reference to the program name string.
- */
 const std::string &getProgramName();
 
-/**
- * @brief Provides access to the loaded run-time configuration.
- * @return A reference to the RunConfig structure.
- */
 const ww4_utils::RunConfig &getRunConfig();
 
-/**
- * @brief Provides access to the loaded run-time configuration for modification.
- * @return A mutable reference to the RunConfig structure.
- */
 ww4_utils::RunConfig &getMutableRunConfig();
 
-/**
- * @brief Provides access to the log file stream.
- * @return A reference to the std::ofstream for the log file.
- */
 std::ofstream &getLogFileStream();
 
-/**
- * @brief Provides access to the wave time data.
- * @return A reference to the waveTimeData structure.
- */
 const ww4_utils::waveTimeData &getWaveTimeData();
 
-/**
- * @brief Updates the model time in the wave time data.
- * @param[in] time The new model time.
- */
 void updateWaveModelTime(const ww4_utils::DateTime &time);
 
-/**
- * @brief Updates the input time data for a specific input type.
- * @param[in] type The input type to update.
- * @param[in] data The new input time data.
- */
 void updateWaveInputTime(ww4_utils::InputType type,
                          const ww4_utils::intTimeData &data);
 

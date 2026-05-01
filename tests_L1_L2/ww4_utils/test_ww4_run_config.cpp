@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -23,9 +23,6 @@
 
 using namespace ww4_utils;
 
-/**
- * @test Verify loading a configuration with all non-default values.
- */
 TEST(RunConfigTest, NonDefaultConfig) {
   const std::string filename = "test_run_nondefault.yml";
   std::ofstream file(filename);
@@ -57,9 +54,6 @@ TEST(RunConfigTest, NonDefaultConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify screen_output_level parsing and reporting.
- */
 TEST(RunConfigTest, ScreenOutputLevelConfig) {
   const std::string filename = "test_run_screen_level.yml";
   std::ofstream file(filename);
@@ -83,9 +77,6 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify data output configuration parsing.
- */
 TEST(RunConfigTest, OutputConfigParsing) {
   const std::string filename = "test_output_parsing.yml";
   std::ofstream file(filename);
@@ -128,9 +119,6 @@ TEST(RunConfigTest, OutputConfigParsing) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify mandatory output interval failure.
- */
 TEST(RunConfigTest, OutputIntervalFailure) {
   const std::string filename = "test_output_interval_failure.yml";
   std::ofstream file(filename);
@@ -149,9 +137,6 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify reportRunConfig with outputs.
- */
 TEST(RunConfigTest, ReportConfigWithOutputs) {
   RunConfig config;
   config.waterLevels = InputFieldOption::None;
@@ -179,9 +164,6 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
   EXPECT_NE(output.find("Point output not requested"), std::string::npos);
 }
 
-/**
- * @test Verify loading configuration with new runtime flags.
- */
 TEST(RunConfigTest, NewFlagsConfig) {
   const std::string filename = "test_run_new_flags.yml";
   std::ofstream file(filename);
@@ -211,9 +193,6 @@ TEST(RunConfigTest, NewFlagsConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify the cleanValue helper function for trimming and quote removal.
- */
 TEST(RunConfigTest, CleanValue) {
   // Test whitespace trimming
   EXPECT_EQ(cleanValue("  hello  "), "hello");
@@ -240,10 +219,6 @@ TEST(RunConfigTest, CleanValue) {
   EXPECT_EQ(cleanValue("\"hello world\""), "hello world");
 }
 
-/**
- * @test Verify loading configuration with comments, blank lines, and
- * whitespace.
- */
 TEST(RunConfigTest, RobustParsingConfig) {
   const std::string filename = "test_run_robust.yml";
   std::ofstream file(filename);
@@ -270,9 +245,6 @@ TEST(RunConfigTest, RobustParsingConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify reportRunConfig formatting for Standard calendar.
- */
 TEST(RunConfigTest, ReportConfigStandard) {
   RunConfig config;
   config.calendarType = TimeManagement::CalendarType::Standard;
@@ -305,9 +277,6 @@ TEST(RunConfigTest, ReportConfigStandard) {
   EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
 }
 
-/**
- * @test Verify API output configuration parsing.
- */
 TEST(RunConfigTest, ApiOutputConfig) {
   const std::string filename = "test_api_output.yml";
   std::ofstream file(filename);
@@ -334,9 +303,6 @@ TEST(RunConfigTest, ApiOutputConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify reportRunConfig for non-conventional run.
- */
 TEST(RunConfigTest, ReportConfigNonConventional) {
   RunConfig config;
   config.dryRun = true;
@@ -358,9 +324,6 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
 }
 
-/**
- * @test Verify reportRunConfig formatting for NoLeap calendar.
- */
 TEST(RunConfigTest, ReportConfigNoLeap) {
   RunConfig config;
   config.calendarType = TimeManagement::CalendarType::NoLeap;
@@ -376,9 +339,6 @@ TEST(RunConfigTest, ReportConfigNoLeap) {
   EXPECT_NE(output.find("Log file             : no"), std::string::npos);
 }
 
-/**
- * @test Verify reportRunConfig formatting for ThreeSixtyDay calendar.
- */
 TEST(RunConfigTest, ReportConfigThreeSixtyDay) {
   RunConfig config;
   config.calendarType = TimeManagement::CalendarType::ThreeSixtyDay;
@@ -391,9 +351,6 @@ TEST(RunConfigTest, ReportConfigThreeSixtyDay) {
             std::string::npos);
 }
 
-/**
- * @test Verify default values when file is missing.
- */
 TEST(RunConfigTest, MissingFileDefaults) {
   // Ensure calendar is something else before test
   TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
@@ -405,9 +362,6 @@ TEST(RunConfigTest, MissingFileDefaults) {
   TimeManagement::setCalendarType(TimeManagement::CalendarType::Standard);
 }
 
-/**
- * @test Verify ThreeSixtyDay calendar type.
- */
 TEST(RunConfigTest, ThreeSixtyDayConfig) {
   const std::string filename = "test_run_360.yml";
   std::ofstream file(filename);
@@ -431,9 +385,6 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify partial configuration with some defaults.
- */
 TEST(RunConfigTest, PartialConfig) {
   const std::string filename = "test_run_partial.yml";
   std::ofstream file(filename);
@@ -455,9 +406,6 @@ TEST(RunConfigTest, PartialConfig) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify mandatory time step failure.
- */
 TEST(RunConfigTest, TimeStepFailure) {
   const std::string filename = "test_run_time_step_failure.yml";
   std::ofstream file(filename);
@@ -476,9 +424,6 @@ TEST(RunConfigTest, TimeStepFailure) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify mandatory fields failure.
- */
 TEST(RunConfigTest, MandatoryFieldsFailure) {
   const std::string filename = "test_run_mandatory_failure.yml";
   std::ofstream file(filename);
@@ -493,9 +438,6 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify that bottom_depth is optional and defaults to from_grid.
- */
 TEST(RunConfigTest, BottomDepthDefault) {
   const std::string filename = "test_run_bottom_depth_default.yml";
   std::ofstream file(filename);
@@ -514,9 +456,6 @@ TEST(RunConfigTest, BottomDepthDefault) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify that bottom_depth can take other options.
- */
 TEST(RunConfigTest, BottomDepthOtherOptions) {
   const std::string filename = "test_run_bottom_depth_none.yml";
   std::ofstream file(filename);
@@ -535,9 +474,6 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify that from_grid is rejected for other fields.
- */
 TEST(RunConfigTest, FromGridRejection) {
   const std::string filename = "test_run_from_grid_rejection.yml";
   std::ofstream file(filename);
@@ -556,9 +492,6 @@ TEST(RunConfigTest, FromGridRejection) {
   std::remove(filename.c_str());
 }
 
-/**
- * @test Verify all InputFieldOption parsing.
- */
 TEST(RunConfigTest, InputFieldOptionParsing) {
   const std::string filename = "test_input_parsing.yml";
   std::ofstream file(filename);

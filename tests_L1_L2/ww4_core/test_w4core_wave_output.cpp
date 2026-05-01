@@ -10,7 +10,7 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_core/w4core_finl.h"
@@ -23,9 +23,6 @@
 #include <sstream>
 #include <string>
 
-/**
- * @brief Test fixture for core routine output tests.
- */
 class W4CoreWaveOutputTest : public ::testing::Test {
 protected:
   void SetUp() override {
@@ -43,9 +40,6 @@ protected:
   ww4_utils::DateTime endTime;
 };
 
-/**
- * @test Verify w4core_wave reports API output status.
- */
 TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   // Test Case 1: API output disabled (default)
   {
@@ -94,9 +88,6 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   }
 }
 
-/**
- * @test Verify that bottom depth from grid is not reported as updated.
- */
 TEST_F(W4CoreWaveOutputTest, DoesNotReportBottomDepthFromGrid) {
   std::ofstream runFile("ww4_run_config.yml");
   runFile << "calendar_type: \"Standard\"\n";

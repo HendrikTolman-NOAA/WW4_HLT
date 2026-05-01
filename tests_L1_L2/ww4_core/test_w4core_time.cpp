@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-06
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_core/w4core_finl.h"
@@ -20,9 +20,6 @@
 #include "ww4_utils/time_management.h"
 #include <gtest/gtest.h>
 
-/**
- * @brief Test fixture for core routine time passing tests.
- */
 class W4CoreTimeTest : public ::testing::Test {
 protected:
   void SetUp() override {
@@ -34,12 +31,6 @@ protected:
   ww4_utils::DateTime endTime;
 };
 
-/**
- * @test Verify that core routines can be called with DateTime arguments.
- * @details This test ensures that the new signatures are callable and
- *          don't cause any immediate crashes. Since the current
- *          implementation only prints to stdout, we just verify callability.
- */
 TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yml");
@@ -69,9 +60,6 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   std::remove("log.ww4");
 }
 
-/**
- * @test Verify that w4core_wave fails if endTime is before startTime.
- */
 TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yml");
@@ -95,9 +83,6 @@ TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
   std::remove("log.ww4");
 }
 
-/**
- * @test Verify that w4core_wave handles startTime == endTime correctly.
- */
 TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yml");
@@ -121,18 +106,12 @@ TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
   std::remove("log.ww4");
 }
 
-/**
- * @test Verify that w4core_wave fails if model time is not initialized.
- */
 TEST_F(W4CoreTimeTest, WaveFailsIfNoInit) {
   ww4_core::resetInternalState();
   EXPECT_DEATH(ww4_core::w4core_wave(startTime, endTime, std::cerr),
                "Model time not initialized.");
 }
 
-/**
- * @test Verify that w4core_wave fails if startTime doesn't match model time.
- */
 TEST_F(W4CoreTimeTest, WaveFailsIfTimeMismatch) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yml");

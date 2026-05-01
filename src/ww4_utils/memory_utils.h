@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #pragma once
@@ -22,58 +22,23 @@
 #include <cstdint>
 #include <optional>
 
-/**
- * @namespace ww4_utils
- * @brief Utilities for WAVEWATCH IV.
- */
 namespace ww4_utils {
 
-/**
- * @brief Sets the path to the process status file for testing purposes.
- * @param path The path to the mock status file.
- * @note This is for internal testing only and should not be used in production.
- */
 void setMemoryStatusPathForTesting(const char *path);
 
-/**
- * @brief Resets the memory status path to the default "/proc/self/status".
- */
 void resetMemoryStatusPath() noexcept;
 
-/**
- * @struct MemoryUsage
- * @brief Represents various memory usage metrics of a process.
- * @details Values are typically in kilobytes (kB).
- */
 struct MemoryUsage {
-  std::uint64_t vmPeak{0}; ///< Peak virtual memory size.
-  std::uint64_t vmSize{0}; ///< Virtual memory size.
-  std::uint64_t vmHWM{0};  ///< Peak resident set size ("High Water Mark").
-  std::uint64_t vmRSS{0};  ///< Resident set size.
+  std::uint64_t vmPeak{0};
+  std::uint64_t vmSize{0};
+  std::uint64_t vmHWM{0};
+  std::uint64_t vmRSS{0};
 };
 
-/**
- * @class MemoryUtils
- * @brief Utility class for memory-related operations.
- * @details Provides static methods to query memory usage from the system.
- */
 class MemoryUtils {
 public:
-  /**
-   * @brief Captures the current memory usage of the calling process.
-   * @details Reads metrics from /proc/self/status on Linux systems.
-   * @return A MemoryUsage struct containing the captured metrics, or
-   * std::nullopt if capture fails.
-   * @pre The operating system must provide /proc/self/status (Linux).
-   */
   [[nodiscard]] static std::optional<MemoryUsage> captureMemoryUsage() noexcept;
 
-  /**
-   * @brief Captures the memory high water mark (HWM) of the calling process.
-   * @details Reads the vmHWM metric from /proc/self/status on Linux systems.
-   * @return The peak resident set size in kB, or std::nullopt if capture fails.
-   * @pre The operating system must provide /proc/self/status (Linux).
-   */
   [[nodiscard]] static std::optional<std::uint64_t> captureMemoryHWM() noexcept;
 };
 

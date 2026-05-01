@@ -10,7 +10,7 @@
  * Weather Service.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_core/w4core_finl.h"
@@ -23,9 +23,6 @@
 #include <sstream>
 #include <string>
 
-/**
- * @brief Test fixture for screen output level tests.
- */
 class W4CoreScreenOutputTest : public ::testing::Test {
 protected:
   void SetUp() override {
@@ -63,9 +60,6 @@ protected:
   ww4_utils::DateTime endTime;
 };
 
-/**
- * @test Verify screen_output_level: full
- */
 TEST_F(W4CoreScreenOutputTest, FullOutput) {
   createConfig("full", false);
   std::stringstream ss;
@@ -90,9 +84,6 @@ TEST_F(W4CoreScreenOutputTest, FullOutput) {
   EXPECT_NE(output.find("Updating water levels"), std::string::npos);
 }
 
-/**
- * @test Verify screen_output_level: none
- */
 TEST_F(W4CoreScreenOutputTest, NoneOutput) {
   createConfig("none", true);
   std::stringstream ss;
@@ -106,9 +97,6 @@ TEST_F(W4CoreScreenOutputTest, NoneOutput) {
   EXPECT_EQ(output.find("Performing fields output"), std::string::npos);
 }
 
-/**
- * @test Verify screen_output_level: summary
- */
 TEST_F(W4CoreScreenOutputTest, SummaryOutput) {
   createConfig("summary", true);
   std::stringstream ss;
@@ -142,9 +130,6 @@ TEST_F(W4CoreScreenOutputTest, SummaryOutput) {
   EXPECT_NE(output.find("Performing fields output"), std::string::npos);
 }
 
-/**
- * @test Verify log file has tabular output regardless of screen level
- */
 TEST_F(W4CoreScreenOutputTest, LogFileTabularOutput) {
   createConfig("none", true);
   std::stringstream ss;

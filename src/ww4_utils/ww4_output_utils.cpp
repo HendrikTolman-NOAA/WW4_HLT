@@ -11,15 +11,44 @@
  * Weather Service.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
+ * @date 2026-05-01
  */
 
 #include "ww4_utils/ww4_output_utils.h"
 #include "ww4_utils/ww4_run_config.h"
 #include <algorithm>
 
+/**
+ * @namespace ww4_utils
+ * @brief Utilities for WAVEWATCH IV.
+ */
 namespace ww4_utils {
 
+/**
+ * @struct OutputConfig
+ * @brief Configuration for a specific output type.
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI)
+ * @var OutputConfig::requested
+ * @brief Is this output requested?
+ * @var OutputConfig::startTime
+ * @brief Start time for output.
+ * @var OutputConfig::endTime
+ * @brief End time for output.
+ * @var OutputConfig::interval
+ * @brief Output interval in seconds.
+ * @var OutputConfig::atFirstTime
+ * @brief Output at first time?
+ * @var OutputConfig::actualTime
+ * @brief Next scheduled output time.
+ */
+
+/**
+ * @brief Assesses and initializes output configurations.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param config Run configuration to update.
+ */
 void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
                         RunConfig &config) {
   auto assess = [&](OutputConfig &oc, bool isApi) {
@@ -62,6 +91,13 @@ void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
   assess(config.outputApi, true);
 }
 
+/**
+ * @brief Computes the minimum time step to the next requested output.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param config Run configuration.
+ * @return Minimum time step in seconds.
+ */
 double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
                              const RunConfig &config) {
   double minStep = TimeManagement::differenceInSeconds(modelTime, endTime);
@@ -86,6 +122,12 @@ double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
   return std::max(0.0, minStep);
 }
 
+/**
+ * @brief Updates actual output times after output has been performed.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param config Run configuration to update.
+ */
 void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
                              RunConfig &config) {
   auto update = [&](OutputConfig &oc) {
