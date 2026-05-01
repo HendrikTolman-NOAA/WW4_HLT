@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_input_utils.h"
@@ -24,7 +24,61 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * @namespace ww4_utils
+ * @brief Utilities for WAVEWATCH IV.
+ */
 namespace ww4_utils {
+
+/**
+ * @enum InputType
+ * @brief Types of model inputs for time management.
+ * @var InputType::WaterLevels
+ * @brief Water levels input.
+ * @var InputType::Currents
+ * @brief Currents input.
+ * @var InputType::Winds
+ * @brief Winds input.
+ * @var InputType::IceConcentrations
+ * @brief Ice concentrations input.
+ * @var InputType::BottomDepth
+ * @brief Bottom depth input.
+ */
+
+/**
+ * @struct intTimeData
+ * @brief Structure to hold time tags for model inputs.
+ * @var intTimeData::time1
+ * @brief First time tag.
+ * @var intTimeData::time2
+ * @brief Second time tag.
+ * @var intTimeData::maxStep
+ * @brief Maximum model time step.
+ */
+
+/**
+ * @struct waveTimeData
+ * @brief Structure to hold model time and time step information.
+ * @var waveTimeData::timeStep
+ * @brief Model time step.
+ * @var waveTimeData::modelTime
+ * @brief Current model time.
+ * @var waveTimeData::waterLevels
+ * @brief Time data for water levels.
+ * @var waveTimeData::currents
+ * @brief Time data for currents.
+ * @var waveTimeData::winds
+ * @brief Time data for winds.
+ * @var waveTimeData::iceConcentrations
+ * @brief Time data for ice concentrations.
+ * @var waveTimeData::bottomDepth
+ * @brief Time data for bottom depth.
+ */
+
+/**
+ * @struct InputUpdateState
+ * @brief Tracking state for input interpolation reporting.
+ */
 
 namespace {
 
@@ -252,6 +306,14 @@ void processField(std::string_view fieldName, InputFieldOption option,
 
 } // namespace
 
+/**
+ * @brief Processes and validates input data for the model.
+ * @details Parses input data from the run configuration and
+ *          validates its availability and temporal consistency.
+ * @param config The run configuration.
+ * @param os Output stream for reporting.
+ * @date 2026-05-01
+ */
 void ww4_input_update(const RunConfig &config, std::ostream &os) {
   // Reset before processing
   resetInputData();
@@ -267,6 +329,10 @@ void ww4_input_update(const RunConfig &config, std::ostream &os) {
                 config.bottomDepth, os);
 }
 
+/**
+ * @brief Resets all internal input data storage.
+ * @details Clears vectors containing processed homogeneous data.
+ */
 void resetInputData() noexcept {
   waterLevels.clear();
   currents.clear();
@@ -275,52 +341,118 @@ void resetInputData() noexcept {
   bottomDepth.clear();
 }
 
+/**
+ * @brief Accessor for processed homogeneous water levels.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousWaterLevels() noexcept {
   return waterLevels;
 }
 
+/**
+ * @brief Accessor for processed homogeneous currents.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousCurrents() noexcept {
   return currents;
 }
 
+/**
+ * @brief Accessor for processed homogeneous winds.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousWinds() noexcept {
   return winds;
 }
 
+/**
+ * @brief Accessor for processed homogeneous ice concentrations.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &
 getHomogeneousIceConcentrations() noexcept {
   return iceConcentrations;
 }
 
+/**
+ * @brief Accessor for processed homogeneous bottom depth.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousBottomDepth() noexcept {
   return bottomDepth;
 }
 
+/**
+ * @brief Cycle through homogeneous water levels to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_water_levels(const DateTime &modelTime, const DateTime &endTime,
                           intTimeData &data) {
   updateHomogeneousInputCycling(waterLevels, modelTime, endTime, data);
 }
 
+/**
+ * @brief Cycle through homogeneous currents to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_currents(const DateTime &modelTime, const DateTime &endTime,
                       intTimeData &data) {
   updateHomogeneousInputCycling(currents, modelTime, endTime, data);
 }
 
+/**
+ * @brief Cycle through homogeneous winds to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_winds(const DateTime &modelTime, const DateTime &endTime,
                    intTimeData &data) {
   updateHomogeneousInputCycling(winds, modelTime, endTime, data);
 }
 
+/**
+ * @brief Cycle through homogeneous ice concentrations to find interpolation
+ * interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_ice(const DateTime &modelTime, const DateTime &endTime,
                  intTimeData &data) {
   updateHomogeneousInputCycling(iceConcentrations, modelTime, endTime, data);
 }
 
+/**
+ * @brief Cycle through homogeneous bottom depth to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
                           intTimeData &data) {
   updateHomogeneousInputCycling(bottomDepth, modelTime, endTime, data);
 }
 
+/**
+ * @brief Processes all input fields and calculates next time step.
+ * @details Orchestrates the update of all active input fields and returns
+ *          the time interval to the next required update.
+ * @param[in] modelTime Current model time.
+ * @param[in] endTime Simulation end time.
+ * @param[in,out] waveTime Global wave time data to update.
+ * @param[in,out] state Persistent state for reporting interpolation intervals.
+ * @param[in] config The run configuration.
+ * @param[in,out] headerPrinted Flag to track if the step header was printed.
+ * @param[in] os Output stream for reporting.
+ * @param[in,out] logData Data for tabular log output.
+ * @return The time step (seconds) from the present model time to the next
+ * update.
+ */
 double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                        waveTimeData &waveTime, InputUpdateState &state,
                        const RunConfig &config, bool &headerPrinted,
@@ -349,6 +481,14 @@ double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
   return computeInputTimeStep(modelTime, endTime, waveTime, config);
 }
 
+/**
+ * @brief Computes the minimum input time step based on active fields.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param waveTime Global wave time data.
+ * @param config The run configuration.
+ * @return The minimum required time step (seconds).
+ */
 double computeInputTimeStep(const DateTime &modelTime, const DateTime &endTime,
                             const waveTimeData &waveTime,
                             const RunConfig &config) {

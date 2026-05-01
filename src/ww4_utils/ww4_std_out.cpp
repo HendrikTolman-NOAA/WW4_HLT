@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
  *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
@@ -23,7 +23,16 @@
 #include <cstdlib>
 #include <iomanip>
 
+/**
+ * @namespace ww4_utils
+ * @brief Utilities for WAVEWATCH IV.
+ */
 namespace ww4_utils {
+
+/**
+ * @namespace ww4_std_out
+ * @brief Routines for standard screen output.
+ */
 namespace ww4_std_out {
 
 /**

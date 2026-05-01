@@ -11,7 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_logfile.h"
@@ -21,9 +21,6 @@
 using namespace ww4_utils::ww4_logfile;
 using ww4_utils::MemoryUsage;
 
-/**
- * @test Verify the initial log banner.
- */
 TEST(LogFileTest, InitialOutput) {
   std::stringstream ss;
   writeInitialOutput(ss, "Program shell");
@@ -33,9 +30,6 @@ TEST(LogFileTest, InitialOutput) {
             std::string::npos);
 }
 
-/**
- * @test Verify the final log output with times and memory.
- */
 TEST(LogFileTest, FinalOutputWithMetrics) {
   std::stringstream ss;
   writeFinalOutput(ss, "Program shell", 1.23, 4.56);

@@ -10,7 +10,7 @@
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @date Initial, 2026-04-10
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_service.h"
@@ -20,12 +20,6 @@ namespace ww4_utils {
 namespace ww4_service {
 namespace testing {
 
-/**
- * @test VerifyDispersionStruct
- * @brief Ensures the Dispersion struct correctly stores values.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
 TEST(WW4ServiceTest, VerifyDispersionStruct) {
   Dispersion disp{1.5, 10.2};
   EXPECT_DOUBLE_EQ(disp.k, 1.5);
@@ -38,12 +32,6 @@ TEST(WW4ServiceTest, VerifyDispersionStruct) {
   EXPECT_DOUBLE_EQ(disp2.cg, 5.0);
 }
 
-/**
- * @test VerifyJonswap5p
- * @brief Ensures the 5-parameter JONSWAP spectrum is correctly calculated.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
 TEST(WW4ServiceTest, VerifyJonswap5p) {
   const double f = 0.1;
   const double fp = 0.1;
@@ -72,12 +60,6 @@ TEST(WW4ServiceTest, VerifyJonswap5p) {
                    0.0);
 }
 
-/**
- * @test VerifyDistHaversine
- * @brief Ensures the haversine distance is correctly calculated.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
 TEST(WW4ServiceTest, VerifyDistHaversine) {
   // Test distance between same points
   EXPECT_NEAR(ww4_service::dist_Haversine(10.0, 20.0, 10.0, 20.0), 0.0, 1e-9);
@@ -111,12 +93,6 @@ TEST(WW4ServiceTest, VerifyDistHaversine) {
               1e-9);
 }
 
-/**
- * @test VerifyDistOnSphere
- * @brief Ensures the spherical distance in meters is correctly calculated.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
 TEST(WW4ServiceTest, VerifyDistOnSphere) {
   // Test distance between same points
   EXPECT_NEAR(ww4_service::dist_on_sphere(10.0, 20.0, 10.0, 20.0), 0.0, 1e-3);
@@ -134,15 +110,6 @@ TEST(WW4ServiceTest, VerifyDistOnSphere) {
               1e-3);
 }
 
-/**
- * @test VerifyWavenumberBeji
- * @brief Ensures the wavenumber calculation (Beji 2013) is accurate.
- * @details Validates the approximate wavenumber against the exact dispersion
- *          relation (omega^2 = g*k*tanh(k*h)) across different regimes.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-13
- */
 TEST(WW4ServiceTest, VerifyWavenumberBeji) {
   // Test cases: {omega, h}
   struct TestCase {

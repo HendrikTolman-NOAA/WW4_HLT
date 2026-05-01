@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #pragma once
@@ -26,16 +26,9 @@
 
 namespace ww4_utils {
 
-/**
- * @struct StandAloneConfig
- * @brief Configuration for the ww4_stand_alone program.
- * @details Stores the start and end times for the simulation.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
- */
 struct StandAloneConfig {
-  DateTime startTime; ///< Simulation start time.
-  DateTime endTime;   ///< Simulation end time.
+  DateTime startTime;
+  DateTime endTime;
 };
 
 std::optional<DateTime> parseDateTimeString(std::string_view s);

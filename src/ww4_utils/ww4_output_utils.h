@@ -12,7 +12,7 @@
  * Weather Service.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
+ * @date 2026-05-01
  */
 
 #pragma once
@@ -25,19 +25,13 @@ namespace ww4_utils {
 // Forward declaration of RunConfig to avoid circular dependency
 struct RunConfig;
 
-/**
- * @struct OutputConfig
- * @brief Configuration for a specific output type.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
- */
 struct OutputConfig {
-  bool requested = false;             ///< Is this output requested?
-  std::optional<DateTime> startTime;  ///< Start time for output.
-  std::optional<DateTime> endTime;    ///< End time for output.
-  double interval = -1.0;             ///< Output interval in seconds.
-  bool atFirstTime = true;            ///< Output at first time?
-  std::optional<DateTime> actualTime; ///< Next scheduled output time.
+  bool requested = false;
+  std::optional<DateTime> startTime;
+  std::optional<DateTime> endTime;
+  double interval = -1.0;
+  bool atFirstTime = true;
+  std::optional<DateTime> actualTime;
 };
 
 void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,

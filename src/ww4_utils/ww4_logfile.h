@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -27,44 +27,25 @@
 #include <optional>
 #include <string>
 
-/**
- * @namespace ww4_utils
- * @brief Utilities for WAVEWATCH IV.
- */
 namespace ww4_utils {
 
-/**
- * @namespace ww4_logfile
- * @brief Routines for log file output.
- */
 namespace ww4_logfile {
 
-/**
- * @struct LogTableData
- * @brief Data structure for tabular log output tracking.
- */
 struct LogTableData {
-  bool wlUpdated = false;        ///< Water level update flag.
-  bool cuUpdated = false;        ///< Currents update flag.
-  bool wiUpdated = false;        ///< Winds update flag.
-  bool icUpdated = false;        ///< Ice concentrations update flag.
-  bool bdUpdated = false;        ///< Bottom depth update flag.
-  bool fieldsPerformed = false;  ///< Gridded fields output flag.
-  bool pointsPerformed = false;  ///< Point output flag.
-  bool nestingPerformed = false; ///< Nesting data output flag.
-  bool tracksPerformed = false;  ///< Track output flag.
-  bool restartPerformed = false; ///< Restart file output flag.
-  bool apiPerformed = false;     ///< API output flag.
+  bool wlUpdated = false;
+  bool cuUpdated = false;
+  bool wiUpdated = false;
+  bool icUpdated = false;
+  bool bdUpdated = false;
+  bool fieldsPerformed = false;
+  bool pointsPerformed = false;
+  bool nestingPerformed = false;
+  bool tracksPerformed = false;
+  bool restartPerformed = false;
+  bool apiPerformed = false;
 
-  /**
-   * @brief Checks if any action (input update or output) occurred.
-   * @return True if any flag is set.
-   */
   bool anyAction() const;
 
-  /**
-   * @brief Resets all flags to false.
-   */
   void reset();
 };
 

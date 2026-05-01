@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-09
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #pragma once
@@ -23,22 +23,11 @@
 
 namespace ww4_utils {
 
-/**
- * @struct Dispersion
- * @brief Structure to hold wave dispersion parameters.
- * @details This structure contains the wavenumber and group velocity
- *          calculated from the dispersion relation.
- */
 struct Dispersion {
-  double k;  /**< Wavenumber (rad/m). */
-  double cg; /**< Group velocity (m/s). */
+  double k;
+  double cg;
 };
 
-/**
- * @namespace ww4_service
- * @brief Namespace providing utility mathematical routines.
- * @details This namespace contains ported routines from WAVEWATCH III (WW3).
- */
 namespace ww4_service {
 
 Dispersion wavenumber_Beji(double omega, double h);

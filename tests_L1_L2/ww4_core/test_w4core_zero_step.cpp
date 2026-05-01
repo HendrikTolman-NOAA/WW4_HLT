@@ -10,7 +10,7 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-21
+ * @date 2026-05-01
  */
 
 #include "ww4_core/w4core_finl.h"
@@ -40,9 +40,6 @@ protected:
   ww4_utils::DateTime endTime;
 };
 
-/**
- * @test Verify that w4core_wave fails with two consecutive zero steps.
- */
 TEST_F(W4CoreZeroStepTest, FailsWithTwoConsecutiveZeroSteps) {
   std::ofstream runFile("ww4_run_config.yml");
   runFile << "calendar_type: \"Standard\"\n";

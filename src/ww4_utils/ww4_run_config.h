@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #pragma once
@@ -28,110 +28,61 @@
 
 namespace ww4_utils {
 
-/**
- * @enum InputFieldOption
- * @brief Options for model input fields.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
 enum class InputFieldOption {
-  Undefined,    ///< Mandatory field not yet defined.
-  None,         ///< No input, data set to zero.
-  FromFile,     ///< Input from file.
-  FromCoupling, ///< Input from coupling.
-  Homogeneous,  ///< Homogeneous field.
-  FromGrid      ///< Static data read as part of the grid data.
+  Undefined,
+  None,
+  FromFile,
+  FromCoupling,
+  Homogeneous,
+  FromGrid
 };
 
-/**
- * @enum ScreenOutputLevel
- * @brief Options for the level of output to standard output during time
- * stepping.
- * @author Main Author(s): Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-enum class ScreenOutputLevel {
-  None,    ///< No output in the time stepping loop.
-  Summary, ///< Output if input field updated or output produced.
-  Full     ///< Standard full output for every step.
-};
+enum class ScreenOutputLevel { None, Summary, Full };
 
-/**
- * @enum EchoOption
- * @brief Options for echoing input data to standard output and log files.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-enum class EchoOption {
-  None,    ///< No echoing of input data.
-  Summary, ///< Produce a summary of the input data.
-  Full     ///< Full reproduction of the user input data.
-};
+enum class EchoOption { None, Summary, Full };
 
-/**
- * @struct HomogeneousDataPoint
- * @brief Data point for a homogeneous input field.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
 struct HomogeneousDataPoint {
-  DateTime time;              ///< Time of the data point.
-  std::vector<double> values; ///< Values of the data point.
+  DateTime time;
+  std::vector<double> values;
 };
 
-/**
- * @struct RunConfig
- * @brief Configuration for the run-time environment.
- * @details Stores the calendar type, output preferences, and input options.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
- */
 struct RunConfig {
   TimeManagement::CalendarType calendarType =
-      TimeManagement::CalendarType::Standard; ///< Calendar type.
-  bool produceStdOut = true;                  ///< Screen output flag.
-  bool produceLogFile = true;                 ///< Log file flag.
-  bool dryRun = false;                        ///< Dry run flag.
-  bool propagateX = true;     ///< Propagation flag in x-direction.
-  bool propagateY = true;     ///< Propagation flag in y-direction.
-  bool propagateTheta = true; ///< Propagation flag in theta-direction.
-  bool propagateK = true;     ///< Propagation flag in k-direction.
-  bool sourceTerms = true;    ///< Source terms flag.
+      TimeManagement::CalendarType::Standard;
+  bool produceStdOut = true;
+  bool produceLogFile = true;
+  bool dryRun = false;
+  bool propagateX = true;
+  bool propagateY = true;
+  bool propagateTheta = true;
+  bool propagateK = true;
+  bool sourceTerms = true;
 
-  InputFieldOption waterLevels =
-      InputFieldOption::Undefined; ///< Water levels option.
-  InputFieldOption currents = InputFieldOption::Undefined; ///< Currents option.
-  InputFieldOption winds = InputFieldOption::Undefined;    ///< Winds option.
-  InputFieldOption iceConcentrations =
-      InputFieldOption::Undefined; ///< Ice concentrations option.
-  InputFieldOption bottomDepth =
-      InputFieldOption::FromGrid; ///< Bottom depth option.
+  InputFieldOption waterLevels = InputFieldOption::Undefined;
+  InputFieldOption currents = InputFieldOption::Undefined;
+  InputFieldOption winds = InputFieldOption::Undefined;
+  InputFieldOption iceConcentrations = InputFieldOption::Undefined;
+  InputFieldOption bottomDepth = InputFieldOption::FromGrid;
 
-  EchoOption echoHomInput = EchoOption::Summary; ///< Echo input flag.
+  EchoOption echoHomInput = EchoOption::Summary;
 
-  ScreenOutputLevel screenOutputLevel =
-      ScreenOutputLevel::Summary; ///< Screen output level.
+  ScreenOutputLevel screenOutputLevel = ScreenOutputLevel::Summary;
 
-  std::vector<HomogeneousDataPoint>
-      homogeneousWaterLevels; ///< Homogeneous water levels data.
-  std::vector<HomogeneousDataPoint>
-      homogeneousCurrents; ///< Homogeneous currents data.
-  std::vector<HomogeneousDataPoint>
-      homogeneousWinds; ///< Homogeneous winds data.
-  std::vector<HomogeneousDataPoint>
-      homogeneousIceConcentrations; ///< Homogeneous ice concentrations data.
-  std::vector<HomogeneousDataPoint>
-      homogeneousBottomDepth; ///< Homogeneous bottom depth data.
+  std::vector<HomogeneousDataPoint> homogeneousWaterLevels;
+  std::vector<HomogeneousDataPoint> homogeneousCurrents;
+  std::vector<HomogeneousDataPoint> homogeneousWinds;
+  std::vector<HomogeneousDataPoint> homogeneousIceConcentrations;
+  std::vector<HomogeneousDataPoint> homogeneousBottomDepth;
 
-  double timeStep = -1.0; ///< Model time step in seconds.
+  double timeStep = -1.0;
 
-  OutputConfig outputApi; ///< API output configuration.
+  OutputConfig outputApi;
 
-  OutputConfig outputFields;  ///< Gridded fields output configuration.
-  OutputConfig outputPoints;  ///< Point output configuration.
-  OutputConfig outputNesting; ///< Nesting data output configuration.
-  OutputConfig outputTracks;  ///< Track output configuration.
-  OutputConfig outputRestart; ///< Restart file output configuration.
+  OutputConfig outputFields;
+  OutputConfig outputPoints;
+  OutputConfig outputNesting;
+  OutputConfig outputTracks;
+  OutputConfig outputRestart;
 };
 
 std::string_view cleanValue(std::string_view s);

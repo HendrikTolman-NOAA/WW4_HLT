@@ -9,7 +9,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @date 2026-04-17
+ * @date 2026-05-01
  */
 
 #include "ww4_utils/ww4_constants.h"
@@ -18,12 +18,6 @@
 namespace ww4_constants {
 namespace testing {
 
-/**
- * @test VerifyMathematicalConstants
- * @brief Ensures all mathematical constants are correctly defined.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Rahul Mahajan
- */
 TEST(WW4ConstantsTest, VerifyMathematicalConstants) {
   static_assert(PI == 3.14159265358979323846);
   static_assert(TPI == 2.0 * PI);
@@ -42,12 +36,6 @@ TEST(WW4ConstantsTest, VerifyMathematicalConstants) {
   EXPECT_NEAR(DERA, 0.017453292519943295, 1e-17);
 }
 
-/**
- * @test VerifyPhysicalConstants
- * @brief Ensures all physical constants match WW3 values.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Rahul Mahajan
- */
 TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
   static_assert(GRAV == 9.806);
   static_assert(DWAT == 1000.0);
@@ -68,23 +56,11 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
   EXPECT_NEAR(RADIUS, 6366197.723675813, 1e-8);
 }
 
-/**
- * @test VerifyDerivedConstants
- * @brief Ensures derived constants are correctly calculated.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Rahul Mahajan
- */
 TEST(WW4ConstantsTest, VerifyDerivedConstants) {
   EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * TPI * TPI * TPI));
   EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * TPI));
 }
 
-/**
- * @test VerifyModelConstants
- * @brief Ensures model-specific constants are correctly defined.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Rahul Mahajan
- */
 TEST(WW4ConstantsTest, VerifyModelConstants) {
   static_assert(UNDEF == -999.9);
   static_assert(ABMIN == -1.0);
@@ -99,12 +75,6 @@ TEST(WW4ConstantsTest, VerifyModelConstants) {
   EXPECT_DOUBLE_EQ(JONSWAP_FACTOR, 0.06175);
 }
 
-/**
- * @test VerifyConstantsConsistency
- * @brief Ensures mathematical relations between constants are maintained.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Rahul Mahajan
- */
 TEST(WW4ConstantsTest, VerifyConstantsConsistency) {
   EXPECT_NEAR(DERA * RADE, 1.0, 1e-15);
   EXPECT_NEAR(TPI * TPIINV, 1.0, 1e-15);

@@ -14,13 +14,89 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
- * @date Last update : 2026-04-30
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_service.h"
 
+/**
+ * @namespace ww4_constants
+ * @brief Namespace containing all physical and mathematical constants.
+ * @details This namespace contains constants converted from the WAVEWATCH III
+ *          (WW3) source file constants.F90.
+ *          Original author in WW3: Hendrik L. Tolman.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Rahul Mahajan
+ * @date Initial, 2026-04-09
+ * @date Last update : 2026-05-01
+ * @var PI
+ * @brief Value of Pi.
+ * @var TPI
+ * @brief 2 * Pi.
+ * @var HPI
+ * @brief 0.5 * Pi.
+ * @var TPIINV
+ * @brief Inverse of 2 * Pi.
+ * @var HPIINV
+ * @brief Inverse of 0.5 * Pi.
+ * @var RADE
+ * @brief Conversion factor from radians to degrees.
+ * @var DERA
+ * @brief Conversion factor from degrees to radians.
+ * @var GRAV
+ * @brief Acceleration of gravity (m/s^2). (constants.F90)
+ * @var DWAT
+ * @brief Density of water (kg/m^3). (constants.F90)
+ * @var DAIR
+ * @brief Density of air (kg/m^3). (constants.F90)
+ * @var NU_AIR
+ * @brief Kinematic viscosity of air (m^2/s).
+ * @var NU_WATER
+ * @brief Kinematic viscosity of water (m^2/s). (constants.F90)
+ * @var SED_SG
+ * @brief Specific gravity of sediments (N.D.).
+ * @var KAPPA
+ * @brief von Karman's constant (N.D.).
+ * @var RADIUS
+ * @brief Radius of the earth (m).
+ * @var G2PI3I
+ * @brief Inverse of gravity^2 * (2*Pi)^3.
+ * @var G1PI1I
+ * @brief Inverse of gravity * 2 * Pi.
+ * @var UNDEF
+ * @brief Undefined value.
+ * @var ABMIN
+ * @brief Minimum value for spectral density (log10).
+ * @var ABMAX
+ * @brief Maximum value for spectral density (log10).
+ * @var KDMAX
+ * @brief Maximum value for k*d in dispersion calculations.
+ * @var JONSWAP_FACTOR
+ * @brief Physics factor for JONSWAP spectrum (g^2 / (2*PI)^4).
+ */
+
+/**
+ * @namespace ww4_utils
+ * @brief Utilities for WAVEWATCH IV.
+ */
 namespace ww4_utils {
 
+/**
+ * @struct Dispersion
+ * @brief Structure to hold wave dispersion parameters.
+ * @details This structure contains the wavenumber and group velocity
+ *          calculated from the dispersion relation.
+ * @var Dispersion::k
+ * @brief Wavenumber (rad/m).
+ * @var Dispersion::cg
+ * @brief Group velocity (m/s).
+ */
+
+/**
+ * @namespace ww4_service
+ * @brief Namespace providing utility mathematical routines.
+ * @details This namespace contains ported routines from WAVEWATCH III (WW3).
+ */
 namespace ww4_service {
 
 /**
@@ -31,7 +107,7 @@ namespace ww4_service {
  *          Original author in WW3: Aron Roland.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-13
+ * @date 2026-05-01
  * @param omega Intrinsic frequency (rad/s).
  * @param h Water depth (m).
  * @return Dispersion struct containing k and cg.
@@ -71,7 +147,7 @@ Dispersion wavenumber_Beji(double omega, double h) {
  *          Original author in WW3: G. Ph. van Vledder.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-10
+ * @date 2026-05-01
  * @param f Frequency (Hz).
  * @param fp Peak frequency (Hz).
  * @param alpha Phillip's constant.
@@ -102,7 +178,7 @@ double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
  *          Original author in WW3: D. A. Honegger (USACE/ERDC).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-10
+ * @date 2026-05-01
  * @param lon1 Longitude of 1st point (degrees).
  * @param lat1 Latitude of 1st point (degrees).
  * @param lon2 Longitude of 2nd point (degrees).
@@ -134,7 +210,7 @@ double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
  *          Original author in WW3: Fabrice Ardhuin.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-04-10
+ * @date 2026-05-01
  * @param lon1 Longitude of 1st point (degrees).
  * @param lat1 Latitude of 1st point (degrees).
  * @param lon2 Longitude of 2nd point (degrees).
