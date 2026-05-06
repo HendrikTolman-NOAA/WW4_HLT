@@ -38,6 +38,39 @@ graph TD
     UTILS --> YAML
 ```
 
+## Call Structure
+
+The following diagram illustrates the sequence of function calls when running the `ww4_stand_alone` program.
+
+```mermaid
+sequenceDiagram
+    participant SA as ww4_stand_alone
+    participant INIT as w4core_init
+    participant WAVE as w4core_wave
+    participant FINL as w4core_finl
+    participant UTILS as ww4_utils
+
+    SA->>UTILS: loadStandAloneConfig()
+    SA->>INIT: w4core_init(startTime)
+    INIT->>UTILS: loadRunConfig()
+    INIT->>UTILS: setCalendarType()
+    INIT->>UTILS: ww4_input_update()
+    INIT->>UTILS: writeInitialOutput()
+    INIT->>UTILS: writeLogTableHeader()
+
+    SA->>WAVE: w4core_wave(startTime, endTime)
+    loop until endTime
+        WAVE->>UTILS: assessOutputConfig()
+        WAVE->>UTILS: updateAllInputs()
+        WAVE->>UTILS: computeInputTimeStep()
+        WAVE->>UTILS: computeOutputTimeStep()
+        WAVE->>UTILS: updateOutputActualTimes()
+        Note over WAVE: Propagate Solution
+    end
+
+    SA->>FINL: w4core_finl(endTime)
+```
+
 ## Description of Components
 
 - **Programs**: Contains end-user applications. `ww4_stand_alone` is a simplified environment for running the wave model core.
