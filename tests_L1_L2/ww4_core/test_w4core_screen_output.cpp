@@ -32,12 +32,12 @@ protected:
 
   void TearDown() override {
     ww4_core::resetInternalState();
-    std::remove("ww4_run_config.yml");
+    std::remove("ww4_run_config.yaml");
     std::remove("log.ww4");
   }
 
   void createConfig(const std::string &screenLevel, bool outputRequested) {
-    std::ofstream runFile("ww4_run_config.yml");
+    std::ofstream runFile("ww4_run_config.yaml");
     runFile << "calendar_type: \"Standard\"\n";
     runFile << "water_levels: homogeneous\n";
     runFile << "- 19680606 000000 1.0\n";

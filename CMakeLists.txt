@@ -94,7 +94,7 @@ add_library(
     src/ww4_utils/memory_utils.cpp
     src/ww4_utils/ww4_std_out.cpp
     src/ww4_utils/ww4_logfile.cpp
-    src/ww4_utils/ww4_stand_alone_config.cpp
+    src/ww4_utils/ww4_standalone_config.cpp
     src/ww4_utils/ww4_run_config.cpp
     src/ww4_utils/ww4_input_utils.cpp
     src/ww4_utils/ww4_output_utils.cpp
@@ -116,14 +116,14 @@ target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
 # Executables
-add_executable(ww4_stand_alone src/ww4_progs/ww4_stand_alone.cpp)
-target_link_libraries(ww4_stand_alone PRIVATE ww4_core ww4_utils)
-target_compile_options(ww4_stand_alone PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
-target_link_options(ww4_stand_alone PRIVATE ${WW4_COMMON_LINK_OPTIONS})
+add_executable(ww4_standalone src/ww4_progs/ww4_standalone.cpp)
+target_link_libraries(ww4_standalone PRIVATE ww4_core ww4_utils)
+target_compile_options(ww4_standalone PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
+target_link_options(ww4_standalone PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
 # Place the main program in the exe directory
 set_target_properties(
-    ww4_stand_alone
+    ww4_standalone
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/exe
 )
 
@@ -145,7 +145,7 @@ ww4_add_test(test_time_management tests_L1_L2/ww4_utils/test_time_management.cpp
 ww4_add_test(test_memory_utils tests_L1_L2/ww4_utils/test_memory_utils.cpp ww4_utils)
 ww4_add_test(test_ww4_std_out tests_L1_L2/ww4_utils/test_ww4_std_out.cpp ww4_utils)
 ww4_add_test(test_ww4_logfile tests_L1_L2/ww4_utils/test_ww4_logfile.cpp ww4_utils)
-ww4_add_test(test_ww4_stand_alone_config tests_L1_L2/ww4_utils/test_ww4_stand_alone_config.cpp ww4_utils)
+ww4_add_test(test_ww4_standalone_config tests_L1_L2/ww4_utils/test_ww4_standalone_config.cpp ww4_utils)
 ww4_add_test(test_ww4_run_config tests_L1_L2/ww4_utils/test_ww4_run_config.cpp ww4_utils)
 ww4_add_test(test_ww4_output_utils tests_L1_L2/ww4_utils/test_ww4_output_utils.cpp ww4_utils)
 ww4_add_test(test_ww4_service tests_L1_L2/ww4_utils/test_ww4_service.cpp ww4_utils)

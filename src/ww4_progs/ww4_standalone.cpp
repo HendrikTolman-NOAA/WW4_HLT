@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_stand_alone.cpp
+ * @file ww4_standalone.cpp
  * @brief Stand-alone wave model program.
  * @details This program provides a simplified stand-alone environment for
  *          running the WAVEWATCH IV wave model core.
@@ -23,7 +23,7 @@
 #include "ww4_core/w4core_init.h"
 #include "ww4_core/w4core_wave.h"
 #include "ww4_utils/time_management.h"
-#include "ww4_utils/ww4_stand_alone_config.h"
+#include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_std_out.h"
 #include <exception>
 #include <filesystem>
@@ -35,23 +35,23 @@ int main(int argc, char **argv) {
     // 0.  Program initialization -------------------------------------------
     // 0.0 Extract program name
     //
-    std::string programName = "ww4_stand_alone";
+    std::string programName = "ww4_standalone";
     if (argc > 0) {
       programName = std::filesystem::path(argv[0]).stem().string();
     }
 
     //
-    // 0.1 Load configuration from ww4_stand_alone.yml file
+    // 0.1 Load configuration from ww4_standalone.yaml file
     //
     const auto config =
-        ww4_utils::loadStandAloneConfig("ww4_stand_alone.yml", std::cout);
+        ww4_utils::loadStandaloneConfig("ww4_standalone.yaml", std::cout);
     if (!config) {
       ww4_utils::ww4_std_out::extcde(1, std::cerr,
                                      "Could not load stand-alone configuration",
                                      __FILE__, __LINE__);
     }
 
-    ww4_utils::reportStandAloneConfig(*config, std::cout);
+    ww4_utils::reportStandaloneConfig(*config, std::cout);
 
     //
     // 0.2 MPI initialization (if applicable) -------------------------------

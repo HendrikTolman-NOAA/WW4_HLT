@@ -192,14 +192,14 @@ def update_shell_config(clone_path: Path) -> None:
 
 def setup_active_clone() -> Path:
     """
-    Identify and set the active WW4 clone in ~/.ww4_config.yml.
+    Identify and set the active WW4 clone in ~/.ww4_config.yaml.
 
     Returns
     -------
     Path
         The path to the selected active clone.
     """
-    config_file = Path.home() / ".ww4_config.yml"
+    config_file = Path.home() / ".ww4_config.yaml"
     config = load_config(config_file)
     active_clone_str = config.get("active_clone")
     active_clone = Path(active_clone_str) if active_clone_str else None
@@ -232,7 +232,7 @@ def setup_active_clone() -> Path:
             pass
         print("Invalid choice. Please try again.")
 
-    # Update ~/.ww4_config.yml non-destructively
+    # Update ~/.ww4_config.yaml non-destructively
     resolved_clone = selected_clone.resolve()
     config["active_clone"] = str(resolved_clone)
     save_config(config_file, config)
@@ -285,14 +285,14 @@ set(WW4_USE_SANITIZERS {us} CACHE BOOL "Use sanitizers" FORCE)
 
 def setup_compiler(clone_path: Path) -> None:
     """
-    Identify and set the compiler and flags in <clone>/ww4_compile_config.yml.
+    Identify and set the compiler and flags in <clone>/ww4_compile_config.yaml.
 
     Parameters
     ----------
     clone_path : Path
         The path to the active WW4 clone.
     """
-    compile_config_file = clone_path / "ww4_compile_config.yml"
+    compile_config_file = clone_path / "ww4_compile_config.yaml"
     config = load_config(compile_config_file)
 
     current_compiler = None
@@ -358,7 +358,7 @@ def setup_compiler(clone_path: Path) -> None:
             break
         print("Invalid choice. Please try again.")
 
-    # Update ww4_compile_config.yml non-destructively
+    # Update ww4_compile_config.yaml non-destructively
     if "compiler" not in config or not isinstance(config["compiler"], dict):
         config["compiler"] = {}
 
@@ -367,7 +367,7 @@ def setup_compiler(clone_path: Path) -> None:
     config["compiler"]["strict_warnings"] = strict_warnings
     config["compiler"]["use_sanitizers"] = use_sanitizers
 
-    header = "# @file ww4_compile_config.yml\n# @brief WAVEWATCH IV compilation configuration.\n\n"
+    header = "# @file ww4_compile_config.yaml\n# @brief WAVEWATCH IV compilation configuration.\n\n"
     save_config(compile_config_file, config, header=header)
 
     print(

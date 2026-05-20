@@ -32,7 +32,7 @@ protected:
 
   void TearDown() override {
     ww4_core::resetInternalState();
-    std::remove("ww4_run_config.yml");
+    std::remove("ww4_run_config.yaml");
     std::remove("log.ww4");
   }
 
@@ -41,7 +41,7 @@ protected:
 };
 
 TEST_F(W4CoreZeroStepTest, FailsWithTwoConsecutiveZeroSteps) {
-  std::ofstream runFile("ww4_run_config.yml");
+  std::ofstream runFile("ww4_run_config.yaml");
   runFile << "calendar_type: \"Standard\"\n";
   runFile << "water_levels: none\n";
   runFile << "currents: none\n";

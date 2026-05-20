@@ -33,7 +33,7 @@ protected:
 
 TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   // Create dummy run configuration file
-  std::ofstream runFile("ww4_run_config.yml");
+  std::ofstream runFile("ww4_run_config.yaml");
   runFile << "calendar_type: \"Standard\"\n";
   runFile << "water_levels: none\n";
   runFile << "currents: none\n";
@@ -56,13 +56,13 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   EXPECT_EQ(ww4_core::getProgramName(), "");
   EXPECT_EQ(ww4_core::getRunConfig().timeStep, -1.0); // Default value
 
-  std::remove("ww4_run_config.yml");
+  std::remove("ww4_run_config.yaml");
   std::remove("log.ww4");
 }
 
 TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
   // Create dummy run configuration file
-  std::ofstream runFile("ww4_run_config.yml");
+  std::ofstream runFile("ww4_run_config.yaml");
   runFile << "calendar_type: \"Standard\"\n";
   runFile << "water_levels: none\n";
   runFile << "currents: none\n";
@@ -79,13 +79,13 @@ TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
                "End time before start time.");
 
   ww4_core::resetInternalState();
-  std::remove("ww4_run_config.yml");
+  std::remove("ww4_run_config.yaml");
   std::remove("log.ww4");
 }
 
 TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
   // Create dummy run configuration file
-  std::ofstream runFile("ww4_run_config.yml");
+  std::ofstream runFile("ww4_run_config.yaml");
   runFile << "calendar_type: \"Standard\"\n";
   runFile << "water_levels: none\n";
   runFile << "currents: none\n";
@@ -102,7 +102,7 @@ TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
   EXPECT_EQ(*ww4_core::getWaveTimeData().modelTime, startTime);
 
   ww4_core::resetInternalState();
-  std::remove("ww4_run_config.yml");
+  std::remove("ww4_run_config.yaml");
   std::remove("log.ww4");
 }
 
@@ -114,7 +114,7 @@ TEST_F(W4CoreTimeTest, WaveFailsIfNoInit) {
 
 TEST_F(W4CoreTimeTest, WaveFailsIfTimeMismatch) {
   // Create dummy run configuration file
-  std::ofstream runFile("ww4_run_config.yml");
+  std::ofstream runFile("ww4_run_config.yaml");
   runFile << "calendar_type: \"Standard\"\n";
   runFile << "water_levels: none\n";
   runFile << "currents: none\n";
@@ -131,6 +131,6 @@ TEST_F(W4CoreTimeTest, WaveFailsIfTimeMismatch) {
                "Start time does not match model time.");
 
   ww4_core::resetInternalState();
-  std::remove("ww4_run_config.yml");
+  std::remove("ww4_run_config.yaml");
   std::remove("log.ww4");
 }

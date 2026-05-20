@@ -63,15 +63,15 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     capturedProgramName = std::string(programName);
 
     //
-    // 1.1 Load configuration from ww4_run_config.yml file
+    // 1.1 Load configuration from ww4_run_config.yaml file
     //
-    const auto config = ww4_utils::loadRunConfig("ww4_run_config.yml", os);
+    const auto config = ww4_utils::loadRunConfig("ww4_run_config.yaml", os);
     if (!config) {
-      ww4_utils::ww4_std_out::extcde(
-          1, os,
-          "Run-time configuration file 'ww4_run_config.yml' not found or could "
-          "not be opened.",
-          __FILE__, __LINE__);
+      ww4_utils::ww4_std_out::extcde(1, os,
+                                     "Run-time configuration file "
+                                     "'ww4_run_config.yaml' not found or could "
+                                     "not be opened.",
+                                     __FILE__, __LINE__);
     }
     globalRunConfig = *config;
 

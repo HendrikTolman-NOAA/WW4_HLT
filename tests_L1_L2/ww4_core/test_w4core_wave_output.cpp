@@ -32,7 +32,7 @@ protected:
 
   void TearDown() override {
     ww4_core::resetInternalState();
-    std::remove("ww4_run_config.yml");
+    std::remove("ww4_run_config.yaml");
     std::remove("log.ww4");
   }
 
@@ -43,7 +43,7 @@ protected:
 TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   // Test Case 1: API output disabled (default)
   {
-    std::ofstream runFile("ww4_run_config.yml");
+    std::ofstream runFile("ww4_run_config.yaml");
     runFile << "calendar_type: \"Standard\"\n";
     runFile << "water_levels: none\n";
     runFile << "currents: none\n";
@@ -67,7 +67,7 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
 
   // Test Case 2: API output enabled
   {
-    std::ofstream runFile("ww4_run_config.yml");
+    std::ofstream runFile("ww4_run_config.yaml");
     runFile << "calendar_type: \"Standard\"\n";
     runFile << "water_levels: none\n";
     runFile << "currents: none\n";
@@ -89,7 +89,7 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
 }
 
 TEST_F(W4CoreWaveOutputTest, DoesNotReportBottomDepthFromGrid) {
-  std::ofstream runFile("ww4_run_config.yml");
+  std::ofstream runFile("ww4_run_config.yaml");
   runFile << "calendar_type: \"Standard\"\n";
   runFile << "water_levels: none\n";
   runFile << "currents: none\n";

@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_stand_alone_config.cpp
+ * @file ww4_standalone_config.cpp
  * @brief Implementation of stand-alone configuration processing.
- * @details This file implements the loadStandAloneConfig function,
+ * @details This file implements the loadStandaloneConfig function,
  *          providing a simple YAML parser for start and end times.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -16,7 +16,7 @@
  * @date Last update : 2026-05-20
  */
 
-#include "ww4_utils/ww4_stand_alone_config.h"
+#include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_run_config.h"
 #include <charconv>
 #include <fstream>
@@ -29,14 +29,14 @@
 namespace ww4_utils {
 
 /**
- * @struct StandAloneConfig
- * @brief Configuration for the ww4_stand_alone program.
+ * @struct StandaloneConfig
+ * @brief Configuration for the ww4_standalone program.
  * @details Stores the start and end times for the simulation.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
- * @var StandAloneConfig::startTime
+ * @var StandaloneConfig::startTime
  * @brief Simulation start time.
- * @var StandAloneConfig::endTime
+ * @var StandaloneConfig::endTime
  * @brief Simulation end time.
  */
 
@@ -74,14 +74,14 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
  *          end time is not before the start time.
  * @param filename The name of the YAML file to load.
  * @param os Output stream for reporting.
- * @return A StandAloneConfig structure if successful, or std::nullopt
+ * @return A StandaloneConfig structure if successful, or std::nullopt
  *         if an error occurred (e.g., file not found, invalid format,
  *         or validation failure).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  */
-std::optional<StandAloneConfig>
-loadStandAloneConfig(const std::string_view filename,
+std::optional<StandaloneConfig>
+loadStandaloneConfig(const std::string_view filename,
                      std::ostream &os) noexcept {
   std::ifstream file((std::string(filename)));
   if (!file.is_open()) {
@@ -90,7 +90,7 @@ loadStandAloneConfig(const std::string_view filename,
     return std::nullopt;
   }
 
-  StandAloneConfig config{};
+  StandaloneConfig config{};
   bool startFound = false;
   bool endFound = false;
 
@@ -177,13 +177,13 @@ loadStandAloneConfig(const std::string_view filename,
 
 /**
  * @brief Reports the stand-alone configuration to the provided output stream.
- * @param config The StandAloneConfig structure to report.
+ * @param config The StandaloneConfig structure to report.
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
  */
-void reportStandAloneConfig(const StandAloneConfig &config, std::ostream &os) {
+void reportStandaloneConfig(const StandaloneConfig &config, std::ostream &os) {
   os << "\n  Stand-alone configuration settings :" << std::endl;
   os << "     Start time         : "
      << TimeManagement::toFormattedString(config.startTime) << std::endl;

@@ -22,9 +22,9 @@ Run the setup tool to interactively configure your active clone and compiler set
 ./ww4_setup
 ```
 This tool will:
-- Identify and set the active WAVEWATCH IV clone in `~/.ww4_config.yml`.
+- Identify and set the active WAVEWATCH IV clone in `~/.ww4_config.yaml`.
 - Detect available C++ compilers on your system.
-- Configure compilation flags for either development or maximum optimization in `ww4_compile_config.yml`.
+- Configure compilation flags for either development or maximum optimization in `ww4_compile_config.yaml`.
 
 ### 2. Compilation
 
@@ -44,9 +44,9 @@ If you prefer to configure the tools manually, follow these steps:
 
 Copy the template configuration file to the repository root:
 ```bash
-cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
+cp templates/ww4_compile_config.yaml ./ww4_compile_config.yaml
 ```
-Then, edit `ww4_compile_config.yml` to specify your compiler and preferred options.
+Then, edit `ww4_compile_config.yaml` to specify your compiler and preferred options.
 
 ### 2. Compilation
 
