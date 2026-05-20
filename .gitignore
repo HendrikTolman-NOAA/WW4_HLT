@@ -8,7 +8,7 @@ test_format
 test_format.cpp
 
 # User-specific configuration
-/*.yml
+/*.yaml
 
 # Python
 __pycache__/

@@ -13,7 +13,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-05-20
+ * @date Initial, 2026-04-10
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_service.h"
@@ -26,6 +27,8 @@
  *          Original author in WW3: Hendrik L. Tolman.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Rahul Mahajan
+ * @date Initial, 2026-04-09
+ * @date Last update : 2026-05-01
  * @var PI
  * @brief Value of Pi.
  * @var TPI
@@ -104,6 +107,7 @@ namespace ww4_service {
  *          Original author in WW3: Aron Roland.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date 2026-05-01
  * @param omega Intrinsic frequency (rad/s).
  * @param h Water depth (m).
  * @return Dispersion struct containing k and cg.
@@ -143,6 +147,7 @@ Dispersion wavenumber_Beji(double omega, double h) {
  *          Original author in WW3: G. Ph. van Vledder.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date 2026-05-01
  * @param f Frequency (Hz).
  * @param fp Peak frequency (Hz).
  * @param alpha Phillip's constant.
@@ -173,6 +178,7 @@ double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
  *          Original author in WW3: D. A. Honegger (USACE/ERDC).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date 2026-05-01
  * @param lon1 Longitude of 1st point (degrees).
  * @param lat1 Latitude of 1st point (degrees).
  * @param lon2 Longitude of 2nd point (degrees).
@@ -204,6 +210,7 @@ double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
  *          Original author in WW3: Fabrice Ardhuin.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date 2026-05-01
  * @param lon1 Longitude of 1st point (degrees).
  * @param lat1 Latitude of 1st point (degrees).
  * @param lon2 Longitude of 2nd point (degrees).

@@ -15,7 +15,7 @@
 @author Main Author(s): Aldgisl, Hendrik Tolman
 @author Contributors: Jules (Agentic AI)
 @date Initial: 2026-03-23
-@date Last Update: 2026-04-06
+@date Last Update: 2026-05-20
 """
 
 import os

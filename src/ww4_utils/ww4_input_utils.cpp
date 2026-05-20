@@ -12,7 +12,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-05-20
+ * @date Initial, 2026-04-21
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/ww4_input_utils.h"
@@ -311,6 +312,7 @@ void processField(std::string_view fieldName, InputFieldOption option,
  *          validates its availability and temporal consistency.
  * @param config The run configuration.
  * @param os Output stream for reporting.
+ * @date 2026-05-01
  */
 void ww4_input_update(const RunConfig &config, std::ostream &os) {
   // Reset before processing

@@ -13,7 +13,8 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
- * @date Last update : 2026-05-20
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-05-01
  */
 
 #include "ww4_utils/time_management.h"
@@ -38,6 +39,8 @@ namespace ww4_utils {
  * @details Stores date as YYYYMMDD and time as HHMMSS.ssssss.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-05-01
  * @var DateTime::ymd
  * @brief Current date in YYYYMMDD format.
  * @var DateTime::hms
@@ -53,6 +56,8 @@ namespace ww4_utils {
  *          Standard (Gregorian), NoLeap (365-day), and ThreeSixtyDay.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-05-01
  * @enum TimeManagement::CalendarType
  * @brief Supported calendar systems.
  * @details Defines the different calendar rules used for date calculations.
@@ -523,6 +528,8 @@ double TimeManagement::differenceInSeconds(const DateArray &t1,
  * @post dateArray contains the current UTC system time.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-05-01
  */
 void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
   const auto now = std::chrono::system_clock::now();
@@ -553,6 +560,8 @@ void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
  * @post elapsedTime contains the difference in seconds.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-05-01
  */
 void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
                                          double &elapsedTime) noexcept {
@@ -568,6 +577,8 @@ void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
  * @return Current date and time in DateTime format.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-05-01
  */
 DateTime TimeManagement::getPresentDateTime() noexcept {
   DateArray dat_arr{};
