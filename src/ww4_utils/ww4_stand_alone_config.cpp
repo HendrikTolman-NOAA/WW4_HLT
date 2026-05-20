@@ -81,7 +81,8 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
  * @author Contributors: Jules (Agentic AI)
  */
 std::optional<StandAloneConfig>
-loadStandAloneConfig(const std::string_view filename, std::ostream &os) noexcept {
+loadStandAloneConfig(const std::string_view filename,
+                     std::ostream &os) noexcept {
   std::ifstream file((std::string(filename)));
   if (!file.is_open()) {
     os << "WW4 ERROR: Stand-alone configuration file '" << filename
@@ -150,8 +151,8 @@ loadStandAloneConfig(const std::string_view filename, std::ostream &os) noexcept
   }
 
   if (!startFound || !endFound) {
-    os << "WW4 ERROR: Mandatory field(s) missing in '" << filename << "':"
-       << std::endl;
+    os << "WW4 ERROR: Mandatory field(s) missing in '" << filename
+       << "':" << std::endl;
     if (!startFound)
       os << "           Missing: start_time" << std::endl;
     if (!endFound)
@@ -162,8 +163,8 @@ loadStandAloneConfig(const std::string_view filename, std::ostream &os) noexcept
   // Validation: endTime >= startTime
   if (TimeManagement::differenceInSeconds(config.startTime, config.endTime) <
       0.0) {
-    os << "WW4 ERROR: End time before start time in '" << filename << "':"
-       << std::endl;
+    os << "WW4 ERROR: End time before start time in '" << filename
+       << "':" << std::endl;
     os << "           Start time: "
        << TimeManagement::toFormattedString(config.startTime) << std::endl;
     os << "           End time:   "
