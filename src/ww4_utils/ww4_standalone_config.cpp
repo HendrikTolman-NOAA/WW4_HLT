@@ -12,7 +12,6 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-02
  * @date Last update : 2026-05-20
  */
 
@@ -181,7 +180,6 @@ loadStandaloneConfig(const std::string_view filename,
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
  */
 void reportStandaloneConfig(const StandaloneConfig &config, std::ostream &os) {
   os << "\n  Stand-alone configuration settings :" << std::endl;

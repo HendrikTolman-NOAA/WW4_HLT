@@ -14,8 +14,7 @@
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-03-11
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-20
  *
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
