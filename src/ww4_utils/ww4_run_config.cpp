@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-20
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -340,8 +340,8 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
  * @return A cleaned string view.
  */
 std::string_view cleanValue(const std::string_view s) {
-  const size_t start = s.find_first_not_of(" \t\"");
-  const size_t end = s.find_last_not_of(" \t\"");
+  const size_t start = s.find_first_not_of(" \t\r\n\"");
+  const size_t end = s.find_last_not_of(" \t\r\n\"");
   if (start == std::string_view::npos)
     return "";
   return s.substr(start, end - start + 1);

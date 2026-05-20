@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-02
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-20
  */
 
 #include "ww4_utils/ww4_stand_alone_config.h"
@@ -81,18 +81,22 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
  * @author Contributors: Jules (Agentic AI)
  */
 std::optional<StandAloneConfig>
-loadStandAloneConfig(const std::string_view filename,
-                     [[maybe_unused]] std::ostream &os) noexcept {
+loadStandAloneConfig(const std::string_view filename, std::ostream &os) noexcept {
   std::ifstream file((std::string(filename)));
-  if (!file.is_open())
+  if (!file.is_open()) {
+    os << "WW4 ERROR: Stand-alone configuration file '" << filename
+       << "' not found or could not be opened." << std::endl;
     return std::nullopt;
+  }
 
   StandAloneConfig config{};
   bool startFound = false;
   bool endFound = false;
 
   std::string line;
+  int lineNum = 0;
   while (std::getline(file, line)) {
+    lineNum++;
     const std::string_view lineFullView(line);
 
     // Remove comments
@@ -127,22 +131,43 @@ loadStandAloneConfig(const std::string_view filename,
       if (dt) {
         config.startTime = *dt;
         startFound = true;
+      } else {
+        os << "WW4 ERROR: Invalid start_time format in '" << filename
+           << "' at line " << lineNum << ": " << value << std::endl;
+        os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
       }
     } else if (key == "end_time") {
       const auto dt = parseDateTimeString(value);
       if (dt) {
         config.endTime = *dt;
         endFound = true;
+      } else {
+        os << "WW4 ERROR: Invalid end_time format in '" << filename
+           << "' at line " << lineNum << ": " << value << std::endl;
+        os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
       }
     }
   }
 
-  if (!startFound || !endFound)
+  if (!startFound || !endFound) {
+    os << "WW4 ERROR: Mandatory field(s) missing in '" << filename << "':"
+       << std::endl;
+    if (!startFound)
+      os << "           Missing: start_time" << std::endl;
+    if (!endFound)
+      os << "           Missing: end_time" << std::endl;
     return std::nullopt;
+  }
 
   // Validation: endTime >= startTime
   if (TimeManagement::differenceInSeconds(config.startTime, config.endTime) <
       0.0) {
+    os << "WW4 ERROR: End time before start time in '" << filename << "':"
+       << std::endl;
+    os << "           Start time: "
+       << TimeManagement::toFormattedString(config.startTime) << std::endl;
+    os << "           End time:   "
+       << TimeManagement::toFormattedString(config.endTime) << std::endl;
     return std::nullopt;
   }
 
