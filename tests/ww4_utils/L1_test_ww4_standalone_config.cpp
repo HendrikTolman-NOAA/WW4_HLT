@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_standalone_config.cpp
+ * @file L1_test_standalone_config.cpp
  * @brief Unit tests for stand-alone configuration processing.
  * @details This file provides unit tests for the loadStandaloneConfig
  *          function, covering valid, invalid, and edge-case configurations.

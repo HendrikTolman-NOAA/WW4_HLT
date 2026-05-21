@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_time_management.cpp
+ * @file L1_test_time_management.cpp
  * @brief Unit tests for time management routines using Google Test.
  * @details This file provides comprehensive unit testing for the TimeManagement
  * class, covering leap year cycles, fractional seconds, different calendars,

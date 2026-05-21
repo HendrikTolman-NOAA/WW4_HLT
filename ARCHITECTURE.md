@@ -19,7 +19,7 @@ graph TD
     end
 
     subgraph "Tests"
-        L1L2[tests_L1_L2]
+        L1L2[tests]
     end
 
     subgraph "External Dependencies"

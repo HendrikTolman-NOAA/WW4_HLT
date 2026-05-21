@@ -9,7 +9,7 @@ This directory contains the GitHub Actions workflow configurations for the WAVEW
 
 ## Unit and Integration Tests
 
-The testing workflow ensures that all Level 1 (unit) and Level 2 (integration) tests pass. For detailed information on running tests, please refer to the [Tests README](../../tests_L1_L2/README.md).
+The testing workflow ensures that all Level 1 (unit) and Level 2 (integration) tests pass. For detailed information on running tests, please refer to the [Tests README](../../tests/README.md).
 
 ## Linting and Formatting
 
@@ -22,7 +22,7 @@ You can run the linting and formatting tools locally to verify your changes befo
 1.  **Code Formatting (Clang-Format):**
     To format your code according to the project style:
     ```bash
-    find src include tests_L1_L2 -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
+    find src include tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
     ```
 
 2.  **Static Analysis (Cppcheck):**

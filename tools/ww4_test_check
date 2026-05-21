@@ -3,15 +3,15 @@
 #      | WAVEWATCH IV, open source, code management by NOAA/NWS |
 #      +--------------------------------------------------------+
 #
-# @file ww4_L1_L2_test_check
-# @brief Shell wrapper for the WAVEWATCH IV (WW4) L1/L2 test check tool.
+# @file ww4_test_check
+# @brief Shell wrapper for the WAVEWATCH IV (WW4) test check tool.
 # @details This script identifies the repository root and executes the
 #          underlying Python unit test check tool.
 #
 # Usage
 # -----
 # Run the unit test check tool from any directory within the clone:
-#    ww4_L1_L2_test_check --file <filename>
+#    ww4_test_check --file <filename>
 #
 # Options:
 #   --file FILE       The filename to check (without extension).
@@ -28,10 +28,10 @@
 TOOLS_DIR=$(cd "$(dirname "$0")" && pwd)
 ACTIVE_CLONE=$(cd "$TOOLS_DIR/.." && pwd)
 
-CHECK_TOOL="$ACTIVE_CLONE/tools/ww4_L1_L2_test_check.py"
+CHECK_TOOL="$ACTIVE_CLONE/tools/ww4_test_check.py"
 
 if [ ! -f "$CHECK_TOOL" ]; then
-    echo "Error: L1/L2 test check tool not found at $CHECK_TOOL"
+    echo "Error: Test check tool not found at $CHECK_TOOL"
     exit 1
 fi
 
