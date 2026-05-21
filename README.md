@@ -4,15 +4,6 @@
 
 # <p align="center"> Welcome to the WAVEWATCH IV<sup> TM</sup> (WW4<sup> TM</sup>) repository! </p>
 
-## Software Testing Strategy in WW4
-
-WAVEWATCH IV uses a four-level software testing strategy, starting with the smallest components and expanding to the entire system:
-
-- **Level 1: Unit Testing**: Focuses on the smallest testable pieces of code, typically individual functions, in isolation.
-- **Level 2: Integration Testing**: Individual units are combined into modules to test how they interact and uncover faults in the interfaces between components.
-- **Level 3: Functional Testing**: Treats the software as a "black box" and focuses on testing the application against expected results for specific physics cases.
-- **Level 4: Regression Testing**: Validation process focused on the full model application to ensure that updates haven't negatively impacted established behaviors.
-
 Please visit the wiki pages that constitute the [WAVEWATCH IV portal ](https://github.com/NOAA-EMC/WW4/wiki) for more information on this software package. 
 
 The documentation files (i.e. files with capitalized names and .md extensions) residing in the repository https://github.com/NOAA-EMC/WW4 are limited to this README.md file and required documentation defining the Intellectual Property Protection of WW4. The latter files are 
