@@ -29,8 +29,6 @@
  * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  * @date Initial, 2026-04-09
  * @date Last update : 2026-05-21
- * @var PI
- * @brief Value of Pi.
  * @var Radians2Degrees
  * @brief Conversion factor from radians to degrees.
  * @var Degrees2Radians

@@ -17,6 +17,7 @@
 
 #include "ww4_utils/ww4_service.h"
 #include <gtest/gtest.h>
+#include <numbers>
 
 namespace ww4_utils {
 namespace ww4_service {
@@ -79,7 +80,7 @@ TEST(WW4ServiceTest, VerifyDistHaversine) {
   // Test distance of 180 degrees (antipodal points)
   // lon1=0, lat1=0, lon2=180, lat2=0 -> distance should be PI radians
   EXPECT_NEAR(ww4_service::dist_Haversine(0.0, 0.0, 180.0, 0.0),
-              ww4_constants::PI, 1e-9);
+              std::numbers::pi, 1e-9);
 
   // Test distance between (0, 45) and (1, 45)
   // dlat = 0

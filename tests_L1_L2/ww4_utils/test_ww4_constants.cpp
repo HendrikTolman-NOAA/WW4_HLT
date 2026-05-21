@@ -14,16 +14,15 @@
 
 #include "ww4_utils/ww4_constants.h"
 #include <gtest/gtest.h>
+#include <numbers>
 
 namespace ww4_constants {
 namespace testing {
 
 TEST(WW4ConstantsTest, VerifyMathematicalConstants) {
-  static_assert(PI == 3.14159265358979323846);
-  static_assert(Radians2Degrees == 180.0 / PI);
-  static_assert(Degrees2Radians == PI / 180.0);
+  static_assert(Radians2Degrees == 180.0 / std::numbers::pi);
+  static_assert(Degrees2Radians == std::numbers::pi / 180.0);
 
-  EXPECT_DOUBLE_EQ(PI, 3.14159265358979323846);
   EXPECT_NEAR(Radians2Degrees, 57.29577951308232, 1e-14);
   EXPECT_NEAR(Degrees2Radians, 0.017453292519943295, 1e-17);
 }
@@ -36,7 +35,7 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
   static_assert(NU_WATER == 1.31e-6);
   static_assert(SED_SG == 2.65);
   static_assert(KAPPA == 0.40);
-  static_assert(RADIUS == 4.0e7 / (2.0 * PI));
+  static_assert(RADIUS == 4.0e7 / (2.0 * std::numbers::pi));
 
   EXPECT_DOUBLE_EQ(GRAV, 9.806);
   EXPECT_DOUBLE_EQ(DWAT, 1000.0);
@@ -49,9 +48,10 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
 }
 
 TEST(WW4ConstantsTest, VerifyDerivedConstants) {
-  EXPECT_DOUBLE_EQ(G2PI3I,
-                   1.0 / (GRAV * GRAV * (2.0 * PI) * (2.0 * PI) * (2.0 * PI)));
-  EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * (2.0 * PI)));
+  EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * (2.0 * std::numbers::pi) *
+                                 (2.0 * std::numbers::pi) *
+                                 (2.0 * std::numbers::pi)));
+  EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * (2.0 * std::numbers::pi)));
 }
 
 TEST(WW4ConstantsTest, VerifyModelConstants) {
