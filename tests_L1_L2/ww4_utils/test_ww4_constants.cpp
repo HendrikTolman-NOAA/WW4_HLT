@@ -47,13 +47,6 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
   EXPECT_NEAR(RADIUS, 6366197.723675813, 1e-8);
 }
 
-TEST(WW4ConstantsTest, VerifyDerivedConstants) {
-  EXPECT_DOUBLE_EQ(G2PI3I,
-                   1.0 / (GRAV * GRAV * (2.0 * std::numbers::pi) *
-                          (2.0 * std::numbers::pi) * (2.0 * std::numbers::pi)));
-  EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * (2.0 * std::numbers::pi)));
-}
-
 TEST(WW4ConstantsTest, VerifyModelConstants) {
   static_assert(UNDEF == -999.9);
   static_assert(ABMIN == -1.0);

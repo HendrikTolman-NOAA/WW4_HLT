@@ -49,10 +49,6 @@
  * @brief von Karman's constant (N.D.).
  * @var RADIUS
  * @brief Radius of the earth (m).
- * @var G2PI3I
- * @brief Inverse of gravity^2 * (2*Pi)^3.
- * @var G1PI1I
- * @brief Inverse of gravity * 2 * Pi.
  * @var UNDEF
  * @brief Undefined value.
  * @var ABMIN
