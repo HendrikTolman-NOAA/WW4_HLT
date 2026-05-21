@@ -36,9 +36,9 @@ constexpr double KAPPA = 0.40;
 constexpr double RADIUS = 4.0e7 / (2.0 * std::numbers::pi);
 
 // Derived physical constants
-constexpr double G2PI3I = 1.0 / (GRAV * GRAV * (2.0 * std::numbers::pi) *
-                                 (2.0 * std::numbers::pi) *
-                                 (2.0 * std::numbers::pi));
+constexpr double G2PI3I =
+    1.0 / (GRAV * GRAV * (2.0 * std::numbers::pi) * (2.0 * std::numbers::pi) *
+           (2.0 * std::numbers::pi));
 constexpr double G1PI1I = 1.0 / (GRAV * (2.0 * std::numbers::pi));
 
 // Model constants

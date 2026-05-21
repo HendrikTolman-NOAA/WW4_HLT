@@ -48,9 +48,9 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
 }
 
 TEST(WW4ConstantsTest, VerifyDerivedConstants) {
-  EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * (2.0 * std::numbers::pi) *
-                                 (2.0 * std::numbers::pi) *
-                                 (2.0 * std::numbers::pi)));
+  EXPECT_DOUBLE_EQ(G2PI3I,
+                   1.0 / (GRAV * GRAV * (2.0 * std::numbers::pi) *
+                          (2.0 * std::numbers::pi) * (2.0 * std::numbers::pi)));
   EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * (2.0 * std::numbers::pi)));
 }
 
