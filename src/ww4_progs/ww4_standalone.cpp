@@ -19,7 +19,7 @@
  *       Original author of WW3 stand-alone shell: Hendrik L. Tolman.
  */
 
-#include "ww4_core/w4core_finl.h"
+#include "ww4_core/w4core_finalize.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_core/w4core_wave.h"
 #include "ww4_utils/time_management.h"
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     //
     // 3.  Run finalization routine  -----------------------------------------
     //
-    ww4_core::w4core_finl(config->endTime, std::cout);
+    ww4_core::w4core_finalize(config->endTime, std::cout);
 
     return 0;
   } catch (const std::exception &e) {

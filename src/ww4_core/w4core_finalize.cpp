@@ -3,22 +3,22 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_finl.cpp
+ * @file w4core_finalize.cpp
  * @brief Implementation of the WAVEWATCH IV finalization routine.
- * @details This file implements the w4core_finl routine.
+ * @details This file implements the w4core_finalize routine.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-21
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
-#include "ww4_core/w4core_finl.h"
+#include "ww4_core/w4core_finalize.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/memory_utils.h"
 #include "ww4_utils/time_management.h"
@@ -43,9 +43,9 @@ namespace ww4_core {
  * @param[in] os Output stream for reporting.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
+ * @date 2026-05-21
  */
-void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
+void w4core_finalize(const ww4_utils::DateTime &endTime, std::ostream &os) {
   try {
     //
     // 1.  Capture run time --------------------------------------------------
@@ -57,7 +57,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
     // 2.1 Initial line
     //
     if (getRunConfig().produceStdOut) {
-      os << "\n  Finalization (w4core_finl) starting: "
+      os << "\n  Finalization (w4core_finalize) starting: "
          << ww4_utils::TimeManagement::toFormattedString(endTime) << "\n"
          << std::endl;
 
@@ -88,7 +88,7 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
       //
       // 3.2 Initial line
       //
-      getLogFileStream() << "\n  Finalization (w4core_finl) starting: "
+      getLogFileStream() << "\n  Finalization (w4core_finalize) starting: "
                          << ww4_utils::TimeManagement::toFormattedString(
                                 endTime)
                          << "\n"
@@ -131,8 +131,8 @@ void w4core_finl(const ww4_utils::DateTime &endTime, std::ostream &os) {
   } catch (const std::exception &e) {
     ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);
   } catch (...) {
-    ww4_utils::ww4_std_out::extcde(1, os, "Unknown exception in w4core_finl",
-                                   __FILE__, __LINE__);
+    ww4_utils::ww4_std_out::extcde(
+        1, os, "Unknown exception in w4core_finalize", __FILE__, __LINE__);
   }
 }
 

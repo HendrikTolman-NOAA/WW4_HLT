@@ -13,7 +13,7 @@
  * @date Last update : 2026-05-20
  */
 
-#include "ww4_core/w4core_finl.h"
+#include "ww4_core/w4core_finalize.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_core/w4core_wave.h"
 #include "ww4_utils/time_management.h"

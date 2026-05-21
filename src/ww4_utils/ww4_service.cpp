@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-21
  */
 
 #include "ww4_utils/ww4_service.h"
@@ -28,20 +28,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  * @date Initial, 2026-04-09
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-21
  * @var PI
  * @brief Value of Pi.
- * @var TPI
- * @brief 2 * Pi.
- * @var HPI
- * @brief 0.5 * Pi.
- * @var TPIINV
- * @brief Inverse of 2 * Pi.
- * @var HPIINV
- * @brief Inverse of 0.5 * Pi.
- * @var RADE
+ * @var Radians2Degrees
  * @brief Conversion factor from radians to degrees.
- * @var DERA
+ * @var Degrees2Radians
  * @brief Conversion factor from degrees to radians.
  * @var GRAV
  * @brief Acceleration of gravity (m/s^2). (constants.F90)
@@ -107,7 +99,7 @@ namespace ww4_service {
  *          Original author in WW3: Aron Roland.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
+ * @date 2026-05-21
  * @param omega Intrinsic frequency (rad/s).
  * @param h Water depth (m).
  * @return Dispersion struct containing k and cg.
@@ -147,7 +139,7 @@ Dispersion wavenumber_Beji(double omega, double h) {
  *          Original author in WW3: G. Ph. van Vledder.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
+ * @date 2026-05-21
  * @param f Frequency (Hz).
  * @param fp Peak frequency (Hz).
  * @param alpha Phillip's constant.
@@ -178,7 +170,7 @@ double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
  *          Original author in WW3: D. A. Honegger (USACE/ERDC).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
+ * @date 2026-05-21
  * @param lon1 Longitude of 1st point (degrees).
  * @param lat1 Latitude of 1st point (degrees).
  * @param lon2 Longitude of 2nd point (degrees).
@@ -187,13 +179,13 @@ double JONSWAP_5p(double f, double fp, double alpha, double gamma, double siga,
  */
 double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
   // Compute differences in latitude and longitude in radians
-  double dlat = (lat2 - lat1) * ww4_constants::DERA;
-  double dlon = (lon2 - lon1) * ww4_constants::DERA;
+  double dlat = (lat2 - lat1) * ww4_constants::Degrees2Radians;
+  double dlon = (lon2 - lon1) * ww4_constants::Degrees2Radians;
 
   // Compute the haversine of the central angle
   double a = std::pow(std::sin(dlat / 2.0), 2) +
-             std::cos(lat1 * ww4_constants::DERA) *
-                 std::cos(lat2 * ww4_constants::DERA) *
+             std::cos(lat1 * ww4_constants::Degrees2Radians) *
+                 std::cos(lat2 * ww4_constants::Degrees2Radians) *
                  std::pow(std::sin(dlon / 2.0), 2);
 
   // Compute the angular distance (c), ensuring no precision issues
@@ -210,7 +202,7 @@ double dist_Haversine(double lon1, double lat1, double lon2, double lat2) {
  *          Original author in WW3: Fabrice Ardhuin.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
+ * @date 2026-05-21
  * @param lon1 Longitude of 1st point (degrees).
  * @param lat1 Latitude of 1st point (degrees).
  * @param lon2 Longitude of 2nd point (degrees).

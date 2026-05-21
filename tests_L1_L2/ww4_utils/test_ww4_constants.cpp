@@ -9,7 +9,7 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * @date 2026-05-01
+ * @date 2026-05-21
  */
 
 #include "ww4_utils/ww4_constants.h"
@@ -20,20 +20,12 @@ namespace testing {
 
 TEST(WW4ConstantsTest, VerifyMathematicalConstants) {
   static_assert(PI == 3.14159265358979323846);
-  static_assert(TPI == 2.0 * PI);
-  static_assert(HPI == 0.5 * PI);
-  static_assert(TPIINV == 1.0 / TPI);
-  static_assert(HPIINV == 1.0 / HPI);
-  static_assert(RADE == 180.0 / PI);
-  static_assert(DERA == PI / 180.0);
+  static_assert(Radians2Degrees == 180.0 / PI);
+  static_assert(Degrees2Radians == PI / 180.0);
 
   EXPECT_DOUBLE_EQ(PI, 3.14159265358979323846);
-  EXPECT_DOUBLE_EQ(TPI, 6.28318530717958647692);
-  EXPECT_DOUBLE_EQ(HPI, 1.57079632679489661923);
-  EXPECT_NEAR(TPIINV, 0.15915494309189533, 1e-15);
-  EXPECT_NEAR(HPIINV, 0.6366197723675813, 1e-15);
-  EXPECT_NEAR(RADE, 57.29577951308232, 1e-14);
-  EXPECT_NEAR(DERA, 0.017453292519943295, 1e-17);
+  EXPECT_NEAR(Radians2Degrees, 57.29577951308232, 1e-14);
+  EXPECT_NEAR(Degrees2Radians, 0.017453292519943295, 1e-17);
 }
 
 TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
@@ -44,7 +36,7 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
   static_assert(NU_WATER == 1.31e-6);
   static_assert(SED_SG == 2.65);
   static_assert(KAPPA == 0.40);
-  static_assert(RADIUS == 4.0e7 / TPI);
+  static_assert(RADIUS == 4.0e7 / (2.0 * PI));
 
   EXPECT_DOUBLE_EQ(GRAV, 9.806);
   EXPECT_DOUBLE_EQ(DWAT, 1000.0);
@@ -57,8 +49,9 @@ TEST(WW4ConstantsTest, VerifyPhysicalConstants) {
 }
 
 TEST(WW4ConstantsTest, VerifyDerivedConstants) {
-  EXPECT_DOUBLE_EQ(G2PI3I, 1.0 / (GRAV * GRAV * TPI * TPI * TPI));
-  EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * TPI));
+  EXPECT_DOUBLE_EQ(G2PI3I,
+                   1.0 / (GRAV * GRAV * (2.0 * PI) * (2.0 * PI) * (2.0 * PI)));
+  EXPECT_DOUBLE_EQ(G1PI1I, 1.0 / (GRAV * (2.0 * PI)));
 }
 
 TEST(WW4ConstantsTest, VerifyModelConstants) {
@@ -76,10 +69,7 @@ TEST(WW4ConstantsTest, VerifyModelConstants) {
 }
 
 TEST(WW4ConstantsTest, VerifyConstantsConsistency) {
-  EXPECT_NEAR(DERA * RADE, 1.0, 1e-15);
-  EXPECT_NEAR(TPI * TPIINV, 1.0, 1e-15);
-  EXPECT_NEAR(HPI * HPIINV, 1.0, 1e-15);
-  EXPECT_NEAR(TPI, 4.0 * HPI, 1e-15);
+  EXPECT_NEAR(Degrees2Radians * Radians2Degrees, 1.0, 1e-15);
 }
 
 } // namespace testing

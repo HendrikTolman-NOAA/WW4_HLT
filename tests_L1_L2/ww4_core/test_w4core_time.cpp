@@ -14,7 +14,7 @@
  * @date Last update : 2026-05-20
  */
 
-#include "ww4_core/w4core_finl.h"
+#include "ww4_core/w4core_finalize.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_core/w4core_wave.h"
 #include "ww4_utils/time_management.h"
@@ -50,7 +50,7 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   EXPECT_EQ(ww4_core::getRunConfig().timeStep, 3600.0);
 
   EXPECT_NO_THROW(ww4_core::w4core_wave(startTime, endTime, std::cout));
-  EXPECT_NO_THROW(ww4_core::w4core_finl(endTime, std::cout));
+  EXPECT_NO_THROW(ww4_core::w4core_finalize(endTime, std::cout));
 
   // Verify internal state is reset after finalization
   EXPECT_EQ(ww4_core::getProgramName(), "");

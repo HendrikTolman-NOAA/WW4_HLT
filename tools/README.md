@@ -71,20 +71,6 @@ This tool will:
 - Check the `tests_L1_L2/` directory for corresponding unit tests.
 - Report the test coverage status for each identified routine.
 
-### Clean Tools
-
-To remove intermediate files created during compilation:
-
-```bash
-./ww4_clean
-```
-
-To remove all compilation output, including executables and libraries:
-
-```bash
-./ww4_clean_all
-```
-
 #
 <p align="right">
   <img src="https://github.com/NOAA-EMC/WW4/wiki/images/noaa_logo.gif" alt="NOAA Logo" style="height: 50px; width:55px;"/>

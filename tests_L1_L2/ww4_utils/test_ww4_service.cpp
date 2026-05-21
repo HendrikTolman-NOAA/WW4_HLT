@@ -9,8 +9,10 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-21
  */
 
 #include "ww4_utils/ww4_service.h"
@@ -67,12 +69,12 @@ TEST(WW4ServiceTest, VerifyDistHaversine) {
   // Test distance of 1 degree along the equator
   // lon1=0, lat1=0, lon2=1, lat2=0 -> distance should be 1 degree in radians
   EXPECT_NEAR(ww4_service::dist_Haversine(0.0, 0.0, 1.0, 0.0),
-              ww4_constants::DERA, 1e-9);
+              ww4_constants::Degrees2Radians, 1e-9);
 
   // Test distance of 1 degree along a meridian
   // lon1=0, lat1=0, lon2=0, lat2=1 -> distance should be 1 degree in radians
   EXPECT_NEAR(ww4_service::dist_Haversine(0.0, 0.0, 0.0, 1.0),
-              ww4_constants::DERA, 1e-9);
+              ww4_constants::Degrees2Radians, 1e-9);
 
   // Test distance of 180 degrees (antipodal points)
   // lon1=0, lat1=0, lon2=180, lat2=0 -> distance should be PI radians
@@ -83,8 +85,8 @@ TEST(WW4ServiceTest, VerifyDistHaversine) {
   // dlat = 0
   // a = cos(45)^2 * sin(0.5)^2
   // c = 2 * atan2(sqrt(a), sqrt(1-a))
-  double dlon_rad = 1.0 * ww4_constants::DERA;
-  double lat_rad = 45.0 * ww4_constants::DERA;
+  double dlon_rad = 1.0 * ww4_constants::Degrees2Radians;
+  double lat_rad = 45.0 * ww4_constants::Degrees2Radians;
   double a =
       std::pow(std::cos(lat_rad), 2) * std::pow(std::sin(dlon_rad / 2.0), 2);
   double expected_c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(1.0 - a));
@@ -99,12 +101,12 @@ TEST(WW4ServiceTest, VerifyDistOnSphere) {
 
   // Test distance of 1 degree along the equator
   // 1 degree in radians * RADIUS should be the distance in meters
-  double expected_m = ww4_constants::DERA * ww4_constants::RADIUS;
+  double expected_m = ww4_constants::Degrees2Radians * ww4_constants::RADIUS;
   EXPECT_NEAR(ww4_service::dist_on_sphere(0.0, 0.0, 1.0, 0.0), expected_m,
               1e-3);
 
-  // According to definition of RADIUS = 4.0e7 / TPI,
-  // 360 degrees (TPI radians) = 4.0e7 meters.
+  // According to definition of RADIUS = 4.0e7 / (2.0 * PI),
+  // 360 degrees (2*PI radians) = 4.0e7 meters.
   // 1 degree = 4.0e7 / 360 = 111111.111... meters.
   EXPECT_NEAR(ww4_service::dist_on_sphere(0.0, 0.0, 1.0, 0.0), 4.0e7 / 360.0,
               1e-3);
