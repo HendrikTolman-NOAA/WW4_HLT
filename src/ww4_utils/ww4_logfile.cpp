@@ -147,14 +147,10 @@ void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
  * @param os The output stream to write to.
  */
 void writeLogTableHeader(std::ostream &os) {
-  os << "  +-------------------------+---------------------+-------------------"
-        "------+\n"
-     << "  |          Time           |       Inputs        |         Outputs   "
-        "      |\n"
-     << "  |    (at end of step)     | WLV CUR WND ICE DPT | FLD PNT RST API "
-        "        |\n"
-     << "  +-------------------------+---------------------+-------------------"
-        "------+"
+  os << "  +-------------------------+---------------------+-----------------+\n"
+     << "  |          Time           |       Inputs        |     Outputs     |\n"
+     << "  |    (at end of step)     | WLV CUR WND ICE DPT | FLD PNT RST API |\n"
+     << "  +-------------------------+---------------------+-----------------+"
      << std::endl;
 }
 
@@ -174,7 +170,7 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
      << mark(data.bdUpdated) << "  |" << "  " << mark(data.fieldsPerformed)
      << "   " << mark(data.pointsPerformed) << "   "
      << mark(data.restartPerformed) << "   " << mark(data.apiPerformed)
-     << "          |" << std::endl;
+     << "  |" << std::endl;
 }
 
 /**
@@ -182,8 +178,7 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
  * @param os The output stream to write to.
  */
 void writeLogTableFooter(std::ostream &os) {
-  os << "  +-------------------------+---------------------+-------------------"
-        "------+"
+  os << "  +-------------------------+---------------------+-----------------+"
      << std::endl;
 }
 
