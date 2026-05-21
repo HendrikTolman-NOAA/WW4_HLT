@@ -17,12 +17,13 @@
 
 #pragma once
 
+#include <numbers>
+
 namespace ww4_constants {
 
 // Mathematical constants
-constexpr double PI = 3.14159265358979323846;
-constexpr double Radians2Degrees = 180.0 / PI;
-constexpr double Degrees2Radians = PI / 180.0;
+constexpr double Radians2Degrees = 180.0 / std::numbers::pi;
+constexpr double Degrees2Radians = std::numbers::pi / 180.0;
 
 // Physical constants
 constexpr double GRAV = 9.806;
@@ -32,12 +33,7 @@ constexpr double NU_AIR = 1.4e-5;
 constexpr double NU_WATER = 1.31e-6;
 constexpr double SED_SG = 2.65;
 constexpr double KAPPA = 0.40;
-constexpr double RADIUS = 4.0e7 / (2.0 * PI);
-
-// Derived physical constants
-constexpr double G2PI3I =
-    1.0 / (GRAV * GRAV * (2.0 * PI) * (2.0 * PI) * (2.0 * PI));
-constexpr double G1PI1I = 1.0 / (GRAV * (2.0 * PI));
+constexpr double RADIUS = 4.0e7 / (2.0 * std::numbers::pi);
 
 // Model constants
 constexpr double UNDEF = -999.9;

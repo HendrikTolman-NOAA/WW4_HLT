@@ -29,8 +29,6 @@
  * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  * @date Initial, 2026-04-09
  * @date Last update : 2026-05-21
- * @var PI
- * @brief Value of Pi.
  * @var Radians2Degrees
  * @brief Conversion factor from radians to degrees.
  * @var Degrees2Radians
@@ -51,10 +49,6 @@
  * @brief von Karman's constant (N.D.).
  * @var RADIUS
  * @brief Radius of the earth (m).
- * @var G2PI3I
- * @brief Inverse of gravity^2 * (2*Pi)^3.
- * @var G1PI1I
- * @brief Inverse of gravity * 2 * Pi.
  * @var UNDEF
  * @brief Undefined value.
  * @var ABMIN
