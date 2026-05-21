@@ -31,12 +31,6 @@
  * @date Last update : 2026-05-21
  * @var PI
  * @brief Value of Pi.
- * @var HPI
- * @brief 0.5 * Pi.
- * @var TPIINV
- * @brief Inverse of 2 * Pi.
- * @var HPIINV
- * @brief Inverse of 0.5 * Pi.
  * @var Radians2Degrees
  * @brief Conversion factor from radians to degrees.
  * @var Degrees2Radians

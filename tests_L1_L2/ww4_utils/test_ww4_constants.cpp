@@ -20,16 +20,10 @@ namespace testing {
 
 TEST(WW4ConstantsTest, VerifyMathematicalConstants) {
   static_assert(PI == 3.14159265358979323846);
-  static_assert(HPI == 0.5 * PI);
-  static_assert(TPIINV == 1.0 / (2.0 * PI));
-  static_assert(HPIINV == 1.0 / HPI);
   static_assert(Radians2Degrees == 180.0 / PI);
   static_assert(Degrees2Radians == PI / 180.0);
 
   EXPECT_DOUBLE_EQ(PI, 3.14159265358979323846);
-  EXPECT_DOUBLE_EQ(HPI, 1.57079632679489661923);
-  EXPECT_NEAR(TPIINV, 0.15915494309189533, 1e-15);
-  EXPECT_NEAR(HPIINV, 0.6366197723675813, 1e-15);
   EXPECT_NEAR(Radians2Degrees, 57.29577951308232, 1e-14);
   EXPECT_NEAR(Degrees2Radians, 0.017453292519943295, 1e-17);
 }
@@ -76,8 +70,6 @@ TEST(WW4ConstantsTest, VerifyModelConstants) {
 
 TEST(WW4ConstantsTest, VerifyConstantsConsistency) {
   EXPECT_NEAR(Degrees2Radians * Radians2Degrees, 1.0, 1e-15);
-  EXPECT_NEAR((2.0 * PI) * TPIINV, 1.0, 1e-15);
-  EXPECT_NEAR(HPI * HPIINV, 1.0, 1e-15);
 }
 
 } // namespace testing

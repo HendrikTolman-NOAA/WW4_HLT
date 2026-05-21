@@ -21,9 +21,6 @@ namespace ww4_constants {
 
 // Mathematical constants
 constexpr double PI = 3.14159265358979323846;
-constexpr double HPI = 0.5 * PI;
-constexpr double TPIINV = 1.0 / (2.0 * PI);
-constexpr double HPIINV = 1.0 / HPI;
 constexpr double Radians2Degrees = 180.0 / PI;
 constexpr double Degrees2Radians = PI / 180.0;
 
