@@ -108,7 +108,7 @@ add_library(
     ww4_core
     src/ww4_core/w4core_init.cpp
     src/ww4_core/w4core_wave.cpp
-    src/ww4_core/w4core_finl.cpp
+    src/ww4_core/w4core_finalize.cpp
 )
 target_include_directories(ww4_core PUBLIC src)
 target_link_libraries(ww4_core PUBLIC ww4_utils)
