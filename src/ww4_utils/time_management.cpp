@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-20
  */
 
 #include "ww4_utils/time_management.h"
@@ -22,6 +22,7 @@
 #include <charconv>
 #include <chrono>
 #include <cmath>
+#include <ctime>
 #include <iomanip>
 #include <sstream>
 
@@ -533,20 +534,27 @@ double TimeManagement::differenceInSeconds(const DateArray &t1,
  */
 void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
   const auto now = std::chrono::system_clock::now();
-  const auto dp = std::chrono::floor<std::chrono::days>(now);
-  const std::chrono::year_month_day ymd_sys{dp};
-  const auto time_duration = now - dp;
-  const std::chrono::hh_mm_ss hms_sys{
-      std::chrono::floor<std::chrono::milliseconds>(time_duration)};
+  const auto tt = std::chrono::system_clock::to_time_t(now);
 
-  dateArray[0] = static_cast<int>(ymd_sys.year());
-  dateArray[1] = static_cast<int>(static_cast<unsigned>(ymd_sys.month()));
-  dateArray[2] = static_cast<int>(static_cast<unsigned>(ymd_sys.day()));
+  std::tm gmt{};
+#ifdef _WIN32
+  gmtime_s(&gmt, &tt);
+#else
+  gmtime_r(&tt, &gmt);
+#endif
+
+  const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                      now.time_since_epoch()) %
+                  1000;
+
+  dateArray[0] = gmt.tm_year + 1900;
+  dateArray[1] = gmt.tm_mon + 1;
+  dateArray[2] = gmt.tm_mday;
   dateArray[3] = 0; // UTC
-  dateArray[4] = static_cast<int>(hms_sys.hours().count());
-  dateArray[5] = static_cast<int>(hms_sys.minutes().count());
-  dateArray[6] = static_cast<int>(hms_sys.seconds().count());
-  dateArray[7] = static_cast<int>(hms_sys.subseconds().count());
+  dateArray[4] = gmt.tm_hour;
+  dateArray[5] = gmt.tm_min;
+  dateArray[6] = gmt.tm_sec;
+  dateArray[7] = static_cast<int>(ms.count());
 }
 
 /**
