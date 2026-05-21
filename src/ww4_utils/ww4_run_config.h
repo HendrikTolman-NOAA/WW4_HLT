@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-21
  */
 
 #pragma once
@@ -80,8 +80,6 @@ struct RunConfig {
 
   OutputConfig outputFields;
   OutputConfig outputPoints;
-  OutputConfig outputNesting;
-  OutputConfig outputTracks;
   OutputConfig outputRestart;
 };
 

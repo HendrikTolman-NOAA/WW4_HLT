@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-21
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -223,18 +223,6 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
           getRunConfig().outputPoints.actualTime ==
               getWaveTimeData().modelTime) {
         printOutput("Performing points output", logData.pointsPerformed);
-      }
-
-      if (getRunConfig().outputNesting.requested &&
-          getRunConfig().outputNesting.actualTime ==
-              getWaveTimeData().modelTime) {
-        printOutput("Performing nesting output", logData.nestingPerformed);
-      }
-
-      if (getRunConfig().outputTracks.requested &&
-          getRunConfig().outputTracks.actualTime ==
-              getWaveTimeData().modelTime) {
-        printOutput("Performing tracks output", logData.tracksPerformed);
       }
 
       if (getRunConfig().outputRestart.requested &&

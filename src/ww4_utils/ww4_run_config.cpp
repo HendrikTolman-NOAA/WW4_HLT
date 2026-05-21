@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-20
+ * @date Last update : 2026-05-21
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -140,10 +140,6 @@ namespace ww4_utils {
  * @brief Gridded fields output configuration.
  * @var RunConfig::outputPoints
  * @brief Point output configuration.
- * @var RunConfig::outputNesting
- * @brief Nesting data output configuration.
- * @var RunConfig::outputTracks
- * @brief Track output configuration.
  * @var RunConfig::outputRestart
  * @brief Restart file output configuration.
  */
@@ -518,10 +514,6 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       updateOutputConfig(config.outputFields, key.substr(14), value);
     } else if (key.starts_with("output_points_")) {
       updateOutputConfig(config.outputPoints, key.substr(14), value);
-    } else if (key.starts_with("output_nesting_")) {
-      updateOutputConfig(config.outputNesting, key.substr(15), value);
-    } else if (key.starts_with("output_tracks_")) {
-      updateOutputConfig(config.outputTracks, key.substr(14), value);
     } else if (key.starts_with("output_restart_")) {
       updateOutputConfig(config.outputRestart, key.substr(15), value);
     }
@@ -576,8 +568,6 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   outputValid &= validateOutput(config.outputFields, "output_fields");
   outputValid &= validateOutput(config.outputApi, "output_api");
   outputValid &= validateOutput(config.outputPoints, "output_points");
-  outputValid &= validateOutput(config.outputNesting, "output_nesting");
-  outputValid &= validateOutput(config.outputTracks, "output_tracks");
   outputValid &= validateOutput(config.outputRestart, "output_restart");
 
   if (!outputValid) {
@@ -695,8 +685,6 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   reportOutput(config.outputFields, "Gridded fields", os);
   reportOutput(config.outputPoints, "Point", os);
-  reportOutput(config.outputNesting, "Nesting data", os);
-  reportOutput(config.outputTracks, "Track", os);
   reportOutput(config.outputRestart, "Restart file", os);
   reportOutput(config.outputApi, "API", os);
 
