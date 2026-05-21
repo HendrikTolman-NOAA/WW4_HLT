@@ -39,8 +39,6 @@ struct LogTableData {
   bool bdUpdated = false;
   bool fieldsPerformed = false;
   bool pointsPerformed = false;
-  bool nestingPerformed = false;
-  bool tracksPerformed = false;
   bool restartPerformed = false;
   bool apiPerformed = false;
 

@@ -11,7 +11,8 @@
  * Weather Service.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
+ * @date Initial, 2026-05-01
+ * @date Last update : 2026-05-21
  */
 
 #include "ww4_utils/ww4_output_utils.h"
@@ -85,8 +86,6 @@ void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
 
   assess(config.outputFields, false);
   assess(config.outputPoints, false);
-  assess(config.outputNesting, false);
-  assess(config.outputTracks, false);
   assess(config.outputRestart, false);
   assess(config.outputApi, true);
 }
@@ -114,8 +113,6 @@ double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
 
   check(config.outputFields);
   check(config.outputPoints);
-  check(config.outputNesting);
-  check(config.outputTracks);
   check(config.outputRestart);
   check(config.outputApi);
 
@@ -150,8 +147,6 @@ void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
 
   update(config.outputFields);
   update(config.outputPoints);
-  update(config.outputNesting);
-  update(config.outputTracks);
   update(config.outputRestart);
   // API output is typically one-shot at the end, interval is -1.0 so update
   // will just pass.

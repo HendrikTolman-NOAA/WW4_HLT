@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-21
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -50,10 +50,6 @@ namespace ww4_logfile {
  * @brief Gridded fields output flag.
  * @var LogTableData::pointsPerformed
  * @brief Point output flag.
- * @var LogTableData::nestingPerformed
- * @brief Nesting data output flag.
- * @var LogTableData::tracksPerformed
- * @brief Track output flag.
  * @var LogTableData::restartPerformed
  * @brief Restart file output flag.
  * @var LogTableData::apiPerformed
@@ -66,8 +62,7 @@ namespace ww4_logfile {
  */
 bool LogTableData::anyAction() const {
   return wlUpdated || cuUpdated || wiUpdated || icUpdated || bdUpdated ||
-         fieldsPerformed || pointsPerformed || nestingPerformed ||
-         tracksPerformed || restartPerformed || apiPerformed;
+         fieldsPerformed || pointsPerformed || restartPerformed || apiPerformed;
 }
 
 /**
@@ -75,8 +70,7 @@ bool LogTableData::anyAction() const {
  */
 void LogTableData::reset() {
   wlUpdated = cuUpdated = wiUpdated = icUpdated = bdUpdated = false;
-  fieldsPerformed = pointsPerformed = nestingPerformed = tracksPerformed =
-      restartPerformed = apiPerformed = false;
+  fieldsPerformed = pointsPerformed = restartPerformed = apiPerformed = false;
 }
 
 /**
@@ -153,14 +147,13 @@ void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
  * @param os The output stream to write to.
  */
 void writeLogTableHeader(std::ostream &os) {
-  os << "  +-------------------------+---------------------+-------------------"
-        "------+\n"
-     << "  |          Time           |       Inputs        |         Outputs   "
-        "      |\n"
-     << "  |    (at end of step)     | WLV CUR WND ICE DPT | FLD PNT NST TRK "
-        "RST API |\n"
-     << "  +-------------------------+---------------------+-------------------"
-        "------+"
+  os << "  "
+        "+-------------------------+---------------------+-----------------+\n"
+     << "  |          Time           |       Inputs        |     Outputs     "
+        "|\n"
+     << "  |    (at end of step)     | WLV CUR WND ICE DPT | FLD PNT RST API "
+        "|\n"
+     << "  +-------------------------+---------------------+-----------------+"
      << std::endl;
 }
 
@@ -179,9 +172,8 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
      << mark(data.wiUpdated) << "   " << mark(data.icUpdated) << "   "
      << mark(data.bdUpdated) << "  |" << "  " << mark(data.fieldsPerformed)
      << "   " << mark(data.pointsPerformed) << "   "
-     << mark(data.nestingPerformed) << "   " << mark(data.tracksPerformed)
-     << "   " << mark(data.restartPerformed) << "   " << mark(data.apiPerformed)
-     << "  |" << std::endl;
+     << mark(data.restartPerformed) << "   " << mark(data.apiPerformed) << "  |"
+     << std::endl;
 }
 
 /**
@@ -189,8 +181,7 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
  * @param os The output stream to write to.
  */
 void writeLogTableFooter(std::ostream &os) {
-  os << "  +-------------------------+---------------------+-------------------"
-        "------+"
+  os << "  +-------------------------+---------------------+-----------------+"
      << std::endl;
 }
 
