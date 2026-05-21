@@ -14,7 +14,7 @@ WAVEWATCH IV provides multiple ways to set up and build the project, ranging fro
 
 ## Interactive Usage (Recommended)
 
-Run the setup tool to interactively configure your active clone and compiler settings:
+Run the setup tool to interactively configure your active clone:
 
 ### 1. Setup
 
@@ -23,34 +23,32 @@ Run the setup tool to interactively configure your active clone and compiler set
 ```
 This tool will:
 - Identify and set the active WAVEWATCH IV clone in `~/.ww4_config.yaml`.
-- Detect available C++ compilers on your system.
-- Configure compilation flags for either development or maximum optimization in `ww4_compile_config.yaml`.
+- Add the `tools/` and `exe/` directories to your shell's `PATH`.
 
 ### 2. Compilation
 
-Once configured, you can compile WAVEWATCH IV using standard CMake:
+Once the environment is set up, you can compile WAVEWATCH IV using standard CMake:
 
 ```bash
 cmake -B build
 cmake --build build
 ```
-The `ww4_setup` tool generates a `ww4_local_config.cmake` file that stores your selected compiler and flags, which is automatically included by `CMakeLists.txt`.
 
 ## Manual Usage
 
-If you prefer to configure the tools manually, follow these steps:
+WAVEWATCH IV uses a standard CMake build system. You can configure and build it manually without using the setup tools:
 
-### 1. Setup
+### 1. Configuration
 
-Copy the template configuration file to the repository root:
 ```bash
-cp templates/ww4_compile_config.yaml ./ww4_compile_config.yaml
+cmake -B build -S .
 ```
-Then, edit `ww4_compile_config.yaml` to specify your compiler and preferred options.
 
 ### 2. Compilation
 
-Configure and build with CMake as shown above.
+```bash
+cmake --build build
+```
 
 ## Developer Tools
 
