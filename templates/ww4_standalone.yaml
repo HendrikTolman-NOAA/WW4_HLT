@@ -1,9 +1,9 @@
-# @file ww4_stand_alone.yml
+# @file ww4_standalone.yaml
 # @brief YAML template for WAVEWATCH IV (WW4) stand-alone program configuration.
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
 #
 # @details This file provides a template for configuring the start and end
-#          times for the ww4_stand_alone program. Both inputs are required
+#          times for the ww4_standalone program. Both inputs are required
 #          and have no default settings.
 #
 #          To use this file, copy it to the root directory of the repository

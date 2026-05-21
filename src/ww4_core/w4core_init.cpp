@@ -12,7 +12,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -63,15 +63,15 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     capturedProgramName = std::string(programName);
 
     //
-    // 1.1 Load configuration from ww4_run_config.yml file
+    // 1.1 Load configuration from ww4_run_config.yaml file
     //
-    const auto config = ww4_utils::loadRunConfig("ww4_run_config.yml", os);
+    const auto config = ww4_utils::loadRunConfig("ww4_run_config.yaml", os);
     if (!config) {
-      ww4_utils::ww4_std_out::extcde(
-          1, os,
-          "Run-time configuration file 'ww4_run_config.yml' not found or could "
-          "not be opened.",
-          __FILE__, __LINE__);
+      ww4_utils::ww4_std_out::extcde(1, os,
+                                     "Run-time configuration file "
+                                     "'ww4_run_config.yaml' not found or could "
+                                     "not be opened.",
+                                     __FILE__, __LINE__);
     }
     globalRunConfig = *config;
 

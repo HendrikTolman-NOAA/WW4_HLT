@@ -11,6 +11,7 @@
  * Weather Service.
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
+ * @date Last update : 2026-05-20
  */
 
 #include "ww4_core/w4core_finl.h"
@@ -33,12 +34,12 @@ protected:
   void TearDown() override {
     ww4_core::resetInternalState();
     ww4_utils::TimeManagement::reset();
-    std::remove("ww4_run_config.yml");
+    std::remove("ww4_run_config.yaml");
     std::remove("log.ww4");
   }
 
   void writeYaml(const std::string &content) {
-    std::ofstream ofs("ww4_run_config.yml");
+    std::ofstream ofs("ww4_run_config.yaml");
     ofs << content;
     ofs.close();
   }

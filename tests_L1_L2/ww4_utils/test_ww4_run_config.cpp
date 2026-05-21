@@ -13,7 +13,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-20
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -24,7 +24,7 @@
 using namespace ww4_utils;
 
 TEST(RunConfigTest, NonDefaultConfig) {
-  const std::string filename = "test_run_nondefault.yml";
+  const std::string filename = "test_run_nondefault.yaml";
   std::ofstream file(filename);
   file << "calendar_type: \"NoLeap\"\n";
   file << "produce_std_out: \"no\"\n";
@@ -55,7 +55,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
 }
 
 TEST(RunConfigTest, ScreenOutputLevelConfig) {
-  const std::string filename = "test_run_screen_level.yml";
+  const std::string filename = "test_run_screen_level.yaml";
   std::ofstream file(filename);
   file << "water_levels: none\n";
   file << "currents: none\n";
@@ -78,7 +78,7 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
 }
 
 TEST(RunConfigTest, OutputConfigParsing) {
-  const std::string filename = "test_output_parsing.yml";
+  const std::string filename = "test_output_parsing.yaml";
   std::ofstream file(filename);
   file << "water_levels: none\n";
   file << "currents: none\n";
@@ -120,7 +120,7 @@ TEST(RunConfigTest, OutputConfigParsing) {
 }
 
 TEST(RunConfigTest, OutputIntervalFailure) {
-  const std::string filename = "test_output_interval_failure.yml";
+  const std::string filename = "test_output_interval_failure.yaml";
   std::ofstream file(filename);
   file << "water_levels: none\n";
   file << "currents: none\n";
@@ -165,7 +165,7 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
 }
 
 TEST(RunConfigTest, NewFlagsConfig) {
-  const std::string filename = "test_run_new_flags.yml";
+  const std::string filename = "test_run_new_flags.yaml";
   std::ofstream file(filename);
   file << "dry_run: yes\n";
   file << "propagate_x: no\n";
@@ -220,7 +220,7 @@ TEST(RunConfigTest, CleanValue) {
 }
 
 TEST(RunConfigTest, RobustParsingConfig) {
-  const std::string filename = "test_run_robust.yml";
+  const std::string filename = "test_run_robust.yaml";
   std::ofstream file(filename);
   file << "\n";
   file << "  # This is a comment\n";
@@ -278,7 +278,7 @@ TEST(RunConfigTest, ReportConfigStandard) {
 }
 
 TEST(RunConfigTest, ApiOutputConfig) {
-  const std::string filename = "test_api_output.yml";
+  const std::string filename = "test_api_output.yaml";
   std::ofstream file(filename);
   file << "water_levels: none\n";
   file << "currents: none\n";
@@ -355,7 +355,7 @@ TEST(RunConfigTest, MissingFileDefaults) {
   // Ensure calendar is something else before test
   TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
 
-  const auto config = loadRunConfig("non_existent_run_config.yml", std::cerr);
+  const auto config = loadRunConfig("non_existent_run_config.yaml", std::cerr);
   EXPECT_FALSE(config.has_value());
 
   // Manually reset for other tests
@@ -363,7 +363,7 @@ TEST(RunConfigTest, MissingFileDefaults) {
 }
 
 TEST(RunConfigTest, ThreeSixtyDayConfig) {
-  const std::string filename = "test_run_360.yml";
+  const std::string filename = "test_run_360.yaml";
   std::ofstream file(filename);
   file << "calendar_type: \"ThreeSixtyDay\"\n";
   file << "water_levels: none\n";
@@ -386,7 +386,7 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
 }
 
 TEST(RunConfigTest, PartialConfig) {
-  const std::string filename = "test_run_partial.yml";
+  const std::string filename = "test_run_partial.yaml";
   std::ofstream file(filename);
   file << "produce_std_out: \"no\"\n";
   file << "water_levels: none\n";
@@ -407,7 +407,7 @@ TEST(RunConfigTest, PartialConfig) {
 }
 
 TEST(RunConfigTest, TimeStepFailure) {
-  const std::string filename = "test_run_time_step_failure.yml";
+  const std::string filename = "test_run_time_step_failure.yaml";
   std::ofstream file(filename);
   file << "water_levels: none\n";
   file << "currents: none\n";
@@ -425,7 +425,7 @@ TEST(RunConfigTest, TimeStepFailure) {
 }
 
 TEST(RunConfigTest, MandatoryFieldsFailure) {
-  const std::string filename = "test_run_mandatory_failure.yml";
+  const std::string filename = "test_run_mandatory_failure.yaml";
   std::ofstream file(filename);
   file << "produce_std_out: \"no\"\n";
   // Missing other fields
@@ -439,7 +439,7 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
 }
 
 TEST(RunConfigTest, BottomDepthDefault) {
-  const std::string filename = "test_run_bottom_depth_default.yml";
+  const std::string filename = "test_run_bottom_depth_default.yaml";
   std::ofstream file(filename);
   file << "water_levels: none\n";
   file << "currents: none\n";
@@ -457,7 +457,7 @@ TEST(RunConfigTest, BottomDepthDefault) {
 }
 
 TEST(RunConfigTest, BottomDepthOtherOptions) {
-  const std::string filename = "test_run_bottom_depth_none.yml";
+  const std::string filename = "test_run_bottom_depth_none.yaml";
   std::ofstream file(filename);
   file << "water_levels: none\n";
   file << "currents: none\n";
@@ -475,7 +475,7 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
 }
 
 TEST(RunConfigTest, FromGridRejection) {
-  const std::string filename = "test_run_from_grid_rejection.yml";
+  const std::string filename = "test_run_from_grid_rejection.yaml";
   std::ofstream file(filename);
   file << "water_levels: from_grid\n";
   file << "currents: none\n";
@@ -493,7 +493,7 @@ TEST(RunConfigTest, FromGridRejection) {
 }
 
 TEST(RunConfigTest, InputFieldOptionParsing) {
-  const std::string filename = "test_input_parsing.yml";
+  const std::string filename = "test_input_parsing.yaml";
   std::ofstream file(filename);
   file << "water_levels: \"none\"\n";
   file << "currents: \"from_file\"\n";

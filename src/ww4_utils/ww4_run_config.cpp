@@ -17,7 +17,7 @@
  */
 
 #include "ww4_utils/ww4_run_config.h"
-#include "ww4_utils/ww4_stand_alone_config.h"
+#include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_std_out.h"
 #include <algorithm>
 #include <charconv>

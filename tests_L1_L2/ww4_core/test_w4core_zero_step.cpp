@@ -11,6 +11,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
+ * @date Last update : 2026-05-20
  */
 
 #include "ww4_core/w4core_finl.h"
@@ -32,7 +33,7 @@ protected:
 
   void TearDown() override {
     ww4_core::resetInternalState();
-    std::remove("ww4_run_config.yml");
+    std::remove("ww4_run_config.yaml");
     std::remove("log.ww4");
   }
 
@@ -41,7 +42,7 @@ protected:
 };
 
 TEST_F(W4CoreZeroStepTest, FailsWithTwoConsecutiveZeroSteps) {
-  std::ofstream runFile("ww4_run_config.yml");
+  std::ofstream runFile("ww4_run_config.yaml");
   runFile << "calendar_type: \"Standard\"\n";
   runFile << "water_levels: none\n";
   runFile << "currents: none\n";
