@@ -12,10 +12,11 @@
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
+NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
 @author Main Author(s): Aldgisl, Hendrik Tolman
 @author Contributors: Jules (Agentic AI)
 @date Initial: 2026-03-23
-@date Last Update: 2026-05-20
+@date Last Update: 2026-05-26
 """
 
 import os
@@ -28,7 +29,9 @@ from typing import Any, Dict, List, Optional, Set
 try:
     import yaml
 except ImportError:
-    print("Error: PyYAML is not installed. Please install it using 'pip install PyYAML'.")
+    print(
+        "Error: PyYAML is not installed. Please install it using 'pip install PyYAML'."
+    )
     sys.exit(1)
 
 
@@ -69,15 +72,20 @@ def find_clones() -> List[Path]:
             cmd = [
                 "find",
                 str(search_path),
-                "-maxdepth", "4",
-                "-name", "ww4_setup*",
+                "-maxdepth",
+                "4",
+                "-name",
+                "ww4_setup*",
             ]
             result = subprocess.run(
                 cmd, capture_output=True, text=True, check=False, timeout=10
             )
             for line in result.stdout.splitlines():
                 path = Path(line).resolve()
-                if path.name in ["ww4_setup", "ww4_setup.py"] and path.parent.name == "tools":
+                if (
+                    path.name in ["ww4_setup", "ww4_setup.py"]
+                    and path.parent.name == "tools"
+                ):
                     clone_root = path.parent.parent
                     if clone_root not in seen_paths:
                         clones.append(clone_root)
@@ -168,7 +176,9 @@ def update_shell_config(clone_path: Path) -> None:
         elif (Path.home() / ".profile").exists():
             config_path = Path.home() / ".profile"
         else:
-            print(f"Warning: Could not find a suitable shell configuration file (tried {config_filename}, .bashrc, .profile).")
+            print(
+                f"Warning: Could not find a suitable shell configuration file (tried {config_filename}, .bashrc, .profile)."
+            )
             return
 
     with open(config_path, "r") as f:
@@ -187,7 +197,9 @@ def update_shell_config(clone_path: Path) -> None:
                 f.write(f"{line}\n")
         print(f"Updated {config_path} with WAVEWATCH IV paths.")
         print("Note: These changes will take effect in all NEW shell sessions.")
-        print(f"To update your CURRENT session, please run: source ~/{config_path.name}")
+        print(
+            f"To update your CURRENT session, please run: source ~/{config_path.name}"
+        )
 
 
 def setup_active_clone() -> Path:
@@ -206,7 +218,9 @@ def setup_active_clone() -> Path:
 
     if active_clone and active_clone.exists():
         print(f"Current active clone found: {active_clone}")
-        use_current = input("Do you want to use this clone? (y/n) [y]: ").lower().strip()
+        use_current = (
+            input("Do you want to use this clone? (y/n) [y]: ").lower().strip()
+        )
         if use_current == "" or use_current == "y":
             update_shell_config(active_clone)
             return active_clone
@@ -214,7 +228,9 @@ def setup_active_clone() -> Path:
     clones = find_clones()
     if not clones:
         print("Error: No WW4 clones found.")
-        print("Please ensure you are running this from a WW4 clone or have one installed.")
+        print(
+            "Please ensure you are running this from a WW4 clone or have one installed."
+        )
         sys.exit(1)
 
     print("\nAvailable WW4 clones:")
@@ -223,7 +239,7 @@ def setup_active_clone() -> Path:
 
     while True:
         try:
-            choice = input(f"Select a clone [0-{len(clones)-1}]: ")
+            choice = input(f"Select a clone [0-{len(clones) - 1}]: ")
             idx = int(choice)
             if 0 <= idx < len(clones):
                 selected_clone = clones[idx]
@@ -320,7 +336,7 @@ def setup_compiler(clone_path: Path) -> None:
 
     while True:
         try:
-            prompt = f"Select a compiler [0-{len(available)-1}] [{default_idx}]: "
+            prompt = f"Select a compiler [0-{len(available) - 1}] [{default_idx}]: "
             choice = input(prompt).strip()
             if choice == "":
                 selected_compiler = available[default_idx]
@@ -332,7 +348,9 @@ def setup_compiler(clone_path: Path) -> None:
                     raise ValueError
 
             if selected_compiler == "Manual input":
-                selected_compiler = input("Enter the C++ compiler name or path: ").strip()
+                selected_compiler = input(
+                    "Enter the C++ compiler name or path: "
+                ).strip()
                 if not selected_compiler:
                     print("Compiler name cannot be empty.")
                     continue
