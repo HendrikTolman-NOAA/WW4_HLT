@@ -13,11 +13,11 @@
  * Weather Service.
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
- * added to its repositories
+ * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-21
+ * @date Last update : 2026-05-26
  */
 
 #include "ww4_utils/time_management.h"
@@ -44,7 +44,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-26
  * @var DateTime::ymd
  * @brief Current date in YYYYMMDD format.
  * @var DateTime::hms
@@ -61,7 +61,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-26
  * @enum TimeManagement::CalendarType
  * @brief Supported calendar systems.
  * @details Defines the different calendar rules used for date calculations.
@@ -533,7 +533,7 @@ double TimeManagement::differenceInSeconds(const DateArray &t1,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-26
  */
 void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
   const auto now = std::chrono::system_clock::now();
@@ -572,7 +572,7 @@ void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-26
  */
 void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
                                          double &elapsedTime) noexcept {
@@ -589,7 +589,7 @@ void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-01
+ * @date Last update : 2026-05-26
  */
 DateTime TimeManagement::getPresentDateTime() noexcept {
   DateArray dat_arr{};

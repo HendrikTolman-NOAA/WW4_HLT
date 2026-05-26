@@ -10,10 +10,10 @@
  * Weather Service.
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
- * added to its repositories
+ * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-05-20
+ * @date Last update : 2026-05-26
  */
 
 #include "ww4_core/w4core_finalize.h"
