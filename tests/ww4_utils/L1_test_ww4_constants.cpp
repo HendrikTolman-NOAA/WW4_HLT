@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_ww4_constants.cpp
+ * @file L1_test_ww4_constants.cpp
  * @brief Unit tests for WW4 constants in ww4_constants.h.
  * @details Verifies the values of mathematical and physical constants.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric

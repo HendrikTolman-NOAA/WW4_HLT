@@ -56,19 +56,19 @@ Configure and build with CMake as shown above.
 
 WAVEWATCH IV provides additional tools to support developers during the coding process.
 
-### L1/L2 Test Availability Check
+### Test Availability Check
 
 To check if unit tests are available for a specific file and its identified routines:
 
 ```bash
-./ww4_L1_L2_test_check --file <filename>
+./ww4_test_check --file <filename>
 ```
 *Note: The filename should be provided without extension (e.g., `time_management`).*
 
 This tool will:
 - Identify source files in `src/` and `include/`.
 - Isolate user-defined routines (functions and methods).
-- Check the `tests_L1_L2/` directory for corresponding unit tests.
+- Check the `tests/` directory for corresponding unit tests.
 - Report the test coverage status for each identified routine.
 
 #

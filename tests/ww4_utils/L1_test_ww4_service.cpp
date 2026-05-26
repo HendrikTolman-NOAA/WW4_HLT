@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_ww4_service.cpp
+ * @file L1_test_ww4_service.cpp
  * @brief Unit tests for WW4 service routines in ww4_service.h.
  * @details Verifies the mathematical routines and dispersion calculations.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric

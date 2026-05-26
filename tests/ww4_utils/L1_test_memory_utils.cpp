@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_memory_utils.cpp
+ * @file L1_test_memory_utils.cpp
  * @brief Unit tests for memory utility routines.
  * @details Uses Google Test to verify that memory usage capture is working as
  * expected.

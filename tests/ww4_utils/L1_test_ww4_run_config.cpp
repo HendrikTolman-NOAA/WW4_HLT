@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_run_config.cpp
+ * @file L1_test_run_config.cpp
  * @brief Unit tests for run-time configuration processing.
  * @details This file provides unit tests for the loadRunConfig function,
  *          covering various configuration options and defaults.

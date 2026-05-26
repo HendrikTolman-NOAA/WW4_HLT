@@ -14,7 +14,7 @@ jobs:
         sudo apt-get install -y clang-format cppcheck
     - name: Run Clang-Format Check
       run: |
-        find src include tests_L1_L2 -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
+        find src include tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
     - name: Run Cppcheck
       run: |
         cppcheck --enable=all --suppress=missingIncludeSystem --suppress=unmatchedSuppression --suppress=unusedFunction --suppress=missingInclude -I include --error-exitcode=1 src include

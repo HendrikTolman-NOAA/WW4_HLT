@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_interpolation_output.cpp
+ * @file L2_test_interpolation_output.cpp
  * @brief Unit tests to verify that "Interpolation from" is only printed when
  * updated.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
