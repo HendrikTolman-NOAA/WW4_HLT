@@ -118,8 +118,8 @@ loadStandaloneConfig(const std::string_view filename,
   const std::string startTimeStr = simulation["start_time"].as<std::string>();
   const auto start_dt = parseDateTimeString(startTimeStr);
   if (!start_dt) {
-    os << "WW4 ERROR: Invalid start_time format in '" << filename << "': "
-       << startTimeStr << std::endl;
+    os << "WW4 ERROR: Invalid start_time format in '" << filename
+       << "': " << startTimeStr << std::endl;
     os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
     return std::nullopt;
   }
@@ -128,8 +128,8 @@ loadStandaloneConfig(const std::string_view filename,
   const std::string endTimeStr = simulation["end_time"].as<std::string>();
   const auto end_dt = parseDateTimeString(endTimeStr);
   if (!end_dt) {
-    os << "WW4 ERROR: Invalid end_time format in '" << filename << "': "
-       << endTimeStr << std::endl;
+    os << "WW4 ERROR: Invalid end_time format in '" << filename
+       << "': " << endTimeStr << std::endl;
     os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
     return std::nullopt;
   }

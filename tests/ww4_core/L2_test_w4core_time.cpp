@@ -21,8 +21,8 @@
 #include "ww4_core/w4core_init.h"
 #include "ww4_core/w4core_wave.h"
 #include "ww4_utils/time_management.h"
-#include <gtest/gtest.h>
 #include <fstream>
+#include <gtest/gtest.h>
 
 class W4CoreTimeTest : public ::testing::Test {
 protected:

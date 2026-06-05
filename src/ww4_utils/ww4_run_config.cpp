@@ -270,10 +270,12 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
     if (general["produce_std_out"]) {
-      config.produceStdOut = (general["produce_std_out"].as<std::string>() == "yes");
+      config.produceStdOut =
+          (general["produce_std_out"].as<std::string>() == "yes");
     }
     if (general["produce_log_file"]) {
-      config.produceLogFile = (general["produce_log_file"].as<std::string>() == "yes");
+      config.produceLogFile =
+          (general["produce_log_file"].as<std::string>() == "yes");
     }
     if (general["dry_run"]) {
       config.dryRun = (general["dry_run"].as<std::string>() == "yes");
@@ -303,7 +305,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       config.propagateY = (physics["propagate_y"].as<std::string>() == "yes");
     }
     if (physics["propagate_theta"]) {
-      config.propagateTheta = (physics["propagate_theta"].as<std::string>() == "yes");
+      config.propagateTheta =
+          (physics["propagate_theta"].as<std::string>() == "yes");
     }
     if (physics["propagate_k"]) {
       config.propagateK = (physics["propagate_k"].as<std::string>() == "yes");
@@ -317,7 +320,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   if (config_node["forcing"]) {
     const auto forcing = config_node["forcing"];
     if (forcing["water_levels"]) {
-      config.waterLevels = parseInputOption(forcing["water_levels"].as<std::string>());
+      config.waterLevels =
+          parseInputOption(forcing["water_levels"].as<std::string>());
     }
     if (forcing["currents"]) {
       config.currents = parseInputOption(forcing["currents"].as<std::string>());
@@ -326,10 +330,12 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       config.winds = parseInputOption(forcing["winds"].as<std::string>());
     }
     if (forcing["ice_concentrations"]) {
-      config.iceConcentrations = parseInputOption(forcing["ice_concentrations"].as<std::string>());
+      config.iceConcentrations =
+          parseInputOption(forcing["ice_concentrations"].as<std::string>());
     }
     if (forcing["bottom_depth"]) {
-      config.bottomDepth = parseInputOption(forcing["bottom_depth"].as<std::string>(), true);
+      config.bottomDepth =
+          parseInputOption(forcing["bottom_depth"].as<std::string>(), true);
     }
     if (forcing["echo_hom_input"]) {
       const std::string val = forcing["echo_hom_input"].as<std::string>();
@@ -346,7 +352,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   // Section: homogeneous_data
   if (config_node["homogeneous_data"]) {
     const auto hom_data = config_node["homogeneous_data"];
-    auto parse_hom_list = [&](const std::string &key, std::vector<HomogeneousDataPoint> &target) {
+    auto parse_hom_list = [&](const std::string &key,
+                              std::vector<HomogeneousDataPoint> &target) {
       if (hom_data[key] && hom_data[key].IsSequence()) {
         for (const auto &item : hom_data[key]) {
           auto dp = parseHomogeneousString(item.as<std::string>());
