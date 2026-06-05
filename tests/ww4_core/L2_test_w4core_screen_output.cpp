@@ -41,20 +41,26 @@ protected:
 
   void createConfig(const std::string &screenLevel, bool outputRequested) {
     std::ofstream runFile("ww4_run_config.yaml");
-    runFile << "calendar_type: \"Standard\"\n";
-    runFile << "water_levels: homogeneous\n";
-    runFile << "- 19680606 000000 1.0\n";
-    runFile << "- 19680606 010000 2.0\n"; // Update at 1 hour
-    runFile << "currents: none\n";
-    runFile << "winds: none\n";
-    runFile << "ice_concentrations: none\n";
-    runFile << "time_step: 1800.0\n"; // 30 min
-    runFile << "bottom_depth: none\n";
-    runFile << "screen_output_level: " << screenLevel << "\n";
+    runFile << "general:\n";
+    runFile << "  calendar_type: \"Standard\"\n";
+    runFile << "  time_step: 1800.0\n"; // 30 min
+    runFile << "  screen_output_level: " << screenLevel << "\n";
+    runFile << "forcing:\n";
+    runFile << "  water_levels: homogeneous\n";
+    runFile << "  currents: none\n";
+    runFile << "  winds: none\n";
+    runFile << "  ice_concentrations: none\n";
+    runFile << "  bottom_depth: none\n";
+    runFile << "homogeneous_data:\n";
+    runFile << "  water_levels:\n";
+    runFile << "    - 19680606 000000 1.0\n";
+    runFile << "    - 19680606 010000 2.0\n"; // Update at 1 hour
+    runFile << "output:\n";
     if (outputRequested) {
-      runFile << "output_fields_requested: yes\n";
-      runFile << "output_fields_interval: 7200.0\n"; // at 2 hours
-      runFile << "output_fields_at_first: no\n";
+      runFile << "  fields:\n";
+      runFile << "    requested: yes\n";
+      runFile << "    interval: 7200.0\n"; // at 2 hours
+      runFile << "    at_first: no\n";
     }
     runFile.close();
   }

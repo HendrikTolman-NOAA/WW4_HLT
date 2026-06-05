@@ -14,11 +14,12 @@
 #          automatically ignored by Git. This allows for local testing without
 #          adding customized input files to the repository.
 
-# Starting time for the stand-alone program.
-# Format: "YYYYMMDD HHMMSS"
-start_time: "19680606 060000"
+simulation:
+  # Starting time for the stand-alone program.
+  # Format: "YYYYMMDD HHMMSS"
+  start_time: "19680606 060000"
 
-# Ending time for the stand-alone program.
-# Format: "YYYYMMDD HHMMSS"
-# Note: The ending time must not be before the starting time.
-end_time: "19680606 180000"
+  # Ending time for the stand-alone program.
+  # Format: "YYYYMMDD HHMMSS"
+  # Note: The ending time must not be before the starting time.
+  end_time: "19680606 180000"

@@ -6,7 +6,7 @@
  * @file ww4_run_config.cpp
  * @brief Implementation of run-time configuration processing.
  * @details This file implements the loadRunConfig function,
- *          providing a simple YAML parser for run-time settings.
+ *          providing a YAML parser for run-time settings using yaml-cpp.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -27,125 +27,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <yaml-cpp/yaml.h>
 
 namespace ww4_utils {
-
-/**
- * @enum InputFieldOption
- * @brief Options for model input fields.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @var InputFieldOption::Undefined
- * @brief Mandatory field not yet defined.
- * @var InputFieldOption::None
- * @brief No input, data set to zero.
- * @var InputFieldOption::FromFile
- * @brief Input from file.
- * @var InputFieldOption::FromCoupling
- * @brief Input from coupling.
- * @var InputFieldOption::Homogeneous
- * @brief Homogeneous field.
- * @var InputFieldOption::FromGrid
- * @brief Static data read as part of the grid data.
- */
-
-/**
- * @enum ScreenOutputLevel
- * @brief Options for the level of output to standard output during time
- * stepping.
- * @author Main Author(s): Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @var ScreenOutputLevel::None
- * @brief No output in the time stepping loop.
- * @var ScreenOutputLevel::Summary
- * @brief Output if input field updated or output produced.
- * @var ScreenOutputLevel::Full
- * @brief Standard full output for every step.
- */
-
-/**
- * @enum EchoOption
- * @brief Options for echoing input data to standard output and log files.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @var EchoOption::None
- * @brief No echoing of input data.
- * @var EchoOption::Summary
- * @brief Produce a summary of the input data.
- * @var EchoOption::Full
- * @brief Full reproduction of the user input data.
- */
-
-/**
- * @struct HomogeneousDataPoint
- * @brief Data point for a homogeneous input field.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @var HomogeneousDataPoint::time
- * @brief Time of the data point.
- * @var HomogeneousDataPoint::values
- * @brief Values of the data point.
- */
-
-/**
- * @struct RunConfig
- * @brief Configuration for the run-time environment.
- * @details Stores the calendar type, output preferences, and input options.
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
- * @var RunConfig::calendarType
- * @brief Calendar type.
- * @var RunConfig::produceStdOut
- * @brief Screen output flag.
- * @var RunConfig::produceLogFile
- * @brief Log file flag.
- * @var RunConfig::dryRun
- * @brief Dry run flag.
- * @var RunConfig::propagateX
- * @brief Propagation flag in x-direction.
- * @var RunConfig::propagateY
- * @brief Propagation flag in y-direction.
- * @var RunConfig::propagateTheta
- * @brief Propagation flag in theta-direction.
- * @var RunConfig::propagateK
- * @brief Propagation flag in k-direction.
- * @var RunConfig::sourceTerms
- * @brief Source terms flag.
- * @var RunConfig::waterLevels
- * @brief Water levels option.
- * @var RunConfig::currents
- * @brief Currents option.
- * @var RunConfig::winds
- * @brief Winds option.
- * @var RunConfig::iceConcentrations
- * @brief Ice concentrations option.
- * @var RunConfig::bottomDepth
- * @brief Bottom depth option.
- * @var RunConfig::echoHomInput
- * @brief Echo input flag.
- * @var RunConfig::screenOutputLevel
- * @brief Screen output level.
- * @var RunConfig::homogeneousWaterLevels
- * @brief Homogeneous water levels data.
- * @var RunConfig::homogeneousCurrents
- * @brief Homogeneous currents data.
- * @var RunConfig::homogeneousWinds
- * @brief Homogeneous winds data.
- * @var RunConfig::homogeneousIceConcentrations
- * @brief Homogeneous ice concentrations data.
- * @var RunConfig::homogeneousBottomDepth
- * @brief Homogeneous bottom depth data.
- * @var RunConfig::timeStep
- * @brief Model time step in seconds.
- * @var RunConfig::outputApi
- * @brief API output configuration.
- * @var RunConfig::outputFields
- * @brief Gridded fields output configuration.
- * @var RunConfig::outputPoints
- * @brief Point output configuration.
- * @var RunConfig::outputRestart
- * @brief Restart file output configuration.
- */
 
 namespace {
 
@@ -249,29 +133,32 @@ std::string inputOptionToString(const InputFieldOption option) {
 }
 
 /**
- * @brief Helper to update OutputConfig from a key-value pair.
+ * @brief Helper to update OutputConfig from a YAML node.
  * @param oc The OutputConfig structure to update.
- * @param key_suffix The suffix of the configuration key.
- * @param value The value to set.
+ * @param node The YAML node.
  */
-void updateOutputConfig(OutputConfig &oc, const std::string_view key_suffix,
-                        const std::string_view value) {
-  if (key_suffix == "requested") {
-    oc.requested = (value == "yes");
-  } else if (key_suffix == "start") {
-    oc.startTime = parseDateTimeString(value);
-  } else if (key_suffix == "end") {
-    oc.endTime = parseDateTimeString(value);
-  } else if (key_suffix == "interval") {
-    try {
-      oc.interval = std::stod(std::string(value));
-    } catch (...) {
-      oc.interval = -1.0;
-    }
-  } else if (key_suffix == "at_first") {
-    if (value == "yes") {
+void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
+  if (!node)
+    return;
+
+  if (node["requested"]) {
+    const std::string val = node["requested"].as<std::string>();
+    oc.requested = (val == "yes");
+  }
+  if (node["start"]) {
+    oc.startTime = parseDateTimeString(node["start"].as<std::string>());
+  }
+  if (node["end"]) {
+    oc.endTime = parseDateTimeString(node["end"].as<std::string>());
+  }
+  if (node["interval"]) {
+    oc.interval = node["interval"].as<double>();
+  }
+  if (node["at_first"]) {
+    const std::string val = node["at_first"].as<std::string>();
+    if (val == "yes") {
       oc.atFirstTime = true;
-    } else if (value == "no") {
+    } else if (val == "no") {
       oc.atFirstTime = false;
     }
   }
@@ -360,166 +247,129 @@ std::string_view cleanValue(const std::string_view s) {
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
-  std::ifstream file((std::string(filename)));
-  RunConfig config{};
-
-  if (!file.is_open()) {
+  YAML::Node config_node;
+  try {
+    config_node = YAML::LoadFile(std::string(filename));
+  } catch (const std::exception &e) {
     return std::nullopt;
   }
 
-  std::string lastKey = "";
-  std::string line;
-  while (std::getline(file, line)) {
-    const std::string_view lineFullView(line);
+  RunConfig config{};
 
-    // Remove comments
-    const size_t hashPos = lineFullView.find('#');
-    const std::string_view lineView = (hashPos != std::string_view::npos)
-                                          ? lineFullView.substr(0, hashPos)
-                                          : lineFullView;
+  // Section: general
+  if (config_node["general"]) {
+    const auto general = config_node["general"];
+    if (general["calendar_type"]) {
+      const std::string val = general["calendar_type"].as<std::string>();
+      if (val == "Standard") {
+        config.calendarType = TimeManagement::CalendarType::Standard;
+      } else if (val == "NoLeap") {
+        config.calendarType = TimeManagement::CalendarType::NoLeap;
+      } else if (val == "ThreeSixtyDay") {
+        config.calendarType = TimeManagement::CalendarType::ThreeSixtyDay;
+      }
+    }
+    if (general["produce_std_out"]) {
+      config.produceStdOut = (general["produce_std_out"].as<std::string>() == "yes");
+    }
+    if (general["produce_log_file"]) {
+      config.produceLogFile = (general["produce_log_file"].as<std::string>() == "yes");
+    }
+    if (general["dry_run"]) {
+      config.dryRun = (general["dry_run"].as<std::string>() == "yes");
+    }
+    if (general["screen_output_level"]) {
+      const std::string val = general["screen_output_level"].as<std::string>();
+      if (val == "none") {
+        config.screenOutputLevel = ScreenOutputLevel::None;
+      } else if (val == "summary") {
+        config.screenOutputLevel = ScreenOutputLevel::Summary;
+      } else if (val == "full") {
+        config.screenOutputLevel = ScreenOutputLevel::Full;
+      }
+    }
+    if (general["time_step"]) {
+      config.timeStep = general["time_step"].as<double>();
+    }
+  }
 
-    if (lineView.empty())
-      continue;
+  // Section: physics
+  if (config_node["physics"]) {
+    const auto physics = config_node["physics"];
+    if (physics["propagate_x"]) {
+      config.propagateX = (physics["propagate_x"].as<std::string>() == "yes");
+    }
+    if (physics["propagate_y"]) {
+      config.propagateY = (physics["propagate_y"].as<std::string>() == "yes");
+    }
+    if (physics["propagate_theta"]) {
+      config.propagateTheta = (physics["propagate_theta"].as<std::string>() == "yes");
+    }
+    if (physics["propagate_k"]) {
+      config.propagateK = (physics["propagate_k"].as<std::string>() == "yes");
+    }
+    if (physics["source_terms"]) {
+      config.sourceTerms = (physics["source_terms"].as<std::string>() == "yes");
+    }
+  }
 
-    // Trim leading whitespace
-    const size_t first = lineView.find_first_not_of(" \t");
-    if (first == std::string_view::npos)
-      continue;
+  // Section: forcing
+  if (config_node["forcing"]) {
+    const auto forcing = config_node["forcing"];
+    if (forcing["water_levels"]) {
+      config.waterLevels = parseInputOption(forcing["water_levels"].as<std::string>());
+    }
+    if (forcing["currents"]) {
+      config.currents = parseInputOption(forcing["currents"].as<std::string>());
+    }
+    if (forcing["winds"]) {
+      config.winds = parseInputOption(forcing["winds"].as<std::string>());
+    }
+    if (forcing["ice_concentrations"]) {
+      config.iceConcentrations = parseInputOption(forcing["ice_concentrations"].as<std::string>());
+    }
+    if (forcing["bottom_depth"]) {
+      config.bottomDepth = parseInputOption(forcing["bottom_depth"].as<std::string>(), true);
+    }
+    if (forcing["echo_hom_input"]) {
+      const std::string val = forcing["echo_hom_input"].as<std::string>();
+      if (val == "none") {
+        config.echoHomInput = EchoOption::None;
+      } else if (val == "summary") {
+        config.echoHomInput = EchoOption::Summary;
+      } else if (val == "full") {
+        config.echoHomInput = EchoOption::Full;
+      }
+    }
+  }
 
-    if (lineView[first] == '-') {
-      const std::string_view value = cleanValue(lineView.substr(first + 1));
-      if (!value.empty()) {
-        auto dp = parseHomogeneousString(value);
-        if (dp) {
-          if (lastKey == "water_levels") {
-            config.homogeneousWaterLevels.push_back(*dp);
-          } else if (lastKey == "currents") {
-            config.homogeneousCurrents.push_back(*dp);
-          } else if (lastKey == "winds") {
-            config.homogeneousWinds.push_back(*dp);
-          } else if (lastKey == "ice_concentrations") {
-            config.homogeneousIceConcentrations.push_back(*dp);
-          } else if (lastKey == "bottom_depth") {
-            config.homogeneousBottomDepth.push_back(*dp);
+  // Section: homogeneous_data
+  if (config_node["homogeneous_data"]) {
+    const auto hom_data = config_node["homogeneous_data"];
+    auto parse_hom_list = [&](const std::string &key, std::vector<HomogeneousDataPoint> &target) {
+      if (hom_data[key] && hom_data[key].IsSequence()) {
+        for (const auto &item : hom_data[key]) {
+          auto dp = parseHomogeneousString(item.as<std::string>());
+          if (dp) {
+            target.push_back(*dp);
           }
         }
       }
-      continue;
-    }
+    };
+    parse_hom_list("water_levels", config.homogeneousWaterLevels);
+    parse_hom_list("currents", config.homogeneousCurrents);
+    parse_hom_list("winds", config.homogeneousWinds);
+    parse_hom_list("ice_concentrations", config.homogeneousIceConcentrations);
+    parse_hom_list("bottom_depth", config.homogeneousBottomDepth);
+  }
 
-    const size_t colonPos = lineView.find(':');
-    if (colonPos == std::string_view::npos)
-      continue;
-
-    const std::string_view key_raw = lineView.substr(first, colonPos - first);
-    // Trim trailing whitespace from key
-    const size_t kend = key_raw.find_last_not_of(" \t");
-    const std::string_view key = (kend != std::string_view::npos)
-                                     ? key_raw.substr(0, kend + 1)
-                                     : key_raw;
-    lastKey = std::string(key);
-
-    const std::string_view value = cleanValue(lineView.substr(colonPos + 1));
-
-    if (key == "calendar_type") {
-      if (value == "Standard") {
-        config.calendarType = TimeManagement::CalendarType::Standard;
-      } else if (value == "NoLeap") {
-        config.calendarType = TimeManagement::CalendarType::NoLeap;
-      } else if (value == "ThreeSixtyDay") {
-        config.calendarType = TimeManagement::CalendarType::ThreeSixtyDay;
-      }
-    } else if (key == "produce_std_out") {
-      if (value == "yes") {
-        config.produceStdOut = true;
-      } else if (value == "no") {
-        config.produceStdOut = false;
-      }
-    } else if (key == "produce_log_file") {
-      if (value == "yes") {
-        config.produceLogFile = true;
-      } else if (value == "no") {
-        config.produceLogFile = false;
-      }
-    } else if (key == "dry_run") {
-      if (value == "yes") {
-        config.dryRun = true;
-      } else if (value == "no") {
-        config.dryRun = false;
-      }
-    } else if (key == "propagate_x") {
-      if (value == "yes") {
-        config.propagateX = true;
-      } else if (value == "no") {
-        config.propagateX = false;
-      }
-    } else if (key == "propagate_y") {
-      if (value == "yes") {
-        config.propagateY = true;
-      } else if (value == "no") {
-        config.propagateY = false;
-      }
-    } else if (key == "propagate_theta") {
-      if (value == "yes") {
-        config.propagateTheta = true;
-      } else if (value == "no") {
-        config.propagateTheta = false;
-      }
-    } else if (key == "propagate_k") {
-      if (value == "yes") {
-        config.propagateK = true;
-      } else if (value == "no") {
-        config.propagateK = false;
-      }
-    } else if (key == "source_terms") {
-      if (value == "yes") {
-        config.sourceTerms = true;
-      } else if (value == "no") {
-        config.sourceTerms = false;
-      }
-    } else if (key == "water_levels") {
-      config.waterLevels = parseInputOption(value);
-    } else if (key == "currents") {
-      config.currents = parseInputOption(value);
-    } else if (key == "winds") {
-      config.winds = parseInputOption(value);
-    } else if (key == "ice_concentrations") {
-      config.iceConcentrations = parseInputOption(value);
-    } else if (key == "bottom_depth") {
-      config.bottomDepth = parseInputOption(value, true);
-    } else if (key == "echo_hom_input") {
-      if (value == "none") {
-        config.echoHomInput = EchoOption::None;
-      } else if (value == "summary") {
-        config.echoHomInput = EchoOption::Summary;
-      } else if (value == "full") {
-        config.echoHomInput = EchoOption::Full;
-      }
-    } else if (key == "screen_output_level") {
-      if (value == "none") {
-        config.screenOutputLevel = ScreenOutputLevel::None;
-      } else if (value == "summary") {
-        config.screenOutputLevel = ScreenOutputLevel::Summary;
-      } else if (value == "full") {
-        config.screenOutputLevel = ScreenOutputLevel::Full;
-      }
-    } else if (key == "time_step") {
-      if (std::from_chars(value.data(), value.data() + value.size(),
-                          config.timeStep)
-              .ec != std::errc()) {
-        config.timeStep = -1.0;
-      }
-    } else if (key == "output_api") {
-      config.outputApi.requested = (value == "yes");
-    } else if (key.starts_with("output_api_")) {
-      updateOutputConfig(config.outputApi, key.substr(11), value);
-    } else if (key.starts_with("output_fields_")) {
-      updateOutputConfig(config.outputFields, key.substr(14), value);
-    } else if (key.starts_with("output_points_")) {
-      updateOutputConfig(config.outputPoints, key.substr(14), value);
-    } else if (key.starts_with("output_restart_")) {
-      updateOutputConfig(config.outputRestart, key.substr(15), value);
-    }
+  // Section: output
+  if (config_node["output"]) {
+    const auto output = config_node["output"];
+    parseOutputConfig(config.outputFields, output["fields"]);
+    parseOutputConfig(config.outputPoints, output["points"]);
+    parseOutputConfig(config.outputRestart, output["restart"]);
+    parseOutputConfig(config.outputApi, output["api"]);
   }
 
   // Mandatory fields check

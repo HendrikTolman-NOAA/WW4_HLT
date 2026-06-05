@@ -47,16 +47,20 @@ protected:
 
 TEST_F(W4CoreHomInputTest, ValidHomogeneousInput) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "homogeneous"
-- 20260101 000000 0.5
-- 20260101 120000 0.6
-currents: "none"
-winds: "none"
-ice_concentrations: "none"
-bottom_depth: "from_grid"
-echo_hom_input: "full"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "homogeneous"
+  currents: "none"
+  winds: "none"
+  ice_concentrations: "none"
+  bottom_depth: "from_grid"
+  echo_hom_input: "full"
+homogeneous_data:
+  water_levels:
+    - 20260101 000000 0.5
+    - 20260101 120000 0.6
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
@@ -86,16 +90,20 @@ echo_hom_input: "full"
 
 TEST_F(W4CoreHomInputTest, SummaryEcho) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "homogeneous"
-- 20260101 000000 0.5
-- 20260101 120000 0.6
-currents: "none"
-winds: "none"
-ice_concentrations: "none"
-bottom_depth: "from_grid"
-echo_hom_input: "summary"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "homogeneous"
+  currents: "none"
+  winds: "none"
+  ice_concentrations: "none"
+  bottom_depth: "from_grid"
+  echo_hom_input: "summary"
+homogeneous_data:
+  water_levels:
+    - 20260101 000000 0.5
+    - 20260101 120000 0.6
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
@@ -111,16 +119,21 @@ echo_hom_input: "summary"
 
 TEST_F(W4CoreHomInputTest, MultipleFields) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "homogeneous"
-- 20260101 000000 0.5
-winds: "homogeneous"
-- 20260101 000000 10.0 5.0
-currents: "none"
-ice_concentrations: "none"
-bottom_depth: "from_grid"
-echo_hom_input: "full"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "homogeneous"
+  winds: "homogeneous"
+  currents: "none"
+  ice_concentrations: "none"
+  bottom_depth: "from_grid"
+  echo_hom_input: "full"
+homogeneous_data:
+  water_levels:
+    - 20260101 000000 0.5
+  winds:
+    - 20260101 000000 10.0 5.0
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
@@ -146,15 +159,19 @@ echo_hom_input: "full"
 
 TEST_F(W4CoreHomInputTest, BackwardTimeStamps) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "homogeneous"
-- 20260101 120000 0.5
-- 20260101 000000 0.6
-currents: "none"
-winds: "none"
-ice_concentrations: "none"
-bottom_depth: "from_grid"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "homogeneous"
+  currents: "none"
+  winds: "none"
+  ice_concentrations: "none"
+  bottom_depth: "from_grid"
+homogeneous_data:
+  water_levels:
+    - 20260101 120000 0.5
+    - 20260101 000000 0.6
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
@@ -164,13 +181,15 @@ bottom_depth: "from_grid"
 
 TEST_F(W4CoreHomInputTest, MissingDataForHomogeneousField) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "homogeneous"
-currents: "none"
-winds: "none"
-ice_concentrations: "none"
-bottom_depth: "from_grid"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "homogeneous"
+  currents: "none"
+  winds: "none"
+  ice_concentrations: "none"
+  bottom_depth: "from_grid"
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
@@ -181,14 +200,18 @@ bottom_depth: "from_grid"
 
 TEST_F(W4CoreHomInputTest, IceConcentrationRange) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "none"
-ice_concentrations: "homogeneous"
-- 20260101 000000 1.5
-bottom_depth: "from_grid"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "none"
+  currents: "none"
+  winds: "none"
+  ice_concentrations: "homogeneous"
+  bottom_depth: "from_grid"
+homogeneous_data:
+  ice_concentrations:
+    - 20260101 000000 1.5
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
@@ -199,14 +222,18 @@ bottom_depth: "from_grid"
 
 TEST_F(W4CoreHomInputTest, WindsParameterCount) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "homogeneous"
-- 20260101 000000 10.0
-ice_concentrations: "none"
-bottom_depth: "from_grid"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "none"
+  currents: "none"
+  winds: "homogeneous"
+  ice_concentrations: "none"
+  bottom_depth: "from_grid"
+homogeneous_data:
+  winds:
+    - 20260101 000000 10.0
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
@@ -217,15 +244,19 @@ bottom_depth: "from_grid"
 
 TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
   writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "none"
-ice_concentrations: "none"
-bottom_depth: "homogeneous"
-- 20260101 000000 -10.0
-echo_hom_input: "full"
+general:
+  calendar_type: "Standard"
+  time_step: 3600.0
+forcing:
+  water_levels: "none"
+  currents: "none"
+  winds: "none"
+  ice_concentrations: "none"
+  bottom_depth: "homogeneous"
+  echo_hom_input: "full"
+homogeneous_data:
+  bottom_depth:
+    - 20260101 000000 -10.0
 )");
 
   ww4_utils::DateTime startTime{20260101, 0.0};

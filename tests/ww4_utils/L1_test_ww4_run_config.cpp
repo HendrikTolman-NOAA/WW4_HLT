@@ -29,15 +29,17 @@ using namespace ww4_utils;
 TEST(RunConfigTest, NonDefaultConfig) {
   const std::string filename = "test_run_nondefault.yaml";
   std::ofstream file(filename);
-  file << "calendar_type: \"NoLeap\"\n";
-  file << "produce_std_out: \"no\"\n";
-  file << "produce_log_file: \"no\"\n";
-  file << "water_levels: \"from_file\"\n";
-  file << "currents: \"from_coupling\"\n";
-  file << "winds: \"none\"\n";
-  file << "ice_concentrations: \"none\"\n";
-  file << "bottom_depth: \"from_grid\"\n";
-  file << "time_step: 1800.0\n";
+  file << "general:\n";
+  file << "  calendar_type: \"NoLeap\"\n";
+  file << "  produce_std_out: \"no\"\n";
+  file << "  produce_log_file: \"no\"\n";
+  file << "  time_step: 1800.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: \"from_file\"\n";
+  file << "  currents: \"from_coupling\"\n";
+  file << "  winds: \"none\"\n";
+  file << "  ice_concentrations: \"none\"\n";
+  file << "  bottom_depth: \"from_grid\"\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -60,12 +62,14 @@ TEST(RunConfigTest, NonDefaultConfig) {
 TEST(RunConfigTest, ScreenOutputLevelConfig) {
   const std::string filename = "test_run_screen_level.yaml";
   std::ofstream file(filename);
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "time_step: 3600.0\n";
-  file << "screen_output_level: summary\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "  screen_output_level: summary\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -83,20 +87,24 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
 TEST(RunConfigTest, OutputConfigParsing) {
   const std::string filename = "test_output_parsing.yaml";
   std::ofstream file(filename);
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
 
-  file << "output_fields_requested: yes\n";
-  file << "output_fields_interval: 3600\n";
-  file << "output_fields_start: \"20260101 000000\"\n";
-  file << "output_fields_end: \"20260101 120000\"\n";
-  file << "output_fields_at_first: no\n";
-
-  file << "output_restart_requested: yes\n";
-  file << "output_restart_interval: 86400\n";
+  file << "output:\n";
+  file << "  fields:\n";
+  file << "    requested: yes\n";
+  file << "    interval: 3600\n";
+  file << "    start: \"20260101 000000\"\n";
+  file << "    end: \"20260101 120000\"\n";
+  file << "    at_first: no\n";
+  file << "  restart:\n";
+  file << "    requested: yes\n";
+  file << "    interval: 86400\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -125,12 +133,16 @@ TEST(RunConfigTest, OutputConfigParsing) {
 TEST(RunConfigTest, OutputIntervalFailure) {
   const std::string filename = "test_output_interval_failure.yaml";
   std::ofstream file(filename);
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "time_step: 3600.0\n";
-  file << "output_fields_requested: yes\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "output:\n";
+  file << "  fields:\n";
+  file << "    requested: yes\n";
   // Missing interval
   file.close();
 
@@ -170,18 +182,21 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
 TEST(RunConfigTest, NewFlagsConfig) {
   const std::string filename = "test_run_new_flags.yaml";
   std::ofstream file(filename);
-  file << "dry_run: yes\n";
-  file << "propagate_x: no\n";
-  file << "propagate_y: no\n";
-  file << "propagate_theta: no\n";
-  file << "propagate_k: no\n";
-  file << "source_terms: no\n";
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "bottom_depth: from_grid\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  dry_run: yes\n";
+  file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  propagate_x: no\n";
+  file << "  propagate_y: no\n";
+  file << "  propagate_theta: no\n";
+  file << "  propagate_k: no\n";
+  file << "  source_terms: no\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "  bottom_depth: from_grid\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -227,16 +242,18 @@ TEST(RunConfigTest, RobustParsingConfig) {
   std::ofstream file(filename);
   file << "\n";
   file << "  # This is a comment\n";
-  file << "calendar_type   :   \"NoLeap\"   # End of line comment\n";
-  file << "produce_std_out: yes\n";
+  file << "general:\n";
+  file << "  calendar_type   :   \"NoLeap\"   # End of line comment\n";
+  file << "  produce_std_out: yes\n";
+  file << "  produce_log_file : \"no\"\n";
+  file << "  time_step : 3600.0\n";
   file << "\n";
-  file << "produce_log_file : \"no\"\n";
-  file << "water_levels : \"none\"\n";
-  file << "currents : none # inline comment\n";
-  file << "winds : \"none\"\n";
-  file << "ice_concentrations : \"none\"\n";
-  file << "bottom_depth : \"from_grid\"\n";
-  file << "time_step : 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels : \"none\"\n";
+  file << "  currents : none # inline comment\n";
+  file << "  winds : \"none\"\n";
+  file << "  ice_concentrations : \"none\"\n";
+  file << "  bottom_depth : \"from_grid\"\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -283,12 +300,16 @@ TEST(RunConfigTest, ReportConfigStandard) {
 TEST(RunConfigTest, ApiOutputConfig) {
   const std::string filename = "test_api_output.yaml";
   std::ofstream file(filename);
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "time_step: 3600.0\n";
-  file << "output_api: yes\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "output:\n";
+  file << "  api:\n";
+  file << "    requested: yes\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -368,13 +389,15 @@ TEST(RunConfigTest, MissingFileDefaults) {
 TEST(RunConfigTest, ThreeSixtyDayConfig) {
   const std::string filename = "test_run_360.yaml";
   std::ofstream file(filename);
-  file << "calendar_type: \"ThreeSixtyDay\"\n";
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "bottom_depth: from_grid\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  calendar_type: \"ThreeSixtyDay\"\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "  bottom_depth: from_grid\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -391,13 +414,15 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
 TEST(RunConfigTest, PartialConfig) {
   const std::string filename = "test_run_partial.yaml";
   std::ofstream file(filename);
-  file << "produce_std_out: \"no\"\n";
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "bottom_depth: from_grid\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  produce_std_out: \"no\"\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "  bottom_depth: from_grid\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -412,12 +437,13 @@ TEST(RunConfigTest, PartialConfig) {
 TEST(RunConfigTest, TimeStepFailure) {
   const std::string filename = "test_run_time_step_failure.yaml";
   std::ofstream file(filename);
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  // time_step is missing or invalid
-  file << "time_step: -1.0\n";
+  file << "general:\n";
+  file << "  time_step: -1.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
   file.close();
 
   // Should abort program
@@ -430,7 +456,8 @@ TEST(RunConfigTest, TimeStepFailure) {
 TEST(RunConfigTest, MandatoryFieldsFailure) {
   const std::string filename = "test_run_mandatory_failure.yaml";
   std::ofstream file(filename);
-  file << "produce_std_out: \"no\"\n";
+  file << "general:\n";
+  file << "  produce_std_out: \"no\"\n";
   // Missing other fields
   file.close();
 
@@ -444,11 +471,13 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
 TEST(RunConfigTest, BottomDepthDefault) {
   const std::string filename = "test_run_bottom_depth_default.yaml";
   std::ofstream file(filename);
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
   // bottom_depth is missing
   file.close();
 
@@ -462,12 +491,14 @@ TEST(RunConfigTest, BottomDepthDefault) {
 TEST(RunConfigTest, BottomDepthOtherOptions) {
   const std::string filename = "test_run_bottom_depth_none.yaml";
   std::ofstream file(filename);
-  file << "water_levels: none\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "bottom_depth: none\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "  bottom_depth: none\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -480,12 +511,14 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
 TEST(RunConfigTest, FromGridRejection) {
   const std::string filename = "test_run_from_grid_rejection.yaml";
   std::ofstream file(filename);
-  file << "water_levels: from_grid\n";
-  file << "currents: none\n";
-  file << "winds: none\n";
-  file << "ice_concentrations: none\n";
-  file << "bottom_depth: from_grid\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: from_grid\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "  bottom_depth: from_grid\n";
   file.close();
 
   // Should abort because water_levels: from_grid is invalid
@@ -498,12 +531,14 @@ TEST(RunConfigTest, FromGridRejection) {
 TEST(RunConfigTest, InputFieldOptionParsing) {
   const std::string filename = "test_input_parsing.yaml";
   std::ofstream file(filename);
-  file << "water_levels: \"none\"\n";
-  file << "currents: \"from_file\"\n";
-  file << "winds: \"from_coupling\"\n";
-  file << "ice_concentrations: \"none\"\n";
-  file << "bottom_depth: \"from_grid\"\n";
-  file << "time_step: 3600.0\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: \"none\"\n";
+  file << "  currents: \"from_file\"\n";
+  file << "  winds: \"from_coupling\"\n";
+  file << "  ice_concentrations: \"none\"\n";
+  file << "  bottom_depth: \"from_grid\"\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -513,6 +548,32 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   EXPECT_EQ(config->winds, InputFieldOption::FromCoupling);
   EXPECT_EQ(config->iceConcentrations, InputFieldOption::None);
   EXPECT_EQ(config->bottomDepth, InputFieldOption::FromGrid);
+
+  std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, HomogeneousDataParsing) {
+  const std::string filename = "test_hom_data.yaml";
+  std::ofstream file(filename);
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: homogeneous\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "homogeneous_data:\n";
+  file << "  water_levels:\n";
+  file << "    - \"20260101 000000 0.5\"\n";
+  file << "    - \"20260101 120000 0.7\"\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename, std::cerr);
+  ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->waterLevels, InputFieldOption::Homogeneous);
+  ASSERT_EQ(config->homogeneousWaterLevels.size(), 2);
+  EXPECT_EQ(config->homogeneousWaterLevels[0].time.ymd, 20260101);
+  EXPECT_NEAR(config->homogeneousWaterLevels[0].values[0], 0.5, 1e-6);
 
   std::remove(filename.c_str());
 }

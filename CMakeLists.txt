@@ -74,6 +74,15 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
+# yaml-cpp
+FetchContent_Declare(
+    yaml-cpp
+    URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    SYSTEM
+)
+FetchContent_MakeAvailable(yaml-cpp)
+
 # Suppress warnings from GTest itself for Clang/IntelLLVM during compilation
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
     set(GTEST_SUPPRESS_FLAGS -Wno-unknown-warning-option -Wno-character-conversion)
@@ -102,6 +111,7 @@ add_library(
     src/ww4_utils/ww4_service.cpp
 )
 target_include_directories(ww4_utils PUBLIC src)
+target_link_libraries(ww4_utils PRIVATE yaml-cpp)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_utils PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 

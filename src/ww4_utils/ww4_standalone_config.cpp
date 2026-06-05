@@ -24,6 +24,7 @@
 #include <charconv>
 #include <fstream>
 #include <string>
+#include <yaml-cpp/yaml.h>
 
 /**
  * @namespace ww4_utils
@@ -86,82 +87,53 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
 std::optional<StandaloneConfig>
 loadStandaloneConfig(const std::string_view filename,
                      std::ostream &os) noexcept {
-  std::ifstream file((std::string(filename)));
-  if (!file.is_open()) {
-    os << "WW4 ERROR: Stand-alone configuration file '" << filename
-       << "' not found or could not be opened." << std::endl;
+  YAML::Node config_node;
+  try {
+    config_node = YAML::LoadFile(std::string(filename));
+  } catch (const std::exception &e) {
+    os << "WW4 ERROR: Error loading stand-alone configuration file '"
+       << filename << "': " << e.what() << std::endl;
+    return std::nullopt;
+  }
+
+  if (!config_node["simulation"]) {
+    os << "WW4 ERROR: Mandatory 'simulation' section missing in '" << filename
+       << "'" << std::endl;
+    return std::nullopt;
+  }
+
+  const auto simulation = config_node["simulation"];
+  if (!simulation["start_time"] || !simulation["end_time"]) {
+    os << "WW4 ERROR: Mandatory field(s) missing in 'simulation' section of '"
+       << filename << "':" << std::endl;
+    if (!simulation["start_time"])
+      os << "           Missing: start_time" << std::endl;
+    if (!simulation["end_time"])
+      os << "           Missing: end_time" << std::endl;
     return std::nullopt;
   }
 
   StandaloneConfig config{};
-  bool startFound = false;
-  bool endFound = false;
 
-  std::string line;
-  int lineNum = 0;
-  while (std::getline(file, line)) {
-    lineNum++;
-    const std::string_view lineFullView(line);
-
-    // Remove comments
-    const size_t hashPos = lineFullView.find('#');
-    const std::string_view lineView = (hashPos != std::string_view::npos)
-                                          ? lineFullView.substr(0, hashPos)
-                                          : lineFullView;
-
-    if (lineView.empty())
-      continue;
-
-    // Trim leading whitespace
-    const size_t first = lineView.find_first_not_of(" \t");
-    if (first == std::string_view::npos)
-      continue;
-
-    const size_t colonPos = lineView.find(':');
-    if (colonPos == std::string_view::npos)
-      continue;
-
-    const std::string_view key_raw = lineView.substr(first, colonPos - first);
-    // Trim trailing whitespace from key
-    const size_t kend = key_raw.find_last_not_of(" \t");
-    const std::string_view key = (kend != std::string_view::npos)
-                                     ? key_raw.substr(0, kend + 1)
-                                     : key_raw;
-
-    const std::string_view value = lineView.substr(colonPos + 1);
-
-    if (key == "start_time") {
-      const auto dt = parseDateTimeString(value);
-      if (dt) {
-        config.startTime = *dt;
-        startFound = true;
-      } else {
-        os << "WW4 ERROR: Invalid start_time format in '" << filename
-           << "' at line " << lineNum << ": " << value << std::endl;
-        os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
-      }
-    } else if (key == "end_time") {
-      const auto dt = parseDateTimeString(value);
-      if (dt) {
-        config.endTime = *dt;
-        endFound = true;
-      } else {
-        os << "WW4 ERROR: Invalid end_time format in '" << filename
-           << "' at line " << lineNum << ": " << value << std::endl;
-        os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
-      }
-    }
-  }
-
-  if (!startFound || !endFound) {
-    os << "WW4 ERROR: Mandatory field(s) missing in '" << filename
-       << "':" << std::endl;
-    if (!startFound)
-      os << "           Missing: start_time" << std::endl;
-    if (!endFound)
-      os << "           Missing: end_time" << std::endl;
+  const std::string startTimeStr = simulation["start_time"].as<std::string>();
+  const auto start_dt = parseDateTimeString(startTimeStr);
+  if (!start_dt) {
+    os << "WW4 ERROR: Invalid start_time format in '" << filename << "': "
+       << startTimeStr << std::endl;
+    os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
     return std::nullopt;
   }
+  config.startTime = *start_dt;
+
+  const std::string endTimeStr = simulation["end_time"].as<std::string>();
+  const auto end_dt = parseDateTimeString(endTimeStr);
+  if (!end_dt) {
+    os << "WW4 ERROR: Invalid end_time format in '" << filename << "': "
+       << endTimeStr << std::endl;
+    os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
+    return std::nullopt;
+  }
+  config.endTime = *end_dt;
 
   // Validation: endTime >= startTime
   if (TimeManagement::differenceInSeconds(config.startTime, config.endTime) <
