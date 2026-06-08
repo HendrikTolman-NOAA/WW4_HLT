@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-10
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_utils/ww4_service.h"
@@ -31,7 +31,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Rahul Mahajan
  * @date Initial, 2026-04-09
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  * @var Radians2Degrees
  * @brief Conversion factor from radians to degrees.
  * @var Degrees2Radians

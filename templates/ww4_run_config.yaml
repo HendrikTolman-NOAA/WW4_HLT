@@ -1,6 +1,10 @@
 # @file ww4_run_config.yaml
 # @brief YAML template for WAVEWATCH IV (WW4) run-time configuration.
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
+# @author Main Author(s) : Hendrik L. Tolman
+# @author Contributors : Jessica Meixner, Kit Stokes
+# @date Initial : 2026-04-03
+# @date Last update : 2026-06-08
 #
 # NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
 # @details This file provides a template for configuring run-time settings
