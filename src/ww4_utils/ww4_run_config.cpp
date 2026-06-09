@@ -22,12 +22,12 @@
 #include "ww4_utils/ww4_run_config.h"
 #include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_std_out.h"
-#include <yaml-cpp/yaml.h>
 #include <algorithm>
 #include <charconv>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <yaml-cpp/yaml.h>
 
 namespace ww4_utils {
 
@@ -483,55 +483,55 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // Mandatory fields check
-  if (config.waterLevels == InputFieldOption::Undefined ||
-      config.currents == InputFieldOption::Undefined ||
-      config.winds == InputFieldOption::Undefined ||
-      config.iceConcentrations == InputFieldOption::Undefined ||
-      config.bottomDepth == InputFieldOption::Undefined) {
-    os << "WW4 ERROR: Mandatory model input field(s) missing or invalid "
-          "in configuration."
-       << std::endl;
-    if (config.waterLevels == InputFieldOption::Undefined)
-      os << "   Missing/invalid: forcing -> water_levels" << std::endl;
-    if (config.currents == InputFieldOption::Undefined)
-      os << "   Missing/invalid: forcing -> currents" << std::endl;
-    if (config.winds == InputFieldOption::Undefined)
-      os << "   Missing/invalid: forcing -> winds" << std::endl;
-    if (config.iceConcentrations == InputFieldOption::Undefined)
-      os << "   Missing/invalid: forcing -> ice_concentrations" << std::endl;
-    if (config.bottomDepth == InputFieldOption::Undefined)
-      os << "   Missing/invalid: forcing -> bottom_depth" << std::endl;
+    if (config.waterLevels == InputFieldOption::Undefined ||
+        config.currents == InputFieldOption::Undefined ||
+        config.winds == InputFieldOption::Undefined ||
+        config.iceConcentrations == InputFieldOption::Undefined ||
+        config.bottomDepth == InputFieldOption::Undefined) {
+      os << "WW4 ERROR: Mandatory model input field(s) missing or invalid "
+            "in configuration."
+         << std::endl;
+      if (config.waterLevels == InputFieldOption::Undefined)
+        os << "   Missing/invalid: forcing -> water_levels" << std::endl;
+      if (config.currents == InputFieldOption::Undefined)
+        os << "   Missing/invalid: forcing -> currents" << std::endl;
+      if (config.winds == InputFieldOption::Undefined)
+        os << "   Missing/invalid: forcing -> winds" << std::endl;
+      if (config.iceConcentrations == InputFieldOption::Undefined)
+        os << "   Missing/invalid: forcing -> ice_concentrations" << std::endl;
+      if (config.bottomDepth == InputFieldOption::Undefined)
+        os << "   Missing/invalid: forcing -> bottom_depth" << std::endl;
 
-    ww4_std_out::extcde(1, os, "Missing or invalid mandatory fields.", __FILE__,
-                        __LINE__);
-  }
-
-  // Time step validation
-  if (config.timeStep < 0.0) {
-    os << "WW4 ERROR: Mandatory time step missing or invalid "
-          "in configuration."
-       << std::endl;
-    ww4_std_out::extcde(1, os, "Missing or invalid mandatory time step.",
-                        __FILE__, __LINE__);
-  }
-
-  // Output validation
-  bool outputValid = true;
-  auto validateOutput = [&](const OutputConfig &oc,
-                            const std::string_view name) {
-    if (oc.requested && name != "api" && oc.interval <= 0.0) {
-      os << "WW4 ERROR: Mandatory interval missing or invalid for "
-            "requested output: "
-         << name << std::endl;
-      return false;
+      ww4_std_out::extcde(1, os, "Missing or invalid mandatory fields.",
+                          __FILE__, __LINE__);
     }
-    return true;
-  };
 
-  outputValid &= validateOutput(config.outputFields, "fields");
-  outputValid &= validateOutput(config.outputApi, "api");
-  outputValid &= validateOutput(config.outputPoints, "points");
-  outputValid &= validateOutput(config.outputRestart, "restart");
+    // Time step validation
+    if (config.timeStep < 0.0) {
+      os << "WW4 ERROR: Mandatory time step missing or invalid "
+            "in configuration."
+         << std::endl;
+      ww4_std_out::extcde(1, os, "Missing or invalid mandatory time step.",
+                          __FILE__, __LINE__);
+    }
+
+    // Output validation
+    bool outputValid = true;
+    auto validateOutput = [&](const OutputConfig &oc,
+                              const std::string_view name) {
+      if (oc.requested && name != "api" && oc.interval <= 0.0) {
+        os << "WW4 ERROR: Mandatory interval missing or invalid for "
+              "requested output: "
+           << name << std::endl;
+        return false;
+      }
+      return true;
+    };
+
+    outputValid &= validateOutput(config.outputFields, "fields");
+    outputValid &= validateOutput(config.outputApi, "api");
+    outputValid &= validateOutput(config.outputPoints, "points");
+    outputValid &= validateOutput(config.outputRestart, "restart");
 
     if (!outputValid) {
       ww4_std_out::extcde(1, os,

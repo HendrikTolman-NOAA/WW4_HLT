@@ -47,18 +47,18 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   // Test Case 1: API output disabled (default)
   {
     std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "general:\n";
-  runFile << "  calendar_type: Standard\n";
-  runFile << "  time_step: 3600.0\n";
-  runFile << "forcing:\n";
-  runFile << "  water_levels: none\n";
-  runFile << "  currents: none\n";
-  runFile << "  winds: none\n";
-  runFile << "  ice_concentrations: none\n";
-  runFile << "  bottom_depth: none\n";
-  runFile << "output:\n";
-  runFile << "  api:\n";
-  runFile << "    requested: no\n";
+    runFile << "general:\n";
+    runFile << "  calendar_type: Standard\n";
+    runFile << "  time_step: 3600.0\n";
+    runFile << "forcing:\n";
+    runFile << "  water_levels: none\n";
+    runFile << "  currents: none\n";
+    runFile << "  winds: none\n";
+    runFile << "  ice_concentrations: none\n";
+    runFile << "  bottom_depth: none\n";
+    runFile << "output:\n";
+    runFile << "  api:\n";
+    runFile << "    requested: no\n";
 
     runFile.close();
 
@@ -76,18 +76,18 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   // Test Case 2: API output enabled
   {
     std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "general:\n";
-  runFile << "  calendar_type: Standard\n";
-  runFile << "  time_step: 3600.0\n";
-  runFile << "forcing:\n";
-  runFile << "  water_levels: none\n";
-  runFile << "  currents: none\n";
-  runFile << "  winds: none\n";
-  runFile << "  ice_concentrations: none\n";
-  runFile << "  bottom_depth: none\n";
-  runFile << "output:\n";
-  runFile << "  api:\n";
-  runFile << "    requested: yes\n";
+    runFile << "general:\n";
+    runFile << "  calendar_type: Standard\n";
+    runFile << "  time_step: 3600.0\n";
+    runFile << "forcing:\n";
+    runFile << "  water_levels: none\n";
+    runFile << "  currents: none\n";
+    runFile << "  winds: none\n";
+    runFile << "  ice_concentrations: none\n";
+    runFile << "  bottom_depth: none\n";
+    runFile << "output:\n";
+    runFile << "  api:\n";
+    runFile << "    requested: yes\n";
 
     runFile.close();
 
