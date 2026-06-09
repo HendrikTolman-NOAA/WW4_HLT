@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -46,13 +46,16 @@ protected:
 
 TEST_F(W4CoreZeroStepTest, FailsWithTwoConsecutiveZeroSteps) {
   std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "calendar_type: \"Standard\"\n";
-  runFile << "water_levels: none\n";
-  runFile << "currents: none\n";
-  runFile << "winds: none\n";
-  runFile << "ice_concentrations: none\n";
-  runFile << "time_step: 0.0\n";
-  runFile << "bottom_depth: none\n";
+  runFile << "general:\n";
+  runFile << "  calendar_type: Standard\n";
+  runFile << "  time_step: 0.0\n";
+  runFile << "forcing:\n";
+  runFile << "  water_levels: none\n";
+  runFile << "  currents: none\n";
+  runFile << "  winds: none\n";
+  runFile << "  ice_concentrations: none\n";
+  runFile << "  bottom_depth: none\n";
+
   runFile.close();
 
   std::stringstream ss;

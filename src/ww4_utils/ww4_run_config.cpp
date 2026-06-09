@@ -14,14 +14,15 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_utils/ww4_run_config.h"
 #include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_std_out.h"
+#include <yaml-cpp/yaml.h>
 #include <algorithm>
 #include <charconv>
 #include <fstream>
@@ -34,7 +35,7 @@ namespace ww4_utils {
  * @enum InputFieldOption
  * @brief Options for model input fields.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @var InputFieldOption::Undefined
  * @brief Mandatory field not yet defined.
  * @var InputFieldOption::None
@@ -54,7 +55,7 @@ namespace ww4_utils {
  * @brief Options for the level of output to standard output during time
  * stepping.
  * @author Main Author(s): Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @var ScreenOutputLevel::None
  * @brief No output in the time stepping loop.
  * @var ScreenOutputLevel::Summary
@@ -67,7 +68,7 @@ namespace ww4_utils {
  * @enum EchoOption
  * @brief Options for echoing input data to standard output and log files.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @var EchoOption::None
  * @brief No echoing of input data.
  * @var EchoOption::Summary
@@ -80,7 +81,7 @@ namespace ww4_utils {
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @var HomogeneousDataPoint::time
  * @brief Time of the data point.
  * @var HomogeneousDataPoint::values
@@ -92,7 +93,7 @@ namespace ww4_utils {
  * @brief Configuration for the run-time environment.
  * @details Stores the calendar type, output preferences, and input options.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @var RunConfig::calendarType
  * @brief Calendar type.
  * @var RunConfig::produceStdOut
@@ -158,15 +159,16 @@ std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
   if (s.empty())
     return std::nullopt;
 
-  const size_t firstSpace = s.find(' ');
+  const std::string_view cleanS = cleanValue(s);
+  const size_t firstSpace = cleanS.find(' ');
   if (firstSpace == std::string_view::npos)
     return std::nullopt;
 
-  const size_t secondSpace = s.find(' ', firstSpace + 1);
+  const size_t secondSpace = cleanS.find(' ', firstSpace + 1);
   if (secondSpace == std::string_view::npos)
     return std::nullopt;
 
-  const std::string_view dateTimePart = s.substr(0, secondSpace);
+  const std::string_view dateTimePart = cleanS.substr(0, secondSpace);
   const auto dt = parseDateTimeString(dateTimePart);
   if (!dt)
     return std::nullopt;
@@ -174,7 +176,7 @@ std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
   HomogeneousDataPoint dp;
   dp.time = *dt;
 
-  std::string_view remaining = s.substr(secondSpace);
+  std::string_view remaining = cleanS.substr(secondSpace);
   while (!remaining.empty()) {
     const size_t firstNotSpace = remaining.find_first_not_of(' ');
     if (firstNotSpace == std::string_view::npos)
@@ -249,31 +251,28 @@ std::string inputOptionToString(const InputFieldOption option) {
 }
 
 /**
- * @brief Helper to update OutputConfig from a key-value pair.
+ * @brief Helper to update OutputConfig from a YAML node.
  * @param oc The OutputConfig structure to update.
- * @param key_suffix The suffix of the configuration key.
- * @param value The value to set.
+ * @param node The YAML node for the output type.
  */
-void updateOutputConfig(OutputConfig &oc, const std::string_view key_suffix,
-                        const std::string_view value) {
-  if (key_suffix == "requested") {
-    oc.requested = (value == "yes");
-  } else if (key_suffix == "start") {
-    oc.startTime = parseDateTimeString(value);
-  } else if (key_suffix == "end") {
-    oc.endTime = parseDateTimeString(value);
-  } else if (key_suffix == "interval") {
-    try {
-      oc.interval = std::stod(std::string(value));
-    } catch (...) {
-      oc.interval = -1.0;
-    }
-  } else if (key_suffix == "at_first") {
-    if (value == "yes") {
-      oc.atFirstTime = true;
-    } else if (value == "no") {
-      oc.atFirstTime = false;
-    }
+void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
+  if (!node)
+    return;
+
+  if (node["requested"]) {
+    oc.requested = (node["requested"].as<std::string>() == "yes");
+  }
+  if (node["interval"]) {
+    oc.interval = node["interval"].as<double>();
+  }
+  if (node["start"]) {
+    oc.startTime = parseDateTimeString(node["start"].as<std::string>());
+  }
+  if (node["end"]) {
+    oc.endTime = parseDateTimeString(node["end"].as<std::string>());
+  }
+  if (node["at_first"]) {
+    oc.atFirstTime = (node["at_first"].as<std::string>() == "yes");
   }
 }
 
@@ -348,181 +347,142 @@ std::string_view cleanValue(const std::string_view s) {
 
 /**
  * @brief Loads the run-time configuration from a YAML file.
- * @details Reads the specified YAML file from the current directory,
- *          extracts the configuration settings, and updates the
- *          TimeManagement calendar type.
+ * @details Reads the specified YAML file, extracts configuration settings
+ *          from nested sections (general, physics, forcing, homogeneous_data,
+ *          output), and updates the TimeManagement calendar type.
  * @param filename The name of the YAML file to load.
  * @param os Output stream for reporting.
  * @return A RunConfig structure containing the loaded (or default) settings,
  *         or std::nullopt if the file could not be opened.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
-  std::ifstream file((std::string(filename)));
-  RunConfig config{};
+  try {
+    const YAML::Node config_node = YAML::LoadFile(std::string(filename));
 
-  if (!file.is_open()) {
-    return std::nullopt;
-  }
+    RunConfig config{};
 
-  std::string lastKey = "";
-  std::string line;
-  while (std::getline(file, line)) {
-    const std::string_view lineFullView(line);
-
-    // Remove comments
-    const size_t hashPos = lineFullView.find('#');
-    const std::string_view lineView = (hashPos != std::string_view::npos)
-                                          ? lineFullView.substr(0, hashPos)
-                                          : lineFullView;
-
-    if (lineView.empty())
-      continue;
-
-    // Trim leading whitespace
-    const size_t first = lineView.find_first_not_of(" \t");
-    if (first == std::string_view::npos)
-      continue;
-
-    if (lineView[first] == '-') {
-      const std::string_view value = cleanValue(lineView.substr(first + 1));
-      if (!value.empty()) {
-        auto dp = parseHomogeneousString(value);
-        if (dp) {
-          if (lastKey == "water_levels") {
-            config.homogeneousWaterLevels.push_back(*dp);
-          } else if (lastKey == "currents") {
-            config.homogeneousCurrents.push_back(*dp);
-          } else if (lastKey == "winds") {
-            config.homogeneousWinds.push_back(*dp);
-          } else if (lastKey == "ice_concentrations") {
-            config.homogeneousIceConcentrations.push_back(*dp);
-          } else if (lastKey == "bottom_depth") {
-            config.homogeneousBottomDepth.push_back(*dp);
-          }
+    // 1. General section
+    if (const auto node = config_node["general"]) {
+      if (node["calendar_type"]) {
+        const auto val = node["calendar_type"].as<std::string>();
+        if (val == "Standard") {
+          config.calendarType = TimeManagement::CalendarType::Standard;
+        } else if (val == "NoLeap") {
+          config.calendarType = TimeManagement::CalendarType::NoLeap;
+        } else if (val == "ThreeSixtyDay") {
+          config.calendarType = TimeManagement::CalendarType::ThreeSixtyDay;
         }
       }
-      continue;
+      if (node["produce_std_out"]) {
+        config.produceStdOut =
+            (node["produce_std_out"].as<std::string>() == "yes");
+      }
+      if (node["produce_log_file"]) {
+        config.produceLogFile =
+            (node["produce_log_file"].as<std::string>() == "yes");
+      }
+      if (node["screen_output_level"]) {
+        const auto val = node["screen_output_level"].as<std::string>();
+        if (val == "none") {
+          config.screenOutputLevel = ScreenOutputLevel::None;
+        } else if (val == "summary") {
+          config.screenOutputLevel = ScreenOutputLevel::Summary;
+        } else if (val == "full") {
+          config.screenOutputLevel = ScreenOutputLevel::Full;
+        }
+      }
+      if (node["time_step"]) {
+        config.timeStep = node["time_step"].as<double>();
+      }
     }
 
-    const size_t colonPos = lineView.find(':');
-    if (colonPos == std::string_view::npos)
-      continue;
-
-    const std::string_view key_raw = lineView.substr(first, colonPos - first);
-    // Trim trailing whitespace from key
-    const size_t kend = key_raw.find_last_not_of(" \t");
-    const std::string_view key = (kend != std::string_view::npos)
-                                     ? key_raw.substr(0, kend + 1)
-                                     : key_raw;
-    lastKey = std::string(key);
-
-    const std::string_view value = cleanValue(lineView.substr(colonPos + 1));
-
-    if (key == "calendar_type") {
-      if (value == "Standard") {
-        config.calendarType = TimeManagement::CalendarType::Standard;
-      } else if (value == "NoLeap") {
-        config.calendarType = TimeManagement::CalendarType::NoLeap;
-      } else if (value == "ThreeSixtyDay") {
-        config.calendarType = TimeManagement::CalendarType::ThreeSixtyDay;
+    // 2. Physics section
+    if (const auto node = config_node["physics"]) {
+      if (node["dry_run"]) {
+        config.dryRun = (node["dry_run"].as<std::string>() == "yes");
       }
-    } else if (key == "produce_std_out") {
-      if (value == "yes") {
-        config.produceStdOut = true;
-      } else if (value == "no") {
-        config.produceStdOut = false;
+      if (node["propagate_x"]) {
+        config.propagateX = (node["propagate_x"].as<std::string>() == "yes");
       }
-    } else if (key == "produce_log_file") {
-      if (value == "yes") {
-        config.produceLogFile = true;
-      } else if (value == "no") {
-        config.produceLogFile = false;
+      if (node["propagate_y"]) {
+        config.propagateY = (node["propagate_y"].as<std::string>() == "yes");
       }
-    } else if (key == "dry_run") {
-      if (value == "yes") {
-        config.dryRun = true;
-      } else if (value == "no") {
-        config.dryRun = false;
+      if (node["propagate_theta"]) {
+        config.propagateTheta =
+            (node["propagate_theta"].as<std::string>() == "yes");
       }
-    } else if (key == "propagate_x") {
-      if (value == "yes") {
-        config.propagateX = true;
-      } else if (value == "no") {
-        config.propagateX = false;
+      if (node["propagate_k"]) {
+        config.propagateK = (node["propagate_k"].as<std::string>() == "yes");
       }
-    } else if (key == "propagate_y") {
-      if (value == "yes") {
-        config.propagateY = true;
-      } else if (value == "no") {
-        config.propagateY = false;
+      if (node["source_terms"]) {
+        config.sourceTerms = (node["source_terms"].as<std::string>() == "yes");
       }
-    } else if (key == "propagate_theta") {
-      if (value == "yes") {
-        config.propagateTheta = true;
-      } else if (value == "no") {
-        config.propagateTheta = false;
-      }
-    } else if (key == "propagate_k") {
-      if (value == "yes") {
-        config.propagateK = true;
-      } else if (value == "no") {
-        config.propagateK = false;
-      }
-    } else if (key == "source_terms") {
-      if (value == "yes") {
-        config.sourceTerms = true;
-      } else if (value == "no") {
-        config.sourceTerms = false;
-      }
-    } else if (key == "water_levels") {
-      config.waterLevels = parseInputOption(value);
-    } else if (key == "currents") {
-      config.currents = parseInputOption(value);
-    } else if (key == "winds") {
-      config.winds = parseInputOption(value);
-    } else if (key == "ice_concentrations") {
-      config.iceConcentrations = parseInputOption(value);
-    } else if (key == "bottom_depth") {
-      config.bottomDepth = parseInputOption(value, true);
-    } else if (key == "echo_hom_input") {
-      if (value == "none") {
-        config.echoHomInput = EchoOption::None;
-      } else if (value == "summary") {
-        config.echoHomInput = EchoOption::Summary;
-      } else if (value == "full") {
-        config.echoHomInput = EchoOption::Full;
-      }
-    } else if (key == "screen_output_level") {
-      if (value == "none") {
-        config.screenOutputLevel = ScreenOutputLevel::None;
-      } else if (value == "summary") {
-        config.screenOutputLevel = ScreenOutputLevel::Summary;
-      } else if (value == "full") {
-        config.screenOutputLevel = ScreenOutputLevel::Full;
-      }
-    } else if (key == "time_step") {
-      if (std::from_chars(value.data(), value.data() + value.size(),
-                          config.timeStep)
-              .ec != std::errc()) {
-        config.timeStep = -1.0;
-      }
-    } else if (key == "output_api") {
-      config.outputApi.requested = (value == "yes");
-    } else if (key.starts_with("output_api_")) {
-      updateOutputConfig(config.outputApi, key.substr(11), value);
-    } else if (key.starts_with("output_fields_")) {
-      updateOutputConfig(config.outputFields, key.substr(14), value);
-    } else if (key.starts_with("output_points_")) {
-      updateOutputConfig(config.outputPoints, key.substr(14), value);
-    } else if (key.starts_with("output_restart_")) {
-      updateOutputConfig(config.outputRestart, key.substr(15), value);
     }
-  }
 
-  // Mandatory fields check
+    // 3. Forcing section
+    if (const auto node = config_node["forcing"]) {
+      if (node["bottom_depth"]) {
+        config.bottomDepth =
+            parseInputOption(node["bottom_depth"].as<std::string>(), true);
+      }
+      if (node["water_levels"]) {
+        config.waterLevels =
+            parseInputOption(node["water_levels"].as<std::string>());
+      }
+      if (node["currents"]) {
+        config.currents = parseInputOption(node["currents"].as<std::string>());
+      }
+      if (node["winds"]) {
+        config.winds = parseInputOption(node["winds"].as<std::string>());
+      }
+      if (node["ice_concentrations"]) {
+        config.iceConcentrations =
+            parseInputOption(node["ice_concentrations"].as<std::string>());
+      }
+      if (node["echo_hom_input"]) {
+        const auto val = node["echo_hom_input"].as<std::string>();
+        if (val == "none") {
+          config.echoHomInput = EchoOption::None;
+        } else if (val == "summary") {
+          config.echoHomInput = EchoOption::Summary;
+        } else if (val == "full") {
+          config.echoHomInput = EchoOption::Full;
+        }
+      }
+    }
+
+    // 4. Homogeneous Data section
+    if (const auto node = config_node["homogeneous_data"]) {
+      auto parsePoints = [&](const std::string &key,
+                             std::vector<HomogeneousDataPoint> &list) {
+        if (node[key]) {
+          for (const auto &item : node[key]) {
+            auto dp = parseHomogeneousString(item.as<std::string>());
+            if (dp) {
+              list.push_back(*dp);
+            }
+          }
+        }
+      };
+      parsePoints("water_levels", config.homogeneousWaterLevels);
+      parsePoints("currents", config.homogeneousCurrents);
+      parsePoints("winds", config.homogeneousWinds);
+      parsePoints("ice_concentrations", config.homogeneousIceConcentrations);
+      parsePoints("bottom_depth", config.homogeneousBottomDepth);
+    }
+
+    // 5. Output section
+    if (const auto node = config_node["output"]) {
+      parseOutputConfig(config.outputFields, node["fields"]);
+      parseOutputConfig(config.outputPoints, node["points"]);
+      parseOutputConfig(config.outputRestart, node["restart"]);
+      parseOutputConfig(config.outputApi, node["api"]);
+    }
+
+    // Mandatory fields check
   if (config.waterLevels == InputFieldOption::Undefined ||
       config.currents == InputFieldOption::Undefined ||
       config.winds == InputFieldOption::Undefined ||
@@ -532,15 +492,15 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           "in configuration."
        << std::endl;
     if (config.waterLevels == InputFieldOption::Undefined)
-      os << "   Missing/invalid: water_levels" << std::endl;
+      os << "   Missing/invalid: forcing -> water_levels" << std::endl;
     if (config.currents == InputFieldOption::Undefined)
-      os << "   Missing/invalid: currents" << std::endl;
+      os << "   Missing/invalid: forcing -> currents" << std::endl;
     if (config.winds == InputFieldOption::Undefined)
-      os << "   Missing/invalid: winds" << std::endl;
+      os << "   Missing/invalid: forcing -> winds" << std::endl;
     if (config.iceConcentrations == InputFieldOption::Undefined)
-      os << "   Missing/invalid: ice_concentrations" << std::endl;
+      os << "   Missing/invalid: forcing -> ice_concentrations" << std::endl;
     if (config.bottomDepth == InputFieldOption::Undefined)
-      os << "   Missing/invalid: bottom_depth" << std::endl;
+      os << "   Missing/invalid: forcing -> bottom_depth" << std::endl;
 
     ww4_std_out::extcde(1, os, "Missing or invalid mandatory fields.", __FILE__,
                         __LINE__);
@@ -559,7 +519,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   bool outputValid = true;
   auto validateOutput = [&](const OutputConfig &oc,
                             const std::string_view name) {
-    if (oc.requested && name != "output_api" && oc.interval <= 0.0) {
+    if (oc.requested && name != "api" && oc.interval <= 0.0) {
       os << "WW4 ERROR: Mandatory interval missing or invalid for "
             "requested output: "
          << name << std::endl;
@@ -568,21 +528,26 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     return true;
   };
 
-  outputValid &= validateOutput(config.outputFields, "output_fields");
-  outputValid &= validateOutput(config.outputApi, "output_api");
-  outputValid &= validateOutput(config.outputPoints, "output_points");
-  outputValid &= validateOutput(config.outputRestart, "output_restart");
+  outputValid &= validateOutput(config.outputFields, "fields");
+  outputValid &= validateOutput(config.outputApi, "api");
+  outputValid &= validateOutput(config.outputPoints, "points");
+  outputValid &= validateOutput(config.outputRestart, "restart");
 
-  if (!outputValid) {
-    ww4_std_out::extcde(1, os,
-                        "Missing or invalid mandatory output interval(s).",
-                        __FILE__, __LINE__);
+    if (!outputValid) {
+      ww4_std_out::extcde(1, os,
+                          "Missing or invalid mandatory output interval(s).",
+                          __FILE__, __LINE__);
+    }
+
+    // Update TimeManagement with the loaded calendar type.
+    TimeManagement::setCalendarType(config.calendarType);
+
+    return config;
+  } catch (const YAML::Exception &e) {
+    os << "WW4 ERROR: Failed to load/parse run configuration file '" << filename
+       << "': " << e.what() << std::endl;
+    return std::nullopt;
   }
-
-  // Update TimeManagement with the loaded calendar type.
-  TimeManagement::setCalendarType(config.calendarType);
-
-  return config;
 }
 
 /**
@@ -590,7 +555,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
  * @param config The RunConfig structure to report.
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  Configuration settings :" << std::endl;

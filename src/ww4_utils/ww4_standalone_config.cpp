@@ -14,13 +14,14 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-02
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_run_config.h"
+#include <yaml-cpp/yaml.h>
 #include <charconv>
 #include <fstream>
 #include <string>
@@ -36,7 +37,7 @@ namespace ww4_utils {
  * @brief Configuration for the ww4_standalone program.
  * @details Stores the start and end times for the simulation.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @var StandaloneConfig::startTime
  * @brief Simulation start time.
  * @var StandaloneConfig::endTime
@@ -72,110 +73,86 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
 
 /**
  * @brief Loads the stand-alone configuration from a YAML file.
- * @details Reads the specified YAML file from the current directory,
- *          extracts the start and end times, and validates that the
- *          end time is not before the start time.
+ * @details Reads the specified YAML file, extracts the start and end times
+ *          from the 'simulation' node, and validates that the end time is
+ *          not before the start time.
  * @param filename The name of the YAML file to load.
  * @param os Output stream for reporting.
  * @return A StandaloneConfig structure if successful, or std::nullopt
  *         if an error occurred (e.g., file not found, invalid format,
  *         or validation failure).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  */
 std::optional<StandaloneConfig>
 loadStandaloneConfig(const std::string_view filename,
                      std::ostream &os) noexcept {
-  std::ifstream file((std::string(filename)));
-  if (!file.is_open()) {
-    os << "WW4 ERROR: Stand-alone configuration file '" << filename
-       << "' not found or could not be opened." << std::endl;
-    return std::nullopt;
-  }
+  try {
+    const YAML::Node config_node = YAML::LoadFile(std::string(filename));
 
-  StandaloneConfig config{};
-  bool startFound = false;
-  bool endFound = false;
+    if (!config_node["simulation"]) {
+      os << "WW4 ERROR: Mandatory 'simulation' section missing in '" << filename
+         << "'." << std::endl;
+      return std::nullopt;
+    }
 
-  std::string line;
-  int lineNum = 0;
-  while (std::getline(file, line)) {
-    lineNum++;
-    const std::string_view lineFullView(line);
+    const auto sim_node = config_node["simulation"];
+    StandaloneConfig config{};
 
-    // Remove comments
-    const size_t hashPos = lineFullView.find('#');
-    const std::string_view lineView = (hashPos != std::string_view::npos)
-                                          ? lineFullView.substr(0, hashPos)
-                                          : lineFullView;
-
-    if (lineView.empty())
-      continue;
-
-    // Trim leading whitespace
-    const size_t first = lineView.find_first_not_of(" \t");
-    if (first == std::string_view::npos)
-      continue;
-
-    const size_t colonPos = lineView.find(':');
-    if (colonPos == std::string_view::npos)
-      continue;
-
-    const std::string_view key_raw = lineView.substr(first, colonPos - first);
-    // Trim trailing whitespace from key
-    const size_t kend = key_raw.find_last_not_of(" \t");
-    const std::string_view key = (kend != std::string_view::npos)
-                                     ? key_raw.substr(0, kend + 1)
-                                     : key_raw;
-
-    const std::string_view value = lineView.substr(colonPos + 1);
-
-    if (key == "start_time") {
-      const auto dt = parseDateTimeString(value);
+    bool startFound = false;
+    if (sim_node["start_time"]) {
+      const auto dt =
+          parseDateTimeString(sim_node["start_time"].as<std::string>());
       if (dt) {
         config.startTime = *dt;
         startFound = true;
       } else {
         os << "WW4 ERROR: Invalid start_time format in '" << filename
-           << "' at line " << lineNum << ": " << value << std::endl;
-        os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
+           << "'. Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
       }
-    } else if (key == "end_time") {
-      const auto dt = parseDateTimeString(value);
+    }
+
+    bool endFound = false;
+    if (sim_node["end_time"]) {
+      const auto dt =
+          parseDateTimeString(sim_node["end_time"].as<std::string>());
       if (dt) {
         config.endTime = *dt;
         endFound = true;
       } else {
         os << "WW4 ERROR: Invalid end_time format in '" << filename
-           << "' at line " << lineNum << ": " << value << std::endl;
-        os << "           Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
+           << "'. Expected format: \"YYYYMMDD HHMMSS\"" << std::endl;
       }
     }
-  }
 
-  if (!startFound || !endFound) {
-    os << "WW4 ERROR: Mandatory field(s) missing in '" << filename
-       << "':" << std::endl;
-    if (!startFound)
-      os << "           Missing: start_time" << std::endl;
-    if (!endFound)
-      os << "           Missing: end_time" << std::endl;
+    if (!startFound || !endFound) {
+      os << "WW4 ERROR: Mandatory field(s) missing in 'simulation' section of '"
+         << filename << "':" << std::endl;
+      if (!startFound)
+        os << "           Missing: start_time" << std::endl;
+      if (!endFound)
+        os << "           Missing: end_time" << std::endl;
+      return std::nullopt;
+    }
+
+    // Validation: endTime >= startTime
+    if (TimeManagement::differenceInSeconds(config.startTime, config.endTime) <
+        0.0) {
+      os << "WW4 ERROR: End time before start time in '" << filename
+         << "':" << std::endl;
+      os << "           Start time: "
+         << TimeManagement::toFormattedString(config.startTime) << std::endl;
+      os << "           End time:   "
+         << TimeManagement::toFormattedString(config.endTime) << std::endl;
+      return std::nullopt;
+    }
+
+    return config;
+  } catch (const YAML::Exception &e) {
+    os << "WW4 ERROR: Failed to load/parse stand-alone configuration file '"
+       << filename << "': " << e.what() << std::endl;
     return std::nullopt;
   }
-
-  // Validation: endTime >= startTime
-  if (TimeManagement::differenceInSeconds(config.startTime, config.endTime) <
-      0.0) {
-    os << "WW4 ERROR: End time before start time in '" << filename
-       << "':" << std::endl;
-    os << "           Start time: "
-       << TimeManagement::toFormattedString(config.startTime) << std::endl;
-    os << "           End time:   "
-       << TimeManagement::toFormattedString(config.endTime) << std::endl;
-    return std::nullopt;
-  }
-
-  return config;
 }
 
 /**
@@ -183,7 +160,7 @@ loadStandaloneConfig(const std::string_view filename,
  * @param config The StandaloneConfig structure to report.
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date 2026-05-01
  */
 void reportStandaloneConfig(const StandaloneConfig &config, std::ostream &os) {

@@ -14,7 +14,7 @@
  * added to its repositories.
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -59,18 +59,19 @@ protected:
 };
 
 TEST_F(InterpolationOutputTest, RedundantOutputCheck) {
-  writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "homogeneous"
-- 20260101 000000 10.0 0.0
-- 20260101 020000 15.0 0.0
-ice_concentrations: "none"
-bottom_depth: "none"
-produce_stdout: yes
-)");
+  writeYaml(R"(general:
+  calendar_type: Standard
+  time_step: 3600.0
+forcing:
+  water_levels: none
+  currents: none
+  winds: homogeneous
+  ice_concentrations: none
+  bottom_depth: none
+homogeneous_data:
+  winds:
+    - "20260101 000000 10.0 0.0"
+    - "20260101 020000 15.0 0.0")");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
   ww4_utils::DateTime endTime{20260101, 20000.0}; // 02:00:00

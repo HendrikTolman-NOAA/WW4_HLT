@@ -12,9 +12,9 @@
 #of the National Weather Service.
 #NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
-#@author Contributors : Jules (Agentic AI)
+#@author Contributors : Jules (Agentic AI), Kit Stokes
 #@date Initial : 2026-03-20
-#@date Last update : 2026-05-26
+#@date Last update : 2026-06-08
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -69,10 +69,19 @@ FetchContent_Declare(
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
     SYSTEM
 )
+
+# yaml-cpp for configuration parsing
+FetchContent_Declare(
+    yaml-cpp
+    URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    SYSTEM
+)
+
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-FetchContent_MakeAvailable(googletest)
+FetchContent_MakeAvailable(googletest yaml-cpp)
 
 # Suppress warnings from GTest itself for Clang/IntelLLVM during compilation
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
@@ -102,6 +111,7 @@ add_library(
     src/ww4_utils/ww4_service.cpp
 )
 target_include_directories(ww4_utils PUBLIC src)
+target_link_libraries(ww4_utils PRIVATE yaml-cpp)
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_utils PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 

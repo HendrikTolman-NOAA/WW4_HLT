@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-06
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -37,13 +37,16 @@ protected:
 TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "calendar_type: \"Standard\"\n";
-  runFile << "water_levels: none\n";
-  runFile << "currents: none\n";
-  runFile << "winds: none\n";
-  runFile << "ice_concentrations: none\n";
-  runFile << "time_step: 3600.0\n";
-  runFile << "bottom_depth: none\n";
+  runFile << "general:\n";
+  runFile << "  calendar_type: Standard\n";
+  runFile << "  time_step: 3600.0\n";
+  runFile << "forcing:\n";
+  runFile << "  water_levels: none\n";
+  runFile << "  currents: none\n";
+  runFile << "  winds: none\n";
+  runFile << "  ice_concentrations: none\n";
+  runFile << "  bottom_depth: none\n";
+
   runFile.close();
 
   EXPECT_NO_THROW(ww4_core::w4core_init(startTime, "test_program", std::cout));
@@ -66,13 +69,16 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
 TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "calendar_type: \"Standard\"\n";
-  runFile << "water_levels: none\n";
-  runFile << "currents: none\n";
-  runFile << "winds: none\n";
-  runFile << "ice_concentrations: none\n";
-  runFile << "time_step: 3600.0\n";
-  runFile << "bottom_depth: none\n";
+  runFile << "general:\n";
+  runFile << "  calendar_type: Standard\n";
+  runFile << "  time_step: 3600.0\n";
+  runFile << "forcing:\n";
+  runFile << "  water_levels: none\n";
+  runFile << "  currents: none\n";
+  runFile << "  winds: none\n";
+  runFile << "  ice_concentrations: none\n";
+  runFile << "  bottom_depth: none\n";
+
   runFile.close();
 
   ww4_core::w4core_init(startTime, "test_program", std::cout);
@@ -89,13 +95,16 @@ TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
 TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "calendar_type: \"Standard\"\n";
-  runFile << "water_levels: none\n";
-  runFile << "currents: none\n";
-  runFile << "winds: none\n";
-  runFile << "ice_concentrations: none\n";
-  runFile << "time_step: 3600.0\n";
-  runFile << "bottom_depth: none\n";
+  runFile << "general:\n";
+  runFile << "  calendar_type: Standard\n";
+  runFile << "  time_step: 3600.0\n";
+  runFile << "forcing:\n";
+  runFile << "  water_levels: none\n";
+  runFile << "  currents: none\n";
+  runFile << "  winds: none\n";
+  runFile << "  ice_concentrations: none\n";
+  runFile << "  bottom_depth: none\n";
+
   runFile.close();
 
   ww4_core::w4core_init(startTime, "test_program", std::cout);
@@ -118,13 +127,16 @@ TEST_F(W4CoreTimeTest, WaveFailsIfNoInit) {
 TEST_F(W4CoreTimeTest, WaveFailsIfTimeMismatch) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "calendar_type: \"Standard\"\n";
-  runFile << "water_levels: none\n";
-  runFile << "currents: none\n";
-  runFile << "winds: none\n";
-  runFile << "ice_concentrations: none\n";
-  runFile << "time_step: 3600.0\n";
-  runFile << "bottom_depth: none\n";
+  runFile << "general:\n";
+  runFile << "  calendar_type: Standard\n";
+  runFile << "  time_step: 3600.0\n";
+  runFile << "forcing:\n";
+  runFile << "  water_levels: none\n";
+  runFile << "  currents: none\n";
+  runFile << "  winds: none\n";
+  runFile << "  ice_concentrations: none\n";
+  runFile << "  bottom_depth: none\n";
+
   runFile.close();
 
   ww4_core::w4core_init(startTime, "test_program", std::cout);
