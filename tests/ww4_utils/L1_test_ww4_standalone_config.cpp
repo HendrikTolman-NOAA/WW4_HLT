@@ -29,8 +29,9 @@ using namespace ww4_utils;
 TEST(StandaloneConfigTest, ValidConfig) {
   const std::string filename = "test_valid_config.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"19680606 060000\"\n";
-  file << "end_time: \"19680606 180000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"19680606 060000\"\n";
+  file << "  end_time: \"19680606 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -75,8 +76,9 @@ TEST(StandaloneConfigTest, ParseDateTimeString) {
 TEST(StandaloneConfigTest, EmptyDateTime) {
   const std::string filename = "test_empty_dt.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"\"\n";
-  file << "end_time: \"19680606 180000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"\"\n";
+  file << "  end_time: \"19680606 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -88,8 +90,9 @@ TEST(StandaloneConfigTest, EmptyDateTime) {
 TEST(StandaloneConfigTest, ShortDateTime) {
   const std::string filename = "test_short_dt.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"19680606\"\n";
-  file << "end_time: \"19680606 180000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"19680606\"\n";
+  file << "  end_time: \"19680606 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -101,8 +104,9 @@ TEST(StandaloneConfigTest, ShortDateTime) {
 TEST(StandaloneConfigTest, NonNumericDateTime) {
   const std::string filename = "test_non_numeric_dt.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"ABCDEFGH 060000\"\n";
-  file << "end_time: \"19680606 180000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"ABCDEFGH 060000\"\n";
+  file << "  end_time: \"19680606 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -114,8 +118,9 @@ TEST(StandaloneConfigTest, NonNumericDateTime) {
 TEST(StandaloneConfigTest, NonNumericTimePart) {
   const std::string filename = "test_non_numeric_time.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"19680606 ABCDEF\"\n";
-  file << "end_time: \"19680606 180000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"19680606 ABCDEF\"\n";
+  file << "  end_time: \"19680606 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -127,8 +132,9 @@ TEST(StandaloneConfigTest, NonNumericTimePart) {
 TEST(StandaloneConfigTest, EqualTimes) {
   const std::string filename = "test_equal_times.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"19680606 060000\"\n";
-  file << "end_time: \"19680606 060000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"19680606 060000\"\n";
+  file << "  end_time: \"19680606 060000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -142,8 +148,9 @@ TEST(StandaloneConfigTest, EqualTimes) {
 TEST(StandaloneConfigTest, InvalidTimeOrder) {
   const std::string filename = "test_invalid_order.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"19680606 060000\"\n";
-  file << "end_time: \"19680605 180000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"19680606 060000\"\n";
+  file << "  end_time: \"19680605 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -155,7 +162,8 @@ TEST(StandaloneConfigTest, InvalidTimeOrder) {
 TEST(StandaloneConfigTest, MissingFields) {
   const std::string filename = "test_missing_fields.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"19680606 060000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"19680606 060000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -167,8 +175,9 @@ TEST(StandaloneConfigTest, MissingFields) {
 TEST(StandaloneConfigTest, MalformedDateTime) {
   const std::string filename = "test_malformed.yaml";
   std::ofstream file(filename);
-  file << "start_time: \"19680606-060000\"\n"; // Missing space
-  file << "end_time: \"19680606 180000\"\n";
+  file << "simulation:\n";
+  file << "  start_time: \"19680606-060000\"\n"; // Missing space
+  file << "  end_time: \"19680606 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);
@@ -204,9 +213,10 @@ TEST(StandaloneConfigTest, RobustParsingConfig) {
   std::ofstream file(filename);
   file << "\n";
   file << "  # This is a comment\n";
-  file << "start_time   :   \"19680606 060000\"   # End of line comment\n";
+  file << "simulation:\n";
+  file << "  start_time   :   \"19680606 060000\"   # End of line comment\n";
   file << "\n";
-  file << "end_time : \"19680606 180000\"\n";
+  file << "  end_time : \"19680606 180000\"\n";
   file.close();
 
   const auto config = loadStandaloneConfig(filename, std::cerr);

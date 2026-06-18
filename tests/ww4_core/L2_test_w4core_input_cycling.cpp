@@ -13,7 +13,7 @@
  * added to its repositories.
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_core/w4core_init.h"
@@ -47,17 +47,19 @@ protected:
 };
 
 TEST_F(W4CoreInputCyclingTest, CyclingBeforeData) {
-  writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "homogeneous"
-- 20260101 120000 10.0 0.0
-- 20260101 180000 15.0 0.0
-ice_concentrations: "none"
-bottom_depth: "none"
-)");
+  writeYaml(R"(general:
+  calendar_type: Standard
+  time_step: 3600.0
+forcing:
+  water_levels: none
+  currents: none
+  winds: homogeneous
+  ice_concentrations: none
+  bottom_depth: none
+homogeneous_data:
+  winds:
+    - "20260101 120000 10.0 0.0"
+    - "20260101 180000 15.0 0.0")");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
   ww4_utils::DateTime endTime{20260101, 230000.0};
@@ -77,18 +79,20 @@ bottom_depth: "none"
 }
 
 TEST_F(W4CoreInputCyclingTest, CyclingDuringData) {
-  writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "homogeneous"
-- 20260101 000000 10.0 0.0
-- 20260101 120000 15.0 0.0
-- 20260101 180000 20.0 0.0
-ice_concentrations: "none"
-bottom_depth: "none"
-)");
+  writeYaml(R"(general:
+  calendar_type: Standard
+  time_step: 3600.0
+forcing:
+  water_levels: none
+  currents: none
+  winds: homogeneous
+  ice_concentrations: none
+  bottom_depth: none
+homogeneous_data:
+  winds:
+    - "20260101 000000 10.0 0.0"
+    - "20260101 120000 15.0 0.0"
+    - "20260101 180000 20.0 0.0")");
 
   ww4_utils::DateTime startTime{20260101, 60000.0}; // 06:00
   ww4_utils::DateTime endTime{20260101, 230000.0};
@@ -108,17 +112,19 @@ bottom_depth: "none"
 }
 
 TEST_F(W4CoreInputCyclingTest, CyclingAfterData) {
-  writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "homogeneous"
-- 20260101 000000 10.0 0.0
-- 20260101 120000 15.0 0.0
-ice_concentrations: "none"
-bottom_depth: "none"
-)");
+  writeYaml(R"(general:
+  calendar_type: Standard
+  time_step: 3600.0
+forcing:
+  water_levels: none
+  currents: none
+  winds: homogeneous
+  ice_concentrations: none
+  bottom_depth: none
+homogeneous_data:
+  winds:
+    - "20260101 000000 10.0 0.0"
+    - "20260101 120000 15.0 0.0")");
 
   ww4_utils::DateTime startTime{20260101, 180000.0}; // 18:00
   ww4_utils::DateTime endTime{20260101, 230000.0};
@@ -138,15 +144,15 @@ bottom_depth: "none"
 }
 
 TEST_F(W4CoreInputCyclingTest, CyclingEmptyData) {
-  writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "homogeneous"
-ice_concentrations: "none"
-bottom_depth: "none"
-)");
+  writeYaml(R"(general:
+  calendar_type: Standard
+  time_step: 3600.0
+forcing:
+  water_levels: none
+  currents: none
+  winds: homogeneous
+  ice_concentrations: none
+  bottom_depth: none)");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
   EXPECT_EXIT(ww4_core::w4core_init(startTime, "test", std::cerr),
@@ -155,17 +161,19 @@ bottom_depth: "none"
 }
 
 TEST_F(W4CoreInputCyclingTest, IntegrationWithWaveLoop) {
-  writeYaml(R"(
-calendar_type: "Standard"
-time_step: 3600.0
-water_levels: "none"
-currents: "none"
-winds: "homogeneous"
-- 20260101 000000 10.0 0.0
-- 20260101 003000 15.0 0.0
-ice_concentrations: "none"
-bottom_depth: "none"
-)");
+  writeYaml(R"(general:
+  calendar_type: Standard
+  time_step: 3600.0
+forcing:
+  water_levels: none
+  currents: none
+  winds: homogeneous
+  ice_concentrations: none
+  bottom_depth: none
+homogeneous_data:
+  winds:
+    - "20260101 000000 10.0 0.0"
+    - "20260101 003000 15.0 0.0")");
 
   ww4_utils::DateTime startTime{20260101, 0.0};
   ww4_utils::DateTime endTime{20260101, 10000.0}; // 01:00

@@ -13,7 +13,7 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-06-08
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -47,14 +47,19 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   // Test Case 1: API output disabled (default)
   {
     std::ofstream runFile("ww4_run_config.yaml");
-    runFile << "calendar_type: \"Standard\"\n";
-    runFile << "water_levels: none\n";
-    runFile << "currents: none\n";
-    runFile << "winds: none\n";
-    runFile << "ice_concentrations: none\n";
-    runFile << "time_step: 3600.0\n";
-    runFile << "bottom_depth: none\n";
-    runFile << "output_api: no\n";
+    runFile << "general:\n";
+    runFile << "  calendar_type: Standard\n";
+    runFile << "  time_step: 3600.0\n";
+    runFile << "forcing:\n";
+    runFile << "  water_levels: none\n";
+    runFile << "  currents: none\n";
+    runFile << "  winds: none\n";
+    runFile << "  ice_concentrations: none\n";
+    runFile << "  bottom_depth: none\n";
+    runFile << "output:\n";
+    runFile << "  api:\n";
+    runFile << "    requested: no\n";
+
     runFile.close();
 
     std::stringstream ss;
@@ -71,14 +76,19 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   // Test Case 2: API output enabled
   {
     std::ofstream runFile("ww4_run_config.yaml");
-    runFile << "calendar_type: \"Standard\"\n";
-    runFile << "water_levels: none\n";
-    runFile << "currents: none\n";
-    runFile << "winds: none\n";
-    runFile << "ice_concentrations: none\n";
-    runFile << "time_step: 3600.0\n";
-    runFile << "bottom_depth: none\n";
-    runFile << "output_api: yes\n";
+    runFile << "general:\n";
+    runFile << "  calendar_type: Standard\n";
+    runFile << "  time_step: 3600.0\n";
+    runFile << "forcing:\n";
+    runFile << "  water_levels: none\n";
+    runFile << "  currents: none\n";
+    runFile << "  winds: none\n";
+    runFile << "  ice_concentrations: none\n";
+    runFile << "  bottom_depth: none\n";
+    runFile << "output:\n";
+    runFile << "  api:\n";
+    runFile << "    requested: yes\n";
+
     runFile.close();
 
     std::stringstream ss;
@@ -93,13 +103,16 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
 
 TEST_F(W4CoreWaveOutputTest, DoesNotReportBottomDepthFromGrid) {
   std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "calendar_type: \"Standard\"\n";
-  runFile << "water_levels: none\n";
-  runFile << "currents: none\n";
-  runFile << "winds: none\n";
-  runFile << "ice_concentrations: none\n";
-  runFile << "time_step: 3600.0\n";
-  runFile << "bottom_depth: from_grid\n";
+  runFile << "general:\n";
+  runFile << "  calendar_type: Standard\n";
+  runFile << "  time_step: 3600.0\n";
+  runFile << "forcing:\n";
+  runFile << "  water_levels: none\n";
+  runFile << "  currents: none\n";
+  runFile << "  winds: none\n";
+  runFile << "  ice_concentrations: none\n";
+  runFile << "  bottom_depth: from_grid\n";
+
   runFile.close();
 
   std::stringstream ss;
