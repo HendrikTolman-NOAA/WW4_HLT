@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-06
- * @date Last update : 2026-06-08
+ * @date Last update : 2026-06-18
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -63,7 +63,7 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   EXPECT_EQ(ww4_core::getRunConfig().timeStep, -1.0); // Default value
 
   std::remove("ww4_run_config.yaml");
-  std::remove("log.ww4");
+  std::remove("ww4_log.txt");
 }
 
 TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
@@ -89,7 +89,7 @@ TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
 
   ww4_core::resetInternalState();
   std::remove("ww4_run_config.yaml");
-  std::remove("log.ww4");
+  std::remove("ww4_log.txt");
 }
 
 TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
@@ -115,7 +115,7 @@ TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
 
   ww4_core::resetInternalState();
   std::remove("ww4_run_config.yaml");
-  std::remove("log.ww4");
+  std::remove("ww4_log.txt");
 }
 
 TEST_F(W4CoreTimeTest, WaveFailsIfNoInit) {
@@ -147,5 +147,5 @@ TEST_F(W4CoreTimeTest, WaveFailsIfTimeMismatch) {
 
   ww4_core::resetInternalState();
   std::remove("ww4_run_config.yaml");
-  std::remove("log.ww4");
+  std::remove("ww4_log.txt");
 }

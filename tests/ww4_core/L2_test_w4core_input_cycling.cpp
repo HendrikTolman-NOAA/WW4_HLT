@@ -13,7 +13,7 @@
  * added to its repositories.
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-06-08
+ * @date Last update : 2026-06-18
  */
 
 #include "ww4_core/w4core_init.h"
@@ -36,7 +36,7 @@ protected:
     ww4_core::resetInternalState();
     ww4_utils::TimeManagement::reset();
     std::remove("ww4_run_config.yaml");
-    std::remove("log.ww4");
+    std::remove("ww4_log.txt");
   }
 
   void writeYaml(const std::string &content) {

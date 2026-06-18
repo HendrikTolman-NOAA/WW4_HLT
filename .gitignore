@@ -1,7 +1,7 @@
 build/
 exe/
 *.o
-log.ww4
+ww4_log.txt
 ww4_local_config.cmake
 verify_ww4.py
 test_format

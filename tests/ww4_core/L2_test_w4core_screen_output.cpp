@@ -13,7 +13,7 @@
  * added to its repositories.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-06-08
+ * @date Last update : 2026-06-18
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -36,7 +36,7 @@ protected:
   void TearDown() override {
     ww4_core::resetInternalState();
     std::remove("ww4_run_config.yaml");
-    std::remove("log.ww4");
+    std::remove("ww4_log.txt");
   }
 
   void createConfig(const std::string &screenLevel, bool outputRequested) {
@@ -145,7 +145,7 @@ TEST_F(W4CoreScreenOutputTest, LogFileTabularOutput) {
   ww4_core::w4core_init(startTime, "test_program", ss);
   ww4_core::w4core_wave(startTime, endTime, ss);
 
-  std::ifstream logFile("log.ww4");
+  std::ifstream logFile("ww4_log.txt");
   std::stringstream logContent;
   logContent << logFile.rdbuf();
   std::string logStr = logContent.str();
