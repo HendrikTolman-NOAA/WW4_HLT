@@ -3,9 +3,9 @@
 #      +--------------------------------------------------------+
 #
 # @file CMakeLists.txt
-# @brief CMake build configuration for WAVEWATCH IV (WW4) Utilities.
+# @brief CMake build configuration for WAVEWATCH IV (WW4).
 # @details This file defines the project structure, dependencies (GTest),
-#          and build targets for the WW4_Utils library and its tests.
+#          and build targets for the WW4 library and its tests.
 #
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 #               Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
@@ -13,10 +13,10 @@
 # @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
 # @author Contributors: Jules (Agentic AI)
 # @date Initial, 2026-03-20
-# @date Last Update, 2026-03-30
+# @date Last Update, 2026-06-08
 
 cmake_minimum_required(VERSION 3.20)
-project(WW4_Utils VERSION 1.0.0 LANGUAGES CXX)
+project(WW4 VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -43,12 +43,13 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# Library
+# Utilities Library
 add_library(ww4_utils
     src/ww4_utils/time_management.cpp
     src/ww4_utils/memory_utils.cpp
@@ -56,9 +57,20 @@ add_library(ww4_utils
 )
 target_include_directories(ww4_utils PUBLIC include)
 
+# Core Library
+add_library(ww4_core
+    src/ww4_core/scheme_factory.cpp
+    src/ww4_core/propagation_pr3.cpp
+    src/ww4_core/source_st4.cpp
+    src/ww4_core/wave_model.cpp
+)
+target_include_directories(ww4_core PUBLIC include)
+target_link_libraries(ww4_core PUBLIC ww4_utils)
+
 # Tests
 enable_testing()
 
+# Utils Tests
 add_executable(test_time_management tests_L1_L2/ww4_utils/test_time_management.cpp)
 target_link_libraries(test_time_management PRIVATE ww4_utils GTest::gtest_main)
 
@@ -71,8 +83,17 @@ target_link_libraries(test_ww4_service PRIVATE ww4_utils GTest::gtest_main)
 add_executable(test_ww4_constants tests_L1_L2/ww4_utils/test_ww4_constants.cpp)
 target_link_libraries(test_ww4_constants PRIVATE ww4_utils GTest::gtest_main)
 
+# Core Tests
+add_executable(test_scheme_factory tests_L1_L2/ww4_core/test_scheme_factory.cpp)
+target_link_libraries(test_scheme_factory PRIVATE ww4_core GTest::gtest_main)
+
+add_executable(test_wave_model tests_L1_L2/ww4_core/test_wave_model.cpp)
+target_link_libraries(test_wave_model PRIVATE ww4_core GTest::gtest_main)
+
 include(GoogleTest)
 gtest_discover_tests(test_time_management)
 gtest_discover_tests(test_memory_utils)
 gtest_discover_tests(test_ww4_service)
 gtest_discover_tests(test_ww4_constants)
+gtest_discover_tests(test_scheme_factory)
+gtest_discover_tests(test_wave_model)
