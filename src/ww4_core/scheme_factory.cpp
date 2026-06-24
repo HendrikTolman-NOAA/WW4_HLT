@@ -5,7 +5,7 @@
  *
  * @file scheme_factory.cpp
  * @brief Implementation of the scheme factory.
- * @details Handles the instantiation and assembly of model schemes.
+ * @details Handles the instantiation and assembly of model components.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -21,18 +21,17 @@
  */
 
 #include "ww4_core/scheme_factory.hpp"
-#include "ww4_core/propagation_pr3.hpp"
+#include "ww4_core/solver_pr3.hpp"
 #include "ww4_core/source_st4.hpp"
 #include <stdexcept>
 
 namespace ww4_core {
 
-std::unique_ptr<IPropagationScheme>
-SchemeFactory::createPropagationScheme(const std::string &name) {
+std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   if (name == "PR3") {
-    return std::make_unique<PropagationPr3>();
+    return std::make_unique<SolverPr3>();
   }
-  throw std::invalid_argument("Unknown propagation scheme: " + name);
+  throw std::invalid_argument("Unknown solver: " + name);
 }
 
 std::unique_ptr<ISourceTerm>

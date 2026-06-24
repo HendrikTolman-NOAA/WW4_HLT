@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file propagation_pr3.hpp
- * @brief Header for the PR3 propagation scheme.
- * @details Concrete implementation of the IPropagationScheme interface.
+ * @file solver_pr3.cpp
+ * @brief Implementation of the PR3 solver.
+ * @details Concrete implementation of the ISolver interface.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,30 +20,27 @@
  * @date Last update : 2026-06-08
  */
 
-#ifndef WW4_CORE_PROPAGATION_PR3_HPP
-#define WW4_CORE_PROPAGATION_PR3_HPP
-
-#include "ww4_core/propagation_scheme.hpp"
-#include <vector>
+#include "ww4_core/solver_pr3.hpp"
+#include <algorithm>
 
 namespace ww4_core {
 
-/**
- * @class PropagationPr3
- * @brief Implementation of the PR3 propagation scheme.
- */
-class PropagationPr3 : public IPropagationScheme {
-public:
-  std::string_view getName() const noexcept override { return "PR3"; }
+void SolverPr3::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+  if (source) {
+    sourceTerms_.push_back(std::move(source));
+  }
+}
 
-  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+void SolverPr3::solve(std::span<double> data) {
+  // 1. Perform numerical propagation (dynamics)
+  std::for_each(data.begin(), data.end(), [](double &val) {
+    val *= 1.01; // Mock propagation effect
+  });
 
-  void propagate(std::span<double> data) override;
-
-private:
-  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
-};
+  // 2. Call integrated source terms (physics)
+  for (auto &source : sourceTerms_) {
+    source->calculate(data);
+  }
+}
 
 } // namespace ww4_core
-
-#endif // WW4_CORE_PROPAGATION_PR3_HPP

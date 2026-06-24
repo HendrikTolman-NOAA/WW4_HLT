@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file propagation_scheme.hpp
- * @brief Interface for numerical propagation schemes in WAVEWATCH IV.
- * @details Defines the abstract base class for different propagation
- * algorithms.
+ * @file solver.hpp
+ * @brief Interface for numerical solvers in WAVEWATCH IV.
+ * @details Defines the abstract base class for model solvers that integrate
+ *          dynamics and physics.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -21,8 +21,7 @@
  * @date Last update : 2026-06-08
  */
 
-#ifndef WW4_CORE_PROPAGATION_SCHEME_HPP
-#define WW4_CORE_PROPAGATION_SCHEME_HPP
+#pragma once
 
 #include "ww4_core/source_term.hpp"
 #include <memory>
@@ -32,28 +31,32 @@
 namespace ww4_core {
 
 /**
- * @class IPropagationScheme
- * @brief Abstract base class for propagation schemes.
+ * @class ISolver
+ * @brief Abstract base class for wave model solvers.
+ * @details A solver is responsible for advancing the model state in time,
+ *          integrating both propagation and source terms.
  */
-class IPropagationScheme {
+class ISolver {
 public:
-  virtual ~IPropagationScheme() = default;
+  virtual ~ISolver() = default;
 
+  /**
+   * @brief Get the name of the solver.
+   * @return String view containing the solver name.
+   */
   virtual std::string_view getName() const noexcept = 0;
 
   /**
-   * @brief Add a source term to be handled by this propagation scheme.
+   * @brief Add a source term to be handled by this solver.
    * @param source Unique pointer to the source term scheme.
    */
   virtual void addSourceTerm(std::unique_ptr<ISourceTerm> source) = 0;
 
   /**
-   * @brief Execute propagation and internally called source terms.
+   * @brief Solve the wave action balance equation for one step.
    * @param data Model data to be updated.
    */
-  virtual void propagate(std::span<double> data) = 0;
+  virtual void solve(std::span<double> data) = 0;
 };
 
 } // namespace ww4_core
-
-#endif // WW4_CORE_PROPAGATION_SCHEME_HPP

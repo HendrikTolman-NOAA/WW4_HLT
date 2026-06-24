@@ -24,8 +24,8 @@
 
 namespace ww4_core {
 
-void WaveModel::initialize(std::unique_ptr<IPropagationScheme> propagation) {
-  propagation_ = std::move(propagation);
+void WaveModel::initialize(std::unique_ptr<ISolver> solver) {
+  solver_ = std::move(solver);
 }
 
 void WaveModel::setData(std::vector<double> initialData) {
@@ -33,8 +33,8 @@ void WaveModel::setData(std::vector<double> initialData) {
 }
 
 void WaveModel::step() {
-  if (propagation_) {
-    propagation_->propagate(data_);
+  if (solver_) {
+    solver_->solve(data_);
   }
 }
 

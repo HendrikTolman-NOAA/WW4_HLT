@@ -60,7 +60,7 @@ target_include_directories(ww4_utils PUBLIC include)
 # Core Library
 add_library(ww4_core
     src/ww4_core/scheme_factory.cpp
-    src/ww4_core/propagation_pr3.cpp
+    src/ww4_core/solver_pr3.cpp
     src/ww4_core/source_st4.cpp
     src/ww4_core/wave_model.cpp
 )

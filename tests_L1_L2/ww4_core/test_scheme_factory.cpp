@@ -8,10 +8,10 @@
 
 namespace ww4_core {
 
-TEST(SchemeFactoryTest, CreatePropagationPR3) {
-  auto scheme = SchemeFactory::createPropagationScheme("PR3");
-  ASSERT_NE(scheme, nullptr);
-  EXPECT_EQ(scheme->getName(), "PR3");
+TEST(SchemeFactoryTest, CreateSolverPR3) {
+  auto solver = SchemeFactory::createSolver("PR3");
+  ASSERT_NE(solver, nullptr);
+  EXPECT_EQ(solver->getName(), "PR3");
 }
 
 TEST(SchemeFactoryTest, CreateSourceST4) {
@@ -20,9 +20,8 @@ TEST(SchemeFactoryTest, CreateSourceST4) {
   EXPECT_EQ(scheme->getName(), "ST4");
 }
 
-TEST(SchemeFactoryTest, CreateUnknownPropagation) {
-  EXPECT_THROW(SchemeFactory::createPropagationScheme("UNKNOWN"),
-               std::invalid_argument);
+TEST(SchemeFactoryTest, CreateUnknownSolver) {
+  EXPECT_THROW(SchemeFactory::createSolver("UNKNOWN"), std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateUnknownSource) {

@@ -20,10 +20,9 @@
  * @date Last update : 2026-06-08
  */
 
-#ifndef WW4_CORE_WAVE_MODEL_HPP
-#define WW4_CORE_WAVE_MODEL_HPP
+#pragma once
 
-#include "ww4_core/propagation_scheme.hpp"
+#include "ww4_core/solver.hpp"
 #include <memory>
 #include <vector>
 
@@ -36,11 +35,10 @@ namespace ww4_core {
 class WaveModel {
 public:
   /**
-   * @brief Initialize the model with an assembled propagation scheme.
-   * @param propagation Unique pointer to the assembled scheme (including
-   * physics).
+   * @brief Initialize the model with an assembled solver.
+   * @param solver Unique pointer to the assembled solver (including physics).
    */
-  void initialize(std::unique_ptr<IPropagationScheme> propagation);
+  void initialize(std::unique_ptr<ISolver> solver);
 
   /**
    * @brief Set the simulation data.
@@ -49,7 +47,7 @@ public:
   void setData(std::vector<double> initialData);
 
   /**
-   * @brief Execute a single simulation step.
+   * @brief Execute a single simulation step using the configured solver.
    */
   void step();
 
@@ -60,10 +58,8 @@ public:
   std::span<const double> getData() const { return data_; }
 
 private:
-  std::unique_ptr<IPropagationScheme> propagation_;
+  std::unique_ptr<ISolver> solver_;
   std::vector<double> data_;
 };
 
 } // namespace ww4_core
-
-#endif // WW4_CORE_WAVE_MODEL_HPP

@@ -4,8 +4,8 @@
  *       +--------------------------------------------------------+
  *
  * @file scheme_factory.hpp
- * @brief Factory for creating propagation and source term schemes at runtime.
- * @details Implements a registry-based factory for scheme instantiation.
+ * @brief Factory for creating solvers and source term schemes at runtime.
+ * @details Implements a registry-based factory for model components.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -22,18 +22,31 @@
 
 #pragma once
 
-#include "ww4_core/propagation_scheme.hpp"
+#include "ww4_core/solver.hpp"
 #include "ww4_core/source_term.hpp"
 #include <memory>
 #include <string>
 
 namespace ww4_core {
 
+/**
+ * @class SchemeFactory
+ * @brief Factory class for creating model solvers and source terms.
+ */
 class SchemeFactory {
 public:
-  static std::unique_ptr<IPropagationScheme>
-  createPropagationScheme(const std::string &name);
+  /**
+   * @brief Create a solver scheme.
+   * @param name The name of the solver (e.g., "PR3").
+   * @return A unique pointer to the created ISolver.
+   */
+  static std::unique_ptr<ISolver> createSolver(const std::string &name);
 
+  /**
+   * @brief Create a source term scheme.
+   * @param name The name of the scheme (e.g., "ST4").
+   * @return A unique pointer to the created ISourceTerm.
+   */
   static std::unique_ptr<ISourceTerm> createSourceTerm(const std::string &name);
 };
 
