@@ -21,14 +21,11 @@
  */
 
 #include "ww4_core/wave_model.hpp"
-#include "ww4_core/scheme_factory.hpp"
 
 namespace ww4_core {
 
-void WaveModel::initialize(const std::string &propName,
-                           const std::string &sourceName) {
-  propagation_ = SchemeFactory::createPropagationScheme(propName);
-  source_ = SchemeFactory::createSourceTerm(sourceName);
+void WaveModel::initialize(std::unique_ptr<IPropagationScheme> propagation) {
+  propagation_ = std::move(propagation);
 }
 
 void WaveModel::setData(std::vector<double> initialData) {
@@ -38,9 +35,6 @@ void WaveModel::setData(std::vector<double> initialData) {
 void WaveModel::step() {
   if (propagation_) {
     propagation_->propagate(data_);
-  }
-  if (source_) {
-    source_->calculate(data_);
   }
 }
 

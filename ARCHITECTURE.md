@@ -1,16 +1,15 @@
 # WAVEWATCH IV Architecture
 
-## Runtime Scheme Selection
+## Integrated Runtime Scheme Selection
 
-WW4 uses the **Strategy** and **Factory** design patterns to enable runtime selection of numerical and physical schemes.
+WW4 uses an integrated **Strategy** and **Factory** design pattern. To support complex interleaving of physics and dynamics (e.g., implicit sub-stepping), physical source terms are managed and called directly by the numerical propagation scheme.
 
 ```mermaid
 classDiagram
     class WaveModel {
         -unique_ptr~IPropagationScheme~ propagation_
-        -unique_ptr~ISourceTerm~ source_
         -vector~double~ data_
-        +initialize(string propName, string sourceName)
+        +initialize(unique_ptr~IPropagationScheme~ propagation)
         +setData(vector~double~ initialData)
         +step()
         +getData() span~const double~
@@ -19,6 +18,7 @@ classDiagram
     class IPropagationScheme {
         <<interface>>
         +getName() string_view
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)*
         +propagate(span~double~ data)*
     }
 
@@ -29,7 +29,9 @@ classDiagram
     }
 
     class PropagationPr3 {
+        -vector~unique_ptr~ISourceTerm~~ sourceTerms_
         +getName() string_view
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)
         +propagate(span~double~ data)
     }
 
@@ -43,18 +45,18 @@ classDiagram
         +createSourceTerm(string name) unique_ptr~ISourceTerm~
     }
 
-    WaveModel o-- IPropagationScheme
-    WaveModel o-- ISourceTerm
+    WaveModel o-- IPropagationScheme : orchestrates
     IPropagationScheme <|-- PropagationPr3
+    PropagationPr3 o-- ISourceTerm : manages & calls
     ISourceTerm <|-- SourceSt4
     SchemeFactory ..> IPropagationScheme : creates
     SchemeFactory ..> ISourceTerm : creates
-    WaveModel ..> SchemeFactory : uses
 ```
 
 ### Key Components
 
-1.  **Interfaces (`IPropagationScheme`, `ISourceTerm`)**: Define the contracts for numerical propagation and physical source term calculations. They use `std::span<double>` to process data in batches, ensuring high performance.
-2.  **Concrete Schemes (`PropagationPr3`, `SourceSt4`)**: Specific implementations of the interfaces.
-3.  **Scheme Factory**: A centralized registry that instantiates concrete schemes based on string identifiers at runtime.
-4.  **Wave Model**: The orchestration engine that manages the lifecycle of selected schemes and executes the simulation loop.
+1.  **IPropagationScheme**: The primary integration strategy. It defines the contract for numerical propagation and serves as a container for physical source terms.
+2.  **ISourceTerm**: The physical strategy interface. Implementations (e.g., `SourceSt4`) are injected into the propagation scheme.
+3.  **PropagationPr3**: A concrete propagation scheme that manages a collection of source terms and executes them during its `propagate` phase.
+4.  **SchemeFactory**: Responsible for instantiating individual schemes. The assembly of these schemes (e.g., adding ST4 to PR3) happens during model initialization.
+5.  **WaveModel**: The high-level orchestrator. It is agnostic of the specific physics-dynamics coupling, simply triggering the `propagate` step of the selected scheme.

@@ -5,7 +5,7 @@
  *
  * @file scheme_factory.cpp
  * @brief Implementation of the scheme factory.
- * @details Handles the instantiation of concrete schemes based on identifiers.
+ * @details Handles the instantiation and assembly of model schemes.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.

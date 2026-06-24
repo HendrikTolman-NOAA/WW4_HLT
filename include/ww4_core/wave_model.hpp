@@ -20,29 +20,50 @@
  * @date Last update : 2026-06-08
  */
 
-#pragma once
+#ifndef WW4_CORE_WAVE_MODEL_HPP
+#define WW4_CORE_WAVE_MODEL_HPP
 
 #include "ww4_core/propagation_scheme.hpp"
-#include "ww4_core/source_term.hpp"
 #include <memory>
 #include <vector>
 
 namespace ww4_core {
 
+/**
+ * @class WaveModel
+ * @brief Main engine for the wave model simulation.
+ */
 class WaveModel {
 public:
-  void initialize(const std::string &propName, const std::string &sourceName);
+  /**
+   * @brief Initialize the model with an assembled propagation scheme.
+   * @param propagation Unique pointer to the assembled scheme (including
+   * physics).
+   */
+  void initialize(std::unique_ptr<IPropagationScheme> propagation);
 
+  /**
+   * @brief Set the simulation data.
+   * @param initialData Vector of initial wave data.
+   */
   void setData(std::vector<double> initialData);
 
+  /**
+   * @brief Execute a single simulation step.
+   */
   void step();
 
+  /**
+   * @brief Get a view of the current data.
+   * @return Constant span of the model data.
+   */
   std::span<const double> getData() const { return data_; }
 
 private:
   std::unique_ptr<IPropagationScheme> propagation_;
-  std::unique_ptr<ISourceTerm> source_;
   std::vector<double> data_;
 };
 
 } // namespace ww4_core
+
+#endif // WW4_CORE_WAVE_MODEL_HPP

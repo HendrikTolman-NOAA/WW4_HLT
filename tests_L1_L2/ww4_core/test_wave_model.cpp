@@ -1,9 +1,10 @@
 /**
  * @file test_wave_model.cpp
- * @brief Integration tests for the WaveModel class.
+ * @brief Integration tests for the WaveModel class with integrated physics.
  */
 
 #include "ww4_core/wave_model.hpp"
+#include "ww4_core/scheme_factory.hpp"
 #include <gtest/gtest.h>
 #include <vector>
 
@@ -11,7 +12,13 @@ namespace ww4_core {
 
 TEST(WaveModelTest, SimulationStep) {
   WaveModel model;
-  model.initialize("PR3", "ST4");
+
+  // Assemble the model: PR3 propagation with ST4 source term
+  auto propagation = SchemeFactory::createPropagationScheme("PR3");
+  auto source = SchemeFactory::createSourceTerm("ST4");
+  propagation->addSourceTerm(std::move(source));
+
+  model.initialize(std::move(propagation));
 
   std::vector<double> initialData = {1.0, 2.0, 3.0};
   model.setData(initialData);

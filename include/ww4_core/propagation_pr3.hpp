@@ -20,17 +20,30 @@
  * @date Last update : 2026-06-08
  */
 
-#pragma once
+#ifndef WW4_CORE_PROPAGATION_PR3_HPP
+#define WW4_CORE_PROPAGATION_PR3_HPP
 
 #include "ww4_core/propagation_scheme.hpp"
+#include <vector>
 
 namespace ww4_core {
 
+/**
+ * @class PropagationPr3
+ * @brief Implementation of the PR3 propagation scheme.
+ */
 class PropagationPr3 : public IPropagationScheme {
 public:
   std::string_view getName() const noexcept override { return "PR3"; }
 
+  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+
   void propagate(std::span<double> data) override;
+
+private:
+  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
 };
 
 } // namespace ww4_core
+
+#endif // WW4_CORE_PROPAGATION_PR3_HPP

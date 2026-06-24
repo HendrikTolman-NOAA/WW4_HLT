@@ -25,12 +25,22 @@
 
 namespace ww4_core {
 
+void PropagationPr3::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+  if (source) {
+    sourceTerms_.push_back(std::move(source));
+  }
+}
+
 void PropagationPr3::propagate(std::span<double> data) {
-  // Placeholder implementation for PR3 propagation logic.
-  // In a real implementation, this would contain the numerical scheme.
+  // 1. Perform numerical propagation
   std::for_each(data.begin(), data.end(), [](double &val) {
     val *= 1.01; // Mock propagation effect
   });
+
+  // 2. Call integrated source terms
+  for (auto &source : sourceTerms_) {
+    source->calculate(data);
+  }
 }
 
 } // namespace ww4_core
