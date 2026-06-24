@@ -6,8 +6,8 @@
 
 WAVEWATCH IV uses a four-level software testing strategy, starting with the smallest components and expanding to the entire system:
 
-- **Level 1: Unit Testing**: Focuses on the smallest testable pieces of code, typically individual functions, in isolation. These are identified by the `L1_test_` prefix and are located in `tests/ww4_utils/`.
-- **Level 2: Integration Testing**: Individual units are combined into modules to test how they interact and uncover faults in the interfaces between components. These are identified by the `L2_test_` prefix and are located in `tests/ww4_core/`.
+- **Level 1: Unit Testing**: Focuses on the smallest testable pieces of code, typically individual functions, in isolation. These are identified by the `L1_test_` prefix and are located in `tests_L1_L2/ww4_utils/`.
+- **Level 2: Integration Testing**: Individual units are combined into modules to test how they interact and uncover faults in the interfaces between components. These are identified by the `L2_test_` prefix and are located in `tests_L1_L2/ww4_core/`.
 - **Level 3: Functional Testing**: Treats the software as a "black box" and focuses on testing the application against expected results for specific physics cases.
 - **Level 4: Regression Testing**: Validation process focused on the full model application to ensure that updates haven't negatively impacted established behaviors.
 

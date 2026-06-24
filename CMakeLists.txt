@@ -14,7 +14,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI), Kit Stokes
 #@date Initial : 2026-03-20
-#@date Last update : 2026-06-08
+#@date Last update : 2026-06-24
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -152,21 +152,21 @@ function(ww4_add_test test_name source_file dependency_lib)
 endfunction()
 
 # Utils tests
-ww4_add_test(test_time_management tests/ww4_utils/L1_test_time_management.cpp ww4_utils)
-ww4_add_test(test_memory_utils tests/ww4_utils/L1_test_memory_utils.cpp ww4_utils)
-ww4_add_test(test_ww4_std_out tests/ww4_utils/L1_test_ww4_std_out.cpp ww4_utils)
-ww4_add_test(test_ww4_logfile tests/ww4_utils/L1_test_ww4_logfile.cpp ww4_utils)
-ww4_add_test(test_ww4_standalone_config tests/ww4_utils/L1_test_ww4_standalone_config.cpp ww4_utils)
-ww4_add_test(test_ww4_run_config tests/ww4_utils/L1_test_ww4_run_config.cpp ww4_utils)
-ww4_add_test(test_ww4_output_utils tests/ww4_utils/L1_test_ww4_output_utils.cpp ww4_utils)
-ww4_add_test(test_ww4_service tests/ww4_utils/L1_test_ww4_service.cpp ww4_utils)
-ww4_add_test(test_ww4_constants tests/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
+ww4_add_test(test_time_management tests_L1_L2/ww4_utils/L1_test_time_management.cpp ww4_utils)
+ww4_add_test(test_memory_utils tests_L1_L2/ww4_utils/L1_test_memory_utils.cpp ww4_utils)
+ww4_add_test(test_ww4_std_out tests_L1_L2/ww4_utils/L1_test_ww4_std_out.cpp ww4_utils)
+ww4_add_test(test_ww4_logfile tests_L1_L2/ww4_utils/L1_test_ww4_logfile.cpp ww4_utils)
+ww4_add_test(test_ww4_standalone_config tests_L1_L2/ww4_utils/L1_test_ww4_standalone_config.cpp ww4_utils)
+ww4_add_test(test_ww4_run_config tests_L1_L2/ww4_utils/L1_test_ww4_run_config.cpp ww4_utils)
+ww4_add_test(test_ww4_output_utils tests_L1_L2/ww4_utils/L1_test_ww4_output_utils.cpp ww4_utils)
+ww4_add_test(test_ww4_service tests_L1_L2/ww4_utils/L1_test_ww4_service.cpp ww4_utils)
+ww4_add_test(test_ww4_constants tests_L1_L2/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
 
 # Core tests
-ww4_add_test(test_w4core_time tests/ww4_core/L2_test_w4core_time.cpp ww4_core)
-ww4_add_test(test_w4core_wave_output tests/ww4_core/L2_test_w4core_wave_output.cpp ww4_core)
-ww4_add_test(test_w4core_zero_step tests/ww4_core/L2_test_w4core_zero_step.cpp ww4_core)
-ww4_add_test(test_w4core_hom_input tests/ww4_core/L2_test_w4core_hom_input.cpp ww4_core)
-ww4_add_test(test_w4core_input_cycling tests/ww4_core/L2_test_w4core_input_cycling.cpp ww4_core)
-ww4_add_test(test_interpolation_output tests/ww4_core/L2_test_interpolation_output.cpp ww4_core)
-ww4_add_test(test_w4core_screen_output tests/ww4_core/L2_test_w4core_screen_output.cpp ww4_core)
+ww4_add_test(test_w4core_time tests_L1_L2/ww4_core/L2_test_w4core_time.cpp ww4_core)
+ww4_add_test(test_w4core_wave_output tests_L1_L2/ww4_core/L2_test_w4core_wave_output.cpp ww4_core)
+ww4_add_test(test_w4core_zero_step tests_L1_L2/ww4_core/L2_test_w4core_zero_step.cpp ww4_core)
+ww4_add_test(test_w4core_hom_input tests_L1_L2/ww4_core/L2_test_w4core_hom_input.cpp ww4_core)
+ww4_add_test(test_w4core_input_cycling tests_L1_L2/ww4_core/L2_test_w4core_input_cycling.cpp ww4_core)
+ww4_add_test(test_interpolation_output tests_L1_L2/ww4_core/L2_test_interpolation_output.cpp ww4_core)
+ww4_add_test(test_w4core_screen_output tests_L1_L2/ww4_core/L2_test_w4core_screen_output.cpp ww4_core)
