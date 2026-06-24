@@ -139,7 +139,7 @@ def extract_routines(file_path: Path) -> Set[str]:
 
 def find_test_files(root_dir: Path, filename: str) -> List[Path]:
     """
-    Find test files matching the filename in tests.
+    Find test files matching the filename in tests_L1_L2.
 
     Parameters
     ----------
@@ -153,12 +153,18 @@ def find_test_files(root_dir: Path, filename: str) -> List[Path]:
     List[Path]
         A list of matching test file paths.
     """
-    test_dir = root_dir / "tests"
+    test_dir = root_dir / "tests_L1_L2"
     if not test_dir.exists():
         return []
 
     # Common naming patterns for tests
-    patterns = [f"test_{filename}.cpp", f"{filename}_test.cpp", f"test_{filename}.hpp"]
+    patterns = [
+        f"test_{filename}.cpp",
+        f"{filename}_test.cpp",
+        f"test_{filename}.hpp",
+        f"L1_test_{filename}.cpp",
+        f"L2_test_{filename}.cpp",
+    ]
     matches = []
     for pattern in patterns:
         for path in test_dir.rglob(pattern):
@@ -241,7 +247,7 @@ def main() -> None:
 
     test_files = find_test_files(root_dir, filename)
     if not test_files:
-        print("\nNo test files found in tests/ matching the name.")
+        print("\nNo test files found in tests_L1_L2/ matching the name.")
     else:
         print("\nTest files found:")
         for f in test_files:

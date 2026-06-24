@@ -13,7 +13,7 @@
  * added to its repositories.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-06-18
+ * @date Last update : 2026-06-24
  */
 
 #include "ww4_core/w4core_finalize.h"
