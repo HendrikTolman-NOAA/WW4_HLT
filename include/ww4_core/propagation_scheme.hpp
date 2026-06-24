@@ -5,7 +5,8 @@
  *
  * @file propagation_scheme.hpp
  * @brief Interface for numerical propagation schemes in WAVEWATCH IV.
- * @details Defines the abstract base class for different propagation algorithms.
+ * @details Defines the abstract base class for different propagation
+ * algorithms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.

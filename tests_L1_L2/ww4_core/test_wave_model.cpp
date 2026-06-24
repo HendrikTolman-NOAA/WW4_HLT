@@ -3,8 +3,8 @@
  * @brief Integration tests for the WaveModel class with integrated physics.
  */
 
-#include "ww4_core/wave_model.hpp"
 #include "ww4_core/scheme_factory.hpp"
+#include "ww4_core/wave_model.hpp"
 #include <gtest/gtest.h>
 #include <vector>
 
