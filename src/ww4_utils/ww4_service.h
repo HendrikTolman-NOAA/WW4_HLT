@@ -26,6 +26,16 @@
 
 namespace ww4_utils {
 
+/**
+ * @struct Dispersion
+ * @brief Structure to hold wave dispersion parameters.
+ * @details This structure contains the wavenumber and group velocity
+ *          calculated from the dispersion relation.
+ * @var Dispersion::k
+ * @brief Wavenumber (rad/m).
+ * @var Dispersion::cg
+ * @brief Group velocity (m/s).
+ */
 struct Dispersion {
   double k;
   double cg;

@@ -71,17 +71,6 @@
 namespace ww4_utils {
 
 /**
- * @struct Dispersion
- * @brief Structure to hold wave dispersion parameters.
- * @details This structure contains the wavenumber and group velocity
- *          calculated from the dispersion relation.
- * @var Dispersion::k
- * @brief Wavenumber (rad/m).
- * @var Dispersion::cg
- * @brief Group velocity (m/s).
- */
-
-/**
  * @namespace ww4_service
  * @brief Namespace providing utility mathematical routines.
  * @details This namespace contains ported routines from WAVEWATCH III (WW3).

@@ -31,6 +31,19 @@ void setMemoryStatusPathForTesting(const char *path);
 
 void resetMemoryStatusPath() noexcept;
 
+/**
+ * @struct MemoryUsage
+ * @brief Represents various memory usage metrics of a process.
+ * @details Values are typically in kilobytes (kB).
+ * @var MemoryUsage::vmPeak
+ * @brief Peak virtual memory size.
+ * @var MemoryUsage::vmSize
+ * @brief Virtual memory size.
+ * @var MemoryUsage::vmHWM
+ * @brief Peak resident set size ("High Water Mark").
+ * @var MemoryUsage::vmRSS
+ * @brief Resident set size.
+ */
 struct MemoryUsage {
   std::uint64_t vmPeak{0};
   std::uint64_t vmSize{0};

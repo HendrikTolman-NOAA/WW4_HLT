@@ -33,6 +33,17 @@
 
 namespace ww4_utils {
 
+/**
+ * @struct DateTime
+ * @brief Numerical representation of date and time.
+ * @details Stores date as YYYYMMDD and time as HHMMSS.ssssss.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var DateTime::ymd
+ * @brief Current date in YYYYMMDD format.
+ * @var DateTime::hms
+ * @brief Current time in HHMMSS.ssssss format.
+ */
 struct DateTime {
   int ymd;
   double hms;
@@ -50,6 +61,19 @@ using DateArray = std::array<int, 8>;
 
 class TimeManagement {
 public:
+  /**
+   * @enum CalendarType
+   * @brief Supported calendar systems.
+   * @details Defines the different calendar rules used for date calculations.
+   * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+   * @author Contributors: Jules (Agentic AI)
+   * @var CalendarType::Standard
+   * @brief Standard Gregorian calendar.
+   * @var CalendarType::NoLeap
+   * @brief 365-day calendar without leap years.
+   * @var CalendarType::ThreeSixtyDay
+   * @brief 360-day calendar with 12 months of 30 days each.
+   */
   enum class CalendarType { Standard, NoLeap, ThreeSixtyDay };
 
   static void setCalendarType(const CalendarType type) noexcept;

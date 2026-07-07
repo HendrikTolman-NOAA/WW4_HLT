@@ -38,20 +38,6 @@
 namespace ww4_utils {
 
 /**
- * @struct DateTime
- * @brief Numerical representation of date and time.
- * @details Stores date as YYYYMMDD and time as HHMMSS.ssssss.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-03-11
- * @date Last update : 2026-05-26
- * @var DateTime::ymd
- * @brief Current date in YYYYMMDD format.
- * @var DateTime::hms
- * @brief Current time in HHMMSS.ssssss format.
- */
-
-/**
  * @class TimeManagement
  * @brief Routines for management of date and time, converted from WW3
  * w3timemd.F90.
@@ -62,9 +48,6 @@ namespace ww4_utils {
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
  * @date Last update : 2026-05-26
- * @enum TimeManagement::CalendarType
- * @brief Supported calendar systems.
- * @details Defines the different calendar rules used for date calculations.
  * @fn TimeManagement::computeJulianDay
  * @brief Calculate the Julian day from a given date.
  * @details Computes the Julian Day Number for the Gregorian/Julian calendar.

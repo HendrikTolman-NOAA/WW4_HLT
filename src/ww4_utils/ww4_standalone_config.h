@@ -29,6 +29,17 @@
 
 namespace ww4_utils {
 
+/**
+ * @struct StandaloneConfig
+ * @brief Configuration for the ww4_standalone program.
+ * @details Stores the start and end times for the simulation.
+ * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @var StandaloneConfig::startTime
+ * @brief Simulation start time.
+ * @var StandaloneConfig::endTime
+ * @brief Simulation end time.
+ */
 struct StandaloneConfig {
   DateTime startTime;
   DateTime endTime;
