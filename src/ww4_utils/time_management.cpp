@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-07-07
  */
 
 #include "ww4_utils/time_management.h"
@@ -47,7 +47,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-07-07
  * @fn TimeManagement::computeJulianDay
  * @brief Calculate the Julian day from a given date.
  * @details Computes the Julian Day Number for the Gregorian/Julian calendar.
@@ -516,7 +516,7 @@ double TimeManagement::differenceInSeconds(const DateArray &t1,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-07-07
  */
 void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
   const auto now = std::chrono::system_clock::now();
@@ -555,7 +555,7 @@ void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-07-07
  */
 void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
                                          double &elapsedTime) noexcept {
@@ -572,7 +572,7 @@ void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-07-07
  */
 DateTime TimeManagement::getPresentDateTime() noexcept {
   DateArray dat_arr{};
