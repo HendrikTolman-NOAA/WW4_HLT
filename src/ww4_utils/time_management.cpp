@@ -11,25 +11,64 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
+ * NWS often uses Generative AI (GenAI) for code development and refactoring.
+ * Whenever GenAI is used, NWS requires a full human review of code before it is
+ * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last Update, 2026-03-31
- *
- * @note This file is converted from WAVEWATCH III (WW3) source file
- *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
+ * @date Last update : 2026-07-07
  */
 
-#include "ww4_utils/time_management.hpp"
+#include "ww4_utils/time_management.h"
 #include <algorithm>
 #include <charconv>
 #include <chrono>
 #include <cmath>
-#include <format>
+#include <ctime>
 #include <iomanip>
 #include <sstream>
 
+/**
+ * @namespace ww4_utils
+ * @brief Utilities for WAVEWATCH IV.
+ * @details Contains core utility functions and classes for the WW4 project,
+ *          focusing on high-performance and memory-safe implementations.
+ */
 namespace ww4_utils {
+
+/**
+ * @class TimeManagement
+ * @brief Routines for management of date and time, converted from WW3
+ * w3timemd.F90.
+ * @details Provides static methods for time arithmetic, calendar conversions,
+ *          and high-precision profiling. Supports multiple calendar systems:
+ *          Standard (Gregorian), NoLeap (365-day), and ThreeSixtyDay.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-07-07
+ * @fn TimeManagement::computeJulianDay
+ * @brief Calculate the Julian day from a given date.
+ * @details Computes the Julian Day Number for the Gregorian/Julian calendar.
+ *          Converted from WW3 function JULDAY.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param day Day of month.
+ * @param month Month.
+ * @param year Year.
+ * @return Julian day number.
+ * @pre year must not be zero.
+ * @fn TimeManagement::computeCalendarDate
+ * @brief Transform Julian day to date.
+ * @details Reverses the Julian Day calculation to retrieve day, month, and
+ * year. Converted from WW3 routine CALDAT.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[in] julian Julian day.
+ * @param[out] day Day of month.
+ * @param[out] month Month.
+ * @param[out] year Year.
+ * @post day, month, and year are populated with the calculated date.
+ */
 
 TimeManagement::CalendarType TimeManagement::m_calendarType =
     TimeManagement::CalendarType::Standard;
@@ -37,14 +76,49 @@ DateArray TimeManagement::m_profilingBase = {0, 0, 0, 0, 0, 0, 0, 0};
 bool TimeManagement::m_profilingInitialized = false;
 std::chrono::steady_clock::time_point TimeManagement::m_steadyBase;
 
+/**
+ * @brief Sets the current calendar type.
+ * @details Updates the global calendar state used by all static methods.
+ * @param type The calendar type to use for all calculations.
+ * @pre type must be one of the CalendarType values.
+ * @post The global calendar type is updated.
+ */
 void TimeManagement::setCalendarType(const CalendarType type) noexcept {
   m_calendarType = type;
 }
 
+/**
+ * @brief Gets the current calendar type.
+ * @details Returns the global calendar state.
+ * @return The currently set calendar type.
+ */
 TimeManagement::CalendarType TimeManagement::getCalendarType() noexcept {
   return m_calendarType;
 }
 
+/**
+ * @brief Resets all persistent static members to their default values.
+ * @details Used during program finalization to ensure no stale data remains.
+ * @post m_calendarType, m_profilingBase, m_profilingInitialized, and
+ *       m_steadyBase are reset.
+ */
+void TimeManagement::reset() noexcept {
+  m_calendarType = CalendarType::Standard;
+  m_profilingBase = {0, 0, 0, 0, 0, 0, 0, 0};
+  m_profilingInitialized = false;
+  m_steadyBase = std::chrono::steady_clock::time_point();
+}
+
+/**
+ * @brief Increment a date and time with a given number of seconds.
+ * @details Updates the DateTime structure by adding a specified number of
+ * seconds, handling day and month rollovers according to the active calendar.
+ *          Converted from WW3 routine TICK21.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[in,out] time Current date and time.
+ * @param[in] dtime Time step in seconds.
+ * @post time is updated by dtime.
+ */
 void TimeManagement::incrementDateTime(DateTime &time,
                                        const double dtime) noexcept {
   const int nymd_init = time.ymd;
@@ -83,6 +157,16 @@ void TimeManagement::incrementDateTime(DateTime &time,
              static_cast<double>(f_minutes) * 100.0 + f_seconds;
 }
 
+/**
+ * @brief Increment date in YYYYMMDD format by +/- 1 day.
+ * @details Adjusts the date by one day forward or backward.
+ *          Converted from WW3 function IYMD21.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param ymd Old date in YYYYMMDD format.
+ * @param adjustment +/- 1 (Day adjustment).
+ * @return New date in YYYYMMDD format.
+ * @pre adjustment should be 1 or -1 for expected behavior.
+ */
 int TimeManagement::incrementDateByDay(const int ymd,
                                        const int adjustment) noexcept {
   const int ny_init = ymd / 10000;
@@ -134,6 +218,16 @@ int TimeManagement::incrementDateByDay(const int ymd,
   return ny * 10000 + nm * 100 + nd;
 }
 
+/**
+ * @brief Calculate the difference in seconds between two date/time
+ * structures.
+ * @details Computes time2 - time1 in seconds, accounting for calendar
+ * differences. Converted from WW3 function DSEC21.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param time1 First date/time.
+ * @param time2 Second date/time.
+ * @return Difference (time2 - time1) in seconds.
+ */
 double TimeManagement::differenceInSeconds(const DateTime &time1,
                                            const DateTime &time2) noexcept {
   const int ny1 = time1.ymd / 10000;
@@ -189,6 +283,14 @@ double TimeManagement::differenceInSeconds(const DateTime &time1,
   return ns + 86400.0 * static_cast<double>(nd);
 }
 
+/**
+ * @brief Convert date in YYYYMMDD format to Julian day within the year.
+ * @details Returns the ordinal day of the year (1-365 or 1-366).
+ *          Converted from WW3 function MYMD21.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param ymd Date in YYYYMMDD format.
+ * @return Julian day (1-366).
+ */
 int TimeManagement::getDayOfYear(const int ymd) noexcept {
   const int ny = ymd / 10000;
   const int nm_init = (ymd % 10000) / 100;
@@ -218,8 +320,18 @@ int TimeManagement::getDayOfYear(const int ymd) noexcept {
   return nd;
 }
 
+/**
+ * @brief Convert DateTime to DateArray.
+ * @details Decomposes DateTime into an 8-integer array.
+ *          Converted from WW3 routine T2D.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[in] time Date and time.
+ * @param[out] dateArray Date array.
+ * @param[out] errorCode Error code (0 for success).
+ * @post dateArray is populated, errorCode is set.
+ */
 void TimeManagement::dateTimeToDateArray(const DateTime &time,
-                                         const std::span<int, 8> dateArray,
+                                         DateArray &dateArray,
                                          int &errorCode) noexcept {
   dateArray[0] = time.ymd / 10000;
   dateArray[1] = (time.ymd / 100) % 100;
@@ -233,9 +345,19 @@ void TimeManagement::dateTimeToDateArray(const DateTime &time,
   errorCode = 0;
 }
 
-void TimeManagement::dateArrayToDateTime(
-    const std::span<const int, 8> dateArray, DateTime &time,
-    int &errorCode) noexcept {
+/**
+ * @brief Convert DateArray to DateTime.
+ * @details Reconstructs DateTime from an 8-integer array.
+ *          Converted from WW3 routine D2T.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[in] dateArray Date array.
+ * @param[out] time Date and time.
+ * @param[out] errorCode Error code (0 for success).
+ * @post time is populated, errorCode is set.
+ */
+void TimeManagement::dateArrayToDateTime(const DateArray &dateArray,
+                                         DateTime &time,
+                                         int &errorCode) noexcept {
   const int ymd_val = dateArray[0] * 10000 + dateArray[1] * 100 + dateArray[2];
   const double hms_val = static_cast<double>(dateArray[4]) * 10000.0 +
                          static_cast<double>(dateArray[5]) * 100.0 +
@@ -246,9 +368,19 @@ void TimeManagement::dateArrayToDateTime(
   errorCode = 0;
 }
 
-void TimeManagement::dateArrayToJulianDay(
-    const std::span<const int, 8> dateArray, double &julian,
-    int &errorCode) noexcept {
+/**
+ * @brief Convert DateArray to Julian Day.
+ * @details Computes Julian Day from an 8-integer array.
+ *          Converted from WW3 routine D2J.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[in] dateArray Date array.
+ * @param[out] julian Julian day.
+ * @param[out] errorCode Error code (0 for success, -1/1 for errors).
+ * @post julian is populated, errorCode is set.
+ */
+void TimeManagement::dateArrayToJulianDay(const DateArray &dateArray,
+                                          double &julian,
+                                          int &errorCode) noexcept {
   const int year = dateArray[0];
   const int month = dateArray[1];
   const int day = dateArray[2];
@@ -279,8 +411,18 @@ void TimeManagement::dateArrayToJulianDay(
   errorCode = (julian < 0.0) ? 1 : 0;
 }
 
+/**
+ * @brief Convert Julian Day to DateArray.
+ * @details Decomposes Julian Day into an 8-integer array.
+ *          Converted from WW3 routine J2D.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[in] julian Julian day.
+ * @param[out] dateArray Date array.
+ * @param[out] errorCode Error code (0 for success).
+ * @post dateArray is populated, errorCode is set.
+ */
 void TimeManagement::julianDayToDateArray(const double julian,
-                                          const std::span<int, 8> dateArray,
+                                          DateArray &dateArray,
                                           int &errorCode) noexcept {
   if (m_calendarType == CalendarType::Standard && julian < 0.0) {
     errorCode = 1;
@@ -348,17 +490,179 @@ void TimeManagement::julianDayToDateArray(const double julian,
   errorCode = 0;
 }
 
-double TimeManagement::time2hours(const DateTime &time) noexcept {
-  const int iy = time.ymd / 10000;
-  const int imo = (time.ymd / 100) % 100;
-  const int id = time.ymd % 100;
-  const int ih = static_cast<int>(time.hms) / 10000;
-  const int imi = (static_cast<int>(time.hms) / 100) % 100;
-  const double is = std::fmod(time.hms, 100.0);
-  const int jday = computeJulianDay(id, imo, iy);
-  return 24.0 * jday + ih + (imi * 60.0 + is) / 3600.0;
+/**
+ * @brief Calculate the difference in seconds between two date/time arrays.
+ * @details Computes t2 - t1 in seconds for arrays in DATE_AND_TIME format.
+ *          Converted from WW3 function TDIFF.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param t1 First date/time array (DATE_AND_TIME format).
+ * @param t2 Second date/time array (DATE_AND_TIME format).
+ * @return Difference (t2 - t1) in seconds.
+ */
+double TimeManagement::differenceInSeconds(const DateArray &t1,
+                                           const DateArray &t2) noexcept {
+  const double diff_s = 86400.0 * differenceInDays(t1, t2);
+  return diff_s;
 }
 
+/**
+ * @brief Captures the present date and time.
+ * @details Fills a DateArray with the current UTC system time.
+ *          Matches Fortran's DATE_AND_TIME behavior.
+ *          Converted from WW3 routine W3DATE.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[out] dateArray Date array to be filled.
+ * @post dateArray contains the current UTC system time.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-07-07
+ */
+void TimeManagement::getSystemDateArray(DateArray &dateArray) noexcept {
+  const auto now = std::chrono::system_clock::now();
+  const auto tt = std::chrono::system_clock::to_time_t(now);
+
+  std::tm gmt{};
+#ifdef _WIN32
+  gmtime_s(&gmt, &tt);
+#else
+  gmtime_r(&tt, &gmt);
+#endif
+
+  const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                      now.time_since_epoch()) %
+                  1000;
+
+  dateArray[0] = gmt.tm_year + 1900;
+  dateArray[1] = gmt.tm_mon + 1;
+  dateArray[2] = gmt.tm_mday;
+  dateArray[3] = 0; // UTC
+  dateArray[4] = gmt.tm_hour;
+  dateArray[5] = gmt.tm_min;
+  dateArray[6] = gmt.tm_sec;
+  dateArray[7] = static_cast<int>(ms.count());
+}
+
+/**
+ * @brief Calculates the elapsed time since a reference date.
+ * @details Computes the difference in seconds between the current system
+ *          time and the provided reference date.
+ *          Converted from WW3 routine W3DTIM.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param[in] referenceDate Reference date array (DATE_AND_TIME format).
+ * @param[out] elapsedTime Elapsed time in seconds.
+ * @post elapsedTime contains the difference in seconds.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-07-07
+ */
+void TimeManagement::getElapsedTimeSince(const DateArray &referenceDate,
+                                         double &elapsedTime) noexcept {
+  DateArray now_dat{};
+  getSystemDateArray(now_dat);
+  const double elapsed_val = differenceInSeconds(referenceDate, now_dat);
+  elapsedTime = elapsed_val;
+}
+
+/**
+ * @brief Gets the present date and time as a DateTime structure.
+ * @details Retrieves the current UTC system time.
+ * @return Current date and time in DateTime format.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-03-11
+ * @date Last update : 2026-07-07
+ */
+DateTime TimeManagement::getPresentDateTime() noexcept {
+  DateArray dat_arr{};
+  getSystemDateArray(dat_arr);
+  DateTime dt_val{};
+  int err_code;
+  dateArrayToDateTime(dat_arr, dt_val, err_code);
+  return dt_val;
+}
+
+/**
+ * @brief Calculate the difference in days between two DateArrays.
+ * @details Computes t2 - t1 in days, supporting different calendars.
+ *          Converted from WW3 function TSUB.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param t1 First date array.
+ * @param t2 Second date array.
+ * @return Difference (t2 - t1) in days.
+ */
+double TimeManagement::differenceInDays(const DateArray &t1,
+                                        const DateArray &t2) noexcept {
+  if (m_calendarType == CalendarType::ThreeSixtyDay) {
+    const int ad =
+        (t2[0] - t1[0]) * 360 + (t2[1] - t1[1]) * 30 + (t2[2] - t1[2]);
+    const double e1 =
+        3600.0 * t1[4] + 60.0 * (t1[5] - t1[3]) + t1[6] + t1[7] / 1000.0;
+    const double e2 =
+        3600.0 * t2[4] + 60.0 * (t2[5] - t2[3]) + t2[6] + t2[7] / 1000.0;
+    return static_cast<double>(ad) + (e2 - e1) / 86400.0;
+  } else {
+    const int a1 = (14 - t1[1]) / 12;
+    const int b1 = t1[0] + 4800 - a1;
+    const int c1 = t1[1] + 12 * a1 - 3;
+    const int d1_init = t1[2] + (153 * c1 + 2) / 5 + 365 * b1;
+    const int d1 = (m_calendarType == CalendarType::Standard)
+                       ? (d1_init + b1 / 4 - b1 / 100 + b1 / 400)
+                       : d1_init;
+    const double e1 =
+        3600.0 * t1[4] + 60.0 * (t1[5] - t1[3]) + t1[6] + t1[7] / 1000.0;
+
+    const int a2 = (14 - t2[1]) / 12;
+    const int b2 = t2[0] + 4800 - a2;
+    const int c2 = t2[1] + 12 * a2 - 3;
+    const int d2_init = t2[2] + (153 * c2 + 2) / 5 + 365 * b2;
+    const int d2 = (m_calendarType == CalendarType::Standard)
+                       ? (d2_init + b2 / 4 - b2 / 100 + b2 / 400)
+                       : d2_init;
+    const double e2 =
+        3600.0 * t2[4] + 60.0 * (t2[5] - t2[3]) + t2[6] + t2[7] / 1000.0;
+
+    return static_cast<double>(d2 - d1) + (e2 - e1) / 86400.0;
+  }
+}
+
+/**
+ * @brief Initialize profiling.
+ * @details Captures the current steady clock time for high-precision
+ * measurement. Converted from WW3 routine PRINIT.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @post m_profilingInitialized is true.
+ */
+void TimeManagement::initializeProfiling() noexcept {
+  m_steadyBase = std::chrono::steady_clock::now();
+  m_profilingInitialized = true;
+}
+
+/**
+ * @brief Get profiling wall-clock time in seconds.
+ * @details Calculates the elapsed time since initializeProfiling() was
+ * called. Converted from WW3 function PRTIME.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @return Time since initializeProfiling() in seconds, or -1.0 if not
+ * initialized.
+ */
+double TimeManagement::getProfilingTime() noexcept {
+  if (!m_profilingInitialized)
+    return -1.0;
+  const auto now_prof = std::chrono::steady_clock::now();
+  const std::chrono::duration<double> diff_prof = now_prof - m_steadyBase;
+  return diff_prof.count();
+}
+
+/**
+ * @brief Converts numerical time to a readable string.
+ * @details Formats the DateTime as "YYYY/MM/DD HH:MM:SS UTC".
+ *          Converted from WW3 function STME21.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param time Date and time.
+ * @return Readable string.
+ */
 std::string TimeManagement::toFormattedString(const DateTime &time) {
   if (time.ymd < 0) {
     return " date and time not set.";
@@ -370,10 +674,21 @@ std::string TimeManagement::toFormattedString(const DateTime &time) {
   const int imi = (static_cast<int>(time.hms) / 100) % 100;
   const int is = static_cast<int>(std::fmod(time.hms, 100.0));
 
-  return std::format("{:04d}/{:02d}/{:02d} {:02d}:{:02d}:{:02d} UTC", iy, imo,
-                     id, ih, imi, is);
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(4) << iy << "/" << std::setw(2) << imo
+      << "/" << std::setw(2) << id << " " << std::setw(2) << ih << ":"
+      << std::setw(2) << imi << ":" << std::setw(2) << is << " UTC";
+  return oss.str();
 }
 
+/**
+ * @brief Convert DateTime to ISO8601 time string.
+ * @details Formats as "YYYY-MM-DDTHH:MM:SS".
+ *          Converted from WW3 function T2ISO.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param time Date and time.
+ * @return ISO8601 string.
+ */
 std::string TimeManagement::toIsoString(const DateTime &time) {
   const int iy = time.ymd / 10000;
   const int imo = (time.ymd / 100) % 100;
@@ -382,14 +697,27 @@ std::string TimeManagement::toIsoString(const DateTime &time) {
   const int imi = (static_cast<int>(time.hms) / 100) % 100;
   const int is = static_cast<int>(std::fmod(time.hms, 100.0));
 
-  return std::format("{}-{:02}-{:02}T{:02}:{:02}:{:02}", iy, imo, id, ih, imi,
-                     is);
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw(4) << iy << "-" << std::setw(2) << imo
+      << "-" << std::setw(2) << id << "T" << std::setw(2) << ih << ":"
+      << std::setw(2) << imi << ":" << std::setw(2) << is;
+  return oss.str();
 }
 
+/**
+ * @brief Convert time units attribute to DateArray.
+ * @details Parses a string like "seconds since 1970-01-01 00:00:00" into a
+ * DateArray. Converted from WW3 routine U2D.
+ * @note Original author in WW3: Hendrik L. Tolman.
+ * @param units Units attribute.
+ * @param[out] dateArray Date array.
+ * @param[out] errorCode Error code (0 for success, 1 for error).
+ * @post dateArray is populated if successful, errorCode is set.
+ */
 void TimeManagement::parseUnitsToDateArray(const std::string_view units,
-                                           const std::span<int, 8> dateArray,
+                                           DateArray &dateArray,
                                            int &errorCode) noexcept {
-  std::fill(dateArray.begin(), dateArray.end(), 0);
+  dateArray.fill(0);
   errorCode = 1;
 
   const size_t since_pos = units.find("since ");
@@ -438,96 +766,21 @@ void TimeManagement::parseUnitsToDateArray(const std::string_view units,
   }
 }
 
-double
-TimeManagement::differenceInSeconds(const std::span<const int, 8> t1,
-                                    const std::span<const int, 8> t2) noexcept {
-  const double diff_s = 86400.0 * differenceInDays(t1, t2);
-  return diff_s;
-}
-
-void TimeManagement::getSystemDateArray(
-    const std::span<int, 8> dateArray) noexcept {
-  const auto now = std::chrono::system_clock::now();
-  const auto dp = std::chrono::floor<std::chrono::days>(now);
-  const std::chrono::year_month_day ymd_sys{dp};
-  const auto time_duration = now - dp;
-  const std::chrono::hh_mm_ss hms_sys{
-      std::chrono::floor<std::chrono::milliseconds>(time_duration)};
-
-  dateArray[0] = static_cast<int>(ymd_sys.year());
-  dateArray[1] = static_cast<int>(static_cast<unsigned>(ymd_sys.month()));
-  dateArray[2] = static_cast<int>(static_cast<unsigned>(ymd_sys.day()));
-  dateArray[3] = 0; // UTC
-  dateArray[4] = static_cast<int>(hms_sys.hours().count());
-  dateArray[5] = static_cast<int>(hms_sys.minutes().count());
-  dateArray[6] = static_cast<int>(hms_sys.seconds().count());
-  dateArray[7] = static_cast<int>(hms_sys.subseconds().count());
-}
-
-void TimeManagement::getElapsedTimeSince(
-    const std::span<const int, 8> referenceDate, double &elapsedTime) noexcept {
-  DateArray now_dat{};
-  getSystemDateArray(now_dat);
-  const double elapsed_val = differenceInSeconds(referenceDate, now_dat);
-  elapsedTime = elapsed_val;
-}
-
-DateTime TimeManagement::getPresentDateTime() noexcept {
-  DateArray dat_arr{};
-  getSystemDateArray(dat_arr);
-  DateTime dt_val{};
-  int err_code;
-  dateArrayToDateTime(dat_arr, dt_val, err_code);
-  return dt_val;
-}
-
-double
-TimeManagement::differenceInDays(const std::span<const int, 8> t1,
-                                 const std::span<const int, 8> t2) noexcept {
-  if (m_calendarType == CalendarType::ThreeSixtyDay) {
-    const int ad =
-        (t2[0] - t1[0]) * 360 + (t2[1] - t1[1]) * 30 + (t2[2] - t1[2]);
-    const double e1 =
-        3600.0 * t1[4] + 60.0 * (t1[5] - t1[3]) + t1[6] + t1[7] / 1000.0;
-    const double e2 =
-        3600.0 * t2[4] + 60.0 * (t2[5] - t2[3]) + t2[6] + t2[7] / 1000.0;
-    return static_cast<double>(ad) + (e2 - e1) / 86400.0;
-  } else {
-    const int a1 = (14 - t1[1]) / 12;
-    const int b1 = t1[0] + 4800 - a1;
-    const int c1 = t1[1] + 12 * a1 - 3;
-    const int d1_init = t1[2] + (153 * c1 + 2) / 5 + 365 * b1;
-    const int d1 = (m_calendarType == CalendarType::Standard)
-                       ? (d1_init + b1 / 4 - b1 / 100 + b1 / 400)
-                       : d1_init;
-    const double e1 =
-        3600.0 * t1[4] + 60.0 * (t1[5] - t1[3]) + t1[6] + t1[7] / 1000.0;
-
-    const int a2 = (14 - t2[1]) / 12;
-    const int b2 = t2[0] + 4800 - a2;
-    const int c2 = t2[1] + 12 * a2 - 3;
-    const int d2_init = t2[2] + (153 * c2 + 2) / 5 + 365 * b2;
-    const int d2 = (m_calendarType == CalendarType::Standard)
-                       ? (d2_init + b2 / 4 - b2 / 100 + b2 / 400)
-                       : d2_init;
-    const double e2 =
-        3600.0 * t2[4] + 60.0 * (t2[5] - t2[3]) + t2[6] + t2[7] / 1000.0;
-
-    return static_cast<double>(d2 - d1) + (e2 - e1) / 86400.0;
-  }
-}
-
-void TimeManagement::initializeProfiling() noexcept {
-  m_steadyBase = std::chrono::steady_clock::now();
-  m_profilingInitialized = true;
-}
-
-double TimeManagement::getProfilingTime() noexcept {
-  if (!m_profilingInitialized)
-    return -1.0;
-  const auto now_prof = std::chrono::steady_clock::now();
-  const std::chrono::duration<double> diff_prof = now_prof - m_steadyBase;
-  return diff_prof.count();
+/**
+ * @brief Gives date as a real number (hours since reference).
+ * @details Computes the number of hours since Julian Day 0.
+ * @param time Date and time.
+ * @return Hours since Julian Day 0.
+ */
+double TimeManagement::time2hours(const DateTime &time) noexcept {
+  const int iy = time.ymd / 10000;
+  const int imo = (time.ymd / 100) % 100;
+  const int id = time.ymd % 100;
+  const int ih = static_cast<int>(time.hms) / 10000;
+  const int imi = (static_cast<int>(time.hms) / 100) % 100;
+  const double is = std::fmod(time.hms, 100.0);
+  const int jday = computeJulianDay(id, imo, iy);
+  return 24.0 * jday + ih + (imi * 60.0 + is) / 3600.0;
 }
 
 } // namespace ww4_utils

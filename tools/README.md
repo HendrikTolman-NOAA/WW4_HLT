@@ -22,17 +22,19 @@ Run the setup tool to interactively configure your active clone and compiler set
 ./ww4_setup
 ```
 This tool will:
-- Identify and set the active WAVEWATCH IV clone in `~/.ww4_config.yml`.
+- Identify and set the active WAVEWATCH IV clone in `~/.ww4_config.yaml`.
 - Detect available C++ compilers on your system.
-- Configure compilation flags for either development or maximum optimization in `ww4_compile_config.yml`.
+- Configure compilation flags for either development or maximum optimization in `ww4_compile_config.yaml`.
 
 ### 2. Compilation
 
-Once configured, you can compile WAVEWATCH IV using:
+Once configured, you can compile WAVEWATCH IV using standard CMake:
+
 ```bash
-./ww4_compile
+cmake -B build
+cmake --build build
 ```
-This tool uses the settings from `ww4_compile_config.yml` and invokes CMake to build the project.
+The `ww4_setup` tool generates a `ww4_local_config.cmake` file that stores your selected compiler and flags, which is automatically included by `CMakeLists.txt`.
 
 ## Manual Usage
 
@@ -42,58 +44,32 @@ If you prefer to configure the tools manually, follow these steps:
 
 Copy the template configuration file to the repository root:
 ```bash
-cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
+cp templates/ww4_compile_config.yaml ./ww4_compile_config.yaml
 ```
-Then, edit `ww4_compile_config.yml` to specify your compiler and preferred options.
+Then, edit `ww4_compile_config.yaml` to specify your compiler and preferred options.
 
 ### 2. Compilation
 
-Run the compile tool from the repository root:
-```bash
-python3 tools/ww4_compile.py
-```
-
-## Quick Start with Presets
-
-The `--preset` option allows for compilation with a single command without the need for additional configuration. This bypasses the need for a local `ww4_compile_config.yml` file by using pre-defined templates.
-
-```bash
-./ww4_compile --preset <PRESET_NAME>
-```
-Available presets can be found in the `templates/` directory (e.g., `templates/ww4_compile_config.test.yml` corresponds to `--preset test`).
+Configure and build with CMake as shown above.
 
 ## Developer Tools
 
 WAVEWATCH IV provides additional tools to support developers during the coding process.
 
-### L1/L2 Test Availability Check
+### Test Availability Check
 
 To check if unit tests are available for a specific file and its identified routines:
 
 ```bash
-./ww4_L1_L2_test_check --file <filename>
+./ww4_test_check --file <filename>
 ```
 *Note: The filename should be provided without extension (e.g., `time_management`).*
 
 This tool will:
 - Identify source files in `src/` and `include/`.
 - Isolate user-defined routines (functions and methods).
-- Check the `tests_L1_L2/` directory for corresponding unit tests.
+- Check the `tests/` directory for corresponding unit tests.
 - Report the test coverage status for each identified routine.
-
-### Clean Tools
-
-To remove intermediate files created during compilation:
-
-```bash
-./ww4_clean
-```
-
-To remove all compilation output, including executables and libraries:
-
-```bash
-./ww4_clean_all
-```
 
 #
 <p align="right">

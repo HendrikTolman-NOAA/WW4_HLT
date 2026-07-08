@@ -12,10 +12,11 @@
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
-@author Main Author(s): Aldgisl (AI Persona), Hendrik Tolman
+NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
+@author Main Author(s): Aldgisl, Hendrik Tolman
 @author Contributors: Jules (Agentic AI)
-@date Initial, 2026-03-23
-@date Last Update, 2026-03-30
+@date Initial: 2026-03-23
+@date Last Update: 2026-05-26
 """
 
 import os
@@ -28,13 +29,15 @@ from typing import Any, Dict, List, Optional, Set
 try:
     import yaml
 except ImportError:
-    print("Error: PyYAML is not installed. Please install it using 'pip install PyYAML'.")
+    print(
+        "Error: PyYAML is not installed. Please install it using 'pip install PyYAML'."
+    )
     sys.exit(1)
 
 
 def find_clones() -> List[Path]:
     """
-    Find all WW4 clones by searching for tools/ww4_compile or tools/ww4_compile.py.
+    Find all WW4 clones by searching for tools/ww4_setup or tools/ww4_setup.py.
 
     Returns
     -------
@@ -48,7 +51,7 @@ def find_clones() -> List[Path]:
     # Check current directory and its parent first as common case
     cwd = Path.cwd()
     for p in [cwd, cwd.parent]:
-        for tool_name in ["ww4_compile", "ww4_compile.py"]:
+        for tool_name in ["ww4_setup", "ww4_setup.py"]:
             target = p / "tools" / tool_name
             if target.exists():
                 root = p.resolve()
@@ -65,19 +68,24 @@ def find_clones() -> List[Path]:
             continue
         try:
             # Using find via subprocess for speed and robustness
-            # Look for either ww4_compile or ww4_compile.py in tools/
+            # Look for either ww4_setup or ww4_setup.py in tools/
             cmd = [
                 "find",
                 str(search_path),
-                "-maxdepth", "4",
-                "-name", "ww4_compile*",
+                "-maxdepth",
+                "4",
+                "-name",
+                "ww4_setup*",
             ]
             result = subprocess.run(
                 cmd, capture_output=True, text=True, check=False, timeout=10
             )
             for line in result.stdout.splitlines():
                 path = Path(line).resolve()
-                if path.name in ["ww4_compile", "ww4_compile.py"] and path.parent.name == "tools":
+                if (
+                    path.name in ["ww4_setup", "ww4_setup.py"]
+                    and path.parent.name == "tools"
+                ):
                     clone_root = path.parent.parent
                     if clone_root not in seen_paths:
                         clones.append(clone_root)
@@ -168,7 +176,9 @@ def update_shell_config(clone_path: Path) -> None:
         elif (Path.home() / ".profile").exists():
             config_path = Path.home() / ".profile"
         else:
-            print(f"Warning: Could not find a suitable shell configuration file (tried {config_filename}, .bashrc, .profile).")
+            print(
+                f"Warning: Could not find a suitable shell configuration file (tried {config_filename}, .bashrc, .profile)."
+            )
             return
 
     with open(config_path, "r") as f:
@@ -187,26 +197,30 @@ def update_shell_config(clone_path: Path) -> None:
                 f.write(f"{line}\n")
         print(f"Updated {config_path} with WAVEWATCH IV paths.")
         print("Note: These changes will take effect in all NEW shell sessions.")
-        print(f"To update your CURRENT session, please run: source ~/{config_path.name}")
+        print(
+            f"To update your CURRENT session, please run: source ~/{config_path.name}"
+        )
 
 
 def setup_active_clone() -> Path:
     """
-    Identify and set the active WW4 clone in ~/.ww4_config.yml.
+    Identify and set the active WW4 clone in ~/.ww4_config.yaml.
 
     Returns
     -------
     Path
         The path to the selected active clone.
     """
-    config_file = Path.home() / ".ww4_config.yml"
+    config_file = Path.home() / ".ww4_config.yaml"
     config = load_config(config_file)
     active_clone_str = config.get("active_clone")
     active_clone = Path(active_clone_str) if active_clone_str else None
 
     if active_clone and active_clone.exists():
         print(f"Current active clone found: {active_clone}")
-        use_current = input("Do you want to use this clone? (y/n) [y]: ").lower().strip()
+        use_current = (
+            input("Do you want to use this clone? (y/n) [y]: ").lower().strip()
+        )
         if use_current == "" or use_current == "y":
             update_shell_config(active_clone)
             return active_clone
@@ -214,7 +228,9 @@ def setup_active_clone() -> Path:
     clones = find_clones()
     if not clones:
         print("Error: No WW4 clones found.")
-        print("Please ensure you are running this from a WW4 clone or have one installed.")
+        print(
+            "Please ensure you are running this from a WW4 clone or have one installed."
+        )
         sys.exit(1)
 
     print("\nAvailable WW4 clones:")
@@ -223,7 +239,7 @@ def setup_active_clone() -> Path:
 
     while True:
         try:
-            choice = input(f"Select a clone [0-{len(clones)-1}]: ")
+            choice = input(f"Select a clone [0-{len(clones) - 1}]: ")
             idx = int(choice)
             if 0 <= idx < len(clones):
                 selected_clone = clones[idx]
@@ -232,7 +248,7 @@ def setup_active_clone() -> Path:
             pass
         print("Invalid choice. Please try again.")
 
-    # Update ~/.ww4_config.yml non-destructively
+    # Update ~/.ww4_config.yaml non-destructively
     resolved_clone = selected_clone.resolve()
     config["active_clone"] = str(resolved_clone)
     save_config(config_file, config)
@@ -244,16 +260,55 @@ def setup_active_clone() -> Path:
     return resolved_clone
 
 
+def generate_local_cmake_config(
+    clone_path: Path,
+    compiler: str,
+    flags: str,
+    strict_warnings: bool = False,
+    use_sanitizers: bool = False,
+) -> None:
+    """
+    Generate a ww4_local_config.cmake file for standard CMake usage.
+
+    Parameters
+    ----------
+    clone_path : Path
+        The path to the active WW4 clone.
+    compiler : str
+        The selected C++ compiler.
+    flags : str
+        The selected compilation flags.
+    strict_warnings : bool, optional
+        Whether to enable strict warnings.
+    use_sanitizers : bool, optional
+        Whether to enable sanitizers.
+    """
+    cmake_config_file = clone_path / "ww4_local_config.cmake"
+    sw = "ON" if strict_warnings else "OFF"
+    us = "ON" if use_sanitizers else "OFF"
+    content = f"""# WAVEWATCH IV local configuration
+# Generated by ww4_setup.py
+
+set(CMAKE_CXX_COMPILER "{compiler}" CACHE STRING "C++ compiler" FORCE)
+set(CMAKE_CXX_FLAGS "{flags}" CACHE STRING "C++ flags" FORCE)
+set(WW4_STRICT_WARNINGS {sw} CACHE BOOL "Strict warnings" FORCE)
+set(WW4_USE_SANITIZERS {us} CACHE BOOL "Use sanitizers" FORCE)
+"""
+    with open(cmake_config_file, "w") as f:
+        f.write(content)
+    print(f"Generated {cmake_config_file} for standard CMake usage.")
+
+
 def setup_compiler(clone_path: Path) -> None:
     """
-    Identify and set the compiler and flags in <clone>/ww4_compile_config.yml.
+    Identify and set the compiler and flags in <clone>/ww4_compile_config.yaml.
 
     Parameters
     ----------
     clone_path : Path
         The path to the active WW4 clone.
     """
-    compile_config_file = clone_path / "ww4_compile_config.yml"
+    compile_config_file = clone_path / "ww4_compile_config.yaml"
     config = load_config(compile_config_file)
 
     current_compiler = None
@@ -281,7 +336,7 @@ def setup_compiler(clone_path: Path) -> None:
 
     while True:
         try:
-            prompt = f"Select a compiler [0-{len(available)-1}] [{default_idx}]: "
+            prompt = f"Select a compiler [0-{len(available) - 1}] [{default_idx}]: "
             choice = input(prompt).strip()
             if choice == "":
                 selected_compiler = available[default_idx]
@@ -293,7 +348,9 @@ def setup_compiler(clone_path: Path) -> None:
                     raise ValueError
 
             if selected_compiler == "Manual input":
-                selected_compiler = input("Enter the C++ compiler name or path: ").strip()
+                selected_compiler = input(
+                    "Enter the C++ compiler name or path: "
+                ).strip()
                 if not selected_compiler:
                     print("Compiler name cannot be empty.")
                     continue
@@ -305,28 +362,41 @@ def setup_compiler(clone_path: Path) -> None:
     print("[0] Development (Strict warnings, sanitizers, -O0)")
     print("[1] Maximum Optimization (-O3, -Wall, -Wextra)")
 
+    strict_warnings = False
+    use_sanitizers = False
     while True:
         choice = input("Select mode [0-1] [1]: ").strip()
         if choice == "" or choice == "1":
             flags = "-O3 -Wall -Wextra -std=c++20"
             break
         elif choice == "0":
-            flags = "-O0 -g -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -std=c++20"
+            flags = "-O0 -g -std=c++20"
+            strict_warnings = True
+            use_sanitizers = True
             break
         print("Invalid choice. Please try again.")
 
-    # Update ww4_compile_config.yml non-destructively
+    # Update ww4_compile_config.yaml non-destructively
     if "compiler" not in config or not isinstance(config["compiler"], dict):
         config["compiler"] = {}
 
     config["compiler"]["name"] = selected_compiler
     config["compiler"]["options"] = flags
+    config["compiler"]["strict_warnings"] = strict_warnings
+    config["compiler"]["use_sanitizers"] = use_sanitizers
 
-    header = "# @file ww4_compile_config.yml\n# @brief WAVEWATCH IV compilation configuration.\n\n"
+    header = "# @file ww4_compile_config.yaml\n# @brief WAVEWATCH IV compilation configuration.\n\n"
     save_config(compile_config_file, config, header=header)
 
     print(
         f"Updated {compile_config_file} with compiler {selected_compiler} and flags: {flags}"
+    )
+    print(f"Strict warnings: {'ON' if strict_warnings else 'OFF'}")
+    print(f"Sanitizers: {'ON' if use_sanitizers else 'OFF'}")
+
+    # Generate local CMake config
+    generate_local_cmake_config(
+        clone_path, selected_compiler, flags, strict_warnings, use_sanitizers
     )
 
 
@@ -342,7 +412,9 @@ def main() -> None:
     active_clone = setup_active_clone()
     setup_compiler(active_clone)
 
-    print("\nSetup complete! You can now run 'ww4_compile' to build WAVEWATCH IV.")
+    print("\nSetup complete!")
+    print("You can now build WAVEWATCH IV using standard CMake:")
+    print("  cmake -B build && cmake --build build")
 
 
 if __name__ == "__main__":
