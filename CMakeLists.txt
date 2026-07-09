@@ -120,8 +120,12 @@ add_library(
     src/ww4_core/w4core_init.cpp
     src/ww4_core/w4core_wave.cpp
     src/ww4_core/w4core_finalize.cpp
+    src/ww4_core/scheme_factory.cpp
+    src/ww4_core/solver_pr3.cpp
+    src/ww4_core/source_st4.cpp
+    src/ww4_core/wave_model.cpp
 )
-target_include_directories(ww4_core PUBLIC src)
+target_include_directories(ww4_core PUBLIC src include)
 target_link_libraries(ww4_core PUBLIC ww4_utils)
 target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
@@ -138,47 +142,12 @@ set_target_properties(
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/exe
 )
 
-# Core Library
-add_library(ww4_core
-    src/ww4_core/scheme_factory.cpp
-    src/ww4_core/solver_pr3.cpp
-    src/ww4_core/source_st4.cpp
-    src/ww4_core/wave_model.cpp
-)
-target_include_directories(ww4_core PUBLIC include)
-target_link_libraries(ww4_core PUBLIC ww4_utils)
-
 # Tests
 enable_testing()
-
-# Utils Tests
-add_executable(test_time_management tests_L1_L2/ww4_utils/test_time_management.cpp)
-target_link_libraries(test_time_management PRIVATE ww4_utils GTest::gtest_main)
-
-add_executable(test_memory_utils tests_L1_L2/ww4_utils/test_memory_utils.cpp)
-target_link_libraries(test_memory_utils PRIVATE ww4_utils GTest::gtest_main)
-
-add_executable(test_ww4_service tests_L1_L2/ww4_utils/test_ww4_service.cpp)
-target_link_libraries(test_ww4_service PRIVATE ww4_utils GTest::gtest_main)
-
-add_executable(test_ww4_constants tests_L1_L2/ww4_utils/test_ww4_constants.cpp)
-target_link_libraries(test_ww4_constants PRIVATE ww4_utils GTest::gtest_main)
-
-# Core Tests
-add_executable(test_scheme_factory tests_L1_L2/ww4_core/test_scheme_factory.cpp)
-target_link_libraries(test_scheme_factory PRIVATE ww4_core GTest::gtest_main)
-
-add_executable(test_wave_model tests_L1_L2/ww4_core/test_wave_model.cpp)
-target_link_libraries(test_wave_model PRIVATE ww4_core GTest::gtest_main)
-
 include(GoogleTest)
-gtest_discover_tests(test_time_management)
-gtest_discover_tests(test_memory_utils)
-gtest_discover_tests(test_ww4_service)
-gtest_discover_tests(test_ww4_constants)
-gtest_discover_tests(test_scheme_factory)
-gtest_discover_tests(test_wave_model)
-include(GoogleTest)
+
+# Initialize list of test targets
+set(WW4_TEST_TARGETS "")
 
 # Helper function to define tests
 function(ww4_add_test test_name source_file dependency_lib)
@@ -187,24 +156,27 @@ function(ww4_add_test test_name source_file dependency_lib)
     target_compile_options(${test_name} PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
     target_link_options(${test_name} PRIVATE ${WW4_COMMON_LINK_OPTIONS})
     gtest_discover_tests(${test_name})
+    set(WW4_TEST_TARGETS ${WW4_TEST_TARGETS} ${test_name} PARENT_SCOPE)
 endfunction()
 
 # Utils tests
-ww4_add_test(test_time_management tests/ww4_utils/L1_test_time_management.cpp ww4_utils)
-ww4_add_test(test_memory_utils tests/ww4_utils/L1_test_memory_utils.cpp ww4_utils)
-ww4_add_test(test_ww4_std_out tests/ww4_utils/L1_test_ww4_std_out.cpp ww4_utils)
-ww4_add_test(test_ww4_logfile tests/ww4_utils/L1_test_ww4_logfile.cpp ww4_utils)
-ww4_add_test(test_ww4_standalone_config tests/ww4_utils/L1_test_ww4_standalone_config.cpp ww4_utils)
-ww4_add_test(test_ww4_run_config tests/ww4_utils/L1_test_ww4_run_config.cpp ww4_utils)
-ww4_add_test(test_ww4_output_utils tests/ww4_utils/L1_test_ww4_output_utils.cpp ww4_utils)
-ww4_add_test(test_ww4_service tests/ww4_utils/L1_test_ww4_service.cpp ww4_utils)
-ww4_add_test(test_ww4_constants tests/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
+ww4_add_test(test_time_management tests_L1_L2/ww4_utils/L1_test_time_management.cpp ww4_utils)
+ww4_add_test(test_memory_utils tests_L1_L2/ww4_utils/L1_test_memory_utils.cpp ww4_utils)
+ww4_add_test(test_ww4_std_out tests_L1_L2/ww4_utils/L1_test_ww4_std_out.cpp ww4_utils)
+ww4_add_test(test_ww4_logfile tests_L1_L2/ww4_utils/L1_test_ww4_logfile.cpp ww4_utils)
+ww4_add_test(test_ww4_standalone_config tests_L1_L2/ww4_utils/L1_test_ww4_standalone_config.cpp ww4_utils)
+ww4_add_test(test_ww4_run_config tests_L1_L2/ww4_utils/L1_test_ww4_run_config.cpp ww4_utils)
+ww4_add_test(test_ww4_output_utils tests_L1_L2/ww4_utils/L1_test_ww4_output_utils.cpp ww4_utils)
+ww4_add_test(test_ww4_service tests_L1_L2/ww4_utils/L1_test_ww4_service.cpp ww4_utils)
+ww4_add_test(test_ww4_constants tests_L1_L2/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
 
 # Core tests
-ww4_add_test(test_w4core_time tests/ww4_core/L2_test_w4core_time.cpp ww4_core)
-ww4_add_test(test_w4core_wave_output tests/ww4_core/L2_test_w4core_wave_output.cpp ww4_core)
-ww4_add_test(test_w4core_zero_step tests/ww4_core/L2_test_w4core_zero_step.cpp ww4_core)
-ww4_add_test(test_w4core_hom_input tests/ww4_core/L2_test_w4core_hom_input.cpp ww4_core)
-ww4_add_test(test_w4core_input_cycling tests/ww4_core/L2_test_w4core_input_cycling.cpp ww4_core)
-ww4_add_test(test_interpolation_output tests/ww4_core/L2_test_interpolation_output.cpp ww4_core)
-ww4_add_test(test_w4core_screen_output tests/ww4_core/L2_test_w4core_screen_output.cpp ww4_core)
+ww4_add_test(test_w4core_time tests_L1_L2/ww4_core/L2_test_w4core_time.cpp ww4_core)
+ww4_add_test(test_w4core_wave_output tests_L1_L2/ww4_core/L2_test_w4core_wave_output.cpp ww4_core)
+ww4_add_test(test_w4core_zero_step tests_L1_L2/ww4_core/L2_test_w4core_zero_step.cpp ww4_core)
+ww4_add_test(test_w4core_hom_input tests_L1_L2/ww4_core/L2_test_w4core_hom_input.cpp ww4_core)
+ww4_add_test(test_w4core_input_cycling tests_L1_L2/ww4_core/L2_test_w4core_input_cycling.cpp ww4_core)
+ww4_add_test(test_interpolation_output tests_L1_L2/ww4_core/L2_test_interpolation_output.cpp ww4_core)
+ww4_add_test(test_w4core_screen_output tests_L1_L2/ww4_core/L2_test_w4core_screen_output.cpp ww4_core)
+ww4_add_test(test_scheme_factory tests_L1_L2/ww4_core/L1_test_scheme_factory.cpp ww4_core)
+ww4_add_test(test_wave_model tests_L1_L2/ww4_core/L2_test_wave_model.cpp ww4_core)
