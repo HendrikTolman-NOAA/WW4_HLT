@@ -10,11 +10,12 @@ This directory contains template files for configuring the WAVEWATCH IV build en
 
 Users can manually copy the templates from this directory to the desired location (typically the repository root) and modify them as needed.
 
-1.  Copy `templates/ww4_compile_config.yml` to the root directory:
+1.  Copy `templates/ww4_compile_config.yaml` to the root directory:
     ```bash
-    cp templates/ww4_compile_config.yml ./ww4_compile_config.yml
+    cp templates/ww4_compile_config.yaml ./ww4_compile_config.yaml
     ```
-2.  Edit `ww4_compile_config.yml` to specify your compiler and preferred options.
+2.  Edit `ww4_compile_config.yaml` to specify your compiler and preferred options.
+3.  Copy `templates/ww4_run_config.yaml` to the root directory and modify run-time settings.
 
 ## Automatic usage
 

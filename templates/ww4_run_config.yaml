@@ -1,0 +1,160 @@
+# @file ww4_run_config.yaml
+# @brief YAML template for WAVEWATCH IV (WW4) run-time configuration.
+# @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
+#
+# NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
+# @details This file provides a template for configuring run-time settings
+#          for WAVEWATCH IV. Most inputs are optional and have default
+#          settings as indicated below. Mandatory inputs are also indicated.
+#
+#          To use this file, copy it to the root directory of the repository
+#          or the directory from which the executable is run.
+#
+#          Note: All YAML files in the root directory of the clone are
+#          automatically ignored by Git. This allows for local testing without
+#          adding customized input files to the repository.
+
+general:
+  # Calendar type for the simulation.
+  # Options: "Standard" (default), "NoLeap", "ThreeSixtyDay"
+  # Note: "Standard" refers to the normal Gregorian calendar.
+  calendar_type: "Standard"
+
+  # Option for producing standard program output to the screen.
+  # Options: "yes" (default), "no"
+  produce_std_out: "yes"
+
+  # Option for producing a log file.
+  # Options: "yes" (default), "no"
+  produce_log_file: "yes"
+
+  # Option for the level of output to standard output during time stepping.
+  # Options: "none", "summary" (default), "full"
+  # "none"    : No output in the time stepping loop.
+  # "summary" : Output only if input field updated or output produced.
+  # "full"    : Standard full output for every step.
+  screen_output_level: "summary"
+
+  # Mandatory model time step in seconds.
+  # This parameter must be positive and non-zero.
+  time_step: 3600.0
+
+physics:
+  # Option for a dry run (no computations).
+  # Options: "no" (default), "yes"
+  dry_run: "no"
+
+  # Option for propagation in x-direction.
+  # Options: "yes" (default), "no"
+  propagate_x: "yes"
+
+  # Option for propagation in y-direction.
+  # Options: "yes" (default), "no"
+  propagate_y: "yes"
+
+  # Option for propagation in theta-direction.
+  # Options: "yes" (default), "no"
+  propagate_theta: "yes"
+
+  # Option for propagation in k-direction.
+  # Options: "yes" (default), "no"
+  propagate_k: "yes"
+
+  # Option for processing source terms.
+  # Options: "yes" (default), "no"
+  source_terms: "yes"
+
+forcing:
+  # Mandatory input field options.
+  # Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"
+  # Note: "from_grid" is only valid for bottom depth.
+  # Note: water_levels, currents, winds, and ice_concentrations are mandatory.
+  #       bottom_depth is optional and defaults to "from_grid".
+
+  # Bottom depth option.
+  bottom_depth: "from_grid"
+
+  # Water levels option.
+  water_levels: "none"
+
+  # Currents option.
+  currents: "none"
+
+  # Winds option.
+  winds: "none"
+
+  # Ice concentrations option.
+  ice_concentrations: "none"
+
+  # Option for echoing model input data back to standard output and log files.
+  # Options: "none", "summary" (default), "full"
+  # "none"    : No echoing of input data.
+  # "summary" : Produce a summary of input data (e.g., number of points).
+  # "full"    : Full reproduction of user-provided input data.
+  echo_hom_input: "summary"
+
+homogeneous_data:
+  # Homogeneous input data lists.
+  # Used when an input field option is set to "homogeneous".
+  # Format: "- YYYYMMDD HHMMSS val1 [val2 ...]"
+  # Multiple data points can be provided for each field.
+  # Time stamps must be non-decreasing.
+
+  # Example homogeneous data for water levels:
+  # water_levels:
+  #   - "20260101 000000 0.5"
+  #   - "20260101 120000 0.7"
+  #   - "20260102 000000 0.6"
+
+  # Example homogeneous data for currents (U and V components):
+  # currents:
+  #   - "20260101 000000 0.1 0.05"
+  #   - "20260102 000000 0.15 0.08"
+
+  # Example homogeneous data for winds (U and V components):
+  # winds:
+  #   - "20260101 000000 5.0 2.0"
+
+  # Example homogeneous data for ice concentrations:
+  # ice_concentrations:
+  #   - "20260101 000000 0.8"
+
+  # Example homogeneous data for bottom depth (datum relative, meters):
+  # bottom_depth:
+  #   - "20260101 000000 -5000.0"
+
+output:
+  # Data output options.
+  # For each output type, track if requested ("yes"/"no"), start/end times,
+  # and output interval (mandatory if requested, in seconds).
+  # "at_first" flag determines if output at the first time is requested (default: "yes").
+  # All output types default to "no" (requested: "no").
+
+  # Output type 1: Gridded fields
+  fields:
+    requested: "no"
+    interval: 3600.0
+    # start: "20260101 000000"
+    # end: "20260102 000000"
+    at_first: "yes"
+
+  # Output type 2: Point output
+  points:
+    requested: "no"
+    interval: 3600.0
+    # start: "20260101 000000"
+    # end: "20260102 000000"
+    at_first: "yes"
+
+  # Output type 3: Restart files
+  restart:
+    requested: "no"
+    interval: 86400.0
+    # start: "20260101 000000"
+    # end: "20260102 000000"
+    at_first: "yes"
+
+  # Output type 4: API output
+  # Options: "no" (default), "yes"
+  api:
+    requested: "no"

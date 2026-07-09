@@ -3,26 +3,27 @@
       | WAVEWATCH IV, open source, code management by NOAA/NWS |
       +--------------------------------------------------------+
 
-@file ww4_L1_L2_test_check.py
+@file ww4_test_check.py
 @brief A tool to check if unit tests are available for a specific file.
 @details This tool searches for source files in src/ and include/ matching a
          given name, identifies user-defined routines, and checks if
-         corresponding tests exist in tests_L1_L2/.
+         corresponding tests exist in tests/.
 
 Usage
 -----
 Run the tool from the repository root or provide the file name:
-    python3 tools/ww4_L1_L2_test_check.py --file filename
+    python3 tools/ww4_test_check.py --file filename
 
 The filename should be provided without extension.
 
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
                Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
                of the National Weather Service.
+NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
 @author Main Author(s): Aldgisl (AI Persona), Hendrik Tolman
 @author Contributors: Jules (Agentic AI)
 @date Initial, 2026-03-30
-@date Last Update, 2026-03-31
+@date Last Update, 2026-05-26
 """
 
 import argparse
@@ -138,7 +139,7 @@ def extract_routines(file_path: Path) -> Set[str]:
 
 def find_test_files(root_dir: Path, filename: str) -> List[Path]:
     """
-    Find test files matching the filename in tests_L1_L2.
+    Find test files matching the filename in tests.
 
     Parameters
     ----------
@@ -152,7 +153,7 @@ def find_test_files(root_dir: Path, filename: str) -> List[Path]:
     List[Path]
         A list of matching test file paths.
     """
-    test_dir = root_dir / "tests_L1_L2"
+    test_dir = root_dir / "tests"
     if not test_dir.exists():
         return []
 
@@ -204,7 +205,7 @@ def main() -> None:
     """
     Main entry point for the test check tool.
     """
-    parser = argparse.ArgumentParser(description="WAVEWATCH IV L1/L2 Test Check Tool")
+    parser = argparse.ArgumentParser(description="WAVEWATCH IV Test Check Tool")
     parser.add_argument(
         "--file",
         type=str,
@@ -240,7 +241,7 @@ def main() -> None:
 
     test_files = find_test_files(root_dir, filename)
     if not test_files:
-        print("\nNo test files found in tests_L1_L2/ matching the name.")
+        print("\nNo test files found in tests/ matching the name.")
     else:
         print("\nTest files found:")
         for f in test_files:

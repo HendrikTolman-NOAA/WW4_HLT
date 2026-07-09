@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file test_time_management.cpp
+ * @file L1_test_time_management.cpp
  * @brief Unit tests for time management routines using Google Test.
  * @details This file provides comprehensive unit testing for the TimeManagement
  * class, covering leap year cycles, fractional seconds, different calendars,
@@ -11,13 +11,16 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
+ * NWS often uses Generative AI (GenAI) for code development and refactoring.
+ * Whenever GenAI is used, NWS requires a full human review of code before it is
+ * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last Update, 2026-03-30
+ * @date Last update : 2026-05-26
  */
 
-#include "ww4_utils/time_management.hpp"
+#include "ww4_utils/time_management.h"
 #include <chrono>
 #include <gtest/gtest.h>
 #include <string>
@@ -26,23 +29,13 @@
 
 using namespace ww4_utils;
 
-/**
- * @class TimeManagementTest
- * @brief Test fixture for TimeManagement tests.
- */
 class TimeManagementTest : public ::testing::Test {
 protected:
-  /**
-   * @brief Sets up the test environment by setting the calendar to Standard.
-   */
   void SetUp() override {
     TimeManagement::setCalendarType(TimeManagement::CalendarType::Standard);
   }
 };
 
-/**
- * @test Verify leap year handling across multiple cycles.
- */
 TEST_F(TimeManagementTest, LeapYearCycles) {
   // 4-year cycle
   EXPECT_EQ(TimeManagement::incrementDateByDay(20040228, 1), 20040229);
@@ -67,9 +60,6 @@ TEST_F(TimeManagementTest, LeapYearCycles) {
   EXPECT_NEAR(dt.hms, 0.0, 1e-6);
 }
 
-/**
- * @test Verify fractional second arithmetic.
- */
 TEST_F(TimeManagementTest, FractionalSeconds) {
   DateTime dt = {20240101, 120000.0};
   TimeManagement::incrementDateTime(dt, 0.5);
@@ -83,9 +73,6 @@ TEST_F(TimeManagementTest, FractionalSeconds) {
   EXPECT_NEAR(TimeManagement::differenceInSeconds(dt1, dt2), 0.5, 1e-6);
 }
 
-/**
- * @test Verify 360-day calendar behavior.
- */
 TEST_F(TimeManagementTest, ThreeSixtyDayCalendar) {
   TimeManagement::setCalendarType(TimeManagement::CalendarType::ThreeSixtyDay);
 
@@ -98,9 +85,6 @@ TEST_F(TimeManagementTest, ThreeSixtyDayCalendar) {
               1e-6);
 }
 
-/**
- * @test Verify Julian day conversions.
- */
 TEST_F(TimeManagementTest, JulianConversions) {
   // Known Julian Day: 2024-02-26 is 2460367
   const int jd = TimeManagement::computeJulianDay(26, 2, 2024);
@@ -113,18 +97,12 @@ TEST_F(TimeManagementTest, JulianConversions) {
   EXPECT_EQ(y, 2024);
 }
 
-/**
- * @test Verify string formatting routines.
- */
 TEST_F(TimeManagementTest, StringFormatting) {
   const DateTime dt = {20240226, 153045.5};
   EXPECT_EQ(TimeManagement::toFormattedString(dt), "2024/02/26 15:30:45 UTC");
   EXPECT_EQ(TimeManagement::toIsoString(dt), "2024-02-26T15:30:45");
 }
 
-/**
- * @test Verify conversions between DateTime and DateArray.
- */
 TEST_F(TimeManagementTest, ArrayConversions) {
   const DateTime dt = {20240226, 153045.123};
   DateArray dat{};
@@ -145,9 +123,6 @@ TEST_F(TimeManagementTest, ArrayConversions) {
   EXPECT_NEAR(dt2.hms, dt.hms, 0.001);
 }
 
-/**
- * @test Verify subtraction of dates and times.
- */
 TEST_F(TimeManagementTest, SubtractionRoutines) {
   const DateArray t1 = {2024, 1, 1, 0, 0, 0, 0, 0};
   const DateArray t2 = {2024, 1, 2, 0, 12, 0, 0, 0}; // 1.5 days later
@@ -156,18 +131,12 @@ TEST_F(TimeManagementTest, SubtractionRoutines) {
   EXPECT_NEAR(TimeManagement::differenceInSeconds(t1, t2), 1.5 * 86400.0, 1e-6);
 }
 
-/**
- * @test Verify basic profiling initialization and capture.
- */
 TEST_F(TimeManagementTest, Profiling) {
   TimeManagement::initializeProfiling();
   const double t1 = TimeManagement::getProfilingTime();
   EXPECT_GE(t1, 0.0);
 }
 
-/**
- * @test Verify parsing of time units strings.
- */
 TEST_F(TimeManagementTest, UnitsConversion) {
   DateArray dat{};
   int ierr;
@@ -187,9 +156,6 @@ TEST_F(TimeManagementTest, UnitsConversion) {
   EXPECT_EQ(dat[4], 12);
 }
 
-/**
- * @test Verify system time retrieval and elapsed time calculation.
- */
 TEST_F(TimeManagementTest, SystemTimeRoutines) {
   DateArray dat{};
   TimeManagement::getSystemDateArray(dat);
@@ -217,9 +183,6 @@ TEST_F(TimeManagementTest, SystemTimeRoutines) {
   EXPECT_GE(dt.ymd, 20200101);
 }
 
-/**
- * @test Verify calendar type getter and setter.
- */
 TEST_F(TimeManagementTest, CalendarState) {
   // Check default (set to Standard in fixture SetUp)
   EXPECT_EQ(TimeManagement::getCalendarType(),
@@ -239,9 +202,6 @@ TEST_F(TimeManagementTest, CalendarState) {
             TimeManagement::CalendarType::Standard);
 }
 
-/**
- * @test Verify day of year calculations.
- */
 TEST_F(TimeManagementTest, DayOfYear) {
   // Standard calendar
   EXPECT_EQ(TimeManagement::getDayOfYear(20230101), 1);
@@ -254,9 +214,6 @@ TEST_F(TimeManagementTest, DayOfYear) {
   EXPECT_EQ(TimeManagement::getDayOfYear(20241230), 360); // 12 * 30
 }
 
-/**
- * @test Verify advanced Julian day conversions.
- */
 TEST_F(TimeManagementTest, AdvancedJulianConversions) {
   // Standard calendar
   DateArray dat = {2000, 1, 1, 0, 12, 0, 0, 0};
@@ -298,9 +255,6 @@ TEST_F(TimeManagementTest, AdvancedJulianConversions) {
   }
 }
 
-/**
- * @test Verify time2hours conversions.
- */
 TEST_F(TimeManagementTest, Time2Hours) {
   const DateTime dt = {20000101, 120000.0};
   const double hours = TimeManagement::time2hours(dt);
@@ -308,9 +262,6 @@ TEST_F(TimeManagementTest, Time2Hours) {
   EXPECT_NEAR(hours, 58837092.0, 1e-6);
 }
 
-/**
- * @test Verify NoLeap calendar behavior.
- */
 TEST_F(TimeManagementTest, NoLeapCalendar) {
   TimeManagement::setCalendarType(TimeManagement::CalendarType::NoLeap);
 
@@ -319,9 +270,6 @@ TEST_F(TimeManagementTest, NoLeapCalendar) {
   EXPECT_EQ(TimeManagement::getDayOfYear(20240301), 60); // 31 + 28 + 1
 }
 
-/**
- * @test Verify incrementDateTime with negative time steps.
- */
 TEST_F(TimeManagementTest, NegativeIncrements) {
   DateTime dt = {20240101, 0.0};
   TimeManagement::incrementDateTime(dt, -1.0);
@@ -333,9 +281,6 @@ TEST_F(TimeManagementTest, NegativeIncrements) {
   EXPECT_NEAR(dt.hms, 235959.0, 1e-6);
 }
 
-/**
- * @test Verify handling of Year 0 and other boundary years.
- */
 TEST_F(TimeManagementTest, YearZeroHandling) {
   EXPECT_EQ(TimeManagement::computeJulianDay(1, 1, 0), -1);
 
@@ -346,17 +291,11 @@ TEST_F(TimeManagementTest, YearZeroHandling) {
   EXPECT_EQ(errorCode, -1);
 }
 
-/**
- * @test Verify behavior for uninitialized/unset date and time.
- */
 TEST_F(TimeManagementTest, NotSetDateTime) {
   const DateTime dt = {-1, 0.0};
   EXPECT_EQ(TimeManagement::toFormattedString(dt), " date and time not set.");
 }
 
-/**
- * @test Verify differenceInSeconds with reverse time order.
- */
 TEST_F(TimeManagementTest, DifferenceInSecondsReverse) {
   const DateTime dt1 = {20240101, 120000.0};
   const DateTime dt2 = {20240101, 115959.0};
@@ -368,9 +307,6 @@ TEST_F(TimeManagementTest, DifferenceInSecondsReverse) {
               -1.0, 1e-6);
 }
 
-/**
- * @test Verify error handling for Julian day conversions.
- */
 TEST_F(TimeManagementTest, JulianErrorHandling) {
   DateArray dat{};
   int errorCode;
@@ -379,9 +315,6 @@ TEST_F(TimeManagementTest, JulianErrorHandling) {
   EXPECT_EQ(errorCode, 1);
 }
 
-/**
- * @test Verify error handling for units parsing.
- */
 TEST_F(TimeManagementTest, UnitsParsingErrors) {
   DateArray dat{};
   int errorCode;
