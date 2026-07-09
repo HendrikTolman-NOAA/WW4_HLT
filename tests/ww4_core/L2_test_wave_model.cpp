@@ -1,6 +1,24 @@
 /**
- * @file test_wave_model.cpp
+ *       +--------------------------------------------------------+
+ *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
+ *       +--------------------------------------------------------+
+ *
+ * @file L2_test_wave_model.cpp
  * @brief Integration tests for the WaveModel class with integrated physics.
+ * @details Verifies the integration of solvers and source term physics in the
+ *          orchestration loop of the main WaveModel.
+ * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
+ * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
+ * Weather Service.
+ *
+ * NWS often uses Generative AI (GenAI) for code development and refactoring.
+ * Whenever GenAI is used, NWS requires a full human review of code before it is
+ * added to its repositories.
+ *
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-06-24
  */
 
 #include "ww4_core/scheme_factory.hpp"
