@@ -13,8 +13,8 @@
 #NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI), Kit Stokes
-#@date Initial : 2026-03-20
-#@date Last update : 2026-06-08
+#@date Initial : 2026-07-09
+#@date Last update : 2026-07-09
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -158,6 +158,7 @@ ww4_add_test(test_ww4_std_out tests/ww4_utils/L1_test_ww4_std_out.cpp ww4_utils)
 ww4_add_test(test_ww4_logfile tests/ww4_utils/L1_test_ww4_logfile.cpp ww4_utils)
 ww4_add_test(test_ww4_standalone_config tests/ww4_utils/L1_test_ww4_standalone_config.cpp ww4_utils)
 ww4_add_test(test_ww4_run_config tests/ww4_utils/L1_test_ww4_run_config.cpp ww4_utils)
+ww4_add_test(test_ww4_input_utils tests/ww4_utils/L1_test_ww4_input_utils.cpp ww4_utils)
 ww4_add_test(test_ww4_output_utils tests/ww4_utils/L1_test_ww4_output_utils.cpp ww4_utils)
 ww4_add_test(test_ww4_service tests/ww4_utils/L1_test_ww4_service.cpp ww4_utils)
 ww4_add_test(test_ww4_constants tests/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
