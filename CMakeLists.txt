@@ -164,6 +164,9 @@ ww4_add_test(test_ww4_service tests/ww4_utils/L1_test_ww4_service.cpp ww4_utils)
 ww4_add_test(test_ww4_constants tests/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
 
 # Core tests
+ww4_add_test(test_w4core_init tests/ww4_core/L1_test_w4core_init.cpp ww4_core)
+ww4_add_test(test_w4core_wave tests/ww4_core/L1_test_w4core_wave.cpp ww4_core)
+ww4_add_test(test_w4core_finalize tests/ww4_core/L1_test_w4core_finalize.cpp ww4_core)
 ww4_add_test(test_w4core_time tests/ww4_core/L2_test_w4core_time.cpp ww4_core)
 ww4_add_test(test_w4core_wave_output tests/ww4_core/L2_test_w4core_wave_output.cpp ww4_core)
 ww4_add_test(test_w4core_zero_step tests/ww4_core/L2_test_w4core_zero_step.cpp ww4_core)
