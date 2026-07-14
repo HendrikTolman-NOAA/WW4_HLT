@@ -19,7 +19,7 @@
 # @author Main Author(s): Aldgisl (AI Persona), Hendrik Tolman
 # @author Contributors: Jules (Agentic AI)
 # @date Initial, 2026-03-24
-# @date Last update : 2026-06-24
+# @date Last update : 2026-07-14
 
 # Helper function to find all WW4 clones
 find_clones() {
