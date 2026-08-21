@@ -2,13 +2,20 @@
   <img src="https://github.com/NOAA-EMC/WW4/wiki/images/WW4_banner.jpg" alt="WW4 banner" height="100">
 </p>
 
-# External libraries used in WW4
+# External Libraries Used in WW4
 
-Copies of external libraries used by WW4 are gathered here in the **./externals** directory. We chose to keep copies of these libraries here to allow for off-line development work for WW4.
+Copies of external libraries used by WAVEWATCH IV (WW4) reside in this `./externals` directory to support fully offline development and compilation without requiring network access during `cmake build`.
 
-The libraries are gathered here but are not part of the repository to avoid unnecessary growth of the size of the repository.
+## Libraries Included
 
-The libraries and their version used for WW4 are documented `*** add the YAML file for this ***`, and their inclusion in this directory is automated using the `*** add script name ***` in the **./bin** directory of the repository.
+- **`yaml-cpp`** (v0.8.0): C++ YAML parser library used by `ww4_utils` for reading run configuration files.
+- **`googletest`** (v1.14.0): Testing framework used for unit (`L1_test_...`) and integration (`L2_test_...`) test targets when `WW4_ENABLE_TESTING` is enabled (`ON`).
+
+## Usage
+
+CMake automatically checks for local source directories in `./externals` (e.g. `./externals/yaml-cpp` and `./externals/googletest`). When present, CMake uses these local copies directly via `FetchContent` without performing any remote HTTP/HTTPS downloads.
+
+If `WW4_ENABLE_TESTING` is set to `OFF` (e.g., for NOAA operational deployments), GoogleTest is skipped entirely.
 
 #
 <p align="right">
