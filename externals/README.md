@@ -4,13 +4,19 @@
 
 # External libraries used in WW4
 
-Copies of external libraries used by WW4 can be placed here in the `./externals` directory to support offline development and compilation without requiring network access during `cmake build`.
-
-The WW4 CMake build system automatically detects local copies of dependencies if present in this directory:
+External libraries used by WW4 are included as Git submodules in the `./externals` directory:
 - `externals/yaml-cpp` (version 0.8.0) - Configuration file parsing
 - `externals/googletest` (version 1.14.0) - C++ unit testing framework (when testing is enabled)
 
-When these directories exist, CMake uses the local source trees directly instead of downloading source archives from external network locations.
+To clone WW4 with external dependencies included, use:
+```bash
+git clone --recursive https://github.com/NOAA-EMC/WW4.git
+```
+
+If the repository was cloned without `--recursive`, initialize and update submodules using:
+```bash
+git submodule update --init --recursive
+```
 
 #
 <p align="right">
