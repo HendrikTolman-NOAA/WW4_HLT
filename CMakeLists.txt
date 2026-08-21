@@ -59,25 +59,12 @@ else()
     endif()
 endif()
 
-include(FetchContent)
-
 # yaml-cpp for configuration parsing
 if(EXISTS "${CMAKE_SOURCE_DIR}/externals/yaml-cpp/CMakeLists.txt")
-    FetchContent_Declare(
-        yaml-cpp
-        SOURCE_DIR "${CMAKE_SOURCE_DIR}/externals/yaml-cpp"
-        SYSTEM
-    )
+    add_subdirectory(externals/yaml-cpp EXCLUDE_FROM_ALL SYSTEM)
 else()
-    FetchContent_Declare(
-        yaml-cpp
-        URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.zip
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-        SYSTEM
-    )
+    message(FATAL_ERROR "yaml-cpp submodule not found in externals/yaml-cpp. Please run: git submodule update --init --recursive")
 endif()
-
-FetchContent_MakeAvailable(yaml-cpp)
 
 # Library: ww4_utils
 add_library(
@@ -124,24 +111,12 @@ set_target_properties(
 # Tests (skipped when WW4_ENABLE_TESTING is OFF for operational builds)
 if(WW4_ENABLE_TESTING)
     if(EXISTS "${CMAKE_SOURCE_DIR}/externals/googletest/CMakeLists.txt")
-        FetchContent_Declare(
-            googletest
-            SOURCE_DIR "${CMAKE_SOURCE_DIR}/externals/googletest"
-            SYSTEM
-        )
+        # For Windows: Prevent overriding the parent project's compiler/linker settings
+        set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+        add_subdirectory(externals/googletest EXCLUDE_FROM_ALL SYSTEM)
     else()
-        FetchContent_Declare(
-            googletest
-            URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
-            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-            SYSTEM
-        )
+        message(FATAL_ERROR "googletest submodule not found in externals/googletest. Please run: git submodule update --init --recursive")
     endif()
-
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-    FetchContent_MakeAvailable(googletest)
 
     # Suppress warnings from GTest itself for Clang/IntelLLVM during compilation
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")

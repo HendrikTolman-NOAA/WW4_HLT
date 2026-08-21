@@ -63,13 +63,20 @@ cmake --build build_ops
 ```
 When `WW4_ENABLE_TESTING=OFF`, GoogleTest dependencies and test targets are completely skipped during build configuration and execution.
 
-### 4. Offline Builds with Local Dependencies
+### 4. Git Submodules for External Dependencies
 
-To perform offline builds without network access during `cmake build`, place local source directories in the `externals/` directory:
-- `externals/yaml-cpp`
-- `externals/googletest`
+WAVEWATCH IV includes required external dependencies as Git submodules in the `externals/` directory:
+- `externals/yaml-cpp` (version 0.8.0)
+- `externals/googletest` (version 1.14.0)
 
-CMake will automatically detect and use these local source trees.
+When cloning the repository, initialize submodules using:
+```bash
+git clone --recursive https://github.com/NOAA-EMC/WW4.git
+```
+Or if already cloned, initialize and update submodules using:
+```bash
+git submodule update --init --recursive
+```
 
 # 
 <p align="right">
