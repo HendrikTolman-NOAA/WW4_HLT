@@ -4,11 +4,13 @@
 
 # External libraries used in WW4
 
-Copies of external libraries used by WW4 are gathered here in the **./externals** directory. We chose to keep copies of these libraries here to allow for off-line development work for WW4.
+Copies of external libraries used by WW4 can be placed here in the `./externals` directory to support offline development and compilation without requiring network access during `cmake build`.
 
-The libraries are gathered here but are not part of the repository to avoid unnecessary growth of the size of the repository.
+The WW4 CMake build system automatically detects local copies of dependencies if present in this directory:
+- `externals/yaml-cpp` (version 0.8.0) - Configuration file parsing
+- `externals/googletest` (version 1.14.0) - C++ unit testing framework (when testing is enabled)
 
-The libraries and their version used for WW4 are documented `*** add the YAML file for this ***`, and their inclusion in this directory is automated using the `*** add script name ***` in the **./bin** directory of the repository.
+When these directories exist, CMake uses the local source trees directly instead of downloading source archives from external network locations.
 
 #
 <p align="right">
