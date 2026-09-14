@@ -114,9 +114,11 @@ rm -rf exe/*
 
 ### 6. Git Submodules for External Dependencies
 
-WAVEWATCH IV includes required external dependencies as Git submodules in the `externals/` directory:
-- `externals/yaml-cpp` (version 0.8.0)
-- `externals/googletest` (version 1.14.0)
+WAVEWATCH IV treats third-party dependencies (`yaml-cpp` and `googletest`) as Git submodules located within the `externals/` directory rather than requiring system-installed packages or external downloads:
+- `externals/yaml-cpp` (version 0.8.0) - Configuration file parsing
+- `externals/googletest` (version 1.14.0) - C++ unit testing framework (included when `WW4_ENABLE_TESTING=ON`)
+
+CMake integrates these submodules directly into the build system using `add_subdirectory`, building them in-tree from source. This ensures self-contained, reproducible, and offline-friendly builds without external system library requirements.
 
 When cloning the repository, initialize submodules using:
 ```bash
