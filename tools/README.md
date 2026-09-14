@@ -12,6 +12,55 @@ The tools gathered here are documented on the [WW4 Tools](https://github.com/NOA
 
 WAVEWATCH IV uses a standard CMake build system. Build configuration is handled locally in each repository clone using CMake options and standard environment variables. The build system does not modify the user's interactive environment or shell profile scripts.
 
+## Setting the Compiler
+
+You can specify the C++ compiler either by exporting the `CXX` environment variable or by passing `-DCMAKE_CXX_COMPILER` directly to CMake.
+
+### Using Environment Variables:
+```bash
+# Using GCC
+export CXX=g++
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+# Using Clang
+export CXX=clang++
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+# Using Intel LLVM (icpx)
+export CXX=icpx
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+```
+
+### Specifying the Compiler in CMake Command:
+```bash
+# Explicitly set the C++ compiler via CMake
+cmake -B build -S . -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release
+cmake -B build -S . -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
+```
+
+## Compiler and Build Options
+
+WW4 supports standard CMake build configuration flags:
+
+- **Build Type (`-DCMAKE_BUILD_TYPE`):** Set to `Release`, `Debug`, `RelWithDebInfo`, or `MinSizeRel`.
+  ```bash
+  cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+  ```
+- **Strict Compiler Warnings (`-DWW4_STRICT_WARNINGS=ON|OFF`):** Enables strict compiler warnings (`-Wall -Wextra -Wpedantic -Werror` / `/W4 /WX`) with appropriate suppressions for external dependencies on supported compilers. Default is `OFF`.
+  ```bash
+  cmake -B build -S . -DWW4_STRICT_WARNINGS=ON
+  ```
+- **Sanitizers (`-DWW4_USE_SANITIZERS=ON|OFF`):** Enables AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan). Default is `OFF`.
+  ```bash
+  cmake -B build -S . -DWW4_USE_SANITIZERS=ON
+  ```
+- **Enable/Disable Testing (`-DWW4_ENABLE_TESTING=ON|OFF`):** Controls whether GoogleTest submodules and test targets are included in the build system. Default is `ON`.
+  ```bash
+  # For NOAA operational builds without testing components:
+  cmake -B build_ops -S . -DWW4_ENABLE_TESTING=OFF
+  cmake --build build_ops
+  ```
+
 ## Building WAVEWATCH IV
 
 ```bash
@@ -20,12 +69,6 @@ cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 
 # Build executables and libraries
 cmake --build build
-```
-
-For NOAA operational builds without testing components:
-```bash
-cmake -B build_ops -S . -DWW4_ENABLE_TESTING=OFF
-cmake --build build_ops
 ```
 
 # Developer Tools
