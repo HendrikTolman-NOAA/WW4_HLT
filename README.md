@@ -22,17 +22,20 @@ WAVEWATCH IV uses a standard CMake build system (v3.25+). All compilation is loc
 
 ### 1. Setting up the Compile Environment
 
-Environment parameters needed for CMake are set externally by the user, depending on the target system hardware and software configuration.
+You can specify the C++ compiler either by exporting the `CXX` environment variable or by passing `-DCMAKE_CXX_COMPILER` directly to CMake, depending on the target system hardware and software configuration.
 
 #### On Linux (GCC, Clang, or Intel LLVM):
-Set the C++ compiler via environment variables or CMake definitions:
 ```bash
-# Using GCC
+# Using GCC via environment variable
 export CXX=g++
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 
-# Or specifying the compiler explicitly via CMake
+# Using Clang explicitly via CMake argument
 cmake -B build -S . -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
+
+# Using Intel LLVM (icpx)
+export CXX=icpx
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 ```
 
 #### On macOS (Apple Clang or Homebrew LLVM/GCC):
@@ -44,17 +47,46 @@ cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 # Using Homebrew GCC or LLVM
 export CXX=/opt/homebrew/bin/g++-13
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+# Or specifying Homebrew LLVM explicitly via CMake argument
+cmake -B build -S . -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ -DCMAKE_BUILD_TYPE=Release
 ```
 
-### 2. Building the Project
+### 2. Compiler and Build Options
+
+WW4 supports standard CMake build configuration flags:
+
+- **Build Type (`-DCMAKE_BUILD_TYPE`):** Set to `Release`, `Debug`, `RelWithDebInfo`, or `MinSizeRel`. Default is `Release`.
+  ```bash
+  cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+  ```
+- **Strict Compiler Warnings (`-DWW4_STRICT_WARNINGS=ON|OFF`):** Enables strict compiler warnings (`-Wall -Wextra -Wpedantic -Werror` / `/W4 /WX`) with appropriate suppressions for external dependencies on supported compilers. Default is `OFF`.
+  ```bash
+  cmake -B build -S . -DWW4_STRICT_WARNINGS=ON
+  ```
+- **Sanitizers (`-DWW4_USE_SANITIZERS=ON|OFF`):** Enables AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan). Default is `OFF`.
+  ```bash
+  cmake -B build -S . -DWW4_USE_SANITIZERS=ON
+  ```
+- **Enable/Disable Testing (`-DWW4_ENABLE_TESTING=ON|OFF`):** Controls whether GoogleTest submodules and test targets are included in the build system. Default is `ON`.
+  ```bash
+  # For NOAA operational builds without testing components:
+  cmake -B build_ops -S . -DWW4_ENABLE_TESTING=OFF
+  cmake --build build_ops
+  ```
+
+### 3. Building the Project
 
 Standard development build (includes tests):
 ```bash
+# Configure build
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+# Build executables and libraries
 cmake --build build
 ```
 
-### 3. NOAA Operational Builds (Disabling Testing)
+### 4. NOAA Operational Builds (Disabling Testing)
 
 For NOAA operational environments, testing dependencies and test executables can be completely disabled using the `-DWW4_ENABLE_TESTING=OFF` flag:
 ```bash
@@ -63,7 +95,24 @@ cmake --build build_ops
 ```
 When `WW4_ENABLE_TESTING=OFF`, GoogleTest dependencies and test targets are completely skipped during build configuration and execution.
 
-### 4. Git Submodules for External Dependencies
+### 5. Cleaning Build Artifacts
+
+To remove compiled object files, static libraries, and executables (including unit test executables located in `build/bin/`) generated during a build:
+```bash
+# Clean built object files, libraries, and executables target-by-target
+cmake --build build --target clean
+```
+
+To perform a complete clean and remove all generated build directories and executable output folders:
+```bash
+# Remove build tree directory completely
+rm -rf build
+
+# Remove files in standalone executable directory if present
+rm -rf exe/*
+```
+
+### 6. Git Submodules for External Dependencies
 
 WAVEWATCH IV includes required external dependencies as Git submodules in the `externals/` directory:
 - `externals/yaml-cpp` (version 0.8.0)
