@@ -86,8 +86,8 @@ To perform a complete clean and remove all generated build directories and execu
 # Remove build tree directory completely
 rm -rf build
 
-# Remove standalone executable directory if present
-rm -rf exe
+# Remove files in standalone executable directory if present
+rm -rf exe/*
 ```
 
 # Developer Tools
