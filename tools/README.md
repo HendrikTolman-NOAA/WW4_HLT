@@ -71,6 +71,25 @@ cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
+## Cleaning Build Artifacts
+
+To remove compiled object files, static libraries, and executables (including unit test executables located in `build/bin/`) generated during a build:
+
+```bash
+# Clean built object files, libraries, and executables target-by-target
+cmake --build build --target clean
+```
+
+To perform a complete clean and remove all generated build directories and executable output folders:
+
+```bash
+# Remove build tree directory completely
+rm -rf build
+
+# Remove standalone executable directory if present
+rm -rf exe
+```
+
 # Developer Tools
 
 WAVEWATCH IV provides additional tools to support developers during the coding process.
