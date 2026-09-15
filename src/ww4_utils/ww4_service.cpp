@@ -22,6 +22,8 @@
 
 #include "ww4_utils/ww4_service.h"
 
+#include <algorithm>
+
 /**
  * @namespace ww4_constants
  * @brief Namespace containing all physical and mathematical constants.
