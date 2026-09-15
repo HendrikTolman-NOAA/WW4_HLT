@@ -22,10 +22,13 @@
  */
 
 #include "ww4_core/w4core_wave.h"
+
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/time_management.h"
 #include "ww4_utils/ww4_input_utils.h"
 #include "ww4_utils/ww4_std_out.h"
+
+#include <algorithm>
 #include <chrono>
 #include <exception>
 #include <iostream>
