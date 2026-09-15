@@ -70,7 +70,7 @@ WW4 supports standard CMake build configuration flags:
   ```
 - **Enable/Disable Testing (`-DWW4_ENABLE_TESTING=ON|OFF`):** Controls whether GoogleTest submodules and test targets are included in the build system. Default is `ON`.
   ```bash
-  # For NOAA operational builds without testing components:
+  # For operational builds without testing components:
   cmake -B build_ops -S . -DWW4_ENABLE_TESTING=OFF
   cmake --build build_ops
   ```
@@ -86,9 +86,9 @@ cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-### 4. NOAA Operational Builds (Disabling Testing)
+### 4. Operational Builds (Disabling Testing)
 
-For NOAA operational environments, testing dependencies and test executables can be completely disabled using the `-DWW4_ENABLE_TESTING=OFF` flag:
+For operational environments, testing dependencies and test executables can be completely disabled using the `-DWW4_ENABLE_TESTING=OFF` flag:
 ```bash
 cmake -B build_ops -S . -DWW4_ENABLE_TESTING=OFF
 cmake --build build_ops
