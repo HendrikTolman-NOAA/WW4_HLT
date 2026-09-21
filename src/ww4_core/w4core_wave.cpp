@@ -47,7 +47,10 @@ namespace ww4_core {
  */
 void w4core_wave_uq(double timeStep, std::ostream &os) {
   (void)timeStep;
-  (void)os;
+  if (getRunConfig().produceStdOut &&
+      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
+    os << "    Executing UQ regular grid solver" << std::endl;
+  }
   // Execution logic for UQ regular grid solver
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
@@ -59,7 +62,10 @@ void w4core_wave_uq(double timeStep, std::ostream &os) {
  */
 void w4core_wave_triangular(double timeStep, std::ostream &os) {
   (void)timeStep;
-  (void)os;
+  if (getRunConfig().produceStdOut &&
+      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
+    os << "    Executing Triangular unstructured grid solver" << std::endl;
+  }
   // Execution logic for Triangular unstructured grid solver
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
@@ -72,7 +78,10 @@ void w4core_wave_triangular(double timeStep, std::ostream &os) {
  */
 void w4core_wave_smc(double timeStep, std::ostream &os) {
   (void)timeStep;
-  (void)os;
+  if (getRunConfig().produceStdOut &&
+      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
+    os << "    Executing SMC grid solver" << std::endl;
+  }
   // Execution logic for SMC grid solver
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
