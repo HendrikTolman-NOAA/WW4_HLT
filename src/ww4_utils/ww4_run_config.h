@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-15
  */
 
 #pragma once
@@ -30,6 +30,22 @@
 #include <vector>
 
 namespace ww4_utils {
+
+/**
+ * @enum SolverType
+ * @brief Numerical solver options for WAVEWATCH IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var SolverType::Undefined
+ * @brief Mandatory solver selection not specified.
+ * @var SolverType::UQ
+ * @brief Regular grid solver using Ultimate Quickest scheme.
+ * @var SolverType::Triangular
+ * @brief Triangular unstructured grid solver.
+ * @var SolverType::SMC
+ * @brief Spherical Multiple-Cell (SMC) grid solver.
+ */
+enum class SolverType { Undefined, UQ, Triangular, SMC };
 
 /**
  * @enum InputFieldOption
@@ -126,6 +142,8 @@ struct HomogeneousDataPoint {
  * @brief Propagation flag in k-direction.
  * @var RunConfig::sourceTerms
  * @brief Source terms flag.
+ * @var RunConfig::solver
+ * @brief Selected numerical solver type.
  * @var RunConfig::waterLevels
  * @brief Water levels option.
  * @var RunConfig::currents
@@ -172,6 +190,8 @@ struct RunConfig {
   bool propagateTheta = true;
   bool propagateK = true;
   bool sourceTerms = true;
+
+  SolverType solver = SolverType::Undefined;
 
   InputFieldOption waterLevels = InputFieldOption::Undefined;
   InputFieldOption currents = InputFieldOption::Undefined;

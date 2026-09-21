@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-05-26
+ * @date Last update : 2026-09-15
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -39,6 +39,43 @@
  * @brief Core routines for WAVEWATCH IV.
  */
 namespace ww4_core {
+
+/**
+ * @brief Solver routine for Ultimate Quickest (UQ) scheme on a regular grid.
+ * @param[in] timeStep Time step in seconds.
+ * @param[in] os Output stream.
+ */
+void w4core_wave_uq(double timeStep, std::ostream &os) {
+  (void)timeStep;
+  (void)os;
+  // Execution logic for UQ regular grid solver
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+}
+
+/**
+ * @brief Solver routine for TBD triangular unstructured grid approach.
+ * @param[in] timeStep Time step in seconds.
+ * @param[in] os Output stream.
+ */
+void w4core_wave_triangular(double timeStep, std::ostream &os) {
+  (void)timeStep;
+  (void)os;
+  // Execution logic for Triangular unstructured grid solver
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+}
+
+/**
+ * @brief Solver routine for UK MetOffice Spherical Multiple-Cell (SMC) grid
+ * solver.
+ * @param[in] timeStep Time step in seconds.
+ * @param[in] os Output stream.
+ */
+void w4core_wave_smc(double timeStep, std::ostream &os) {
+  (void)timeStep;
+  (void)os;
+  // Execution logic for SMC grid solver
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+}
 
 /**
  * @brief Time stepping routine for the WAVEWATCH IV core.
@@ -179,9 +216,22 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         // 4.  Propagate the solution (the actual model)
         // -------------------------
         //
-        // Sleep for 0.01 seconds until we have something to do here
-        //
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        switch (getRunConfig().solver) {
+        case ww4_utils::SolverType::UQ:
+          w4core_wave_uq(actualTimeStep, os);
+          break;
+        case ww4_utils::SolverType::Triangular:
+          w4core_wave_triangular(actualTimeStep, os);
+          break;
+        case ww4_utils::SolverType::SMC:
+          w4core_wave_smc(actualTimeStep, os);
+          break;
+        default:
+          ww4_utils::ww4_std_out::extcde(
+              1, os, "No numerical solver specified or unknown solver.",
+              __FILE__, __LINE__);
+          break;
+        }
         //
         // 4.1 Update the model time
         // --------------------------------------------

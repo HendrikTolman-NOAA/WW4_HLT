@@ -3,9 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file source_st4.cpp
- * @brief Implementation of the ST4 source term.
- * @details Concrete implementation of the ISourceTerm interface.
+ * @file solver_triangular.cpp
+ * @brief Implementation of the triangular grid solver stub.
+ * @details Concrete implementation of the ISolver interface for triangular
+ * unstructured grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -16,21 +17,31 @@
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Initial, 2026-09-15
+ * @date Last update : 2026-09-15
  */
 
-#include "ww4_core/source_st4.hpp"
+#include "ww4_core/solver_triangular/solver_triangular.hpp"
 #include <algorithm>
 
 namespace ww4_core {
 
-void SourceSt4::calculate(std::span<double> data) {
-  // Placeholder implementation for ST4 source term logic.
-  // In a real implementation, this would involve physics calculations.
+void SolverTriangular::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+  if (source) {
+    sourceTerms_.push_back(std::move(source));
+  }
+}
+
+void SolverTriangular::solve(std::span<double> data) {
+  // 1. Perform numerical propagation (dynamics for triangular grid)
   std::for_each(data.begin(), data.end(), [](double &val) {
-    val += 0.5; // Mock source term effect
+    val *= 1.02; // Mock propagation effect
   });
+
+  // 2. Call integrated source terms (physics)
+  for (auto &source : sourceTerms_) {
+    source->calculate(data);
+  }
 }
 
 } // namespace ww4_core

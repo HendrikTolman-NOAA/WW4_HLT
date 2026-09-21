@@ -34,6 +34,8 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "  produce_std_out: \"no\"\n";
   file << "  produce_log_file: \"no\"\n";
   file << "  time_step: 1800.0\n";
+  file << "physics:\n";
+  file << "  solver: \"uq\"\n";
   file << "forcing:\n";
   file << "  water_levels: \"from_file\"\n";
   file << "  currents: \"from_coupling\"\n";
@@ -59,6 +61,68 @@ TEST(RunConfigTest, NonDefaultConfig) {
   std::remove(filename.c_str());
 }
 
+TEST(RunConfigTest, SolverSelectionParsing) {
+  // Test triangular solver
+  {
+    const std::string filename = "test_solver_tri.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: triangular\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->solver, SolverType::Triangular);
+    std::remove(filename.c_str());
+  }
+
+  // Test SMC solver
+  {
+    const std::string filename = "test_solver_smc.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: smc\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->solver, SolverType::SMC);
+    std::remove(filename.c_str());
+  }
+
+  // Test missing solver failure
+  {
+    const std::string filename = "test_solver_missing.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+                 "Missing or invalid mandatory fields.");
+    std::remove(filename.c_str());
+  }
+}
+
 TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   // Explicitly reference helper routines for coverage detection tool:
   // parseHomogeneousString
@@ -72,6 +136,8 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: homogeneous\n";
   file << "  currents: homogeneous\n";
@@ -116,6 +182,8 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "  screen_output_level: summary\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -140,6 +208,8 @@ TEST(RunConfigTest, OutputConfigParsing) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -185,6 +255,8 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -241,6 +313,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "  propagate_theta: no\n";
   file << "  propagate_k: no\n";
   file << "  source_terms: no\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -297,6 +370,8 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "  produce_std_out: yes\n";
   file << "  produce_log_file : \"no\"\n";
   file << "  time_step : 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: \"uq\"\n";
   file << "forcing:\n";
   file << "  water_levels : \"none\"\n";
   file << "  currents : none # inline comment\n";
@@ -351,6 +426,8 @@ TEST(RunConfigTest, ApiOutputConfig) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -440,6 +517,8 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   file << "general:\n";
   file << "  calendar_type: \"ThreeSixtyDay\"\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -465,6 +544,8 @@ TEST(RunConfigTest, PartialConfig) {
   file << "general:\n";
   file << "  produce_std_out: \"no\"\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -487,6 +568,8 @@ TEST(RunConfigTest, TimeStepFailure) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: -1.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -521,6 +604,8 @@ TEST(RunConfigTest, BottomDepthDefault) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -541,6 +626,8 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -561,6 +648,8 @@ TEST(RunConfigTest, FromGridRejection) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: from_grid\n";
   file << "  currents: none\n";
@@ -581,6 +670,8 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
   file << "forcing:\n";
   file << "  water_levels: \"none\"\n";
   file << "  currents: \"from_file\"\n";

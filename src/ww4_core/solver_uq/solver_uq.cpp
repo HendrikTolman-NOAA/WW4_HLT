@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file source_st4.hpp
- * @brief Header for the ST4 source term scheme.
- * @details Concrete implementation of the ISourceTerm interface.
+ * @file solver_uq.cpp
+ * @brief Implementation of the UQ solver.
+ * @details Concrete implementation of the ISolver interface for regular grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -16,21 +16,31 @@
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Initial, 2026-09-15
+ * @date Last update : 2026-09-15
  */
 
-#pragma once
-
-#include "ww4_core/source_term.hpp"
+#include "ww4_core/solver_uq/solver_uq.hpp"
+#include <algorithm>
 
 namespace ww4_core {
 
-class SourceSt4 : public ISourceTerm {
-public:
-  std::string_view getName() const noexcept override { return "ST4"; }
+void SolverUQ::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+  if (source) {
+    sourceTerms_.push_back(std::move(source));
+  }
+}
 
-  void calculate(std::span<double> data) override;
-};
+void SolverUQ::solve(std::span<double> data) {
+  // 1. Perform numerical propagation (dynamics for UQ scheme)
+  std::for_each(data.begin(), data.end(), [](double &val) {
+    val *= 1.01; // Mock propagation effect
+  });
+
+  // 2. Call integrated source terms (physics)
+  for (auto &source : sourceTerms_) {
+    source->calculate(data);
+  }
+}
 
 } // namespace ww4_core

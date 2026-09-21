@@ -49,6 +49,8 @@ TEST_F(W4CoreHomInputTest, ValidHomogeneousInput) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: homogeneous
   currents: none
@@ -90,6 +92,8 @@ TEST_F(W4CoreHomInputTest, SummaryEcho) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: homogeneous
   currents: none
@@ -117,6 +121,8 @@ TEST_F(W4CoreHomInputTest, MultipleFields) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: homogeneous
   winds: homogeneous
@@ -155,6 +161,8 @@ TEST_F(W4CoreHomInputTest, BackwardTimeStamps) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: homogeneous
   currents: none
@@ -175,6 +183,8 @@ TEST_F(W4CoreHomInputTest, MissingDataForHomogeneousField) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: homogeneous
   currents: none
@@ -192,6 +202,8 @@ TEST_F(W4CoreHomInputTest, IceConcentrationRange) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none
@@ -212,6 +224,8 @@ TEST_F(W4CoreHomInputTest, WindsParameterCount) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none
@@ -232,6 +246,8 @@ TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none

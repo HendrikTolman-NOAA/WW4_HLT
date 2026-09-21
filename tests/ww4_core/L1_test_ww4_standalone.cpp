@@ -81,6 +81,7 @@ TEST_F(WW4StandaloneL1Test, ValidConfigSucceeds) {
           << "  time_step: 3600.0\n"
           << "physics:\n"
           << "  dry_run: \"no\"\n"
+          << "  solver: \"uq\"\n"
           << "forcing:\n"
           << "  bottom_depth: \"from_grid\"\n"
           << "  water_levels: \"none\"\n"

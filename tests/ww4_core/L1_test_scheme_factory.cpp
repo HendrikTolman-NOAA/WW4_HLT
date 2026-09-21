@@ -26,16 +26,28 @@
 
 namespace ww4_core {
 
-TEST(SchemeFactoryTest, CreateSolverPR3) {
-  auto solver = SchemeFactory::createSolver("PR3");
+TEST(SchemeFactoryTest, CreateSolverUQ) {
+  auto solver = SchemeFactory::createSolver("UQ");
   ASSERT_NE(solver, nullptr);
-  EXPECT_EQ(solver->getName(), "PR3");
+  EXPECT_EQ(solver->getName(), "UQ");
 }
 
-TEST(SchemeFactoryTest, CreateSourceST4) {
-  auto scheme = SchemeFactory::createSourceTerm("ST4");
+TEST(SchemeFactoryTest, CreateSolverTriangular) {
+  auto solver = SchemeFactory::createSolver("Triangular");
+  ASSERT_NE(solver, nullptr);
+  EXPECT_EQ(solver->getName(), "Triangular");
+}
+
+TEST(SchemeFactoryTest, CreateSolverSMC) {
+  auto solver = SchemeFactory::createSolver("SMC");
+  ASSERT_NE(solver, nullptr);
+  EXPECT_EQ(solver->getName(), "SMC");
+}
+
+TEST(SchemeFactoryTest, CreateSourceStub) {
+  auto scheme = SchemeFactory::createSourceTerm("Stub");
   ASSERT_NE(scheme, nullptr);
-  EXPECT_EQ(scheme->getName(), "ST4");
+  EXPECT_EQ(scheme->getName(), "Stub");
 }
 
 TEST(SchemeFactoryTest, CreateUnknownSolver) {

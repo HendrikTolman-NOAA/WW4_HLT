@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-15
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -303,6 +303,16 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (node["source_terms"]) {
         config.sourceTerms = (node["source_terms"].as<std::string>() == "yes");
       }
+      if (node["solver"]) {
+        const auto solverStr = node["solver"].as<std::string>();
+        if (solverStr == "uq" || solverStr == "regular_uq") {
+          config.solver = SolverType::UQ;
+        } else if (solverStr == "triangular" || solverStr == "tbd_triangular") {
+          config.solver = SolverType::Triangular;
+        } else if (solverStr == "smc") {
+          config.solver = SolverType::SMC;
+        }
+      }
     }
 
     // 3. Forcing section
@@ -366,14 +376,18 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // Mandatory fields check
-    if (config.waterLevels == InputFieldOption::Undefined ||
+    if (config.solver == SolverType::Undefined ||
+        config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
         config.iceConcentrations == InputFieldOption::Undefined ||
         config.bottomDepth == InputFieldOption::Undefined) {
-      os << "WW4 ERROR: Mandatory model input field(s) missing or invalid "
+      os << "WW4 ERROR: Mandatory model configuration option(s) missing or "
+            "invalid "
             "in configuration."
          << std::endl;
+      if (config.solver == SolverType::Undefined)
+        os << "   Missing/invalid: physics -> solver" << std::endl;
       if (config.waterLevels == InputFieldOption::Undefined)
         os << "   Missing/invalid: forcing -> water_levels" << std::endl;
       if (config.currents == InputFieldOption::Undefined)
@@ -496,6 +510,16 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
          << (config.sourceTerms ? "yes" : "no") << std::endl;
     }
   }
+
+  std::string solverStr = "undefined";
+  if (config.solver == SolverType::UQ) {
+    solverStr = "uq";
+  } else if (config.solver == SolverType::Triangular) {
+    solverStr = "triangular";
+  } else if (config.solver == SolverType::SMC) {
+    solverStr = "smc";
+  }
+  os << "     Solver scheme        : " << solverStr << std::endl;
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
 
