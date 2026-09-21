@@ -95,11 +95,14 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
 
   EXPECT_EQ(getProgramName(), "test_init");
   EXPECT_EQ(getRunConfig().timeStep, 3600.0);
-  EXPECT_EQ(getSpectralSpace().frequencies.size(), 50);
-  EXPECT_EQ(getSpectralSpace().directions.size(), 36);
+  EXPECT_EQ(getRunConfig().spectralSpace.numDirections, 36);
+  EXPECT_EQ(getRunConfig().spectralSpace.numFrequencies, 50);
+  EXPECT_DOUBLE_EQ(getRunConfig().spectralSpace.freqIncrementFactor, 1.07);
+  EXPECT_DOUBLE_EQ(getRunConfig().spectralSpace.firstFrequency, 0.04118);
+  EXPECT_TRUE(getRunConfig().spectralSpace.firstDirectionOffset);
 
   resetInternalState();
-  EXPECT_EQ(getSpectralSpace().frequencies.size(), 0);
+  EXPECT_EQ(getProgramName(), "");
 }
 
 } // namespace ww4_core

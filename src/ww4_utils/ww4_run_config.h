@@ -89,9 +89,9 @@ enum class EchoOption { None, Summary, Full };
 
 /**
  * @struct SpectralConfig
- * @brief Configuration for the spectral space parameters.
- * @details Defines discrete frequency and direction parameters for spectral
- * grid setup.
+ * @brief Parameters defining the spectral space.
+ * @details Defines discrete frequency and direction parameters for setting up
+ * the spectral space based on WAVEWATCH III.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @var SpectralConfig::numDirections
@@ -112,32 +112,6 @@ struct SpectralConfig {
   double freqIncrementFactor = 1.07;
   double firstFrequency = 0.04118;
   bool firstDirectionOffset = true;
-};
-
-/**
- * @struct SpectralSpace
- * @brief Spectral space discrete data structures.
- * @details Holds calculated discrete frequencies, directions, bandwidths, and
- * angular frequencies.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @var SpectralSpace::frequencies
- * @brief Discrete frequencies array in Hz (size: numFrequencies).
- * @var SpectralSpace::directions
- * @brief Discrete directions array in radians (size: numDirections).
- * @var SpectralSpace::dfreq
- * @brief Discrete frequency bandwidths array in Hz (size: numFrequencies).
- * @var SpectralSpace::sigma
- * @brief Discrete angular frequencies array in rad/s (size: numFrequencies).
- * @var SpectralSpace::ddir
- * @brief Directional step in radians.
- */
-struct SpectralSpace {
-  std::vector<double> frequencies;
-  std::vector<double> directions;
-  std::vector<double> dfreq;
-  std::vector<double> sigma;
-  double ddir = 0.0;
 };
 
 /**
@@ -204,7 +178,7 @@ struct HomogeneousDataPoint {
  * @var RunConfig::homogeneousBottomDepth
  * @brief Homogeneous bottom depth data.
  * @var RunConfig::spectralSpace
- * @brief Spectral space configuration settings.
+ * @brief Parameters defining the spectral space.
  * @var RunConfig::timeStep
  * @brief Model time step in seconds.
  * @var RunConfig::outputApi
@@ -256,8 +230,6 @@ struct RunConfig {
 };
 
 std::string_view cleanValue(std::string_view s);
-
-SpectralSpace generateSpectralSpace(const SpectralConfig &config);
 
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;

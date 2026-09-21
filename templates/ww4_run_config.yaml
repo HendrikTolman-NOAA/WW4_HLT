@@ -40,7 +40,7 @@ general:
   time_step: 3600.0
 
 spectral_space:
-  # Discrete spectral space definition based on WAVEWATCH III.
+  # Parameters defining the discrete spectral space based on WAVEWATCH III.
 
   # Number of directional bins (default: 36).
   num_directions: 36

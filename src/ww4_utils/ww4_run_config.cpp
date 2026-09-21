@@ -26,7 +26,6 @@
 #include <charconv>
 #include <fstream>
 #include <iostream>
-#include <numbers>
 #include <string>
 #include <yaml-cpp/yaml.h>
 
@@ -230,49 +229,6 @@ std::string_view cleanValue(const std::string_view s) {
 }
 
 /**
- * @brief Generates the discrete spectral space data structures from
- * configuration.
- * @param config The SpectralConfig containing defining spectral parameters.
- * @return A SpectralSpace structure populated with frequencies, directions,
- * bandwidths, and angular frequencies.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- */
-SpectralSpace generateSpectralSpace(const SpectralConfig &config) {
-  SpectralSpace space;
-  if (config.numDirections <= 0 || config.numFrequencies <= 0 ||
-      config.freqIncrementFactor <= 1.0 || config.firstFrequency <= 0.0) {
-    return space;
-  }
-
-  space.frequencies.resize(config.numFrequencies);
-  space.dfreq.resize(config.numFrequencies);
-  space.sigma.resize(config.numFrequencies);
-
-  double currentF = config.firstFrequency;
-  const double factor = config.freqIncrementFactor;
-  const double dfactor = 0.5 * (factor - 1.0 / factor);
-  const double pi2 = 2.0 * std::numbers::pi;
-
-  for (int m = 0; m < config.numFrequencies; ++m) {
-    space.frequencies[m] = currentF;
-    space.dfreq[m] = currentF * dfactor;
-    space.sigma[m] = currentF * pi2;
-    currentF *= factor;
-  }
-
-  space.directions.resize(config.numDirections);
-  space.ddir = pi2 / static_cast<double>(config.numDirections);
-  const double offset = config.firstDirectionOffset ? (0.5 * space.ddir) : 0.0;
-
-  for (int l = 0; l < config.numDirections; ++l) {
-    space.directions[l] = offset + static_cast<double>(l) * space.ddir;
-  }
-
-  return space;
-}
-
-/**
  * @brief Loads the run-time configuration from a YAML file.
  * @details Reads the specified YAML file, extracts configuration settings
  *          from nested sections (general, physics, forcing, homogeneous_data,
@@ -455,12 +411,13 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // Spectral space validation
+    // Spectral space parameters validation
     if (config.spectralSpace.numDirections <= 0 ||
         config.spectralSpace.numFrequencies <= 0 ||
         config.spectralSpace.freqIncrementFactor <= 1.0 ||
         config.spectralSpace.firstFrequency <= 0.0) {
-      os << "WW4 ERROR: Invalid spectral space parameters in configuration."
+      os << "WW4 ERROR: Invalid parameters defining spectral space in "
+            "configuration."
          << std::endl;
       if (config.spectralSpace.numDirections <= 0)
         os << "   Missing/invalid: spectral_space -> num_directions"
@@ -475,9 +432,9 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
         os << "   Missing/invalid: spectral_space -> first_frequency"
            << std::endl;
 
-      ww4_std_out::extcde(1, os,
-                          "Missing or invalid spectral space parameters.",
-                          __FILE__, __LINE__);
+      ww4_std_out::extcde(
+          1, os, "Missing or invalid parameters defining spectral space.",
+          __FILE__, __LINE__);
     }
 
     // Mandatory fields check
@@ -614,7 +571,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
 
-  os << "     Spectral space       :" << std::endl;
+  os << "     Spectral space parameters :" << std::endl;
   os << "        Number of directions     : "
      << config.spectralSpace.numDirections << std::endl;
   os << "        Number of frequencies    : "

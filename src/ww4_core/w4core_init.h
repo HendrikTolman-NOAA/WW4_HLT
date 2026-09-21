@@ -43,8 +43,6 @@ const ww4_utils::RunConfig &getRunConfig();
 
 ww4_utils::RunConfig &getMutableRunConfig();
 
-const ww4_utils::SpectralSpace &getSpectralSpace();
-
 std::ofstream &getLogFileStream();
 
 const ww4_utils::waveTimeData &getWaveTimeData();

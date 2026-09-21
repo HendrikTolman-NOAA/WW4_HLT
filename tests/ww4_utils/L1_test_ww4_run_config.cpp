@@ -67,7 +67,6 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   // parseOutputConfig
   // echoHomogeneousData
   // reportOutput
-  // generateSpectralSpace
 
   const std::string filename = "test_run_homogeneous.yaml";
   std::ofstream file(filename);
@@ -111,35 +110,16 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   std::remove(filename.c_str());
 }
 
-TEST(RunConfigTest, SpectralSpaceDefaultsAndGeneration) {
+TEST(RunConfigTest, SpectralSpaceParametersDefaults) {
   const SpectralConfig config;
   EXPECT_EQ(config.numDirections, 36);
   EXPECT_EQ(config.numFrequencies, 50);
   EXPECT_DOUBLE_EQ(config.freqIncrementFactor, 1.07);
   EXPECT_DOUBLE_EQ(config.firstFrequency, 0.04118);
   EXPECT_TRUE(config.firstDirectionOffset);
-
-  const SpectralSpace space = generateSpectralSpace(config);
-  EXPECT_EQ(space.frequencies.size(), 50);
-  EXPECT_EQ(space.dfreq.size(), 50);
-  EXPECT_EQ(space.sigma.size(), 50);
-  EXPECT_EQ(space.directions.size(), 36);
-
-  const double expectedDdir = (2.0 * std::numbers::pi) / 36.0;
-  EXPECT_NEAR(space.ddir, expectedDdir, 1e-12);
-  EXPECT_NEAR(space.frequencies[0], 0.04118, 1e-12);
-  EXPECT_NEAR(space.frequencies[1], 0.04118 * 1.07, 1e-12);
-
-  const double expectedDf0 = 0.5 * (1.07 - 1.0 / 1.07) * 0.04118;
-  EXPECT_NEAR(space.dfreq[0], expectedDf0, 1e-12);
-  EXPECT_NEAR(space.sigma[0], 2.0 * std::numbers::pi * 0.04118, 1e-12);
-
-  // Half step offset
-  EXPECT_NEAR(space.directions[0], 0.5 * expectedDdir, 1e-12);
-  EXPECT_NEAR(space.directions[1], 1.5 * expectedDdir, 1e-12);
 }
 
-TEST(RunConfigTest, SpectralSpaceCustomYamlAndReport) {
+TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   const std::string filename = "test_spectral_custom.yaml";
   std::ofstream file(filename);
   file << "general:\n";
@@ -166,16 +146,10 @@ TEST(RunConfigTest, SpectralSpaceCustomYamlAndReport) {
   EXPECT_DOUBLE_EQ(config->spectralSpace.firstFrequency, 0.05);
   EXPECT_FALSE(config->spectralSpace.firstDirectionOffset);
 
-  const SpectralSpace space = generateSpectralSpace(config->spectralSpace);
-  EXPECT_EQ(space.frequencies.size(), 30);
-  EXPECT_EQ(space.directions.size(), 24);
-  // No offset
-  EXPECT_NEAR(space.directions[0], 0.0, 1e-12);
-
   std::stringstream ss;
   reportRunConfig(*config, ss);
   const std::string reportStr = ss.str();
-  EXPECT_NE(reportStr.find("Spectral space       :"), std::string::npos);
+  EXPECT_NE(reportStr.find("Spectral space parameters :"), std::string::npos);
   EXPECT_NE(reportStr.find("Number of directions     : 24"), std::string::npos);
   EXPECT_NE(reportStr.find("Number of frequencies    : 30"), std::string::npos);
   EXPECT_NE(reportStr.find("First direction offset   : none"),
@@ -184,7 +158,7 @@ TEST(RunConfigTest, SpectralSpaceCustomYamlAndReport) {
   std::remove(filename.c_str());
 }
 
-TEST(RunConfigTest, SpectralSpaceValidationFailure) {
+TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   const std::string filename = "test_spectral_invalid.yaml";
   std::ofstream file(filename);
   file << "general:\n";
@@ -199,7 +173,7 @@ TEST(RunConfigTest, SpectralSpaceValidationFailure) {
   file.close();
 
   EXPECT_DEATH(loadRunConfig(filename, std::cerr),
-               "Missing or invalid spectral space parameters.");
+               "Missing or invalid parameters defining spectral space.");
 
   std::remove(filename.c_str());
 }
