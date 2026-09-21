@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-06-18
+ * @date Last update : 2026-07-13
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -39,6 +39,7 @@ namespace ww4_core {
 
 namespace {
 ww4_utils::RunConfig globalRunConfig;
+ww4_utils::SpectralSpace globalSpectralSpace;
 std::ofstream logFile;
 std::string capturedProgramName;
 ww4_utils::waveTimeData waveTimeData;
@@ -172,6 +173,8 @@ void w4core_init(const ww4_utils::DateTime &startTime,
   //
   // 2.2  Set up the spectral data structures
   //
+  globalSpectralSpace =
+      ww4_utils::generateSpectralSpace(globalRunConfig.spectralSpace);
   //
   // 3.  Data initialization -----------------------------------------------
   //     This only needs to be the intial conditions, Input and output are
@@ -197,6 +200,14 @@ const ww4_utils::RunConfig &getRunConfig() { return globalRunConfig; }
  * @return A mutable reference to the RunConfig structure.
  */
 ww4_utils::RunConfig &getMutableRunConfig() { return globalRunConfig; }
+
+/**
+ * @brief Provides access to the initialized spectral space.
+ * @return A reference to the SpectralSpace structure.
+ */
+const ww4_utils::SpectralSpace &getSpectralSpace() {
+  return globalSpectralSpace;
+}
 
 /**
  * @brief Provides access to the log file stream.
@@ -262,6 +273,7 @@ void resetInternalState() noexcept {
     logFile.close();
   }
   waveTimeData = ww4_utils::waveTimeData();
+  globalSpectralSpace = ww4_utils::SpectralSpace();
   ww4_utils::resetInputData();
 }
 

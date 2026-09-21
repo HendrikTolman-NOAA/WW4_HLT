@@ -82,6 +82,12 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   runFile << "  winds: none\n";
   runFile << "  ice_concentrations: none\n";
   runFile << "  bottom_depth: none\n";
+  runFile << "spectral_space:\n";
+  runFile << "  num_directions: 36\n";
+  runFile << "  num_frequencies: 50\n";
+  runFile << "  freq_increment_factor: 1.07\n";
+  runFile << "  first_frequency: 0.04118\n";
+  runFile << "  first_direction_offset: \"half_step\"\n";
   runFile.close();
 
   ww4_utils::DateTime startTime = {20260101, 0.0};
@@ -89,6 +95,11 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
 
   EXPECT_EQ(getProgramName(), "test_init");
   EXPECT_EQ(getRunConfig().timeStep, 3600.0);
+  EXPECT_EQ(getSpectralSpace().frequencies.size(), 50);
+  EXPECT_EQ(getSpectralSpace().directions.size(), 36);
+
+  resetInternalState();
+  EXPECT_EQ(getSpectralSpace().frequencies.size(), 0);
 }
 
 } // namespace ww4_core

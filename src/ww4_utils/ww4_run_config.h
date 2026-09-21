@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-07-13
  */
 
 #pragma once
@@ -88,6 +88,59 @@ enum class ScreenOutputLevel { None, Summary, Full };
 enum class EchoOption { None, Summary, Full };
 
 /**
+ * @struct SpectralConfig
+ * @brief Configuration for the spectral space parameters.
+ * @details Defines discrete frequency and direction parameters for spectral
+ * grid setup.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @var SpectralConfig::numDirections
+ * @brief Number of discrete directions (default: 36).
+ * @var SpectralConfig::numFrequencies
+ * @brief Number of discrete frequencies (default: 50).
+ * @var SpectralConfig::freqIncrementFactor
+ * @brief Frequency increment factor X (default: 1.07).
+ * @var SpectralConfig::firstFrequency
+ * @brief First discrete frequency in Hz (default: 0.04118).
+ * @var SpectralConfig::firstDirectionOffset
+ * @brief Flag indicating half directional step offset for first discrete
+ * direction (default: true).
+ */
+struct SpectralConfig {
+  int numDirections = 36;
+  int numFrequencies = 50;
+  double freqIncrementFactor = 1.07;
+  double firstFrequency = 0.04118;
+  bool firstDirectionOffset = true;
+};
+
+/**
+ * @struct SpectralSpace
+ * @brief Spectral space discrete data structures.
+ * @details Holds calculated discrete frequencies, directions, bandwidths, and
+ * angular frequencies.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @var SpectralSpace::frequencies
+ * @brief Discrete frequencies array in Hz (size: numFrequencies).
+ * @var SpectralSpace::directions
+ * @brief Discrete directions array in radians (size: numDirections).
+ * @var SpectralSpace::dfreq
+ * @brief Discrete frequency bandwidths array in Hz (size: numFrequencies).
+ * @var SpectralSpace::sigma
+ * @brief Discrete angular frequencies array in rad/s (size: numFrequencies).
+ * @var SpectralSpace::ddir
+ * @brief Directional step in radians.
+ */
+struct SpectralSpace {
+  std::vector<double> frequencies;
+  std::vector<double> directions;
+  std::vector<double> dfreq;
+  std::vector<double> sigma;
+  double ddir = 0.0;
+};
+
+/**
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
@@ -150,6 +203,8 @@ struct HomogeneousDataPoint {
  * @brief Homogeneous ice concentrations data.
  * @var RunConfig::homogeneousBottomDepth
  * @brief Homogeneous bottom depth data.
+ * @var RunConfig::spectralSpace
+ * @brief Spectral space configuration settings.
  * @var RunConfig::timeStep
  * @brief Model time step in seconds.
  * @var RunConfig::outputApi
@@ -189,6 +244,8 @@ struct RunConfig {
   std::vector<HomogeneousDataPoint> homogeneousIceConcentrations;
   std::vector<HomogeneousDataPoint> homogeneousBottomDepth;
 
+  SpectralConfig spectralSpace;
+
   double timeStep = -1.0;
 
   OutputConfig outputApi;
@@ -199,6 +256,8 @@ struct RunConfig {
 };
 
 std::string_view cleanValue(std::string_view s);
+
+SpectralSpace generateSpectralSpace(const SpectralConfig &config);
 
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
