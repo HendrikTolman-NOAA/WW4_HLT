@@ -152,8 +152,10 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   EXPECT_NE(reportStr.find("Spectral space parameters :"), std::string::npos);
   EXPECT_NE(reportStr.find("Number of directions     : 24"), std::string::npos);
   EXPECT_NE(reportStr.find("Number of frequencies    : 30"), std::string::npos);
-  EXPECT_NE(reportStr.find("First direction offset   : 0.25"),
-            std::string::npos);
+  EXPECT_NE(
+      reportStr.find("First direction offset   : 0.25 (fraction of directional "
+                     "increment)"),
+      std::string::npos);
 
   std::remove(filename.c_str());
 }

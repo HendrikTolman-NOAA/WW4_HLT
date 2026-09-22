@@ -585,7 +585,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "        First frequency          : "
      << config.spectralSpace.firstFrequency << " Hz" << std::endl;
   os << "        First direction offset   : "
-     << config.spectralSpace.firstDirectionOffset << std::endl;
+     << config.spectralSpace.firstDirectionOffset
+     << " (fraction of directional increment)" << std::endl;
 
   os << "\n  Model input:" << std::endl;
 
