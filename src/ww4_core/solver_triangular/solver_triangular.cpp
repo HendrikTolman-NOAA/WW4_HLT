@@ -34,15 +34,15 @@ void w4core_init_triangular(std::ostream &os) {
   }
 }
 
-void SolverTriangular::init() { w4core_init_triangular(); }
+void SolverTriangularGrid::init() { w4core_init_triangular(); }
 
-void SolverTriangular::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+void SolverTriangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {
     sourceTerms_.push_back(std::move(source));
   }
 }
 
-void SolverTriangular::solve(std::span<double> data) {
+void SolverTriangularGrid::solve(std::span<double> data) {
   // 1. Perform numerical propagation (dynamics for triangular grid)
   std::for_each(data.begin(), data.end(), [](double &val) {
     val *= 1.02; // Mock propagation effect

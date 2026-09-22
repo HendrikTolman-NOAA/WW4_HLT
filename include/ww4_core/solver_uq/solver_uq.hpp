@@ -39,15 +39,15 @@ namespace ww4_core {
 void w4core_init_uq(std::ostream &os);
 
 /**
- * @class SolverUQ
+ * @class SolverRectangularGrid
  * @brief Implementation of the UQ solver for regular grids.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverUQ : public ISolver {
+class SolverRectangularGrid : public ISolver {
 public:
-  SolverUQ() = default;
-  ~SolverUQ() override = default;
+  SolverRectangularGrid() = default;
+  ~SolverRectangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
     return "UQ";

@@ -40,15 +40,15 @@ namespace ww4_core {
 void w4core_init_smc(std::ostream &os);
 
 /**
- * @class SolverSMC
+ * @class SolverSMCGrid
  * @brief Implementation of the SMC grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverSMC : public ISolver {
+class SolverSMCGrid : public ISolver {
 public:
-  SolverSMC() = default;
-  ~SolverSMC() override = default;
+  SolverSMCGrid() = default;
+  ~SolverSMCGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
     return "SMC";

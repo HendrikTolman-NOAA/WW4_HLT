@@ -33,15 +33,15 @@ void w4core_init_uq(std::ostream &os) {
   }
 }
 
-void SolverUQ::init() { w4core_init_uq(); }
+void SolverRectangularGrid::init() { w4core_init_uq(); }
 
-void SolverUQ::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+void SolverRectangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {
     sourceTerms_.push_back(std::move(source));
   }
 }
 
-void SolverUQ::solve(std::span<double> data) {
+void SolverRectangularGrid::solve(std::span<double> data) {
   // 1. Perform numerical propagation (dynamics for UQ scheme)
   std::for_each(data.begin(), data.end(), [](double &val) {
     val *= 1.01; // Mock propagation effect

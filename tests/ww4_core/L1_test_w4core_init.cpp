@@ -115,13 +115,13 @@ TEST_F(W4CoreInitTest, SolverInitRoutines) {
   w4core_init_smc(ss);
   EXPECT_NE(ss.str().find("Initializing SMC grid solver"), std::string::npos);
 
-  SolverUQ uq;
+  SolverRectangularGrid uq;
   uq.init();
 
-  SolverTriangular triangular;
+  SolverTriangularGrid triangular;
   triangular.init();
 
-  SolverSMC smc;
+  SolverSMCGrid smc;
   smc.init();
 }
 

@@ -30,18 +30,30 @@ TEST(SchemeFactoryTest, CreateSolverUQ) {
   auto solver = SchemeFactory::createSolver("UQ");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "UQ");
+
+  auto solverGrid = SchemeFactory::createSolver("RectangularGrid");
+  ASSERT_NE(solverGrid, nullptr);
+  EXPECT_EQ(solverGrid->getName(), "UQ");
 }
 
 TEST(SchemeFactoryTest, CreateSolverTriangular) {
   auto solver = SchemeFactory::createSolver("Triangular");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "Triangular");
+
+  auto solverGrid = SchemeFactory::createSolver("TriangularGrid");
+  ASSERT_NE(solverGrid, nullptr);
+  EXPECT_EQ(solverGrid->getName(), "Triangular");
 }
 
 TEST(SchemeFactoryTest, CreateSolverSMC) {
   auto solver = SchemeFactory::createSolver("SMC");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "SMC");
+
+  auto solverGrid = SchemeFactory::createSolver("SMCGrid");
+  ASSERT_NE(solverGrid, nullptr);
+  EXPECT_EQ(solverGrid->getName(), "SMC");
 }
 
 TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {

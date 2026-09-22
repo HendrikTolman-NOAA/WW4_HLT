@@ -33,15 +33,15 @@ void w4core_init_smc(std::ostream &os) {
   }
 }
 
-void SolverSMC::init() { w4core_init_smc(); }
+void SolverSMCGrid::init() { w4core_init_smc(); }
 
-void SolverSMC::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+void SolverSMCGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {
     sourceTerms_.push_back(std::move(source));
   }
 }
 
-void SolverSMC::solve(std::span<double> data) {
+void SolverSMCGrid::solve(std::span<double> data) {
   // 1. Perform numerical propagation (dynamics for SMC grid)
   std::for_each(data.begin(), data.end(), [](double &val) {
     val *= 1.03; // Mock propagation effect

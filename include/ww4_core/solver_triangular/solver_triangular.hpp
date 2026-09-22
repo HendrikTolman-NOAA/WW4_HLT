@@ -39,15 +39,15 @@ namespace ww4_core {
 void w4core_init_triangular(std::ostream &os);
 
 /**
- * @class SolverTriangular
+ * @class SolverTriangularGrid
  * @brief Implementation of the Triangular grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverTriangular : public ISolver {
+class SolverTriangularGrid : public ISolver {
 public:
-  SolverTriangular() = default;
-  ~SolverTriangular() override = default;
+  SolverTriangularGrid() = default;
+  ~SolverTriangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
     return "Triangular";
