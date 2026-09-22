@@ -575,7 +575,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
 
-  os << "     Spectral space parameters :" << std::endl;
+  os << "\n     Spectral space parameters :" << std::endl;
   os << "        Number of directions     : "
      << config.spectralSpace.numDirections << std::endl;
   os << "        Number of frequencies    : "
