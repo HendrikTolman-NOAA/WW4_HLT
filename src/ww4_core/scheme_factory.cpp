@@ -17,14 +17,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Last update : 2026-09-15
  */
 
 #include "ww4_core/scheme_factory.hpp"
 #include "ww4_core/solver_smc/solver_smc.hpp"
 #include "ww4_core/solver_triangular/solver_triangular.hpp"
 #include "ww4_core/solver_uq/solver_uq.hpp"
-#include "ww4_core/ww4_source_terms/source_terms_stub.hpp"
+#include "ww4_core/ww4_source_terms/compute_all_sources.hpp"
 #include <stdexcept>
 
 namespace ww4_core {
@@ -45,8 +45,9 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
 
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
-  if (name == "Stub" || name == "stub") {
-    return std::make_unique<SourceTermsStub>();
+  if (name == "ComputeAllSources" || name == "compute_all_sources" ||
+      name == "Stub" || name == "stub") {
+    return std::make_unique<ComputeAllSources>();
   }
   throw std::invalid_argument("Unknown source term scheme: " + name);
 }

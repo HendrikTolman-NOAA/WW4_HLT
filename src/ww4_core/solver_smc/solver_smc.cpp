@@ -21,9 +21,19 @@
  */
 
 #include "ww4_core/solver_smc/solver_smc.hpp"
+#include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
+
+void w4core_init_smc(std::ostream &os) {
+  if (getRunConfig().produceStdOut &&
+      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
+    os << "    Initializing SMC grid solver" << std::endl;
+  }
+}
+
+void SolverSMC::init() { w4core_init_smc(); }
 
 void SolverSMC::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {

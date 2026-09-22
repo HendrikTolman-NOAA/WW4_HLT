@@ -21,9 +21,19 @@
  */
 
 #include "ww4_core/solver_uq/solver_uq.hpp"
+#include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
+
+void w4core_init_uq(std::ostream &os) {
+  if (getRunConfig().produceStdOut &&
+      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
+    os << "    Initializing UQ regular grid solver" << std::endl;
+  }
+}
+
+void SolverUQ::init() { w4core_init_uq(); }
 
 void SolverUQ::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {

@@ -25,11 +25,18 @@
 
 #include "ww4_core/solver.hpp"
 #include "ww4_core/source_term.hpp"
+#include <iostream>
 #include <memory>
 #include <span>
 #include <vector>
 
 namespace ww4_core {
+
+/**
+ * @brief Initialization routine for the triangular unstructured grid solver.
+ * @param[in] os Output stream for logging.
+ */
+void w4core_init_triangular(std::ostream &os);
 
 /**
  * @class SolverTriangular
@@ -47,6 +54,8 @@ public:
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+
+  void init() override;
 
   void solve(std::span<double> data) override;
 

@@ -15,12 +15,16 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-07-13
+ * @date Last update : 2026-09-15
  */
 
+#include "ww4_core/solver_smc/solver_smc.hpp"
+#include "ww4_core/solver_triangular/solver_triangular.hpp"
+#include "ww4_core/solver_uq/solver_uq.hpp"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
 #include <gtest/gtest.h>
+#include <sstream>
 
 namespace ww4_core {
 
@@ -91,6 +95,75 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
 
   EXPECT_EQ(getProgramName(), "test_init");
   EXPECT_EQ(getRunConfig().timeStep, 3600.0);
+}
+
+TEST_F(W4CoreInitTest, SolverInitRoutines) {
+  std::ostringstream ss;
+  getMutableRunConfig().produceStdOut = true;
+  getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
+
+  w4core_init_uq(ss);
+  EXPECT_NE(ss.str().find("Initializing UQ regular grid solver"),
+            std::string::npos);
+
+  ss.str("");
+  w4core_init_triangular(ss);
+  EXPECT_NE(ss.str().find("Initializing Triangular unstructured grid solver"),
+            std::string::npos);
+
+  ss.str("");
+  w4core_init_smc(ss);
+  EXPECT_NE(ss.str().find("Initializing SMC grid solver"), std::string::npos);
+
+  SolverUQ uq;
+  uq.init();
+
+  SolverTriangular triangular;
+  triangular.init();
+
+  SolverSMC smc;
+  smc.init();
+}
+
+TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
+  std::ofstream runFile("ww4_run_config.yaml");
+  runFile << "general:\n";
+  runFile << "  calendar_type: Standard\n";
+  runFile << "  time_step: 3600.0\n";
+  runFile << "physics:\n";
+  runFile << "  solver: triangular\n";
+  runFile << "forcing:\n";
+  runFile << "  water_levels: none\n";
+  runFile << "  currents: none\n";
+  runFile << "  winds: none\n";
+  runFile << "  ice_concentrations: none\n";
+  runFile << "  bottom_depth: none\n";
+  runFile.close();
+
+  ww4_utils::DateTime startTime = {20260101, 0.0};
+  std::ostringstream ss;
+  w4core_init(startTime, "test_init", ss);
+
+  EXPECT_EQ(getProgramName(), "test_init");
+
+  resetInternalState();
+
+  std::ofstream runFile2("ww4_run_config.yaml");
+  runFile2 << "general:\n";
+  runFile2 << "  calendar_type: Standard\n";
+  runFile2 << "  time_step: 3600.0\n";
+  runFile2 << "physics:\n";
+  runFile2 << "  solver: smc\n";
+  runFile2 << "forcing:\n";
+  runFile2 << "  water_levels: none\n";
+  runFile2 << "  currents: none\n";
+  runFile2 << "  winds: none\n";
+  runFile2 << "  ice_concentrations: none\n";
+  runFile2 << "  bottom_depth: none\n";
+  runFile2.close();
+
+  w4core_init(startTime, "test_init_smc", ss);
+  EXPECT_EQ(getProgramName(), "test_init_smc");
 }
 
 } // namespace ww4_core

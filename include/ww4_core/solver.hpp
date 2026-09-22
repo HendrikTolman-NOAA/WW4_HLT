@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Last update : 2026-09-15
  */
 
 #pragma once
@@ -51,6 +51,11 @@ public:
    * @param source Unique pointer to the source term scheme.
    */
   virtual void addSourceTerm(std::unique_ptr<ISourceTerm> source) = 0;
+
+  /**
+   * @brief Initialize solver state and data structures.
+   */
+  virtual void init() {}
 
   /**
    * @brief Solve the wave action balance equation for one step.

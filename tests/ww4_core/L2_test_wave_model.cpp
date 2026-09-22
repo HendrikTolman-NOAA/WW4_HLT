@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Last update : 2026-09-15
  */
 
 #include "ww4_core/scheme_factory.hpp"
@@ -31,9 +31,9 @@ namespace ww4_core {
 TEST(WaveModelTest, SimulationStep) {
   WaveModel model;
 
-  // Assemble the model: UQ solver with Stub source term
+  // Assemble the model: UQ solver with ComputeAllSources source term
   auto solver = SchemeFactory::createSolver("UQ");
-  auto source = SchemeFactory::createSourceTerm("Stub");
+  auto source = SchemeFactory::createSourceTerm("compute_all_sources");
   solver->addSourceTerm(std::move(source));
 
   model.initialize(std::move(solver));
@@ -46,7 +46,7 @@ TEST(WaveModelTest, SimulationStep) {
   auto result = model.getData();
   ASSERT_EQ(result.size(), initialData.size());
 
-  // UQ multiplies by 1.01, Stub adds 0.1
+  // UQ multiplies by 1.01, ComputeAllSources adds 0.1
   for (size_t i = 0; i < initialData.size(); ++i) {
     double expected = initialData[i] * 1.01 + 0.1;
     EXPECT_NEAR(result[i], expected, 1e-9);

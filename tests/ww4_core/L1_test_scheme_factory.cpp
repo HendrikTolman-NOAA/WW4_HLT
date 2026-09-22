@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Last update : 2026-09-15
  */
 
 #include "ww4_core/scheme_factory.hpp"
@@ -44,10 +44,10 @@ TEST(SchemeFactoryTest, CreateSolverSMC) {
   EXPECT_EQ(solver->getName(), "SMC");
 }
 
-TEST(SchemeFactoryTest, CreateSourceStub) {
-  auto scheme = SchemeFactory::createSourceTerm("Stub");
+TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
+  auto scheme = SchemeFactory::createSourceTerm("compute_all_sources");
   ASSERT_NE(scheme, nullptr);
-  EXPECT_EQ(scheme->getName(), "Stub");
+  EXPECT_EQ(scheme->getName(), "ComputeAllSources");
 }
 
 TEST(SchemeFactoryTest, CreateUnknownSolver) {

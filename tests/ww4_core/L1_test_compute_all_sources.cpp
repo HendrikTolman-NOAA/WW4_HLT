@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file source_terms_stub.hpp
- * @brief Header for the source terms stub in WW4 core.
- * @details Concrete stub implementation of ISourceTerm interface.
+ * @file L1_test_compute_all_sources.cpp
+ * @brief Unit tests for physical source term calculations (ComputeAllSources).
+ * @details Verifies the behavior and interface compliance of ComputeAllSources.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,29 +20,24 @@
  * @date Last update : 2026-09-15
  */
 
-#pragma once
-
-#include "ww4_core/source_term.hpp"
-#include <span>
+#include "ww4_core/ww4_source_terms/compute_all_sources.hpp"
+#include <gtest/gtest.h>
+#include <vector>
 
 namespace ww4_core {
 
-/**
- * @class SourceTermsStub
- * @brief Stub implementation for source terms.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class SourceTermsStub : public ISourceTerm {
-public:
-  SourceTermsStub() = default;
-  ~SourceTermsStub() override = default;
+TEST(ComputeAllSourcesTest, NameCheck) {
+  ComputeAllSources sources;
+  EXPECT_EQ(sources.getName(), "ComputeAllSources");
+}
 
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "Stub";
-  }
-
-  void calculate(std::span<double> data) override;
-};
+TEST(ComputeAllSourcesTest, CalculateSources) {
+  ComputeAllSources sources;
+  std::vector<double> data = {1.0, 2.5, 5.0};
+  sources.calculate(data);
+  EXPECT_DOUBLE_EQ(data[0], 1.1);
+  EXPECT_DOUBLE_EQ(data[1], 2.6);
+  EXPECT_DOUBLE_EQ(data[2], 5.1);
+}
 
 } // namespace ww4_core
