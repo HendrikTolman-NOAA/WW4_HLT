@@ -93,7 +93,7 @@ enum class EchoOption { None, Summary, Full };
  * @details Defines discrete frequency and direction parameters for setting up
  * the spectral space based on WAVEWATCH III.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @author Contributors: Jules (Agentic AI)
  * @var SpectralConfig::numDirections
  * @brief Number of discrete directions (default: 36).
  * @var SpectralConfig::numFrequencies
