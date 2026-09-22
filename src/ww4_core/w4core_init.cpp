@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-06-18
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -170,7 +170,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
   // 2.  Set up data strucures ---------------------------------------------
   // 2.1 Set up the global and local (domain) grids
   //
-  // 2.2  Set up parameters defining the spectral space
+  // 2.2  Set up the spectral data structures
   //
   //
   // 3.  Data initialization -----------------------------------------------
