@@ -31,7 +31,7 @@
 
 namespace ww4_utils {
 
-// ---------------------------------------------------------------------------
+// --- InputFieldOption -------------------------------------------------------
 // Model input field options definition
 /**
  * @enum InputFieldOption
@@ -62,7 +62,7 @@ enum class InputFieldOption {
   FromGrid
 };
 
-// ---------------------------------------------------------------------------
+// --- ScreenOutputLevel ------------------------------------------------------
 // Screen output level enumeration
 /**
  * @enum ScreenOutputLevel
@@ -81,7 +81,7 @@ enum class InputFieldOption {
  */
 enum class ScreenOutputLevel { None, Summary, Full };
 
-// ---------------------------------------------------------------------------
+// --- EchoOption -------------------------------------------------------------
 // Input data echoing options
 /**
  * @enum EchoOption
@@ -99,7 +99,7 @@ enum class ScreenOutputLevel { None, Summary, Full };
  */
 enum class EchoOption { None, Summary, Full };
 
-// ---------------------------------------------------------------------------
+// --- SpectralConfig ---------------------------------------------------------
 // Spectral space parameters structure definition
 /**
  * @struct SpectralConfig
@@ -130,7 +130,7 @@ struct SpectralConfig {
   double firstDirectionOffset = 0.5;
 };
 
-// ---------------------------------------------------------------------------
+// --- HomogeneousDataPoint ---------------------------------------------------
 // Homogeneous data point representation
 /**
  * @struct HomogeneousDataPoint
@@ -149,7 +149,7 @@ struct HomogeneousDataPoint {
   std::vector<double> values;
 };
 
-// ---------------------------------------------------------------------------
+// --- RunConfig --------------------------------------------------------------
 // Run-time configuration container structure
 /**
  * @struct RunConfig
@@ -253,16 +253,16 @@ struct RunConfig {
   OutputConfig outputRestart;
 };
 
-// ---------------------------------------------------------------------------
+// --- cleanValue -------------------------------------------------------------
 // Trim whitespace and quotation marks from a string view
 std::string_view cleanValue(std::string_view s);
 
-// ---------------------------------------------------------------------------
+// --- loadRunConfig ----------------------------------------------------------
 // Load run-time configuration from a specified YAML file
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
 
-// ---------------------------------------------------------------------------
+// --- reportRunConfig --------------------------------------------------------
 // Report current run-time configuration settings to an output stream
 void reportRunConfig(const RunConfig &config, std::ostream &os);
 
