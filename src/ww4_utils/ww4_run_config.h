@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-22
  */
 
 #pragma once
@@ -88,6 +88,33 @@ enum class ScreenOutputLevel { None, Summary, Full };
 enum class EchoOption { None, Summary, Full };
 
 /**
+ * @struct SpectralConfig
+ * @brief Parameters defining the spectral space.
+ * @details Defines discrete frequency and direction parameters for setting up
+ * the spectral space based on WAVEWATCH III.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var SpectralConfig::numDirections
+ * @brief Number of discrete directions (default: 36).
+ * @var SpectralConfig::numFrequencies
+ * @brief Number of discrete frequencies (default: 50).
+ * @var SpectralConfig::freqIncrementFactor
+ * @brief Frequency increment factor X (default: 1.07).
+ * @var SpectralConfig::firstFrequency
+ * @brief First discrete frequency in Hz (default: 0.035).
+ * @var SpectralConfig::firstDirectionOffset
+ * @brief Offset of the first direction as a fraction of the directional step
+ * in range [0.0, 1.0] (default: 0.5).
+ */
+struct SpectralConfig {
+  int numDirections = 36;
+  int numFrequencies = 50;
+  double freqIncrementFactor = 1.07;
+  double firstFrequency = 0.035;
+  double firstDirectionOffset = 0.5;
+};
+
+/**
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
@@ -150,6 +177,8 @@ struct HomogeneousDataPoint {
  * @brief Homogeneous ice concentrations data.
  * @var RunConfig::homogeneousBottomDepth
  * @brief Homogeneous bottom depth data.
+ * @var RunConfig::spectralSpace
+ * @brief Parameters defining the spectral space.
  * @var RunConfig::timeStep
  * @brief Model time step in seconds.
  * @var RunConfig::outputApi
@@ -188,6 +217,8 @@ struct RunConfig {
   std::vector<HomogeneousDataPoint> homogeneousWinds;
   std::vector<HomogeneousDataPoint> homogeneousIceConcentrations;
   std::vector<HomogeneousDataPoint> homogeneousBottomDepth;
+
+  SpectralConfig spectralSpace;
 
   double timeStep = -1.0;
 

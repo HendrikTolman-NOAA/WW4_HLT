@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-22
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -365,6 +365,82 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parseOutputConfig(config.outputApi, node["api"]);
     }
 
+    // 6. Spectral space section
+    if (const auto node = config_node["spectral_space"]) {
+      if (node["num_directions"]) {
+        config.spectralSpace.numDirections = node["num_directions"].as<int>();
+      } else if (node["n_directions"]) {
+        config.spectralSpace.numDirections = node["n_directions"].as<int>();
+      } else if (node["directions"]) {
+        config.spectralSpace.numDirections = node["directions"].as<int>();
+      }
+
+      if (node["num_frequencies"]) {
+        config.spectralSpace.numFrequencies = node["num_frequencies"].as<int>();
+      } else if (node["n_frequencies"]) {
+        config.spectralSpace.numFrequencies = node["n_frequencies"].as<int>();
+      } else if (node["frequencies"]) {
+        config.spectralSpace.numFrequencies = node["frequencies"].as<int>();
+      }
+
+      if (node["freq_increment_factor"]) {
+        config.spectralSpace.freqIncrementFactor =
+            node["freq_increment_factor"].as<double>();
+      } else if (node["frequency_increment_factor"]) {
+        config.spectralSpace.freqIncrementFactor =
+            node["frequency_increment_factor"].as<double>();
+      } else if (node["xfr"]) {
+        config.spectralSpace.freqIncrementFactor = node["xfr"].as<double>();
+      }
+
+      if (node["first_frequency"]) {
+        config.spectralSpace.firstFrequency =
+            node["first_frequency"].as<double>();
+      } else if (node["fr1"]) {
+        config.spectralSpace.firstFrequency = node["fr1"].as<double>();
+      }
+
+      if (node["first_direction_offset"]) {
+        config.spectralSpace.firstDirectionOffset =
+            node["first_direction_offset"].as<double>();
+      } else if (node["direction_offset"]) {
+        config.spectralSpace.firstDirectionOffset =
+            node["direction_offset"].as<double>();
+      }
+    }
+
+    // Spectral space parameters validation
+    if (config.spectralSpace.numDirections <= 0 ||
+        config.spectralSpace.numFrequencies <= 0 ||
+        config.spectralSpace.freqIncrementFactor <= 1.0 ||
+        config.spectralSpace.firstFrequency <= 0.0 ||
+        config.spectralSpace.firstDirectionOffset < 0.0 ||
+        config.spectralSpace.firstDirectionOffset > 1.0) {
+      os << "WW4 ERROR: Invalid parameters defining spectral space in "
+            "configuration."
+         << std::endl;
+      if (config.spectralSpace.numDirections <= 0)
+        os << "   Missing/invalid: spectral_space -> num_directions"
+           << std::endl;
+      if (config.spectralSpace.numFrequencies <= 0)
+        os << "   Missing/invalid: spectral_space -> num_frequencies"
+           << std::endl;
+      if (config.spectralSpace.freqIncrementFactor <= 1.0)
+        os << "   Missing/invalid: spectral_space -> freq_increment_factor"
+           << std::endl;
+      if (config.spectralSpace.firstFrequency <= 0.0)
+        os << "   Missing/invalid: spectral_space -> first_frequency"
+           << std::endl;
+      if (config.spectralSpace.firstDirectionOffset < 0.0 ||
+          config.spectralSpace.firstDirectionOffset > 1.0)
+        os << "   Missing/invalid: spectral_space -> first_direction_offset"
+           << std::endl;
+
+      ww4_std_out::extcde(
+          1, os, "Missing or invalid parameters defining spectral space.",
+          __FILE__, __LINE__);
+    }
+
     // Mandatory fields check
     if (config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
@@ -498,6 +574,19 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   }
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
+
+  os << "     Spectral space parameters :" << std::endl;
+  os << "        Number of directions     : "
+     << config.spectralSpace.numDirections << std::endl;
+  os << "        Number of frequencies    : "
+     << config.spectralSpace.numFrequencies << std::endl;
+  os << "        Freq increment factor    : "
+     << config.spectralSpace.freqIncrementFactor << std::endl;
+  os << "        First frequency          : "
+     << config.spectralSpace.firstFrequency << " Hz" << std::endl;
+  os << "        First direction offset   : "
+     << config.spectralSpace.firstDirectionOffset
+     << " (fraction of directional increment)" << std::endl;
 
   os << "\n  Model input:" << std::endl;
 
