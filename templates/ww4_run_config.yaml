@@ -64,6 +64,13 @@ physics:
   # Options: "yes" (default), "no"
   source_terms: "yes"
 
+  # Mandatory numerical solver selection (no default).
+  # Options:
+  #   "uq"         : Regular grid using the Ultimate Quickest (UQ) scheme
+  #   "triangular" : Triangular unstructured grid approach (TBD)
+  #   "smc"        : Spherical Multiple-Cell (SMC) grid from UK MetOffice
+  solver: "uq"
+
 forcing:
   # Mandatory input field options.
   # Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"

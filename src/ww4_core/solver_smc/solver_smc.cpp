@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_pr3.cpp
- * @brief Implementation of the PR3 solver.
- * @details Concrete implementation of the ISolver interface.
+ * @file solver_smc.cpp
+ * @brief Implementation of the SMC grid solver stub.
+ * @details Concrete implementation of the ISolver interface for SMC grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -16,25 +16,25 @@
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Initial, 2026-09-15
+ * @date Last update : 2026-09-15
  */
 
-#include "ww4_core/solver_pr3.hpp"
+#include "ww4_core/solver_smc/solver_smc.hpp"
 #include <algorithm>
 
 namespace ww4_core {
 
-void SolverPr3::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+void SolverSMC::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {
     sourceTerms_.push_back(std::move(source));
   }
 }
 
-void SolverPr3::solve(std::span<double> data) {
-  // 1. Perform numerical propagation (dynamics)
+void SolverSMC::solve(std::span<double> data) {
+  // 1. Perform numerical propagation (dynamics for SMC grid)
   std::for_each(data.begin(), data.end(), [](double &val) {
-    val *= 1.01; // Mock propagation effect
+    val *= 1.03; // Mock propagation effect
   });
 
   // 2. Call integrated source terms (physics)

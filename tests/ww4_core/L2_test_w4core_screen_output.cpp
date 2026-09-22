@@ -45,6 +45,8 @@ protected:
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 1800.0\n";
     runFile << "  screen_output_level: " << screenLevel << "\n";
+    runFile << "physics:\n";
+    runFile << "  solver: uq\n";
     runFile << "forcing:\n";
     runFile << "  water_levels: homogeneous\n";
     runFile << "  currents: none\n";

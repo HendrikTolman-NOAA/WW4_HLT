@@ -31,9 +31,9 @@ namespace ww4_core {
 TEST(WaveModelTest, SimulationStep) {
   WaveModel model;
 
-  // Assemble the model: PR3 solver with ST4 source term
-  auto solver = SchemeFactory::createSolver("PR3");
-  auto source = SchemeFactory::createSourceTerm("ST4");
+  // Assemble the model: UQ solver with Stub source term
+  auto solver = SchemeFactory::createSolver("UQ");
+  auto source = SchemeFactory::createSourceTerm("Stub");
   solver->addSourceTerm(std::move(source));
 
   model.initialize(std::move(solver));
@@ -46,9 +46,9 @@ TEST(WaveModelTest, SimulationStep) {
   auto result = model.getData();
   ASSERT_EQ(result.size(), initialData.size());
 
-  // PR3 multiplies by 1.01, ST4 adds 0.5
+  // UQ multiplies by 1.01, Stub adds 0.1
   for (size_t i = 0; i < initialData.size(); ++i) {
-    double expected = initialData[i] * 1.01 + 0.5;
+    double expected = initialData[i] * 1.01 + 0.1;
     EXPECT_NEAR(result[i], expected, 1e-9);
   }
 }

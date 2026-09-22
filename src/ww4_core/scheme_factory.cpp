@@ -21,23 +21,32 @@
  */
 
 #include "ww4_core/scheme_factory.hpp"
-#include "ww4_core/solver_pr3.hpp"
-#include "ww4_core/source_st4.hpp"
+#include "ww4_core/solver_smc/solver_smc.hpp"
+#include "ww4_core/solver_triangular/solver_triangular.hpp"
+#include "ww4_core/solver_uq/solver_uq.hpp"
+#include "ww4_core/ww4_source_terms/source_terms_stub.hpp"
 #include <stdexcept>
 
 namespace ww4_core {
 
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
-  if (name == "PR3") {
-    return std::make_unique<SolverPr3>();
+  if (name == "UQ" || name == "regular_uq" || name == "uq") {
+    return std::make_unique<SolverUQ>();
+  }
+  if (name == "Triangular" || name == "triangular" ||
+      name == "tbd_triangular") {
+    return std::make_unique<SolverTriangular>();
+  }
+  if (name == "SMC" || name == "smc") {
+    return std::make_unique<SolverSMC>();
   }
   throw std::invalid_argument("Unknown solver: " + name);
 }
 
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
-  if (name == "ST4") {
-    return std::make_unique<SourceSt4>();
+  if (name == "Stub" || name == "stub") {
+    return std::make_unique<SourceTermsStub>();
   }
   throw std::invalid_argument("Unknown source term scheme: " + name);
 }

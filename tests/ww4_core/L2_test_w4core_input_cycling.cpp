@@ -50,6 +50,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingBeforeData) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none
@@ -82,6 +84,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingDuringData) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none
@@ -115,6 +119,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingAfterData) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none
@@ -147,6 +153,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingEmptyData) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none
@@ -164,6 +172,8 @@ TEST_F(W4CoreInputCyclingTest, IntegrationWithWaveLoop) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
+physics:
+  solver: uq
 forcing:
   water_levels: none
   currents: none

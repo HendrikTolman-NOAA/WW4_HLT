@@ -3,9 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file scheme_factory.hpp
- * @brief Factory for creating solvers and source term schemes at runtime.
- * @details Implements a registry-based factory for model components.
+ * @file solver_triangular.hpp
+ * @brief Header for the triangular unstructured grid solver stub.
+ * @details Concrete implementation of the ISolver interface using triangular
+ * grid approach.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -16,7 +17,7 @@
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
+ * @date Initial, 2026-09-15
  * @date Last update : 2026-09-15
  */
 
@@ -25,29 +26,32 @@
 #include "ww4_core/solver.hpp"
 #include "ww4_core/source_term.hpp"
 #include <memory>
-#include <string>
+#include <span>
+#include <vector>
 
 namespace ww4_core {
 
 /**
- * @class SchemeFactory
- * @brief Factory class for creating model solvers and source terms.
+ * @class SolverTriangular
+ * @brief Implementation of the Triangular grid solver stub.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
  */
-class SchemeFactory {
+class SolverTriangular : public ISolver {
 public:
-  /**
-   * @brief Create a solver scheme.
-   * @param name The name of the solver (e.g., "UQ", "Triangular", "SMC").
-   * @return A unique pointer to the created ISolver.
-   */
-  static std::unique_ptr<ISolver> createSolver(const std::string &name);
+  SolverTriangular() = default;
+  ~SolverTriangular() override = default;
 
-  /**
-   * @brief Create a source term scheme.
-   * @param name The name of the scheme (e.g., "ST4").
-   * @return A unique pointer to the created ISourceTerm.
-   */
-  static std::unique_ptr<ISourceTerm> createSourceTerm(const std::string &name);
+  [[nodiscard]] std::string_view getName() const noexcept override {
+    return "Triangular";
+  }
+
+  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+
+  void solve(std::span<double> data) override;
+
+private:
+  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
 };
 
 } // namespace ww4_core

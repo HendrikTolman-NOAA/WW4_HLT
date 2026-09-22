@@ -91,8 +91,10 @@ add_library(
     src/ww4_core/w4core_wave.cpp
     src/ww4_core/w4core_finalize.cpp
     src/ww4_core/scheme_factory.cpp
-    src/ww4_core/solver_pr3.cpp
-    src/ww4_core/source_st4.cpp
+    src/ww4_core/solver_uq/solver_uq.cpp
+    src/ww4_core/solver_triangular/solver_triangular.cpp
+    src/ww4_core/solver_smc/solver_smc.cpp
+    src/ww4_core/ww4_source_terms/source_terms_stub.cpp
     src/ww4_core/wave_model.cpp
 )
 target_include_directories(ww4_core PUBLIC src include)
