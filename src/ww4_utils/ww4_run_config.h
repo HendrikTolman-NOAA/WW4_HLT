@@ -32,7 +32,6 @@
 namespace ww4_utils {
 
 // --- InputFieldOption -------------------------------------------------------
-// Model input field options definition
 /**
  * @enum InputFieldOption
  * @brief Options for model input fields.
@@ -63,7 +62,6 @@ enum class InputFieldOption {
 };
 
 // --- ScreenOutputLevel ------------------------------------------------------
-// Screen output level enumeration
 /**
  * @enum ScreenOutputLevel
  * @brief Options for the level of output to standard output during time
@@ -82,7 +80,6 @@ enum class InputFieldOption {
 enum class ScreenOutputLevel { None, Summary, Full };
 
 // --- EchoOption -------------------------------------------------------------
-// Input data echoing options
 /**
  * @enum EchoOption
  * @brief Options for echoing input data to standard output and log files.
@@ -100,7 +97,6 @@ enum class ScreenOutputLevel { None, Summary, Full };
 enum class EchoOption { None, Summary, Full };
 
 // --- SpectralConfig ---------------------------------------------------------
-// Spectral space parameters structure definition
 /**
  * @struct SpectralConfig
  * @brief Parameters defining the spectral space.
@@ -131,7 +127,6 @@ struct SpectralConfig {
 };
 
 // --- HomogeneousDataPoint ---------------------------------------------------
-// Homogeneous data point representation
 /**
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
@@ -150,7 +145,6 @@ struct HomogeneousDataPoint {
 };
 
 // --- RunConfig --------------------------------------------------------------
-// Run-time configuration container structure
 /**
  * @struct RunConfig
  * @brief Configuration for the run-time environment.
@@ -254,16 +248,13 @@ struct RunConfig {
 };
 
 // --- cleanValue -------------------------------------------------------------
-// Trim whitespace and quotation marks from a string view
 std::string_view cleanValue(std::string_view s);
 
 // --- loadRunConfig ----------------------------------------------------------
-// Load run-time configuration from a specified YAML file
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
 
 // --- reportRunConfig --------------------------------------------------------
-// Report current run-time configuration settings to an output stream
 void reportRunConfig(const RunConfig &config, std::ostream &os);
 
 } // namespace ww4_utils

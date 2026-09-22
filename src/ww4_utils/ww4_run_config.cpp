@@ -34,7 +34,6 @@ namespace ww4_utils {
 namespace {
 
 // --- parseHomogeneousString -------------------------------------------------
-// Parse a homogeneous data entry string into a data point structure
 /**
  * @brief Helper to parse a homogeneous data string.
  * @param s The string to parse (format: "YYYYMMDD HHMMSS val1 val2 ...").
@@ -94,7 +93,6 @@ std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
 }
 
 // --- parseInputOption -------------------------------------------------------
-// Convert input option string representations into enum values
 /**
  * @brief Helper to parse InputFieldOption from string.
  * @param value The string value to parse.
@@ -124,7 +122,6 @@ InputFieldOption parseInputOption(const std::string_view value,
 }
 
 // --- inputOptionToString ----------------------------------------------------
-// Convert InputFieldOption enum values into human-readable strings
 /**
  * @brief Helper to convert InputFieldOption to string for reporting.
  * @param option The InputFieldOption to convert.
@@ -152,7 +149,6 @@ std::string inputOptionToString(const InputFieldOption option) {
 }
 
 // --- parseOutputConfig ------------------------------------------------------
-// Extract output settings from a YAML configuration node
 /**
  * @brief Helper to update OutputConfig from a YAML node.
  * @param oc The OutputConfig structure to update.
@@ -184,7 +180,6 @@ void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
 }
 
 // --- echoHomogeneousData ----------------------------------------------------
-// Print homogeneous data series to standard output or log file
 /**
  * @brief Helper to echo a homogeneous data series.
  * @param processed Vector of data points.
@@ -216,7 +211,6 @@ void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
 }
 
 // --- reportOutput -----------------------------------------------------------
-// Output detailed configuration summaries for model output types
 /**
  * @brief Helper to report OutputConfig settings.
  * @param oc The OutputConfig structure to report.
@@ -252,7 +246,6 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
 } // namespace
 
 // --- cleanValue -------------------------------------------------------------
-// Strip leading/trailing whitespace and quotes from a string view
 /**
  * @brief Internal helper to trim whitespace and quotes from a string.
  * @param s The string view to clean.
@@ -271,7 +264,6 @@ std::string_view cleanValue(const std::string_view s) {
 }
 
 // --- loadRunConfig ----------------------------------------------------------
-// Load and process configuration file contents
 /**
  * @brief Loads the run-time configuration from a YAML file.
  * @details Reads the specified YAML file, extracts configuration settings
@@ -293,9 +285,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     RunConfig config{};
 
-    // --- General section
-    // ------------------------------------------------------- General
-    // configuration settings processing
+    // --- General section -----------------------------------------------------
     if (const auto node = config_node["general"]) {
       if (node["calendar_type"]) {
         const auto val = node["calendar_type"].as<std::string>();
@@ -330,9 +320,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Physics section
-    // ------------------------------------------------------- Physics execution
-    // flags processing
+    // --- Physics section -----------------------------------------------------
     if (const auto node = config_node["physics"]) {
       if (node["dry_run"]) {
         config.dryRun = (node["dry_run"].as<std::string>() == "yes");
@@ -355,9 +343,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Forcing section
-    // ------------------------------------------------------- Forcing field
-    // options processing
+    // --- Forcing section -----------------------------------------------------
     if (const auto node = config_node["forcing"]) {
       if (node["bottom_depth"]) {
         config.bottomDepth =
@@ -389,9 +375,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Homogeneous Data section
-    // ---------------------------------------------- Homogeneous time series
-    // data processing
+    // --- Homogeneous Data section --------------------------------------------
     if (const auto node = config_node["homogeneous_data"]) {
       auto parsePoints = [&](const std::string &key,
                              std::vector<HomogeneousDataPoint> &list) {
@@ -411,9 +395,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parsePoints("bottom_depth", config.homogeneousBottomDepth);
     }
 
-    // --- Output section
-    // -------------------------------------------------------- Output type
-    // configuration processing
+    // --- Output section ------------------------------------------------------
     if (const auto node = config_node["output"]) {
       parseOutputConfig(config.outputFields, node["fields"]);
       parseOutputConfig(config.outputPoints, node["points"]);
@@ -421,9 +403,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parseOutputConfig(config.outputApi, node["api"]);
     }
 
-    // --- Spectral space section
-    // ------------------------------------------------ Discrete spectral space
-    // parameters processing
+    // --- Spectral space section ----------------------------------------------
     if (const auto node = config_node["spectral_space"]) {
       if (node["num_directions"]) {
         config.spectralSpace.numDirections = node["num_directions"].as<int>();
@@ -467,9 +447,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Spectral space parameters validation
-    // ---------------------------------- Validate configured spectral space
-    // parameter values
+    // --- Spectral space parameters validation --------------------------------
     if (config.spectralSpace.numDirections <= 0 ||
         config.spectralSpace.numFrequencies <= 0 ||
         config.spectralSpace.freqIncrementFactor <= 1.0 ||
@@ -501,9 +479,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           __FILE__, __LINE__);
     }
 
-    // --- Mandatory fields check
-    // ------------------------------------------------ Validate presence and
-    // options of mandatory model forcing fields
+    // --- Mandatory fields check ----------------------------------------------
     if (config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
@@ -527,9 +503,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // --- Time step validation
-    // -------------------------------------------------- Validate model
-    // simulation time step duration
+    // --- Time step validation ------------------------------------------------
     if (config.timeStep < 0.0) {
       os << "WW4 ERROR: Mandatory time step missing or invalid "
             "in configuration."
@@ -538,9 +512,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // --- Output validation
-    // ----------------------------------------------------- Validate requesting
-    // output options and intervals
+    // --- Output validation ---------------------------------------------------
     bool outputValid = true;
     auto validateOutput = [&](const OutputConfig &oc,
                               const std::string_view name) {
@@ -564,9 +536,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // --- TimeManagement calendar type update
-    // ----------------------------------- Set global model calendar type in
-    // time management service
+    // --- TimeManagement calendar type update ---------------------------------
     TimeManagement::setCalendarType(config.calendarType);
 
     return config;
@@ -578,7 +548,6 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 }
 
 // --- reportRunConfig --------------------------------------------------------
-// Print run-time configuration summary
 /**
  * @brief Reports the current configuration to the provided output stream.
  * @param config The RunConfig structure to report.
