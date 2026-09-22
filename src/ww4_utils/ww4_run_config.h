@@ -31,6 +31,7 @@
 
 namespace ww4_utils {
 
+// ---------------------------------------------------------------------------
 /**
  * @enum InputFieldOption
  * @brief Options for model input fields.
@@ -58,6 +59,7 @@ enum class InputFieldOption {
   FromGrid
 };
 
+// ---------------------------------------------------------------------------
 /**
  * @enum ScreenOutputLevel
  * @brief Options for the level of output to standard output during time
@@ -73,6 +75,7 @@ enum class InputFieldOption {
  */
 enum class ScreenOutputLevel { None, Summary, Full };
 
+// ---------------------------------------------------------------------------
 /**
  * @enum EchoOption
  * @brief Options for echoing input data to standard output and log files.
@@ -87,6 +90,7 @@ enum class ScreenOutputLevel { None, Summary, Full };
  */
 enum class EchoOption { None, Summary, Full };
 
+// ---------------------------------------------------------------------------
 /**
  * @struct SpectralConfig
  * @brief Parameters defining the spectral space.
@@ -114,6 +118,7 @@ struct SpectralConfig {
   double firstDirectionOffset = 0.5;
 };
 
+// ---------------------------------------------------------------------------
 /**
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
@@ -129,6 +134,7 @@ struct HomogeneousDataPoint {
   std::vector<double> values;
 };
 
+// ---------------------------------------------------------------------------
 /**
  * @struct RunConfig
  * @brief Configuration for the run-time environment.
@@ -229,11 +235,14 @@ struct RunConfig {
   OutputConfig outputRestart;
 };
 
+// ---------------------------------------------------------------------------
 std::string_view cleanValue(std::string_view s);
 
+// ---------------------------------------------------------------------------
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
 
+// ---------------------------------------------------------------------------
 void reportRunConfig(const RunConfig &config, std::ostream &os);
 
 } // namespace ww4_utils
