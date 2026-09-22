@@ -32,11 +32,14 @@
 namespace ww4_utils {
 
 // ---------------------------------------------------------------------------
+// Model input field options definition
 /**
  * @enum InputFieldOption
  * @brief Options for model input fields.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var InputFieldOption::Undefined
  * @brief Mandatory field not yet defined.
  * @var InputFieldOption::None
@@ -60,12 +63,15 @@ enum class InputFieldOption {
 };
 
 // ---------------------------------------------------------------------------
+// Screen output level enumeration
 /**
  * @enum ScreenOutputLevel
  * @brief Options for the level of output to standard output during time
  * stepping.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var ScreenOutputLevel::None
  * @brief No output in the time stepping loop.
  * @var ScreenOutputLevel::Summary
@@ -76,11 +82,14 @@ enum class InputFieldOption {
 enum class ScreenOutputLevel { None, Summary, Full };
 
 // ---------------------------------------------------------------------------
+// Input data echoing options
 /**
  * @enum EchoOption
  * @brief Options for echoing input data to standard output and log files.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var EchoOption::None
  * @brief No echoing of input data.
  * @var EchoOption::Summary
@@ -91,6 +100,7 @@ enum class ScreenOutputLevel { None, Summary, Full };
 enum class EchoOption { None, Summary, Full };
 
 // ---------------------------------------------------------------------------
+// Spectral space parameters structure definition
 /**
  * @struct SpectralConfig
  * @brief Parameters defining the spectral space.
@@ -98,6 +108,8 @@ enum class EchoOption { None, Summary, Full };
  * the spectral space based on WAVEWATCH III.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var SpectralConfig::numDirections
  * @brief Number of discrete directions (default: 36).
  * @var SpectralConfig::numFrequencies
@@ -119,11 +131,14 @@ struct SpectralConfig {
 };
 
 // ---------------------------------------------------------------------------
+// Homogeneous data point representation
 /**
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var HomogeneousDataPoint::time
  * @brief Time of the data point.
  * @var HomogeneousDataPoint::values
@@ -135,12 +150,15 @@ struct HomogeneousDataPoint {
 };
 
 // ---------------------------------------------------------------------------
+// Run-time configuration container structure
 /**
  * @struct RunConfig
  * @brief Configuration for the run-time environment.
  * @details Stores the calendar type, output preferences, and input options.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var RunConfig::calendarType
  * @brief Calendar type.
  * @var RunConfig::produceStdOut
@@ -236,13 +254,16 @@ struct RunConfig {
 };
 
 // ---------------------------------------------------------------------------
+// Trim whitespace and quotation marks from a string view
 std::string_view cleanValue(std::string_view s);
 
 // ---------------------------------------------------------------------------
+// Load run-time configuration from a specified YAML file
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
 
 // ---------------------------------------------------------------------------
+// Report current run-time configuration settings to an output stream
 void reportRunConfig(const RunConfig &config, std::ostream &os);
 
 } // namespace ww4_utils
