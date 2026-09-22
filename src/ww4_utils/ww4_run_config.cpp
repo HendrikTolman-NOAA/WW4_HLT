@@ -285,7 +285,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     RunConfig config{};
 
-    // --- General section -----------------------------------------------------
+    // === General section =====================================================
     if (const auto node = config_node["general"]) {
       if (node["calendar_type"]) {
         const auto val = node["calendar_type"].as<std::string>();
@@ -320,7 +320,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Physics section -----------------------------------------------------
+    // === Physics section =====================================================
     if (const auto node = config_node["physics"]) {
       if (node["dry_run"]) {
         config.dryRun = (node["dry_run"].as<std::string>() == "yes");
@@ -343,7 +343,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Forcing section -----------------------------------------------------
+    // === Forcing section =====================================================
     if (const auto node = config_node["forcing"]) {
       if (node["bottom_depth"]) {
         config.bottomDepth =
@@ -375,7 +375,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Homogeneous Data section --------------------------------------------
+    // === Homogeneous Data section ============================================
     if (const auto node = config_node["homogeneous_data"]) {
       auto parsePoints = [&](const std::string &key,
                              std::vector<HomogeneousDataPoint> &list) {
@@ -395,7 +395,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parsePoints("bottom_depth", config.homogeneousBottomDepth);
     }
 
-    // --- Output section ------------------------------------------------------
+    // === Output section ======================================================
     if (const auto node = config_node["output"]) {
       parseOutputConfig(config.outputFields, node["fields"]);
       parseOutputConfig(config.outputPoints, node["points"]);
@@ -403,7 +403,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parseOutputConfig(config.outputApi, node["api"]);
     }
 
-    // --- Spectral space section ----------------------------------------------
+    // === Spectral space section ==============================================
     if (const auto node = config_node["spectral_space"]) {
       if (node["num_directions"]) {
         config.spectralSpace.numDirections = node["num_directions"].as<int>();
@@ -447,7 +447,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // --- Spectral space parameters validation --------------------------------
+    // === Spectral space parameters validation ================================
     if (config.spectralSpace.numDirections <= 0 ||
         config.spectralSpace.numFrequencies <= 0 ||
         config.spectralSpace.freqIncrementFactor <= 1.0 ||
@@ -479,7 +479,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           __FILE__, __LINE__);
     }
 
-    // --- Mandatory fields check ----------------------------------------------
+    // === Mandatory fields check ==============================================
     if (config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
@@ -503,7 +503,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // --- Time step validation ------------------------------------------------
+    // === Time step validation ================================================
     if (config.timeStep < 0.0) {
       os << "WW4 ERROR: Mandatory time step missing or invalid "
             "in configuration."
@@ -512,7 +512,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // --- Output validation ---------------------------------------------------
+    // === Output validation ===================================================
     bool outputValid = true;
     auto validateOutput = [&](const OutputConfig &oc,
                               const std::string_view name) {
@@ -536,7 +536,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // --- TimeManagement calendar type update ---------------------------------
+    // === TimeManagement calendar type update =================================
     TimeManagement::setCalendarType(config.calendarType);
 
     return config;
