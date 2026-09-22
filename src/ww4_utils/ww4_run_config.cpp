@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-21
+ * @date Last update : 2026-09-22
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -401,13 +401,11 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
 
       if (node["first_direction_offset"]) {
-        const auto val = node["first_direction_offset"].as<std::string>();
         config.spectralSpace.firstDirectionOffset =
-            (val == "half_step" || val == "yes" || val == "true");
+            node["first_direction_offset"].as<double>();
       } else if (node["direction_offset"]) {
-        const auto val = node["direction_offset"].as<std::string>();
         config.spectralSpace.firstDirectionOffset =
-            (val == "half_step" || val == "yes" || val == "true");
+            node["direction_offset"].as<double>();
       }
     }
 
@@ -415,7 +413,9 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     if (config.spectralSpace.numDirections <= 0 ||
         config.spectralSpace.numFrequencies <= 0 ||
         config.spectralSpace.freqIncrementFactor <= 1.0 ||
-        config.spectralSpace.firstFrequency <= 0.0) {
+        config.spectralSpace.firstFrequency <= 0.0 ||
+        config.spectralSpace.firstDirectionOffset < 0.0 ||
+        config.spectralSpace.firstDirectionOffset > 1.0) {
       os << "WW4 ERROR: Invalid parameters defining spectral space in "
             "configuration."
          << std::endl;
@@ -430,6 +430,10 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
            << std::endl;
       if (config.spectralSpace.firstFrequency <= 0.0)
         os << "   Missing/invalid: spectral_space -> first_frequency"
+           << std::endl;
+      if (config.spectralSpace.firstDirectionOffset < 0.0 ||
+          config.spectralSpace.firstDirectionOffset > 1.0)
+        os << "   Missing/invalid: spectral_space -> first_direction_offset"
            << std::endl;
 
       ww4_std_out::extcde(
@@ -581,8 +585,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "        First frequency          : "
      << config.spectralSpace.firstFrequency << " Hz" << std::endl;
   os << "        First direction offset   : "
-     << (config.spectralSpace.firstDirectionOffset ? "half_step" : "none")
-     << std::endl;
+     << config.spectralSpace.firstDirectionOffset << std::endl;
 
   os << "\n  Model input:" << std::endl;
 

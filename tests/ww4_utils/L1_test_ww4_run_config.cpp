@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-21
+ * @date Last update : 2026-09-22
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -115,8 +115,8 @@ TEST(RunConfigTest, SpectralSpaceParametersDefaults) {
   EXPECT_EQ(config.numDirections, 36);
   EXPECT_EQ(config.numFrequencies, 50);
   EXPECT_DOUBLE_EQ(config.freqIncrementFactor, 1.07);
-  EXPECT_DOUBLE_EQ(config.firstFrequency, 0.04118);
-  EXPECT_TRUE(config.firstDirectionOffset);
+  EXPECT_DOUBLE_EQ(config.firstFrequency, 0.035);
+  EXPECT_DOUBLE_EQ(config.firstDirectionOffset, 0.5);
 }
 
 TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
@@ -134,7 +134,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   file << "  num_frequencies: 30\n";
   file << "  freq_increment_factor: 1.10\n";
   file << "  first_frequency: 0.05\n";
-  file << "  first_direction_offset: \"none\"\n";
+  file << "  first_direction_offset: 0.25\n";
   file.close();
 
   const auto config = loadRunConfig(filename, std::cerr);
@@ -144,7 +144,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   EXPECT_EQ(config->spectralSpace.numFrequencies, 30);
   EXPECT_DOUBLE_EQ(config->spectralSpace.freqIncrementFactor, 1.10);
   EXPECT_DOUBLE_EQ(config->spectralSpace.firstFrequency, 0.05);
-  EXPECT_FALSE(config->spectralSpace.firstDirectionOffset);
+  EXPECT_DOUBLE_EQ(config->spectralSpace.firstDirectionOffset, 0.25);
 
   std::stringstream ss;
   reportRunConfig(*config, ss);
@@ -152,7 +152,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   EXPECT_NE(reportStr.find("Spectral space parameters :"), std::string::npos);
   EXPECT_NE(reportStr.find("Number of directions     : 24"), std::string::npos);
   EXPECT_NE(reportStr.find("Number of frequencies    : 30"), std::string::npos);
-  EXPECT_NE(reportStr.find("First direction offset   : none"),
+  EXPECT_NE(reportStr.find("First direction offset   : 0.25"),
             std::string::npos);
 
   std::remove(filename.c_str());
@@ -169,7 +169,7 @@ TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   file << "  winds: none\n";
   file << "  ice_concentrations: none\n";
   file << "spectral_space:\n";
-  file << "  num_directions: -1\n";
+  file << "  first_direction_offset: 1.5\n";
   file.close();
 
   EXPECT_DEATH(loadRunConfig(filename, std::cerr),

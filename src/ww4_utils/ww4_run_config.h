@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-21
+ * @date Last update : 2026-09-22
  */
 
 #pragma once
@@ -101,17 +101,17 @@ enum class EchoOption { None, Summary, Full };
  * @var SpectralConfig::freqIncrementFactor
  * @brief Frequency increment factor X (default: 1.07).
  * @var SpectralConfig::firstFrequency
- * @brief First discrete frequency in Hz (default: 0.04118).
+ * @brief First discrete frequency in Hz (default: 0.035).
  * @var SpectralConfig::firstDirectionOffset
- * @brief Flag indicating half directional step offset for first discrete
- * direction (default: true).
+ * @brief Offset of the first direction as a fraction of the directional step
+ * in range [0.0, 1.0] (default: 0.5).
  */
 struct SpectralConfig {
   int numDirections = 36;
   int numFrequencies = 50;
   double freqIncrementFactor = 1.07;
-  double firstFrequency = 0.04118;
-  bool firstDirectionOffset = true;
+  double firstFrequency = 0.035;
+  double firstDirectionOffset = 0.5;
 };
 
 /**

@@ -51,12 +51,11 @@ spectral_space:
   # Frequency increment factor (default: 1.07).
   freq_increment_factor: 1.07
 
-  # First (lowest) discrete frequency in Hz (default: 0.04118).
-  first_frequency: 0.04118
+  # First (lowest) discrete frequency in Hz (default: 0.035).
+  first_frequency: 0.035
 
-  # Option for first direction offset.
-  # Options: "half_step" (default), "none"
-  first_direction_offset: "half_step"
+  # Offset of the first direction as a fraction of the directional step (range: 0.0 - 1.0, default: 0.5).
+  first_direction_offset: 0.5
 
 physics:
   # Option for a dry run (no computations).
