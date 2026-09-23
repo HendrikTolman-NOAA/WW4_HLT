@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-06-18
+ * @date Last update : 2026-09-22
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -172,6 +172,24 @@ void w4core_init(const ww4_utils::DateTime &startTime,
   //
   // 2.2  Set up the spectral data structures
   //
+  // 2.3  Initialize numerical solver
+  //
+  switch (globalRunConfig.solver) {
+  case ww4_utils::SolverType::UQ:
+    w4core_init_uq(os);
+    break;
+  case ww4_utils::SolverType::Triangular:
+    w4core_init_triangular(os);
+    break;
+  case ww4_utils::SolverType::SMC:
+    w4core_init_smc(os);
+    break;
+  default:
+    ww4_utils::ww4_std_out::extcde(
+        1, os, "No numerical solver specified or unknown solver.", __FILE__,
+        __LINE__);
+    break;
+  }
   //
   // 3.  Data initialization -----------------------------------------------
   //     This only needs to be the intial conditions, Input and output are

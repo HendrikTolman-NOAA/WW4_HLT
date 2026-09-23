@@ -17,13 +17,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-15
+ * @date Last update : 2026-09-22
  */
 
 #pragma once
 
 #include "ww4_core/solver.hpp"
 #include "ww4_core/source_term.hpp"
+#include <iostream>
 #include <memory>
 #include <span>
 #include <vector>
@@ -31,21 +32,30 @@
 namespace ww4_core {
 
 /**
- * @class SolverUQ
+ * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
+ * solver.
+ * @param[in] os Output stream for logging.
+ */
+void w4core_init_uq(std::ostream &os);
+
+/**
+ * @class SolverRectangularGrid
  * @brief Implementation of the UQ solver for regular grids.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverUQ : public ISolver {
+class SolverRectangularGrid : public ISolver {
 public:
-  SolverUQ() = default;
-  ~SolverUQ() override = default;
+  SolverRectangularGrid() = default;
+  ~SolverRectangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
     return "UQ";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+
+  void init() override;
 
   void solve(std::span<double> data) override;
 

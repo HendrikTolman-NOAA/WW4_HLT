@@ -17,36 +17,40 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Last update : 2026-09-22
  */
 
 #include "ww4_core/scheme_factory.hpp"
 #include "ww4_core/solver_smc/solver_smc.hpp"
 #include "ww4_core/solver_triangular/solver_triangular.hpp"
 #include "ww4_core/solver_uq/solver_uq.hpp"
-#include "ww4_core/ww4_source_terms/source_terms_stub.hpp"
+#include "ww4_core/ww4_source_terms/compute_all_sources.hpp"
 #include <stdexcept>
 
 namespace ww4_core {
 
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
-  if (name == "UQ" || name == "regular_uq" || name == "uq") {
-    return std::make_unique<SolverUQ>();
+  if (name == "UQ" || name == "regular_uq" || name == "uq" ||
+      name == "RectangularGrid" || name == "rectangular_grid") {
+    return std::make_unique<SolverRectangularGrid>();
   }
   if (name == "Triangular" || name == "triangular" ||
-      name == "tbd_triangular") {
-    return std::make_unique<SolverTriangular>();
+      name == "tbd_triangular" || name == "TriangularGrid" ||
+      name == "triangular_grid") {
+    return std::make_unique<SolverTriangularGrid>();
   }
-  if (name == "SMC" || name == "smc") {
-    return std::make_unique<SolverSMC>();
+  if (name == "SMC" || name == "smc" || name == "SMCGrid" ||
+      name == "smc_grid") {
+    return std::make_unique<SolverSMCGrid>();
   }
   throw std::invalid_argument("Unknown solver: " + name);
 }
 
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
-  if (name == "Stub" || name == "stub") {
-    return std::make_unique<SourceTermsStub>();
+  if (name == "ComputeAllSources" || name == "compute_all_sources" ||
+      name == "Stub" || name == "stub") {
+    return std::make_unique<ComputeAllSources>();
   }
   throw std::invalid_argument("Unknown source term scheme: " + name);
 }

@@ -18,21 +18,31 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-15
+ * @date Last update : 2026-09-22
  */
 
 #include "ww4_core/solver_triangular/solver_triangular.hpp"
+#include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
-void SolverTriangular::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+void w4core_init_triangular(std::ostream &os) {
+  if (getRunConfig().produceStdOut &&
+      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
+    os << "    Initializing Triangular unstructured grid solver" << std::endl;
+  }
+}
+
+void SolverTriangularGrid::init() { w4core_init_triangular(); }
+
+void SolverTriangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {
     sourceTerms_.push_back(std::move(source));
   }
 }
 
-void SolverTriangular::solve(std::span<double> data) {
+void SolverTriangularGrid::solve(std::span<double> data) {
   // 1. Perform numerical propagation (dynamics for triangular grid)
   std::for_each(data.begin(), data.end(), [](double &val) {
     val *= 1.02; // Mock propagation effect

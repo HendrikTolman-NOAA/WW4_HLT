@@ -18,13 +18,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-15
+ * @date Last update : 2026-09-22
  */
 
 #pragma once
 
 #include "ww4_core/solver.hpp"
 #include "ww4_core/source_term.hpp"
+#include <iostream>
 #include <memory>
 #include <span>
 #include <vector>
@@ -32,21 +33,30 @@
 namespace ww4_core {
 
 /**
- * @class SolverSMC
+ * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
+ * solver.
+ * @param[in] os Output stream for logging.
+ */
+void w4core_init_smc(std::ostream &os);
+
+/**
+ * @class SolverSMCGrid
  * @brief Implementation of the SMC grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverSMC : public ISolver {
+class SolverSMCGrid : public ISolver {
 public:
-  SolverSMC() = default;
-  ~SolverSMC() override = default;
+  SolverSMCGrid() = default;
+  ~SolverSMCGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
     return "SMC";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+
+  void init() override;
 
   void solve(std::span<double> data) override;
 

@@ -18,13 +18,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-15
+ * @date Last update : 2026-09-22
  */
 
 #pragma once
 
 #include "ww4_core/solver.hpp"
 #include "ww4_core/source_term.hpp"
+#include <iostream>
 #include <memory>
 #include <span>
 #include <vector>
@@ -32,21 +33,29 @@
 namespace ww4_core {
 
 /**
- * @class SolverTriangular
+ * @brief Initialization routine for the triangular unstructured grid solver.
+ * @param[in] os Output stream for logging.
+ */
+void w4core_init_triangular(std::ostream &os);
+
+/**
+ * @class SolverTriangularGrid
  * @brief Implementation of the Triangular grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverTriangular : public ISolver {
+class SolverTriangularGrid : public ISolver {
 public:
-  SolverTriangular() = default;
-  ~SolverTriangular() override = default;
+  SolverTriangularGrid() = default;
+  ~SolverTriangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
     return "Triangular";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+
+  void init() override;
 
   void solve(std::span<double> data) override;
 
