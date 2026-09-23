@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-23
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -276,7 +276,7 @@ std::string_view cleanValue(const std::string_view s) {
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-23
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
@@ -474,7 +474,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
         os << "   Missing/invalid: spectral_space -> first_direction_offset"
            << std::endl;
 
-      // Pass source file name (__FILE__) and line number (__LINE__) for error
+      // Passing source file name (__FILE__) and line number (__LINE__) for error
       // reporting and location tracing
       ww4_std_out::extcde(
           1, os, "Missing or invalid parameters defining spectral space.",
