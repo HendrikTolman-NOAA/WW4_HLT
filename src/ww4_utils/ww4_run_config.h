@@ -31,11 +31,14 @@
 
 namespace ww4_utils {
 
+// --- InputFieldOption -------------------------------------------------------
 /**
  * @enum InputFieldOption
  * @brief Options for model input fields.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var InputFieldOption::Undefined
  * @brief Mandatory field not yet defined.
  * @var InputFieldOption::None
@@ -58,12 +61,15 @@ enum class InputFieldOption {
   FromGrid
 };
 
+// --- ScreenOutputLevel ------------------------------------------------------
 /**
  * @enum ScreenOutputLevel
  * @brief Options for the level of output to standard output during time
  * stepping.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var ScreenOutputLevel::None
  * @brief No output in the time stepping loop.
  * @var ScreenOutputLevel::Summary
@@ -73,11 +79,14 @@ enum class InputFieldOption {
  */
 enum class ScreenOutputLevel { None, Summary, Full };
 
+// --- EchoOption -------------------------------------------------------------
 /**
  * @enum EchoOption
  * @brief Options for echoing input data to standard output and log files.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var EchoOption::None
  * @brief No echoing of input data.
  * @var EchoOption::Summary
@@ -87,6 +96,7 @@ enum class ScreenOutputLevel { None, Summary, Full };
  */
 enum class EchoOption { None, Summary, Full };
 
+// --- SpectralConfig ---------------------------------------------------------
 /**
  * @struct SpectralConfig
  * @brief Parameters defining the spectral space.
@@ -94,6 +104,8 @@ enum class EchoOption { None, Summary, Full };
  * the spectral space based on WAVEWATCH III.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var SpectralConfig::numDirections
  * @brief Number of discrete directions (default: 36).
  * @var SpectralConfig::numFrequencies
@@ -114,11 +126,14 @@ struct SpectralConfig {
   double firstDirectionOffset = 0.5;
 };
 
+// --- HomogeneousDataPoint ---------------------------------------------------
 /**
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var HomogeneousDataPoint::time
  * @brief Time of the data point.
  * @var HomogeneousDataPoint::values
@@ -129,12 +144,15 @@ struct HomogeneousDataPoint {
   std::vector<double> values;
 };
 
+// --- RunConfig --------------------------------------------------------------
 /**
  * @struct RunConfig
  * @brief Configuration for the run-time environment.
  * @details Stores the calendar type, output preferences, and input options.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var RunConfig::calendarType
  * @brief Calendar type.
  * @var RunConfig::produceStdOut
@@ -229,11 +247,14 @@ struct RunConfig {
   OutputConfig outputRestart;
 };
 
+// --- cleanValue -------------------------------------------------------------
 std::string_view cleanValue(std::string_view s);
 
+// --- loadRunConfig ----------------------------------------------------------
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
 
+// --- reportRunConfig --------------------------------------------------------
 void reportRunConfig(const RunConfig &config, std::ostream &os);
 
 } // namespace ww4_utils
