@@ -474,6 +474,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
         os << "   Missing/invalid: spectral_space -> first_direction_offset"
            << std::endl;
 
+      // Pass source file name (__FILE__) and line number (__LINE__) for error
+      // reporting and location tracing
       ww4_std_out::extcde(
           1, os, "Missing or invalid parameters defining spectral space.",
           __FILE__, __LINE__);
