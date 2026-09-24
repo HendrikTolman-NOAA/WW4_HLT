@@ -23,6 +23,7 @@
  */
 
 #include "ww4_core/scheme_factory.h"
+#include "ww4_core/w4core_init.h"
 #include "ww4_core/wave_model_solver.h"
 #include <gtest/gtest.h>
 #include <vector>
@@ -30,6 +31,11 @@
 namespace ww4_core {
 
 TEST(WaveModelSolverTest, SimulationStep) {
+  resetInternalState();
+  getMutableRunConfig().inputDissipation =
+      ww4_utils::InputDissipationScheme::ST4;
+  getMutableRunConfig().nonlinearInteractions = ww4_utils::NonlinearScheme::NL1;
+
   WaveModelSolver model;
 
   // Assemble the model: UQ solver with ComputeAllSources source term
@@ -47,11 +53,14 @@ TEST(WaveModelSolverTest, SimulationStep) {
   auto result = model.getData();
   ASSERT_EQ(result.size(), initialData.size());
 
-  // UQ multiplies by 1.01, ComputeAllSources adds 0.1
+  // UQ multiplies by 1.01, ComputeAllSources applies ST4 (+0.04) and NL1
+  // (+0.001)
   for (size_t i = 0; i < initialData.size(); ++i) {
-    double expected = initialData[i] * 1.01 + 0.1;
+    double expected = initialData[i] * 1.01 + 0.041;
     EXPECT_NEAR(result[i], expected, 1e-9);
   }
+
+  resetInternalState();
 }
 
 } // namespace ww4_core

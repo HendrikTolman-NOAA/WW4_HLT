@@ -48,6 +48,40 @@ namespace ww4_utils {
 enum class SolverType { Undefined, UQ, Triangular, SMC };
 
 /**
+ * @enum InputDissipationScheme
+ * @brief Options for input and dissipation physical source terms in WAVEWATCH
+ * IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var InputDissipationScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var InputDissipationScheme::DoNotUse
+ * @brief Do not use input and dissipation source terms.
+ * @var InputDissipationScheme::ST1
+ * @brief ST1 input and dissipation scheme.
+ * @var InputDissipationScheme::ST4
+ * @brief ST4 input and dissipation scheme.
+ */
+enum class InputDissipationScheme { Undefined, DoNotUse, ST1, ST4 };
+
+/**
+ * @enum NonlinearScheme
+ * @brief Options for nonlinear interaction physical source terms in WAVEWATCH
+ * IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var NonlinearScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var NonlinearScheme::DoNotUse
+ * @brief Do not use nonlinear interaction source terms.
+ * @var NonlinearScheme::NL1
+ * @brief NL1 nonlinear interaction scheme.
+ * @var NonlinearScheme::NL3
+ * @brief NL3 nonlinear interaction scheme.
+ */
+enum class NonlinearScheme { Undefined, DoNotUse, NL1, NL3 };
+
+/**
  * @enum InputFieldOption
  * @brief Options for model input fields.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
@@ -192,6 +226,8 @@ struct RunConfig {
   bool sourceTerms = true;
 
   SolverType solver = SolverType::Undefined;
+  InputDissipationScheme inputDissipation = InputDissipationScheme::Undefined;
+  NonlinearScheme nonlinearInteractions = NonlinearScheme::Undefined;
 
   InputFieldOption waterLevels = InputFieldOption::Undefined;
   InputFieldOption currents = InputFieldOption::Undefined;

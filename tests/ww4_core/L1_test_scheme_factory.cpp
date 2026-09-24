@@ -62,6 +62,24 @@ TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
   EXPECT_EQ(scheme->getName(), "ComputeAllSources");
 }
 
+TEST(SchemeFactoryTest, CreateSubSourceTerms) {
+  auto st1 = SchemeFactory::createSourceTerm("st1");
+  ASSERT_NE(st1, nullptr);
+  EXPECT_EQ(st1->getName(), "ST1");
+
+  auto st4 = SchemeFactory::createSourceTerm("ST4");
+  ASSERT_NE(st4, nullptr);
+  EXPECT_EQ(st4->getName(), "ST4");
+
+  auto nl1 = SchemeFactory::createSourceTerm("nl1");
+  ASSERT_NE(nl1, nullptr);
+  EXPECT_EQ(nl1->getName(), "NL1");
+
+  auto nl3 = SchemeFactory::createSourceTerm("NL3");
+  ASSERT_NE(nl3, nullptr);
+  EXPECT_EQ(nl3->getName(), "NL3");
+}
+
 TEST(SchemeFactoryTest, CreateUnknownSolver) {
   EXPECT_THROW(SchemeFactory::createSolver("UNKNOWN"), std::invalid_argument);
 }

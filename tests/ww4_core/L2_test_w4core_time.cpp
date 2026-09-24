@@ -42,6 +42,8 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
   runFile << "  solver: uq\n";
+  runFile << "  input_dissipation: st4\n";
+  runFile << "  nonlinear_interactions: nl1\n";
   runFile << "forcing:\n";
   runFile << "  water_levels: none\n";
   runFile << "  currents: none\n";
@@ -76,6 +78,8 @@ TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
   runFile << "  solver: uq\n";
+  runFile << "  input_dissipation: st4\n";
+  runFile << "  nonlinear_interactions: nl1\n";
   runFile << "forcing:\n";
   runFile << "  water_levels: none\n";
   runFile << "  currents: none\n";
@@ -104,6 +108,8 @@ TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
   runFile << "  solver: uq\n";
+  runFile << "  input_dissipation: st4\n";
+  runFile << "  nonlinear_interactions: nl1\n";
   runFile << "forcing:\n";
   runFile << "  water_levels: none\n";
   runFile << "  currents: none\n";
@@ -138,6 +144,8 @@ TEST_F(W4CoreTimeTest, WaveFailsIfTimeMismatch) {
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
   runFile << "  solver: uq\n";
+  runFile << "  input_dissipation: st4\n";
+  runFile << "  nonlinear_interactions: nl1\n";
   runFile << "forcing:\n";
   runFile << "  water_levels: none\n";
   runFile << "  currents: none\n";

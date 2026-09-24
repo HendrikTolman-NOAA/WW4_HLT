@@ -47,6 +47,8 @@ protected:
     runFile << "  screen_output_level: " << screenLevel << "\n";
     runFile << "physics:\n";
     runFile << "  solver: uq\n";
+    runFile << "  input_dissipation: st4\n";
+    runFile << "  nonlinear_interactions: nl1\n";
     runFile << "forcing:\n";
     runFile << "  water_levels: homogeneous\n";
     runFile << "  currents: none\n";

@@ -52,6 +52,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingBeforeData) {
   time_step: 3600.0
 physics:
   solver: uq
+  input_dissipation: st4
+  nonlinear_interactions: nl1
 forcing:
   water_levels: none
   currents: none
@@ -86,6 +88,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingDuringData) {
   time_step: 3600.0
 physics:
   solver: uq
+  input_dissipation: st4
+  nonlinear_interactions: nl1
 forcing:
   water_levels: none
   currents: none
@@ -121,6 +125,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingAfterData) {
   time_step: 3600.0
 physics:
   solver: uq
+  input_dissipation: st4
+  nonlinear_interactions: nl1
 forcing:
   water_levels: none
   currents: none
@@ -155,6 +161,8 @@ TEST_F(W4CoreInputCyclingTest, CyclingEmptyData) {
   time_step: 3600.0
 physics:
   solver: uq
+  input_dissipation: st4
+  nonlinear_interactions: nl1
 forcing:
   water_levels: none
   currents: none
@@ -174,6 +182,8 @@ TEST_F(W4CoreInputCyclingTest, IntegrationWithWaveLoop) {
   time_step: 3600.0
 physics:
   solver: uq
+  input_dissipation: st4
+  nonlinear_interactions: nl1
 forcing:
   water_levels: none
   currents: none

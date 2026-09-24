@@ -51,6 +51,8 @@ TEST_F(W4CoreZeroStepTest, FailsWithTwoConsecutiveZeroSteps) {
   runFile << "  time_step: 0.0\n";
   runFile << "physics:\n";
   runFile << "  solver: uq\n";
+  runFile << "  input_dissipation: st4\n";
+  runFile << "  nonlinear_interactions: nl1\n";
   runFile << "forcing:\n";
   runFile << "  water_levels: none\n";
   runFile << "  currents: none\n";

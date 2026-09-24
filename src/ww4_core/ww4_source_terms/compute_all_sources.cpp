@@ -21,15 +21,58 @@
  */
 
 #include "ww4_core/ww4_source_terms/compute_all_sources.h"
-#include <algorithm>
+#include "ww4_core/scheme_factory.h"
+#include "ww4_core/w4core_init.h"
+#include "ww4_utils/ww4_run_config.h"
 
 namespace ww4_core {
 
+void ComputeAllSources::init() {
+  const auto &config = getRunConfig();
+
+  switch (config.inputDissipation) {
+  case ww4_utils::InputDissipationScheme::ST1:
+    inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST1");
+    break;
+  case ww4_utils::InputDissipationScheme::ST4:
+    inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST4");
+    break;
+  default:
+    inputDissipationTerm_ = nullptr;
+    break;
+  }
+
+  switch (config.nonlinearInteractions) {
+  case ww4_utils::NonlinearScheme::NL1:
+    nonlinearTerm_ = SchemeFactory::createSourceTerm("NL1");
+    break;
+  case ww4_utils::NonlinearScheme::NL3:
+    nonlinearTerm_ = SchemeFactory::createSourceTerm("NL3");
+    break;
+  default:
+    nonlinearTerm_ = nullptr;
+    break;
+  }
+
+  initialized_ = true;
+}
+
 void ComputeAllSources::calculate(std::span<double> data) {
-  // Subroutine for source term calculations.
-  std::for_each(data.begin(), data.end(), [](double &val) {
-    val += 0.1; // Mock source term effect
-  });
+  if (!getRunConfig().sourceTerms) {
+    return;
+  }
+
+  if (!initialized_) {
+    init();
+  }
+
+  if (inputDissipationTerm_) {
+    inputDissipationTerm_->calculate(data);
+  }
+
+  if (nonlinearTerm_) {
+    nonlinearTerm_->calculate(data);
+  }
 }
 
 } // namespace ww4_core

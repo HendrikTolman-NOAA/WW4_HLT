@@ -82,6 +82,8 @@ TEST_F(WW4StandaloneL1Test, ValidConfigSucceeds) {
           << "physics:\n"
           << "  dry_run: \"no\"\n"
           << "  solver: \"uq\"\n"
+          << "  input_dissipation: \"st4\"\n"
+          << "  nonlinear_interactions: \"nl1\"\n"
           << "forcing:\n"
           << "  bottom_depth: \"from_grid\"\n"
           << "  water_levels: \"none\"\n"

@@ -313,6 +313,26 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           config.solver = SolverType::SMC;
         }
       }
+      if (node["input_dissipation"]) {
+        const auto val = node["input_dissipation"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.inputDissipation = InputDissipationScheme::DoNotUse;
+        } else if (val == "st1" || val == "ST1") {
+          config.inputDissipation = InputDissipationScheme::ST1;
+        } else if (val == "st4" || val == "ST4") {
+          config.inputDissipation = InputDissipationScheme::ST4;
+        }
+      }
+      if (node["nonlinear_interactions"]) {
+        const auto val = node["nonlinear_interactions"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.nonlinearInteractions = NonlinearScheme::DoNotUse;
+        } else if (val == "nl1" || val == "NL1") {
+          config.nonlinearInteractions = NonlinearScheme::NL1;
+        } else if (val == "nl3" || val == "NL3") {
+          config.nonlinearInteractions = NonlinearScheme::NL3;
+        }
+      }
     }
 
     // 3. Forcing section
@@ -377,6 +397,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     // Mandatory fields check
     if (config.solver == SolverType::Undefined ||
+        config.inputDissipation == InputDissipationScheme::Undefined ||
+        config.nonlinearInteractions == NonlinearScheme::Undefined ||
         config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
@@ -388,6 +410,11 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
          << std::endl;
       if (config.solver == SolverType::Undefined)
         os << "   Missing/invalid: physics -> solver" << std::endl;
+      if (config.inputDissipation == InputDissipationScheme::Undefined)
+        os << "   Missing/invalid: physics -> input_dissipation" << std::endl;
+      if (config.nonlinearInteractions == NonlinearScheme::Undefined)
+        os << "   Missing/invalid: physics -> nonlinear_interactions"
+           << std::endl;
       if (config.waterLevels == InputFieldOption::Undefined)
         os << "   Missing/invalid: forcing -> water_levels" << std::endl;
       if (config.currents == InputFieldOption::Undefined)
@@ -399,6 +426,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (config.bottomDepth == InputFieldOption::Undefined)
         os << "   Missing/invalid: forcing -> bottom_depth" << std::endl;
 
+      // An explanatory comment line must precede the first use of '__FILE__'
+      // and '__LINE__' Output error and terminate execution
       ww4_std_out::extcde(1, os, "Missing or invalid mandatory fields.",
                           __FILE__, __LINE__);
     }
@@ -520,6 +549,26 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     solverStr = "smc";
   }
   os << "     Solver scheme        : " << solverStr << std::endl;
+
+  std::string inputDissStr = "undefined";
+  if (config.inputDissipation == InputDissipationScheme::DoNotUse) {
+    inputDissStr = "do_not_use";
+  } else if (config.inputDissipation == InputDissipationScheme::ST1) {
+    inputDissStr = "st1";
+  } else if (config.inputDissipation == InputDissipationScheme::ST4) {
+    inputDissStr = "st4";
+  }
+  os << "     Input and dissipation: " << inputDissStr << std::endl;
+
+  std::string nlStr = "undefined";
+  if (config.nonlinearInteractions == NonlinearScheme::DoNotUse) {
+    nlStr = "do_not_use";
+  } else if (config.nonlinearInteractions == NonlinearScheme::NL1) {
+    nlStr = "nl1";
+  } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
+    nlStr = "nl3";
+  }
+  os << "     Nonlinear interactions: " << nlStr << std::endl;
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
 

@@ -22,6 +22,7 @@
  */
 
 #include "ww4_core/solver_triangular/solver_triangular.h"
+#include "ww4_core/scheme_factory.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
@@ -49,6 +50,9 @@ void SolverTriangularGrid::solve(std::span<double> data) {
   });
 
   // 2. Call integrated source terms (physics)
+  if (sourceTerms_.empty()) {
+    addSourceTerm(SchemeFactory::createSourceTerm("ComputeAllSources"));
+  }
   for (auto &source : sourceTerms_) {
     source->calculate(data);
   }

@@ -64,6 +64,8 @@ TEST_F(InterpolationOutputTest, RedundantOutputCheck) {
   time_step: 3600.0
 physics:
   solver: uq
+  input_dissipation: st4
+  nonlinear_interactions: nl1
 forcing:
   water_levels: none
   currents: none
