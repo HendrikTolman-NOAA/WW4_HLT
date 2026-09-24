@@ -3,10 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file compute_all_sources.hpp
- * @brief Header for physical source term calculations in WW4 core.
- * @details Concrete implementation of ISourceTerm interface for computing all
- * source terms.
+ * @file source_term.h
+ * @brief Interface for source term calculations in WAVEWATCH IV.
+ * @details Defines the abstract base class for different physical source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -17,33 +16,24 @@
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-09-22
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-09-24
  */
 
 #pragma once
 
-#include "ww4_core/source_term.hpp"
 #include <span>
+#include <string_view>
 
 namespace ww4_core {
 
-/**
- * @class ComputeAllSources
- * @brief Implementation for physical source term calculations.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class ComputeAllSources : public ISourceTerm {
+class ISourceTerm {
 public:
-  ComputeAllSources() = default;
-  ~ComputeAllSources() override = default;
+  virtual ~ISourceTerm() = default;
 
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "ComputeAllSources";
-  }
+  virtual std::string_view getName() const noexcept = 0;
 
-  void calculate(std::span<double> data) override;
+  virtual void calculate(std::span<double> data) = 0;
 };
 
 } // namespace ww4_core

@@ -3,10 +3,10 @@
 ### Key Components
 
 1.  **ISolver**: The primary integration strategy. It defines the contract for numerical solvers that combine dynamics (propagation) and physics (source terms) to advance the model state.
-2.  **ISourceTerm**: The physical strategy interface. Implementations (e.g., `SourceSt4`) are injected into the solver.
-3.  **SolverPr3**: A concrete solver that manages a collection of source terms and executes them during its `solve` phase.
+2.  **ISourceTerm**: The physical strategy interface. Implementations (e.g., `ComputeAllSources`) are injected into the solver.
+3.  **Solvers (`SolverUQ`, `SolverTriangular`, `SolverSMC`)**: Concrete numerical solvers (Ultimate Quickest regular grid, Triangular unstructured grid, and SMC grid) that manage collections of physical source terms and execute them during their `solve` phase.
 4.  **SchemeFactory**: Responsible for instantiating individual model components (solvers and source terms).
-5.  **WaveModel**: The high-level orchestrator. It manages the simulation loop and triggers the configured solver at each time step.
+5.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
 This document describes the high-level architecture of WAVEWATCH IV (WW4) using a Mermaid diagram.
 
 ## Component Diagram
@@ -94,7 +94,7 @@ WW4 uses an integrated **Strategy** and **Factory** design pattern. To support c
 
 ```mermaid
 classDiagram
-    class WaveModel {
+    class WaveModelSolver {
         -unique_ptr~ISolver~ solver_
         -vector~double~ data_
         +initialize(unique_ptr~ISolver~ solver)
@@ -116,14 +116,28 @@ classDiagram
         +calculate(span~double~ data)*
     }
 
-    class SolverPr3 {
+    class SolverUQ {
         -vector~unique_ptr~ISourceTerm~~ sourceTerms_
         +getName() string_view
         +addSourceTerm(unique_ptr~ISourceTerm~ source)
         +solve(span~double~ data)
     }
 
-    class SourceSt4 {
+    class SolverTriangular {
+        -vector~unique_ptr~ISourceTerm~~ sourceTerms_
+        +getName() string_view
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)
+        +solve(span~double~ data)
+    }
+
+    class SolverSMC {
+        -vector~unique_ptr~ISourceTerm~~ sourceTerms_
+        +getName() string_view
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)
+        +solve(span~double~ data)
+    }
+
+    class ComputeAllSources {
         +getName() string_view
         +calculate(span~double~ data)
     }
@@ -133,10 +147,14 @@ classDiagram
         +createSourceTerm(string name) unique_ptr~ISourceTerm~
     }
 
-    WaveModel o-- ISolver : orchestrates
-    ISolver <|-- SolverPr3
-    SolverPr3 o-- ISourceTerm : manages & calls
-    ISourceTerm <|-- SourceSt4
+    WaveModelSolver o-- ISolver : orchestrates
+    ISolver <|-- SolverUQ
+    ISolver <|-- SolverTriangular
+    ISolver <|-- SolverSMC
+    SolverUQ o-- ISourceTerm : manages & calls
+    SolverTriangular o-- ISourceTerm : manages & calls
+    SolverSMC o-- ISourceTerm : manages & calls
+    ISourceTerm <|-- ComputeAllSources
     SchemeFactory ..> ISolver : creates
     SchemeFactory ..> ISourceTerm : creates
 ```

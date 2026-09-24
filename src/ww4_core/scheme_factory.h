@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file scheme_factory.hpp
+ * @file scheme_factory.h
  * @brief Factory for creating solvers and source term schemes at runtime.
  * @details Implements a registry-based factory for model components.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -17,13 +17,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-24
  */
 
 #pragma once
 
-#include "ww4_core/solver.hpp"
-#include "ww4_core/source_term.hpp"
+#include "ww4_core/solver.h"
+#include "ww4_core/source_term.h"
 #include <memory>
 #include <string>
 

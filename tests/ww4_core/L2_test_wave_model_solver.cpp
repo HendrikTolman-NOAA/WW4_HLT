@@ -3,10 +3,11 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L2_test_wave_model.cpp
- * @brief Integration tests for the WaveModel class with integrated physics.
+ * @file L2_test_wave_model_solver.cpp
+ * @brief Integration tests for the WaveModelSolver class with integrated
+ * physics.
  * @details Verifies the integration of solvers and source term physics in the
- *          orchestration loop of the main WaveModel.
+ *          orchestration loop of the main WaveModelSolver.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -18,18 +19,18 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/scheme_factory.hpp"
-#include "ww4_core/wave_model.hpp"
+#include "ww4_core/scheme_factory.h"
+#include "ww4_core/wave_model_solver.h"
 #include <gtest/gtest.h>
 #include <vector>
 
 namespace ww4_core {
 
-TEST(WaveModelTest, SimulationStep) {
-  WaveModel model;
+TEST(WaveModelSolverTest, SimulationStep) {
+  WaveModelSolver model;
 
   // Assemble the model: UQ solver with ComputeAllSources source term
   auto solver = SchemeFactory::createSolver("UQ");

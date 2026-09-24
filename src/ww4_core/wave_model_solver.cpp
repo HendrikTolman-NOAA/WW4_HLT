@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file source_term.hpp
- * @brief Interface for source term calculations in WAVEWATCH IV.
- * @details Defines the abstract base class for different physical source terms.
+ * @file wave_model_solver.cpp
+ * @brief Implementation of the WaveModelSolver class.
+ * @details Orchestrates the model initialization and execution loop.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -17,23 +17,25 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-06-24
+ * @date Last update : 2026-09-24
  */
 
-#pragma once
-
-#include <span>
-#include <string_view>
+#include "ww4_core/wave_model_solver.h"
 
 namespace ww4_core {
 
-class ISourceTerm {
-public:
-  virtual ~ISourceTerm() = default;
+void WaveModelSolver::initialize(std::unique_ptr<ISolver> solver) {
+  solver_ = std::move(solver);
+}
 
-  virtual std::string_view getName() const noexcept = 0;
+void WaveModelSolver::setData(std::vector<double> initialData) {
+  data_ = std::move(initialData);
+}
 
-  virtual void calculate(std::span<double> data) = 0;
-};
+void WaveModelSolver::step() {
+  if (solver_) {
+    solver_->solve(data_);
+  }
+}
 
 } // namespace ww4_core
