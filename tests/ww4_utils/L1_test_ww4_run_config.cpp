@@ -14,9 +14,10 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner, Ming
+ * Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-24
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -132,7 +133,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   file << "spectral_space:\n";
   file << "  num_directions: 24\n";
   file << "  num_frequencies: 30\n";
-  file << "  frequency_increment_factor: 1.10\n";
+  file << "  freq_increment_factor: 1.10\n";
   file << "  first_frequency: 0.05\n";
   file << "  first_direction_offset: 0.25\n";
   file.close();
