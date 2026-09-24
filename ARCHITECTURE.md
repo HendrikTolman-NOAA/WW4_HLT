@@ -146,39 +146,43 @@ classDiagram
         +calculate(span~double~ data)
     }
 
-    class SourceTermST1 {
-        +getName() string_view
-        +calculate(span~double~ data)
+    namespace InputAndDissipation {
+        class SourceTermST1 {
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+
+        class SourceTermST2 {
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+
+        class SourceTermST4 {
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+
+        class SourceTermST6 {
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
     }
 
-    class SourceTermST2 {
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
+    namespace NonlinearInteractions {
+        class SourceTermNL1 {
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
 
-    class SourceTermST4 {
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
+        class SourceTermNL2 {
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
 
-    class SourceTermST6 {
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermNL1 {
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermNL2 {
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermNL3 {
-        +getName() string_view
-        +calculate(span~double~ data)
+        class SourceTermNL3 {
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
     }
 
     class SchemeFactory {
