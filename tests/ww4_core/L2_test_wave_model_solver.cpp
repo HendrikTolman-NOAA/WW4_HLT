@@ -55,7 +55,8 @@ TEST(WaveModelSolverTest, SimulationStep) {
   auto result = model.getData();
   ASSERT_EQ(result.size(), initialData.size());
 
-  // UQ multiplies by 1.01, ComputeAllSources applies LN1 (+0.005), ST4 (+0.04), NL1 (+0.001), BT1 (-0.001) -> +0.045
+  // UQ multiplies by 1.01, ComputeAllSources applies LN1 (+0.005), ST4 (+0.04),
+  // NL1 (+0.001), BT1 (-0.001) -> +0.045
   for (size_t i = 0; i < initialData.size(); ++i) {
     double expected = initialData[i] * 1.01 + 0.045;
     EXPECT_NEAR(result[i], expected, 1e-9);
