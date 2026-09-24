@@ -3,8 +3,6 @@
 # @copyright © 2026 National Weather Service, National Oceanic and Atmospheric Administration, U.S. Federal Government.
 #
 # NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
-# @author Contributors: Jules (Agentic AI), Ming Chen
-# @date Last update : 2026-09-24
 # @details This file provides a template for configuring run-time settings
 #          for WAVEWATCH IV. Most inputs are optional and have default
 #          settings as indicated below. Mandatory inputs are also indicated.
@@ -51,7 +49,7 @@ spectral_space:
   num_frequencies: 50
 
   # Frequency increment factor (default: 1.07).
-  freq_increment_factor: 1.07
+  frequency_increment_factor: 1.07
 
   # First (lowest) discrete frequency in Hz (default: 0.035).
   first_frequency: 0.035

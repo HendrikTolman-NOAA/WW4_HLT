@@ -13,9 +13,9 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Ming Chen
+ * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-22
  */
 
 #include "ww4_core/w4core_init.h"
@@ -85,7 +85,7 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   runFile << "spectral_space:\n";
   runFile << "  num_directions: 36\n";
   runFile << "  num_frequencies: 50\n";
-  runFile << "  freq_increment_factor: 1.07\n";
+  runFile << "  frequency_increment_factor: 1.07\n";
   runFile << "  first_frequency: 0.035\n";
   runFile << "  first_direction_offset: 0.5\n";
   runFile.close();
