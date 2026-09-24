@@ -99,9 +99,12 @@ add_library(
     src/ww4_core/ww4_source_terms/st2.cpp
     src/ww4_core/ww4_source_terms/st4.cpp
     src/ww4_core/ww4_source_terms/st6.cpp
+    src/ww4_core/ww4_source_terms/ln1.cpp
     src/ww4_core/ww4_source_terms/nl1.cpp
     src/ww4_core/ww4_source_terms/nl2.cpp
     src/ww4_core/ww4_source_terms/nl3.cpp
+    src/ww4_core/ww4_source_terms/bt1.cpp
+    src/ww4_core/ww4_source_terms/bt4.cpp
     src/ww4_core/wave_model_solver.cpp
 )
 target_include_directories(ww4_core PUBLIC src)
@@ -180,9 +183,12 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_st2 tests/ww4_core/L1_test_st2.cpp ww4_core)
     ww4_add_test(test_st4 tests/ww4_core/L1_test_st4.cpp ww4_core)
     ww4_add_test(test_st6 tests/ww4_core/L1_test_st6.cpp ww4_core)
+    ww4_add_test(test_ln1 tests/ww4_core/L1_test_ln1.cpp ww4_core)
     ww4_add_test(test_nl1 tests/ww4_core/L1_test_nl1.cpp ww4_core)
     ww4_add_test(test_nl2 tests/ww4_core/L1_test_nl2.cpp ww4_core)
     ww4_add_test(test_nl3 tests/ww4_core/L1_test_nl3.cpp ww4_core)
+    ww4_add_test(test_bt1 tests/ww4_core/L1_test_bt1.cpp ww4_core)
+    ww4_add_test(test_bt4 tests/ww4_core/L1_test_bt4.cpp ww4_core)
     ww4_add_test(test_wave_model_solver tests/ww4_core/L2_test_wave_model_solver.cpp ww4_core)
     ww4_add_test(test_w4core_time tests/ww4_core/L2_test_w4core_time.cpp ww4_core)
     ww4_add_test(test_w4core_wave_output tests/ww4_core/L2_test_w4core_wave_output.cpp ww4_core)

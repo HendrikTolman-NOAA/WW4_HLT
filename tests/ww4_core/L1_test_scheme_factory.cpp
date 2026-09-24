@@ -90,6 +90,18 @@ TEST(SchemeFactoryTest, CreateSubSourceTerms) {
   auto nl3 = SchemeFactory::createSourceTerm("NL3");
   ASSERT_NE(nl3, nullptr);
   EXPECT_EQ(nl3->getName(), "NL3");
+
+  auto ln1 = SchemeFactory::createSourceTerm("LN1");
+  ASSERT_NE(ln1, nullptr);
+  EXPECT_EQ(ln1->getName(), "LN1");
+
+  auto bt1 = SchemeFactory::createSourceTerm("BT1");
+  ASSERT_NE(bt1, nullptr);
+  EXPECT_EQ(bt1->getName(), "BT1");
+
+  auto bt4 = SchemeFactory::createSourceTerm("BT4");
+  ASSERT_NE(bt4, nullptr);
+  EXPECT_EQ(bt4->getName(), "BT4");
 }
 
 TEST(SchemeFactoryTest, CreateUnknownSolver) {

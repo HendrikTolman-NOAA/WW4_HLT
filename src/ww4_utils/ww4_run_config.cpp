@@ -339,6 +339,24 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           config.nonlinearInteractions = NonlinearScheme::NL3;
         }
       }
+      if (node["linear_input"]) {
+        const auto val = node["linear_input"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.linearInput = LinearInputScheme::DoNotUse;
+        } else if (val == "ln1" || val == "LN1") {
+          config.linearInput = LinearInputScheme::LN1;
+        }
+      }
+      if (node["bottom_friction"]) {
+        const auto val = node["bottom_friction"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.bottomFriction = BottomFrictionScheme::DoNotUse;
+        } else if (val == "bt1" || val == "BT1") {
+          config.bottomFriction = BottomFrictionScheme::BT1;
+        } else if (val == "bt4" || val == "BT4") {
+          config.bottomFriction = BottomFrictionScheme::BT4;
+        }
+      }
     }
 
     // 3. Forcing section
@@ -405,6 +423,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     if (config.solver == SolverType::Undefined ||
         config.inputDissipation == InputDissipationScheme::Undefined ||
         config.nonlinearInteractions == NonlinearScheme::Undefined ||
+        config.linearInput == LinearInputScheme::Undefined ||
+        config.bottomFriction == BottomFrictionScheme::Undefined ||
         config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
@@ -421,6 +441,10 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (config.nonlinearInteractions == NonlinearScheme::Undefined)
         os << "   Missing/invalid: physics -> nonlinear_interactions"
            << std::endl;
+      if (config.linearInput == LinearInputScheme::Undefined)
+        os << "   Missing/invalid: physics -> linear_input" << std::endl;
+      if (config.bottomFriction == BottomFrictionScheme::Undefined)
+        os << "   Missing/invalid: physics -> bottom_friction" << std::endl;
       if (config.waterLevels == InputFieldOption::Undefined)
         os << "   Missing/invalid: forcing -> water_levels" << std::endl;
       if (config.currents == InputFieldOption::Undefined)
@@ -581,6 +605,24 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     nlStr = "nl3";
   }
   os << "     Nonlinear interactions: " << nlStr << std::endl;
+
+  std::string lnStr = "undefined";
+  if (config.linearInput == LinearInputScheme::DoNotUse) {
+    lnStr = "do_not_use";
+  } else if (config.linearInput == LinearInputScheme::LN1) {
+    lnStr = "ln1";
+  }
+  os << "     Linear input         : " << lnStr << std::endl;
+
+  std::string btStr = "undefined";
+  if (config.bottomFriction == BottomFrictionScheme::DoNotUse) {
+    btStr = "do_not_use";
+  } else if (config.bottomFriction == BottomFrictionScheme::BT1) {
+    btStr = "bt1";
+  } else if (config.bottomFriction == BottomFrictionScheme::BT4) {
+    btStr = "bt4";
+  }
+  os << "     Bottom friction      : " << btStr << std::endl;
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
 

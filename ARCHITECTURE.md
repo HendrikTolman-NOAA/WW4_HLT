@@ -6,8 +6,10 @@
 2.  **ISourceTerm**: The physical strategy interface for WAVEWATCH IV sub-source terms.
 3.  **Source Term Implementations**:
     - **ComputeAllSources**: Unified routine called directly by each solver. Manages and executes physical `ISourceTerm` sub-source terms instantiated via `SchemeFactory`.
+    - **Linear Input**: `SourceTermLN1` (LN1).
     - **Input and Dissipation**: `SourceTermST1` (ST1), `SourceTermST2` (ST2), `SourceTermST4` (ST4), and `SourceTermST6` (ST6).
     - **Nonlinear Interactions**: `SourceTermNL1` (NL1), `SourceTermNL2` (NL2), and `SourceTermNL3` (NL3).
+    - **Bottom Friction**: `SourceTermBT1` (BT1) and `SourceTermBT4` (BT4).
 4.  **Solvers (`SolverUQ`, `SolverTriangular`, `SolverSMC`)**: Concrete numerical solvers (Ultimate Quickest regular grid, Triangular unstructured grid, and SMC grid) that directly invoke `ComputeAllSources` during their `solve` phase.
 5.  **SchemeFactory**: Responsible for instantiating individual model components (solvers and source terms).
 6.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
@@ -139,15 +141,35 @@ classDiagram
     }
 
     class ComputeAllSources {
+        -unique_ptr~ISourceTerm~ linearInputTerm_
         -unique_ptr~ISourceTerm~ inputDissipationTerm_
         -unique_ptr~ISourceTerm~ nonlinearTerm_
+        -unique_ptr~ISourceTerm~ bottomFrictionTerm_
         +getName() string_view
         +init()
         +calculate(span~double~ data)
     }
 
+    class SourceTermLN1 {
+        <<Linear Input>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
     class SourceTermST1 {
         <<Input and Dissipation>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermBT1 {
+        <<Bottom Friction>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermBT4 {
+        <<Bottom Friction>>
         +getName() string_view
         +calculate(span~double~ data)
     }
@@ -201,6 +223,7 @@ classDiagram
     SolverTriangular --> ComputeAllSources : calls
     SolverSMC --> ComputeAllSources : calls
     ISourceTerm <|-- ComputeAllSources
+    ISourceTerm <|-- SourceTermLN1
     ISourceTerm <|-- SourceTermST1
     ISourceTerm <|-- SourceTermST2
     ISourceTerm <|-- SourceTermST4
@@ -208,6 +231,8 @@ classDiagram
     ISourceTerm <|-- SourceTermNL1
     ISourceTerm <|-- SourceTermNL2
     ISourceTerm <|-- SourceTermNL3
+    ISourceTerm <|-- SourceTermBT1
+    ISourceTerm <|-- SourceTermBT4
     ComputeAllSources o-- ISourceTerm : manages & calls
     SchemeFactory ..> ISolver : creates
     SchemeFactory ..> ISourceTerm : creates

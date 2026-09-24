@@ -24,7 +24,10 @@
 #include "ww4_core/solver_smc/solver_smc.h"
 #include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/solver_uq/solver_uq.h"
+#include "ww4_core/ww4_source_terms/bt1.h"
+#include "ww4_core/ww4_source_terms/bt4.h"
 #include "ww4_core/ww4_source_terms/compute_all_sources.h"
+#include "ww4_core/ww4_source_terms/ln1.h"
 #include "ww4_core/ww4_source_terms/nl1.h"
 #include "ww4_core/ww4_source_terms/nl2.h"
 #include "ww4_core/ww4_source_terms/nl3.h"
@@ -79,6 +82,15 @@ SchemeFactory::createSourceTerm(const std::string &name) {
   }
   if (name == "NL3" || name == "nl3") {
     return std::make_unique<SourceTermNL3>();
+  }
+  if (name == "LN1" || name == "ln1") {
+    return std::make_unique<SourceTermLN1>();
+  }
+  if (name == "BT1" || name == "bt1") {
+    return std::make_unique<SourceTermBT1>();
+  }
+  if (name == "BT4" || name == "bt4") {
+    return std::make_unique<SourceTermBT4>();
   }
   throw std::invalid_argument("Unknown source term scheme: " + name);
 }

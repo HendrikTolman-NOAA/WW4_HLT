@@ -30,6 +30,15 @@ namespace ww4_core {
 void ComputeAllSources::init() {
   const auto &config = getRunConfig();
 
+  switch (config.linearInput) {
+  case ww4_utils::LinearInputScheme::LN1:
+    linearInputTerm_ = SchemeFactory::createSourceTerm("LN1");
+    break;
+  default:
+    linearInputTerm_ = nullptr;
+    break;
+  }
+
   switch (config.inputDissipation) {
   case ww4_utils::InputDissipationScheme::ST1:
     inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST1");
@@ -63,6 +72,18 @@ void ComputeAllSources::init() {
     break;
   }
 
+  switch (config.bottomFriction) {
+  case ww4_utils::BottomFrictionScheme::BT1:
+    bottomFrictionTerm_ = SchemeFactory::createSourceTerm("BT1");
+    break;
+  case ww4_utils::BottomFrictionScheme::BT4:
+    bottomFrictionTerm_ = SchemeFactory::createSourceTerm("BT4");
+    break;
+  default:
+    bottomFrictionTerm_ = nullptr;
+    break;
+  }
+
   initialized_ = true;
 }
 
@@ -75,12 +96,20 @@ void ComputeAllSources::calculate(std::span<double> data) {
     init();
   }
 
+  if (linearInputTerm_) {
+    linearInputTerm_->calculate(data);
+  }
+
   if (inputDissipationTerm_) {
     inputDissipationTerm_->calculate(data);
   }
 
   if (nonlinearTerm_) {
     nonlinearTerm_->calculate(data);
+  }
+
+  if (bottomFrictionTerm_) {
+    bottomFrictionTerm_->calculate(data);
   }
 }
 

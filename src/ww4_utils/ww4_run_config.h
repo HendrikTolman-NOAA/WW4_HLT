@@ -88,6 +88,36 @@ enum class InputDissipationScheme { Undefined, DoNotUse, ST1, ST2, ST4, ST6 };
 enum class NonlinearScheme { Undefined, DoNotUse, NL1, NL2, NL3 };
 
 /**
+ * @enum LinearInputScheme
+ * @brief Options for linear wave growth physical source terms in WAVEWATCH IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var LinearInputScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var LinearInputScheme::DoNotUse
+ * @brief Do not use linear input source terms.
+ * @var LinearInputScheme::LN1
+ * @brief LN1 linear input scheme.
+ */
+enum class LinearInputScheme { Undefined, DoNotUse, LN1 };
+
+/**
+ * @enum BottomFrictionScheme
+ * @brief Options for bottom friction physical source terms in WAVEWATCH IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var BottomFrictionScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var BottomFrictionScheme::DoNotUse
+ * @brief Do not use bottom friction source terms.
+ * @var BottomFrictionScheme::BT1
+ * @brief BT1 bottom friction scheme.
+ * @var BottomFrictionScheme::BT4
+ * @brief BT4 bottom friction scheme.
+ */
+enum class BottomFrictionScheme { Undefined, DoNotUse, BT1, BT4 };
+
+/**
  * @enum InputFieldOption
  * @brief Options for model input fields.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
@@ -234,6 +264,8 @@ struct RunConfig {
   SolverType solver = SolverType::Undefined;
   InputDissipationScheme inputDissipation = InputDissipationScheme::Undefined;
   NonlinearScheme nonlinearInteractions = NonlinearScheme::Undefined;
+  LinearInputScheme linearInput = LinearInputScheme::Undefined;
+  BottomFrictionScheme bottomFriction = BottomFrictionScheme::Undefined;
 
   InputFieldOption waterLevels = InputFieldOption::Undefined;
   InputFieldOption currents = InputFieldOption::Undefined;

@@ -39,6 +39,8 @@ protected:
   }
 
   void writeYaml(const std::string &inputDiss, const std::string &nlInter,
+                 const std::string &linInput = "do_not_use",
+                 const std::string &botFric = "do_not_use",
                  bool sourceTerms = true) {
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "general:\n";
@@ -46,8 +48,10 @@ protected:
     runFile << "physics:\n";
     runFile << "  solver: uq\n";
     runFile << "  source_terms: " << (sourceTerms ? "yes" : "no") << "\n";
+    runFile << "  linear_input: " << linInput << "\n";
     runFile << "  input_dissipation: " << inputDiss << "\n";
     runFile << "  nonlinear_interactions: " << nlInter << "\n";
+    runFile << "  bottom_friction: " << botFric << "\n";
     runFile << "forcing:\n";
     runFile << "  water_levels: none\n";
     runFile << "  currents: none\n";
@@ -118,6 +122,32 @@ TEST_F(ComputeAllSourcesL1Test, CalculateST2ST6AndNL2) {
   EXPECT_NEAR(data[1], 2.562, 1e-9);
 }
 
+TEST_F(ComputeAllSourcesL1Test, CalculateLN1AndBT1BT4) {
+  writeYaml("do_not_use", "do_not_use", "ln1", "bt1");
+  ww4_utils::DateTime startTime = {20260101, 0.0};
+  w4core_init(startTime, "test_sources_ln1_bt1", std::cout);
+
+  ComputeAllSources sources;
+  std::vector<double> data = {1.0, 2.5};
+  sources.calculate(data);
+
+  // LN1 adds 0.005, BT1 subtracts 0.001 -> total + 0.004
+  EXPECT_NEAR(data[0], 1.004, 1e-9);
+  EXPECT_NEAR(data[1], 2.504, 1e-9);
+
+  resetInternalState();
+  writeYaml("do_not_use", "do_not_use", "do_not_use", "bt4");
+  w4core_init(startTime, "test_sources_bt4", std::cout);
+
+  ComputeAllSources sources2;
+  data = {1.0, 2.5};
+  sources2.calculate(data);
+
+  // BT4 subtracts 0.004
+  EXPECT_NEAR(data[0], 0.996, 1e-9);
+  EXPECT_NEAR(data[1], 2.496, 1e-9);
+}
+
 TEST_F(ComputeAllSourcesL1Test, CalculateDoNotUse) {
   writeYaml("do_not_use", "do_not_use");
   ww4_utils::DateTime startTime = {20260101, 0.0};
@@ -135,7 +165,8 @@ TEST_F(ComputeAllSourcesL1Test, CalculateDoNotUse) {
 }
 
 TEST_F(ComputeAllSourcesL1Test, DisabledSourceTerms) {
-  writeYaml("st4", "nl3", false); // source_terms: no
+  writeYaml("st4", "nl3", "do_not_use", "do_not_use",
+            false); // source_terms: no
   ww4_utils::DateTime startTime = {20260101, 0.0};
   w4core_init(startTime, "test_sources", std::cout);
 

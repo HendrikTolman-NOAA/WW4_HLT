@@ -82,8 +82,10 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
   runFile << "  solver: uq\n";
+  runFile << "  linear_input: ln1\n";
   runFile << "  input_dissipation: st4\n";
   runFile << "  nonlinear_interactions: nl1\n";
+  runFile << "  bottom_friction: bt1\n";
   runFile << "forcing:\n";
   runFile << "  water_levels: none\n";
   runFile << "  currents: none\n";
@@ -134,8 +136,10 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
   runFile << "  solver: triangular\n";
+  runFile << "  linear_input: ln1\n";
   runFile << "  input_dissipation: st4\n";
   runFile << "  nonlinear_interactions: nl1\n";
+  runFile << "  bottom_friction: bt1\n";
   runFile << "forcing:\n";
   runFile << "  water_levels: none\n";
   runFile << "  currents: none\n";
@@ -158,8 +162,10 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   runFile2 << "  time_step: 3600.0\n";
   runFile2 << "physics:\n";
   runFile2 << "  solver: smc\n";
+  runFile2 << "  linear_input: ln1\n";
   runFile2 << "  input_dissipation: st4\n";
   runFile2 << "  nonlinear_interactions: nl1\n";
+  runFile2 << "  bottom_friction: bt1\n";
   runFile2 << "forcing:\n";
   runFile2 << "  water_levels: none\n";
   runFile2 << "  currents: none\n";
