@@ -3,10 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file compute_all_sources.h
- * @brief Header for physical source term calculations in WW4 core.
- * @details Concrete implementation of ISourceTerm interface for computing all
- * source terms.
+ * @file bt4.h
+ * @brief Header for BT4 bottom friction source term calculations.
+ * @details Concrete implementation of ISourceTerm for BT4 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -17,43 +16,33 @@
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
+ * @date Initial, 2026-09-24
  * @date Last update : 2026-09-24
  */
 
 #pragma once
 
 #include "ww4_core/source_term.h"
-#include <memory>
 #include <span>
 
 namespace ww4_core {
 
 /**
- * @class ComputeAllSources
- * @brief Implementation for physical source term calculations.
+ * @class SourceTermBT4
+ * @brief Implementation of BT4 bottom friction source terms.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class ComputeAllSources : public ISourceTerm {
+class SourceTermBT4 : public ISourceTerm {
 public:
-  ComputeAllSources() = default;
-  ~ComputeAllSources() override = default;
+  SourceTermBT4() = default;
+  ~SourceTermBT4() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "ComputeAllSources";
+    return "BT4";
   }
 
-  void init();
-
   void calculate(std::span<double> data) override;
-
-private:
-  std::unique_ptr<ISourceTerm> linearInputTerm_{nullptr};
-  std::unique_ptr<ISourceTerm> inputDissipationTerm_{nullptr};
-  std::unique_ptr<ISourceTerm> nonlinearTerm_{nullptr};
-  std::unique_ptr<ISourceTerm> bottomFrictionTerm_{nullptr};
-  bool initialized_{false};
 };
 
 } // namespace ww4_core

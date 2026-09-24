@@ -48,6 +48,76 @@ namespace ww4_utils {
 enum class SolverType { Undefined, UQ, Triangular, SMC };
 
 /**
+ * @enum InputDissipationScheme
+ * @brief Options for input and dissipation physical source terms in WAVEWATCH
+ * IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var InputDissipationScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var InputDissipationScheme::DoNotUse
+ * @brief Do not use input and dissipation source terms.
+ * @var InputDissipationScheme::ST1
+ * @brief ST1 input and dissipation scheme.
+ * @var InputDissipationScheme::ST2
+ * @brief ST2 input and dissipation scheme.
+ * @var InputDissipationScheme::ST4
+ * @brief ST4 input and dissipation scheme.
+ * @var InputDissipationScheme::ST6
+ * @brief ST6 input and dissipation scheme.
+ */
+enum class InputDissipationScheme { Undefined, DoNotUse, ST1, ST2, ST4, ST6 };
+
+/**
+ * @enum NonlinearScheme
+ * @brief Options for nonlinear interaction physical source terms in WAVEWATCH
+ * IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var NonlinearScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var NonlinearScheme::DoNotUse
+ * @brief Do not use nonlinear interaction source terms.
+ * @var NonlinearScheme::NL1
+ * @brief NL1 nonlinear interaction scheme.
+ * @var NonlinearScheme::NL2
+ * @brief NL2 nonlinear interaction scheme.
+ * @var NonlinearScheme::NL3
+ * @brief NL3 nonlinear interaction scheme.
+ */
+enum class NonlinearScheme { Undefined, DoNotUse, NL1, NL2, NL3 };
+
+/**
+ * @enum LinearInputScheme
+ * @brief Options for linear wave growth physical source terms in WAVEWATCH IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var LinearInputScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var LinearInputScheme::DoNotUse
+ * @brief Do not use linear input source terms.
+ * @var LinearInputScheme::LN1
+ * @brief LN1 linear input scheme.
+ */
+enum class LinearInputScheme { Undefined, DoNotUse, LN1 };
+
+/**
+ * @enum BottomFrictionScheme
+ * @brief Options for bottom friction physical source terms in WAVEWATCH IV.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @var BottomFrictionScheme::Undefined
+ * @brief Mandatory selection not specified.
+ * @var BottomFrictionScheme::DoNotUse
+ * @brief Do not use bottom friction source terms.
+ * @var BottomFrictionScheme::BT1
+ * @brief BT1 bottom friction scheme.
+ * @var BottomFrictionScheme::BT4
+ * @brief BT4 bottom friction scheme.
+ */
+enum class BottomFrictionScheme { Undefined, DoNotUse, BT1, BT4 };
+
+/**
  * @enum InputFieldOption
  * @brief Options for model input fields.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
@@ -192,6 +262,10 @@ struct RunConfig {
   bool sourceTerms = true;
 
   SolverType solver = SolverType::Undefined;
+  InputDissipationScheme inputDissipation = InputDissipationScheme::Undefined;
+  NonlinearScheme nonlinearInteractions = NonlinearScheme::Undefined;
+  LinearInputScheme linearInput = LinearInputScheme::Undefined;
+  BottomFrictionScheme bottomFriction = BottomFrictionScheme::Undefined;
 
   InputFieldOption waterLevels = InputFieldOption::Undefined;
   InputFieldOption currents = InputFieldOption::Undefined;

@@ -51,6 +51,10 @@ TEST_F(W4CoreHomInputTest, ValidHomogeneousInput) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -94,6 +98,10 @@ TEST_F(W4CoreHomInputTest, SummaryEcho) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -123,6 +131,10 @@ TEST_F(W4CoreHomInputTest, MultipleFields) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: homogeneous
   winds: homogeneous
@@ -163,6 +175,10 @@ TEST_F(W4CoreHomInputTest, BackwardTimeStamps) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -185,6 +201,10 @@ TEST_F(W4CoreHomInputTest, MissingDataForHomogeneousField) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -204,6 +224,10 @@ TEST_F(W4CoreHomInputTest, IceConcentrationRange) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: none
   currents: none
@@ -226,6 +250,10 @@ TEST_F(W4CoreHomInputTest, WindsParameterCount) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: none
   currents: none
@@ -248,6 +276,10 @@ TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
   time_step: 3600.0
 physics:
   solver: uq
+  linear_input: ln1
+  input_dissipation: st4
+  nonlinear_interactions: nl1
+  bottom_friction: bt1
 forcing:
   water_levels: none
   currents: none

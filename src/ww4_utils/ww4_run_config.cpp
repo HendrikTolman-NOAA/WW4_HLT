@@ -313,6 +313,50 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           config.solver = SolverType::SMC;
         }
       }
+      if (node["input_dissipation"]) {
+        const auto val = node["input_dissipation"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.inputDissipation = InputDissipationScheme::DoNotUse;
+        } else if (val == "st1" || val == "ST1") {
+          config.inputDissipation = InputDissipationScheme::ST1;
+        } else if (val == "st2" || val == "ST2") {
+          config.inputDissipation = InputDissipationScheme::ST2;
+        } else if (val == "st4" || val == "ST4") {
+          config.inputDissipation = InputDissipationScheme::ST4;
+        } else if (val == "st6" || val == "ST6") {
+          config.inputDissipation = InputDissipationScheme::ST6;
+        }
+      }
+      if (node["nonlinear_interactions"]) {
+        const auto val = node["nonlinear_interactions"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.nonlinearInteractions = NonlinearScheme::DoNotUse;
+        } else if (val == "nl1" || val == "NL1") {
+          config.nonlinearInteractions = NonlinearScheme::NL1;
+        } else if (val == "nl2" || val == "NL2") {
+          config.nonlinearInteractions = NonlinearScheme::NL2;
+        } else if (val == "nl3" || val == "NL3") {
+          config.nonlinearInteractions = NonlinearScheme::NL3;
+        }
+      }
+      if (node["linear_input"]) {
+        const auto val = node["linear_input"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.linearInput = LinearInputScheme::DoNotUse;
+        } else if (val == "ln1" || val == "LN1") {
+          config.linearInput = LinearInputScheme::LN1;
+        }
+      }
+      if (node["bottom_friction"]) {
+        const auto val = node["bottom_friction"].as<std::string>();
+        if (val == "do_not_use" || val == "none" || val == "do not use") {
+          config.bottomFriction = BottomFrictionScheme::DoNotUse;
+        } else if (val == "bt1" || val == "BT1") {
+          config.bottomFriction = BottomFrictionScheme::BT1;
+        } else if (val == "bt4" || val == "BT4") {
+          config.bottomFriction = BottomFrictionScheme::BT4;
+        }
+      }
     }
 
     // 3. Forcing section
@@ -377,6 +421,10 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     // Mandatory fields check
     if (config.solver == SolverType::Undefined ||
+        config.inputDissipation == InputDissipationScheme::Undefined ||
+        config.nonlinearInteractions == NonlinearScheme::Undefined ||
+        config.linearInput == LinearInputScheme::Undefined ||
+        config.bottomFriction == BottomFrictionScheme::Undefined ||
         config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
@@ -388,6 +436,15 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
          << std::endl;
       if (config.solver == SolverType::Undefined)
         os << "   Missing/invalid: physics -> solver" << std::endl;
+      if (config.inputDissipation == InputDissipationScheme::Undefined)
+        os << "   Missing/invalid: physics -> input_dissipation" << std::endl;
+      if (config.nonlinearInteractions == NonlinearScheme::Undefined)
+        os << "   Missing/invalid: physics -> nonlinear_interactions"
+           << std::endl;
+      if (config.linearInput == LinearInputScheme::Undefined)
+        os << "   Missing/invalid: physics -> linear_input" << std::endl;
+      if (config.bottomFriction == BottomFrictionScheme::Undefined)
+        os << "   Missing/invalid: physics -> bottom_friction" << std::endl;
       if (config.waterLevels == InputFieldOption::Undefined)
         os << "   Missing/invalid: forcing -> water_levels" << std::endl;
       if (config.currents == InputFieldOption::Undefined)
@@ -399,6 +456,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (config.bottomDepth == InputFieldOption::Undefined)
         os << "   Missing/invalid: forcing -> bottom_depth" << std::endl;
 
+      // An explanatory comment line must precede the first use of '__FILE__'
+      // and '__LINE__' Output error and terminate execution
       ww4_std_out::extcde(1, os, "Missing or invalid mandatory fields.",
                           __FILE__, __LINE__);
     }
@@ -520,6 +579,50 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     solverStr = "smc";
   }
   os << "     Solver scheme        : " << solverStr << std::endl;
+
+  std::string inputDissStr = "undefined";
+  if (config.inputDissipation == InputDissipationScheme::DoNotUse) {
+    inputDissStr = "do_not_use";
+  } else if (config.inputDissipation == InputDissipationScheme::ST1) {
+    inputDissStr = "st1";
+  } else if (config.inputDissipation == InputDissipationScheme::ST2) {
+    inputDissStr = "st2";
+  } else if (config.inputDissipation == InputDissipationScheme::ST4) {
+    inputDissStr = "st4";
+  } else if (config.inputDissipation == InputDissipationScheme::ST6) {
+    inputDissStr = "st6";
+  }
+  os << "     Input and dissipation: " << inputDissStr << std::endl;
+
+  std::string nlStr = "undefined";
+  if (config.nonlinearInteractions == NonlinearScheme::DoNotUse) {
+    nlStr = "do_not_use";
+  } else if (config.nonlinearInteractions == NonlinearScheme::NL1) {
+    nlStr = "nl1";
+  } else if (config.nonlinearInteractions == NonlinearScheme::NL2) {
+    nlStr = "nl2";
+  } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
+    nlStr = "nl3";
+  }
+  os << "     Nonlinear interactions: " << nlStr << std::endl;
+
+  std::string lnStr = "undefined";
+  if (config.linearInput == LinearInputScheme::DoNotUse) {
+    lnStr = "do_not_use";
+  } else if (config.linearInput == LinearInputScheme::LN1) {
+    lnStr = "ln1";
+  }
+  os << "     Linear input         : " << lnStr << std::endl;
+
+  std::string btStr = "undefined";
+  if (config.bottomFriction == BottomFrictionScheme::DoNotUse) {
+    btStr = "do_not_use";
+  } else if (config.bottomFriction == BottomFrictionScheme::BT1) {
+    btStr = "bt1";
+  } else if (config.bottomFriction == BottomFrictionScheme::BT4) {
+    btStr = "bt4";
+  }
+  os << "     Bottom friction      : " << btStr << std::endl;
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
 

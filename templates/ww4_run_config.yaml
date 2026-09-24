@@ -71,6 +71,22 @@ physics:
   #   "smc"        : Spherical Multiple-Cell (SMC) grid from UK MetOffice
   solver: "uq"
 
+  # Mandatory input and dissipation source term selection (no default).
+  # Options: "do_not_use", "st1", "st2", "st4", "st6"
+  input_dissipation: "st4"
+
+  # Mandatory nonlinear interaction source term selection (no default).
+  # Options: "do_not_use", "nl1", "nl2", "nl3"
+  nonlinear_interactions: "nl1"
+
+  # Mandatory linear input source term selection (no default).
+  # Options: "do_not_use", "ln1"
+  linear_input: "ln1"
+
+  # Mandatory bottom friction source term selection (no default).
+  # Options: "do_not_use", "bt1", "bt4"
+  bottom_friction: "bt1"
+
 forcing:
   # Mandatory input field options.
   # Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"

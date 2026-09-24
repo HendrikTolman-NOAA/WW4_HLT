@@ -36,6 +36,10 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "  time_step: 1800.0\n";
   file << "physics:\n";
   file << "  solver: \"uq\"\n";
+  file << "  linear_input: \"ln1\"\n";
+  file << "  input_dissipation: \"st1\"\n";
+  file << "  nonlinear_interactions: \"nl3\"\n";
+  file << "  bottom_friction: \"bt4\"\n";
   file << "forcing:\n";
   file << "  water_levels: \"from_file\"\n";
   file << "  currents: \"from_coupling\"\n";
@@ -50,6 +54,10 @@ TEST(RunConfigTest, NonDefaultConfig) {
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_FALSE(config->produceLogFile);
+  EXPECT_EQ(config->linearInput, LinearInputScheme::LN1);
+  EXPECT_EQ(config->inputDissipation, InputDissipationScheme::ST1);
+  EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::NL3);
+  EXPECT_EQ(config->bottomFriction, BottomFrictionScheme::BT4);
   EXPECT_EQ(config->waterLevels, InputFieldOption::FromFile);
   EXPECT_EQ(config->currents, InputFieldOption::FromCoupling);
   EXPECT_EQ(config->winds, InputFieldOption::None);
@@ -70,6 +78,10 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
     file << "  solver: triangular\n";
+    file << "  linear_input: ln1\n";
+    file << "  input_dissipation: st4\n";
+    file << "  nonlinear_interactions: nl1\n";
+    file << "  bottom_friction: bt1\n";
     file << "forcing:\n";
     file << "  water_levels: none\n";
     file << "  currents: none\n";
@@ -91,6 +103,10 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
     file << "  solver: smc\n";
+    file << "  linear_input: ln1\n";
+    file << "  input_dissipation: st4\n";
+    file << "  nonlinear_interactions: nl1\n";
+    file << "  bottom_friction: bt1\n";
     file << "forcing:\n";
     file << "  water_levels: none\n";
     file << "  currents: none\n";
@@ -110,6 +126,112 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     std::ofstream file(filename);
     file << "general:\n";
     file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  linear_input: ln1\n";
+    file << "  input_dissipation: st4\n";
+    file << "  nonlinear_interactions: nl1\n";
+    file << "  bottom_friction: bt1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+                 "Missing or invalid mandatory fields.");
+    std::remove(filename.c_str());
+  }
+}
+
+TEST(RunConfigTest, SourceTermOptionsParsing) {
+  // Test ST1 and NL1 parsing
+  {
+    const std::string filename = "test_st1_nl1.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: uq\n";
+    file << "  linear_input: ln1\n";
+    file << "  input_dissipation: st1\n";
+    file << "  nonlinear_interactions: nl1\n";
+    file << "  bottom_friction: bt1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->inputDissipation, InputDissipationScheme::ST1);
+    EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::NL1);
+    std::remove(filename.c_str());
+  }
+
+  // Test ST4 and NL3 parsing
+  {
+    const std::string filename = "test_st4_nl3.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: uq\n";
+    file << "  linear_input: do_not_use\n";
+    file << "  input_dissipation: ST4\n";
+    file << "  nonlinear_interactions: NL3\n";
+    file << "  bottom_friction: BT4\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->inputDissipation, InputDissipationScheme::ST4);
+    EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::NL3);
+    std::remove(filename.c_str());
+  }
+
+  // Test do_not_use parsing
+  {
+    const std::string filename = "test_donotuse.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: uq\n";
+    file << "  linear_input: do_not_use\n";
+    file << "  input_dissipation: do_not_use\n";
+    file << "  nonlinear_interactions: do_not_use\n";
+    file << "  bottom_friction: do_not_use\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->inputDissipation, InputDissipationScheme::DoNotUse);
+    EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::DoNotUse);
+    std::remove(filename.c_str());
+  }
+
+  // Test missing input_dissipation failure
+  {
+    const std::string filename = "test_missing_input_diss.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: uq\n";
+    file << "  nonlinear_interactions: nl1\n";
     file << "forcing:\n";
     file << "  water_levels: none\n";
     file << "  currents: none\n";
@@ -138,6 +260,10 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: homogeneous\n";
   file << "  currents: homogeneous\n";
@@ -184,6 +310,10 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   file << "  screen_output_level: summary\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -210,6 +340,10 @@ TEST(RunConfigTest, OutputConfigParsing) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -257,6 +391,10 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -314,6 +452,10 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "  propagate_k: no\n";
   file << "  source_terms: no\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -372,6 +514,10 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "  time_step : 3600.0\n";
   file << "physics:\n";
   file << "  solver: \"uq\"\n";
+  file << "  linear_input: \"ln1\"\n";
+  file << "  input_dissipation: \"st4\"\n";
+  file << "  nonlinear_interactions: \"nl1\"\n";
+  file << "  bottom_friction: \"bt1\"\n";
   file << "forcing:\n";
   file << "  water_levels : \"none\"\n";
   file << "  currents : none # inline comment\n";
@@ -428,6 +574,10 @@ TEST(RunConfigTest, ApiOutputConfig) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -519,6 +669,10 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -546,6 +700,10 @@ TEST(RunConfigTest, PartialConfig) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -570,6 +728,10 @@ TEST(RunConfigTest, TimeStepFailure) {
   file << "  time_step: -1.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -606,6 +768,10 @@ TEST(RunConfigTest, BottomDepthDefault) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -628,6 +794,10 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -650,6 +820,10 @@ TEST(RunConfigTest, FromGridRejection) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: from_grid\n";
   file << "  currents: none\n";
@@ -672,6 +846,10 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
   file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: \"none\"\n";
   file << "  currents: \"from_file\"\n";

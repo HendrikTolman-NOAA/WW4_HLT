@@ -62,6 +62,48 @@ TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
   EXPECT_EQ(scheme->getName(), "ComputeAllSources");
 }
 
+TEST(SchemeFactoryTest, CreateSubSourceTerms) {
+  auto st1 = SchemeFactory::createSourceTerm("st1");
+  ASSERT_NE(st1, nullptr);
+  EXPECT_EQ(st1->getName(), "ST1");
+
+  auto st2 = SchemeFactory::createSourceTerm("st2");
+  ASSERT_NE(st2, nullptr);
+  EXPECT_EQ(st2->getName(), "ST2");
+
+  auto st4 = SchemeFactory::createSourceTerm("ST4");
+  ASSERT_NE(st4, nullptr);
+  EXPECT_EQ(st4->getName(), "ST4");
+
+  auto st6 = SchemeFactory::createSourceTerm("ST6");
+  ASSERT_NE(st6, nullptr);
+  EXPECT_EQ(st6->getName(), "ST6");
+
+  auto nl1 = SchemeFactory::createSourceTerm("nl1");
+  ASSERT_NE(nl1, nullptr);
+  EXPECT_EQ(nl1->getName(), "NL1");
+
+  auto nl2 = SchemeFactory::createSourceTerm("nl2");
+  ASSERT_NE(nl2, nullptr);
+  EXPECT_EQ(nl2->getName(), "NL2");
+
+  auto nl3 = SchemeFactory::createSourceTerm("NL3");
+  ASSERT_NE(nl3, nullptr);
+  EXPECT_EQ(nl3->getName(), "NL3");
+
+  auto ln1 = SchemeFactory::createSourceTerm("LN1");
+  ASSERT_NE(ln1, nullptr);
+  EXPECT_EQ(ln1->getName(), "LN1");
+
+  auto bt1 = SchemeFactory::createSourceTerm("BT1");
+  ASSERT_NE(bt1, nullptr);
+  EXPECT_EQ(bt1->getName(), "BT1");
+
+  auto bt4 = SchemeFactory::createSourceTerm("BT4");
+  ASSERT_NE(bt4, nullptr);
+  EXPECT_EQ(bt4->getName(), "BT4");
+}
+
 TEST(SchemeFactoryTest, CreateUnknownSolver) {
   EXPECT_THROW(SchemeFactory::createSolver("UNKNOWN"), std::invalid_argument);
 }

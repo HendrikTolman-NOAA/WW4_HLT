@@ -21,6 +21,7 @@
  */
 
 #include "ww4_core/solver_uq/solver_uq.h"
+#include "ww4_core/scheme_factory.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
@@ -48,6 +49,9 @@ void SolverRectangularGrid::solve(std::span<double> data) {
   });
 
   // 2. Call integrated source terms (physics)
+  if (sourceTerms_.empty()) {
+    addSourceTerm(SchemeFactory::createSourceTerm("ComputeAllSources"));
+  }
   for (auto &source : sourceTerms_) {
     source->calculate(data);
   }
