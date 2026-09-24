@@ -59,10 +59,14 @@ enum class SolverType { Undefined, UQ, Triangular, SMC };
  * @brief Do not use input and dissipation source terms.
  * @var InputDissipationScheme::ST1
  * @brief ST1 input and dissipation scheme.
+ * @var InputDissipationScheme::ST2
+ * @brief ST2 input and dissipation scheme.
  * @var InputDissipationScheme::ST4
  * @brief ST4 input and dissipation scheme.
+ * @var InputDissipationScheme::ST6
+ * @brief ST6 input and dissipation scheme.
  */
-enum class InputDissipationScheme { Undefined, DoNotUse, ST1, ST4 };
+enum class InputDissipationScheme { Undefined, DoNotUse, ST1, ST2, ST4, ST6 };
 
 /**
  * @enum NonlinearScheme
@@ -76,10 +80,12 @@ enum class InputDissipationScheme { Undefined, DoNotUse, ST1, ST4 };
  * @brief Do not use nonlinear interaction source terms.
  * @var NonlinearScheme::NL1
  * @brief NL1 nonlinear interaction scheme.
+ * @var NonlinearScheme::NL2
+ * @brief NL2 nonlinear interaction scheme.
  * @var NonlinearScheme::NL3
  * @brief NL3 nonlinear interaction scheme.
  */
-enum class NonlinearScheme { Undefined, DoNotUse, NL1, NL3 };
+enum class NonlinearScheme { Undefined, DoNotUse, NL1, NL2, NL3 };
 
 /**
  * @enum InputFieldOption

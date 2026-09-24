@@ -67,13 +67,25 @@ TEST(SchemeFactoryTest, CreateSubSourceTerms) {
   ASSERT_NE(st1, nullptr);
   EXPECT_EQ(st1->getName(), "ST1");
 
+  auto st2 = SchemeFactory::createSourceTerm("st2");
+  ASSERT_NE(st2, nullptr);
+  EXPECT_EQ(st2->getName(), "ST2");
+
   auto st4 = SchemeFactory::createSourceTerm("ST4");
   ASSERT_NE(st4, nullptr);
   EXPECT_EQ(st4->getName(), "ST4");
 
+  auto st6 = SchemeFactory::createSourceTerm("ST6");
+  ASSERT_NE(st6, nullptr);
+  EXPECT_EQ(st6->getName(), "ST6");
+
   auto nl1 = SchemeFactory::createSourceTerm("nl1");
   ASSERT_NE(nl1, nullptr);
   EXPECT_EQ(nl1->getName(), "NL1");
+
+  auto nl2 = SchemeFactory::createSourceTerm("nl2");
+  ASSERT_NE(nl2, nullptr);
+  EXPECT_EQ(nl2->getName(), "NL2");
 
   auto nl3 = SchemeFactory::createSourceTerm("NL3");
   ASSERT_NE(nl3, nullptr);

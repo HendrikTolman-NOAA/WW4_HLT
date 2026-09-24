@@ -319,8 +319,12 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           config.inputDissipation = InputDissipationScheme::DoNotUse;
         } else if (val == "st1" || val == "ST1") {
           config.inputDissipation = InputDissipationScheme::ST1;
+        } else if (val == "st2" || val == "ST2") {
+          config.inputDissipation = InputDissipationScheme::ST2;
         } else if (val == "st4" || val == "ST4") {
           config.inputDissipation = InputDissipationScheme::ST4;
+        } else if (val == "st6" || val == "ST6") {
+          config.inputDissipation = InputDissipationScheme::ST6;
         }
       }
       if (node["nonlinear_interactions"]) {
@@ -329,6 +333,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
           config.nonlinearInteractions = NonlinearScheme::DoNotUse;
         } else if (val == "nl1" || val == "NL1") {
           config.nonlinearInteractions = NonlinearScheme::NL1;
+        } else if (val == "nl2" || val == "NL2") {
+          config.nonlinearInteractions = NonlinearScheme::NL2;
         } else if (val == "nl3" || val == "NL3") {
           config.nonlinearInteractions = NonlinearScheme::NL3;
         }
@@ -555,8 +561,12 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     inputDissStr = "do_not_use";
   } else if (config.inputDissipation == InputDissipationScheme::ST1) {
     inputDissStr = "st1";
+  } else if (config.inputDissipation == InputDissipationScheme::ST2) {
+    inputDissStr = "st2";
   } else if (config.inputDissipation == InputDissipationScheme::ST4) {
     inputDissStr = "st4";
+  } else if (config.inputDissipation == InputDissipationScheme::ST6) {
+    inputDissStr = "st6";
   }
   os << "     Input and dissipation: " << inputDissStr << std::endl;
 
@@ -565,6 +575,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     nlStr = "do_not_use";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL1) {
     nlStr = "nl1";
+  } else if (config.nonlinearInteractions == NonlinearScheme::NL2) {
+    nlStr = "nl2";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
     nlStr = "nl3";
   }

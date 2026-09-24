@@ -92,6 +92,32 @@ TEST_F(ComputeAllSourcesL1Test, CalculateST4AndNL3) {
   EXPECT_NEAR(data[1], 2.543, 1e-9);
 }
 
+TEST_F(ComputeAllSourcesL1Test, CalculateST2ST6AndNL2) {
+  writeYaml("st2", "nl2");
+  ww4_utils::DateTime startTime = {20260101, 0.0};
+  w4core_init(startTime, "test_sources", std::cout);
+
+  ComputeAllSources sources;
+  std::vector<double> data = {1.0, 2.5};
+  sources.calculate(data);
+
+  // ST2 adds 0.02, NL2 adds 0.002 -> total + 0.022
+  EXPECT_NEAR(data[0], 1.022, 1e-9);
+  EXPECT_NEAR(data[1], 2.522, 1e-9);
+
+  resetInternalState();
+  writeYaml("st6", "nl2");
+  w4core_init(startTime, "test_sources_st6", std::cout);
+
+  ComputeAllSources sources2;
+  data = {1.0, 2.5};
+  sources2.calculate(data);
+
+  // ST6 adds 0.06, NL2 adds 0.002 -> total + 0.062
+  EXPECT_NEAR(data[0], 1.062, 1e-9);
+  EXPECT_NEAR(data[1], 2.562, 1e-9);
+}
+
 TEST_F(ComputeAllSourcesL1Test, CalculateDoNotUse) {
   writeYaml("do_not_use", "do_not_use");
   ww4_utils::DateTime startTime = {20260101, 0.0};

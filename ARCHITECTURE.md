@@ -6,8 +6,8 @@
 2.  **ISourceTerm**: The physical strategy interface for WAVEWATCH IV sub-source terms.
 3.  **Source Term Implementations**:
     - **ComputeAllSources**: Unified routine called directly by each solver. Manages and executes physical `ISourceTerm` sub-source terms instantiated via `SchemeFactory`.
-    - **Input and Dissipation**: `SourceTermST1` (ST1 scheme) and `SourceTermST4` (ST4 scheme).
-    - **Nonlinear Interactions**: `SourceTermNL1` (NL1 scheme) and `SourceTermNL3` (NL3 scheme).
+    - **Input and Dissipation**: `SourceTermST1` (ST1), `SourceTermST2` (ST2), `SourceTermST4` (ST4), and `SourceTermST6` (ST6).
+    - **Nonlinear Interactions**: `SourceTermNL1` (NL1), `SourceTermNL2` (NL2), and `SourceTermNL3` (NL3).
 4.  **Solvers (`SolverUQ`, `SolverTriangular`, `SolverSMC`)**: Concrete numerical solvers (Ultimate Quickest regular grid, Triangular unstructured grid, and SMC grid) that directly invoke `ComputeAllSources` during their `solve` phase.
 5.  **SchemeFactory**: Responsible for instantiating individual model components (solvers and source terms).
 6.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
@@ -151,12 +151,27 @@ classDiagram
         +calculate(span~double~ data)
     }
 
+    class SourceTermST2 {
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
     class SourceTermST4 {
         +getName() string_view
         +calculate(span~double~ data)
     }
 
+    class SourceTermST6 {
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
     class SourceTermNL1 {
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermNL2 {
         +getName() string_view
         +calculate(span~double~ data)
     }
@@ -180,8 +195,11 @@ classDiagram
     SolverSMC --> ComputeAllSources : calls
     ISourceTerm <|-- ComputeAllSources
     ISourceTerm <|-- SourceTermST1
+    ISourceTerm <|-- SourceTermST2
     ISourceTerm <|-- SourceTermST4
+    ISourceTerm <|-- SourceTermST6
     ISourceTerm <|-- SourceTermNL1
+    ISourceTerm <|-- SourceTermNL2
     ISourceTerm <|-- SourceTermNL3
     ComputeAllSources o-- ISourceTerm : manages & calls
     SchemeFactory ..> ISolver : creates

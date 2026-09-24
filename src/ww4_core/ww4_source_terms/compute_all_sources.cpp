@@ -34,8 +34,14 @@ void ComputeAllSources::init() {
   case ww4_utils::InputDissipationScheme::ST1:
     inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST1");
     break;
+  case ww4_utils::InputDissipationScheme::ST2:
+    inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST2");
+    break;
   case ww4_utils::InputDissipationScheme::ST4:
     inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST4");
+    break;
+  case ww4_utils::InputDissipationScheme::ST6:
+    inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST6");
     break;
   default:
     inputDissipationTerm_ = nullptr;
@@ -45,6 +51,9 @@ void ComputeAllSources::init() {
   switch (config.nonlinearInteractions) {
   case ww4_utils::NonlinearScheme::NL1:
     nonlinearTerm_ = SchemeFactory::createSourceTerm("NL1");
+    break;
+  case ww4_utils::NonlinearScheme::NL2:
+    nonlinearTerm_ = SchemeFactory::createSourceTerm("NL2");
     break;
   case ww4_utils::NonlinearScheme::NL3:
     nonlinearTerm_ = SchemeFactory::createSourceTerm("NL3");

@@ -26,9 +26,12 @@
 #include "ww4_core/solver_uq/solver_uq.h"
 #include "ww4_core/ww4_source_terms/compute_all_sources.h"
 #include "ww4_core/ww4_source_terms/nl1.h"
+#include "ww4_core/ww4_source_terms/nl2.h"
 #include "ww4_core/ww4_source_terms/nl3.h"
 #include "ww4_core/ww4_source_terms/st1.h"
+#include "ww4_core/ww4_source_terms/st2.h"
 #include "ww4_core/ww4_source_terms/st4.h"
+#include "ww4_core/ww4_source_terms/st6.h"
 #include <stdexcept>
 
 namespace ww4_core {
@@ -59,11 +62,20 @@ SchemeFactory::createSourceTerm(const std::string &name) {
   if (name == "ST1" || name == "st1") {
     return std::make_unique<SourceTermST1>();
   }
+  if (name == "ST2" || name == "st2") {
+    return std::make_unique<SourceTermST2>();
+  }
   if (name == "ST4" || name == "st4") {
     return std::make_unique<SourceTermST4>();
   }
+  if (name == "ST6" || name == "st6") {
+    return std::make_unique<SourceTermST6>();
+  }
   if (name == "NL1" || name == "nl1") {
     return std::make_unique<SourceTermNL1>();
+  }
+  if (name == "NL2" || name == "nl2") {
+    return std::make_unique<SourceTermNL2>();
   }
   if (name == "NL3" || name == "nl3") {
     return std::make_unique<SourceTermNL3>();
