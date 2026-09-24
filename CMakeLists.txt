@@ -95,7 +95,7 @@ add_library(
     src/ww4_core/solver_triangular/solver_triangular.cpp
     src/ww4_core/solver_smc/solver_smc.cpp
     src/ww4_core/ww4_source_terms/compute_all_sources.cpp
-    src/ww4_core/wave_model.cpp
+    src/ww4_core/wave_model_solver.cpp
 )
 target_include_directories(ww4_core PUBLIC src)
 target_link_libraries(ww4_core PUBLIC ww4_utils)
@@ -169,6 +169,7 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_w4core_wave tests/ww4_core/L1_test_w4core_wave.cpp ww4_core)
     ww4_add_test(test_w4core_finalize tests/ww4_core/L1_test_w4core_finalize.cpp ww4_core)
     ww4_add_test(test_compute_all_sources tests/ww4_core/L1_test_compute_all_sources.cpp ww4_core)
+    ww4_add_test(test_wave_model_solver tests/ww4_core/L2_test_wave_model_solver.cpp ww4_core)
     ww4_add_test(test_w4core_time tests/ww4_core/L2_test_w4core_time.cpp ww4_core)
     ww4_add_test(test_w4core_wave_output tests/ww4_core/L2_test_w4core_wave_output.cpp ww4_core)
     ww4_add_test(test_w4core_zero_step tests/ww4_core/L2_test_w4core_zero_step.cpp ww4_core)

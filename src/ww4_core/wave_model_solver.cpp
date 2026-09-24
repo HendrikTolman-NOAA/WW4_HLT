@@ -3,8 +3,8 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file wave_model.cpp
- * @brief Implementation of the WaveModel class.
+ * @file wave_model_solver.cpp
+ * @brief Implementation of the WaveModelSolver class.
  * @details Orchestrates the model initialization and execution loop.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -20,19 +20,19 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/wave_model.h"
+#include "ww4_core/wave_model_solver.h"
 
 namespace ww4_core {
 
-void WaveModel::initialize(std::unique_ptr<ISolver> solver) {
+void WaveModelSolver::initialize(std::unique_ptr<ISolver> solver) {
   solver_ = std::move(solver);
 }
 
-void WaveModel::setData(std::vector<double> initialData) {
+void WaveModelSolver::setData(std::vector<double> initialData) {
   data_ = std::move(initialData);
 }
 
-void WaveModel::step() {
+void WaveModelSolver::step() {
   if (solver_) {
     solver_->solve(data_);
   }

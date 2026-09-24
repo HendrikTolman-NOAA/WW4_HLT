@@ -3,8 +3,8 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file wave_model.h
- * @brief Orchestration for the WW4 wave model.
+ * @file wave_model_solver.h
+ * @brief Orchestration for the WW4 wave model solver.
  * @details Manages simulation state and executes model phases.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -29,10 +29,10 @@
 namespace ww4_core {
 
 /**
- * @class WaveModel
- * @brief Main engine for the wave model simulation.
+ * @class WaveModelSolver
+ * @brief Main engine for the wave model simulation solver.
  */
-class WaveModel {
+class WaveModelSolver {
 public:
   /**
    * @brief Initialize the model with an assembled solver.
