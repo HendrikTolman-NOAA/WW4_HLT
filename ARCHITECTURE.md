@@ -150,64 +150,66 @@ classDiagram
         +calculate(span~double~ data)
     }
 
-    class SourceTermLN1 {
-        <<Linear Input>>
-        +getName() string_view
-        +calculate(span~double~ data)
+    namespace LinearInput {
+        class SourceTermLN1 {
+            <<Linear Input>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
     }
 
-    class SourceTermST1 {
-        <<Input and Dissipation>>
-        +getName() string_view
-        +calculate(span~double~ data)
+    namespace InputAndDissipation {
+        class SourceTermST1 {
+            <<Input and Dissipation>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+        class SourceTermST2 {
+            <<Input and Dissipation>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+        class SourceTermST4 {
+            <<Input and Dissipation>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+        class SourceTermST6 {
+            <<Input and Dissipation>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
     }
 
-    class SourceTermBT1 {
-        <<Bottom Friction>>
-        +getName() string_view
-        +calculate(span~double~ data)
+    namespace NonlinearInteractions {
+        class SourceTermNL1 {
+            <<Nonlinear Interactions>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+        class SourceTermNL2 {
+            <<Nonlinear Interactions>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+        class SourceTermNL3 {
+            <<Nonlinear Interactions>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
     }
 
-    class SourceTermBT4 {
-        <<Bottom Friction>>
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermST2 {
-        <<Input and Dissipation>>
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermST4 {
-        <<Input and Dissipation>>
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermST6 {
-        <<Input and Dissipation>>
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermNL1 {
-        <<Nonlinear Interactions>>
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermNL2 {
-        <<Nonlinear Interactions>>
-        +getName() string_view
-        +calculate(span~double~ data)
-    }
-
-    class SourceTermNL3 {
-        <<Nonlinear Interactions>>
-        +getName() string_view
-        +calculate(span~double~ data)
+    namespace BottomFriction {
+        class SourceTermBT1 {
+            <<Bottom Friction>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
+        class SourceTermBT4 {
+            <<Bottom Friction>>
+            +getName() string_view
+            +calculate(span~double~ data)
+        }
     }
 
     class SchemeFactory {
