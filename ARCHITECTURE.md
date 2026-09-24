@@ -146,50 +146,46 @@ classDiagram
         +calculate(span~double~ data)
     }
 
-    namespace InputAndDissipation {
-        class SourceTermST1 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-
-        class SourceTermST2 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-
-        class SourceTermST4 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-
-        class SourceTermST6 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-
-        SourceTermST1 -[hidden]-> SourceTermST2
-        SourceTermST2 -[hidden]-> SourceTermST4
-        SourceTermST4 -[hidden]-> SourceTermST6
+    class SourceTermST1 {
+        <<Input and Dissipation>>
+        +getName() string_view
+        +calculate(span~double~ data)
     }
 
-    namespace NonlinearInteractions {
-        class SourceTermNL1 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
+    class SourceTermST2 {
+        <<Input and Dissipation>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
 
-        class SourceTermNL2 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
+    class SourceTermST4 {
+        <<Input and Dissipation>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
 
-        class SourceTermNL3 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
+    class SourceTermST6 {
+        <<Input and Dissipation>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
 
-        SourceTermNL1 -[hidden]-> SourceTermNL2
-        SourceTermNL2 -[hidden]-> SourceTermNL3
+    class SourceTermNL1 {
+        <<Nonlinear Interactions>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermNL2 {
+        <<Nonlinear Interactions>>
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermNL3 {
+        <<Nonlinear Interactions>>
+        +getName() string_view
+        +calculate(span~double~ data)
     }
 
     class SchemeFactory {
