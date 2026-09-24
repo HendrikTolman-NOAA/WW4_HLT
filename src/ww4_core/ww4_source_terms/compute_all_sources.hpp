@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_smc.hpp
- * @brief Header for the SMC grid solver stub.
- * @details Concrete implementation of the ISolver interface using the UK
- * MetOffice SMC grid scheme.
+ * @file compute_all_sources.hpp
+ * @brief Header for physical source term calculations in WW4 core.
+ * @details Concrete implementation of ISourceTerm interface for computing all
+ * source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -18,50 +18,32 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-06-24
  */
 
 #pragma once
 
-#include "ww4_core/solver.hpp"
 #include "ww4_core/source_term.hpp"
-#include <iostream>
-#include <memory>
 #include <span>
-#include <vector>
 
 namespace ww4_core {
 
 /**
- * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
- * solver.
- * @param[in] os Output stream for logging.
- */
-void w4core_init_smc(std::ostream &os);
-
-/**
- * @class SolverSMCGrid
- * @brief Implementation of the SMC grid solver stub.
+ * @class ComputeAllSources
+ * @brief Implementation for physical source term calculations.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverSMCGrid : public ISolver {
+class ComputeAllSources : public ISourceTerm {
 public:
-  SolverSMCGrid() = default;
-  ~SolverSMCGrid() override = default;
+  ComputeAllSources() = default;
+  ~ComputeAllSources() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "SMC";
+    return "ComputeAllSources";
   }
 
-  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
-
-  void init() override;
-
-  void solve(std::span<double> data) override;
-
-private:
-  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
+  void calculate(std::span<double> data) override;
 };
 
 } // namespace ww4_core

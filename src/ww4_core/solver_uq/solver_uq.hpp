@@ -3,10 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_triangular.hpp
- * @brief Header for the triangular unstructured grid solver stub.
- * @details Concrete implementation of the ISolver interface using triangular
- * grid approach.
+ * @file solver_uq.hpp
+ * @brief Header for the Ultimate Quickest (UQ) regular grid solver.
+ * @details Concrete implementation of the ISolver interface using UQ dynamics.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -18,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-06-24
  */
 
 #pragma once
@@ -33,24 +32,25 @@
 namespace ww4_core {
 
 /**
- * @brief Initialization routine for the triangular unstructured grid solver.
+ * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
+ * solver.
  * @param[in] os Output stream for logging.
  */
-void w4core_init_triangular(std::ostream &os);
+void w4core_init_uq(std::ostream &os);
 
 /**
- * @class SolverTriangularGrid
- * @brief Implementation of the Triangular grid solver stub.
+ * @class SolverRectangularGrid
+ * @brief Implementation of the UQ solver for regular grids.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverTriangularGrid : public ISolver {
+class SolverRectangularGrid : public ISolver {
 public:
-  SolverTriangularGrid() = default;
-  ~SolverTriangularGrid() override = default;
+  SolverRectangularGrid() = default;
+  ~SolverRectangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "Triangular";
+    return "UQ";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;

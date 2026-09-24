@@ -14,7 +14,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner
 #@date Initial : 2026-07-09
-#@date Last update : 2026-08-21
+#@date Last update : 2026-06-24
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -97,7 +97,7 @@ add_library(
     src/ww4_core/ww4_source_terms/compute_all_sources.cpp
     src/ww4_core/wave_model.cpp
 )
-target_include_directories(ww4_core PUBLIC src include)
+target_include_directories(ww4_core PUBLIC src)
 target_link_libraries(ww4_core PUBLIC ww4_utils)
 target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
