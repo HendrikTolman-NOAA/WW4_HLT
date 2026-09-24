@@ -49,7 +49,7 @@ spectral_space:
   num_frequencies: 50
 
   # Frequency increment factor (default: 1.07).
-  freq_increment_factor: 1.07
+  frequency_increment_factor: 1.07
 
   # First (lowest) discrete frequency in Hz (default: 0.035).
   first_frequency: 0.035

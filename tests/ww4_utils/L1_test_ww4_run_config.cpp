@@ -132,7 +132,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   file << "spectral_space:\n";
   file << "  num_directions: 24\n";
   file << "  num_frequencies: 30\n";
-  file << "  freq_increment_factor: 1.10\n";
+  file << "  frequency_increment_factor: 1.10\n";
   file << "  first_frequency: 0.05\n";
   file << "  first_direction_offset: 0.25\n";
   file.close();

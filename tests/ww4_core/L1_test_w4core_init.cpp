@@ -85,7 +85,7 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   runFile << "spectral_space:\n";
   runFile << "  num_directions: 36\n";
   runFile << "  num_frequencies: 50\n";
-  runFile << "  freq_increment_factor: 1.07\n";
+  runFile << "  frequency_increment_factor: 1.07\n";
   runFile << "  first_frequency: 0.035\n";
   runFile << "  first_direction_offset: 0.5\n";
   runFile.close();
