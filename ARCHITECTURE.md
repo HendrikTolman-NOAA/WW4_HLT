@@ -3,10 +3,14 @@
 ### Key Components
 
 1.  **ISolver**: The primary integration strategy. It defines the contract for numerical solvers that combine dynamics (propagation) and physics (source terms) to advance the model state.
-2.  **ISourceTerm**: The physical strategy interface. Implementations (e.g., `ComputeAllSources`) are injected into the solver.
-3.  **Solvers (`SolverUQ`, `SolverTriangular`, `SolverSMC`)**: Concrete numerical solvers (Ultimate Quickest regular grid, Triangular unstructured grid, and SMC grid) that manage collections of physical source terms and execute them during their `solve` phase.
-4.  **SchemeFactory**: Responsible for instantiating individual model components (solvers and source terms).
-5.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
+2.  **ISourceTerm**: The physical strategy interface for WAVEWATCH IV source terms.
+3.  **Source Term Implementations**:
+    - **ComputeAllSources**: Unified routine called by numerical solvers. Dynamically manages and executes selected sub-source terms via `SchemeFactory`.
+    - **Input and Dissipation**: `SourceTermST1` (ST1 scheme) and `SourceTermST4` (ST4 scheme).
+    - **Nonlinear Interactions**: `SourceTermNL1` (NL1 scheme) and `SourceTermNL3` (NL3 scheme).
+4.  **Solvers (`SolverUQ`, `SolverTriangular`, `SolverSMC`)**: Concrete numerical solvers (Ultimate Quickest regular grid, Triangular unstructured grid, and SMC grid) that invoke `ComputeAllSources` during their `solve` phase.
+5.  **SchemeFactory**: Responsible for instantiating individual model components (solvers and source terms).
+6.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
 This document describes the high-level architecture of WAVEWATCH IV (WW4) using a Mermaid diagram.
 
 ## Component Diagram
@@ -138,6 +142,29 @@ classDiagram
     }
 
     class ComputeAllSources {
+        -unique_ptr~ISourceTerm~ inputDissipationTerm_
+        -unique_ptr~ISourceTerm~ nonlinearTerm_
+        +getName() string_view
+        +init()
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermST1 {
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermST4 {
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermNL1 {
+        +getName() string_view
+        +calculate(span~double~ data)
+    }
+
+    class SourceTermNL3 {
         +getName() string_view
         +calculate(span~double~ data)
     }
@@ -155,6 +182,11 @@ classDiagram
     SolverTriangular o-- ISourceTerm : manages & calls
     SolverSMC o-- ISourceTerm : manages & calls
     ISourceTerm <|-- ComputeAllSources
+    ISourceTerm <|-- SourceTermST1
+    ISourceTerm <|-- SourceTermST4
+    ISourceTerm <|-- SourceTermNL1
+    ISourceTerm <|-- SourceTermNL3
+    ComputeAllSources o-- ISourceTerm : manages & calls
     SchemeFactory ..> ISolver : creates
     SchemeFactory ..> ISourceTerm : creates
 ```
