@@ -4,7 +4,7 @@
 
 1.  **ISolver**: The primary integration strategy. It defines the contract for numerical solvers that combine dynamics (propagation) and physics (source terms) to advance the model state.
 2.  **ISourceTerm**: The physical strategy interface. Implementations (e.g., `ComputeAllSources`) are injected into the solver.
-3.  **SolverUQ**: A concrete solver that manages a collection of source terms and executes them during its `solve` phase.
+3.  **Solvers (`SolverUQ`, `SolverTriangular`, `SolverSMC`)**: Concrete numerical solvers (Ultimate Quickest regular grid, Triangular unstructured grid, and SMC grid) that manage collections of physical source terms and execute them during their `solve` phase.
 4.  **SchemeFactory**: Responsible for instantiating individual model components (solvers and source terms).
 5.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
 This document describes the high-level architecture of WAVEWATCH IV (WW4) using a Mermaid diagram.
@@ -123,6 +123,20 @@ classDiagram
         +solve(span~double~ data)
     }
 
+    class SolverTriangular {
+        -vector~unique_ptr~ISourceTerm~~ sourceTerms_
+        +getName() string_view
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)
+        +solve(span~double~ data)
+    }
+
+    class SolverSMC {
+        -vector~unique_ptr~ISourceTerm~~ sourceTerms_
+        +getName() string_view
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)
+        +solve(span~double~ data)
+    }
+
     class ComputeAllSources {
         +getName() string_view
         +calculate(span~double~ data)
@@ -135,7 +149,11 @@ classDiagram
 
     WaveModelSolver o-- ISolver : orchestrates
     ISolver <|-- SolverUQ
+    ISolver <|-- SolverTriangular
+    ISolver <|-- SolverSMC
     SolverUQ o-- ISourceTerm : manages & calls
+    SolverTriangular o-- ISourceTerm : manages & calls
+    SolverSMC o-- ISourceTerm : manages & calls
     ISourceTerm <|-- ComputeAllSources
     SchemeFactory ..> ISolver : creates
     SchemeFactory ..> ISourceTerm : creates
