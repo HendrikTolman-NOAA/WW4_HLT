@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file compute_all_sources.hpp
- * @brief Header for physical source term calculations in WW4 core.
- * @details Concrete implementation of ISourceTerm interface for computing all
- * source terms.
+ * @file solver_smc.h
+ * @brief Header for the SMC grid solver stub.
+ * @details Concrete implementation of the ISolver interface using the UK
+ * MetOffice SMC grid scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -23,27 +23,45 @@
 
 #pragma once
 
-#include "ww4_core/source_term.hpp"
+#include "ww4_core/solver.h"
+#include "ww4_core/source_term.h"
+#include <iostream>
+#include <memory>
 #include <span>
+#include <vector>
 
 namespace ww4_core {
 
 /**
- * @class ComputeAllSources
- * @brief Implementation for physical source term calculations.
+ * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
+ * solver.
+ * @param[in] os Output stream for logging.
+ */
+void w4core_init_smc(std::ostream &os);
+
+/**
+ * @class SolverSMCGrid
+ * @brief Implementation of the SMC grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class ComputeAllSources : public ISourceTerm {
+class SolverSMCGrid : public ISolver {
 public:
-  ComputeAllSources() = default;
-  ~ComputeAllSources() override = default;
+  SolverSMCGrid() = default;
+  ~SolverSMCGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "ComputeAllSources";
+    return "SMC";
   }
 
-  void calculate(std::span<double> data) override;
+  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+
+  void init() override;
+
+  void solve(std::span<double> data) override;
+
+private:
+  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
 };
 
 } // namespace ww4_core

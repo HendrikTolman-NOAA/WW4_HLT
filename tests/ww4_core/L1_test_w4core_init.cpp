@@ -15,12 +15,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/solver_smc/solver_smc.hpp"
-#include "ww4_core/solver_triangular/solver_triangular.hpp"
-#include "ww4_core/solver_uq/solver_uq.hpp"
+#include "ww4_core/solver_smc/solver_smc.h"
+#include "ww4_core/solver_triangular/solver_triangular.h"
+#include "ww4_core/solver_uq/solver_uq.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
 #include <gtest/gtest.h>

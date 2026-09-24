@@ -18,11 +18,11 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/scheme_factory.hpp"
-#include "ww4_core/wave_model.hpp"
+#include "ww4_core/scheme_factory.h"
+#include "ww4_core/wave_model.h"
 #include <gtest/gtest.h>
 #include <vector>
 

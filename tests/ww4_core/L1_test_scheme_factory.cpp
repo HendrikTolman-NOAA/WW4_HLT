@@ -18,10 +18,10 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/scheme_factory.hpp"
+#include "ww4_core/scheme_factory.h"
 #include <gtest/gtest.h>
 
 namespace ww4_core {

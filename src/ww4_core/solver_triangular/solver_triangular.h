@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_smc.hpp
- * @brief Header for the SMC grid solver stub.
- * @details Concrete implementation of the ISolver interface using the UK
- * MetOffice SMC grid scheme.
+ * @file solver_triangular.h
+ * @brief Header for the triangular unstructured grid solver stub.
+ * @details Concrete implementation of the ISolver interface using triangular
+ * grid approach.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include "ww4_core/solver.hpp"
-#include "ww4_core/source_term.hpp"
+#include "ww4_core/solver.h"
+#include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
 #include <span>
@@ -33,25 +33,24 @@
 namespace ww4_core {
 
 /**
- * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
- * solver.
+ * @brief Initialization routine for the triangular unstructured grid solver.
  * @param[in] os Output stream for logging.
  */
-void w4core_init_smc(std::ostream &os);
+void w4core_init_triangular(std::ostream &os);
 
 /**
- * @class SolverSMCGrid
- * @brief Implementation of the SMC grid solver stub.
+ * @class SolverTriangularGrid
+ * @brief Implementation of the Triangular grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverSMCGrid : public ISolver {
+class SolverTriangularGrid : public ISolver {
 public:
-  SolverSMCGrid() = default;
-  ~SolverSMCGrid() override = default;
+  SolverTriangularGrid() = default;
+  ~SolverTriangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "SMC";
+    return "Triangular";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;

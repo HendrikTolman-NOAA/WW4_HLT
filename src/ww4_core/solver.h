@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver.hpp
+ * @file solver.h
  * @brief Interface for numerical solvers in WAVEWATCH IV.
  * @details Defines the abstract base class for model solvers that integrate
  *          dynamics and physics.
@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "ww4_core/source_term.hpp"
+#include "ww4_core/source_term.h"
 #include <memory>
 #include <span>
 #include <string_view>

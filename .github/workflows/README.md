@@ -22,7 +22,7 @@ You can run the linting and formatting tools locally to verify your changes befo
 1.  **Code Formatting (Clang-Format):**
     To format your code according to the project style:
     ```bash
-    find src tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
+    find src tests -name "*.cpp" -o -name "*.h" | xargs clang-format -i
     ```
 
 2.  **Static Analysis (Cppcheck):**

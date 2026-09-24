@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file source_term.hpp
+ * @file source_term.h
  * @brief Interface for source term calculations in WAVEWATCH IV.
  * @details Defines the abstract base class for different physical source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric

@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file wave_model.hpp
+ * @file wave_model.h
  * @brief Orchestration for the WW4 wave model.
  * @details Manages simulation state and executes model phases.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ww4_core/solver.hpp"
+#include "ww4_core/solver.h"
 #include <memory>
 #include <vector>
 

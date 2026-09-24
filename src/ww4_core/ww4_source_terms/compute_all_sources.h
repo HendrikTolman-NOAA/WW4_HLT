@@ -3,9 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_uq.hpp
- * @brief Header for the Ultimate Quickest (UQ) regular grid solver.
- * @details Concrete implementation of the ISolver interface using UQ dynamics.
+ * @file compute_all_sources.h
+ * @brief Header for physical source term calculations in WW4 core.
+ * @details Concrete implementation of ISourceTerm interface for computing all
+ * source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -22,45 +23,27 @@
 
 #pragma once
 
-#include "ww4_core/solver.hpp"
-#include "ww4_core/source_term.hpp"
-#include <iostream>
-#include <memory>
+#include "ww4_core/source_term.h"
 #include <span>
-#include <vector>
 
 namespace ww4_core {
 
 /**
- * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
- * solver.
- * @param[in] os Output stream for logging.
- */
-void w4core_init_uq(std::ostream &os);
-
-/**
- * @class SolverRectangularGrid
- * @brief Implementation of the UQ solver for regular grids.
+ * @class ComputeAllSources
+ * @brief Implementation for physical source term calculations.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SolverRectangularGrid : public ISolver {
+class ComputeAllSources : public ISourceTerm {
 public:
-  SolverRectangularGrid() = default;
-  ~SolverRectangularGrid() override = default;
+  ComputeAllSources() = default;
+  ~ComputeAllSources() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "UQ";
+    return "ComputeAllSources";
   }
 
-  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
-
-  void init() override;
-
-  void solve(std::span<double> data) override;
-
-private:
-  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
+  void calculate(std::span<double> data) override;
 };
 
 } // namespace ww4_core
