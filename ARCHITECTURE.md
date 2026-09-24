@@ -166,6 +166,10 @@ classDiagram
             +getName() string_view
             +calculate(span~double~ data)
         }
+
+        SourceTermST1 -[hidden]-> SourceTermST2
+        SourceTermST2 -[hidden]-> SourceTermST4
+        SourceTermST4 -[hidden]-> SourceTermST6
     }
 
     namespace NonlinearInteractions {
@@ -183,6 +187,9 @@ classDiagram
             +getName() string_view
             +calculate(span~double~ data)
         }
+
+        SourceTermNL1 -[hidden]-> SourceTermNL2
+        SourceTermNL2 -[hidden]-> SourceTermNL3
     }
 
     class SchemeFactory {
