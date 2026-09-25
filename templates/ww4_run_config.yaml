@@ -39,6 +39,24 @@ general:
   # This parameter must be positive and non-zero.
   time_step: 3600.0
 
+spectral_space:
+  # Parameters defining the discrete spectral space based on WAVEWATCH III.
+
+  # Number of directional bins (default: 36).
+  num_directions: 36
+
+  # Number of frequency bins (default: 50).
+  num_frequencies: 50
+
+  # Frequency increment factor (default: 1.07).
+  freq_increment_factor: 1.07
+
+  # First (lowest) discrete frequency in Hz (default: 0.035).
+  first_frequency: 0.035
+
+  # Offset of the first direction as a fraction of the directional step (range: 0.0 - 1.0, default: 0.5).
+  first_direction_offset: 0.5
+
 physics:
   # Option for a dry run (no computations).
   # Options: "no" (default), "yes"
