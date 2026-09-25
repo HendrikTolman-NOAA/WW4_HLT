@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_sourterm_LN1.cpp
- * @brief Implementation of LN1 linear input source terms.
- * @details Concrete subroutine for LN1 source terms in WW4 core.
+ * @file ww4_sourceterm_NL2.h
+ * @brief Header for NL2 nonlinear interaction source term calculations.
+ * @details Concrete implementation of ISourceTerm for NL2 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,15 +20,29 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ww4_sourterm_LN1.h"
-#include <algorithm>
+#pragma once
+
+#include "ww4_core/source_term.h"
+#include <span>
 
 namespace ww4_core {
 
-void SourceTermLN1::calculate(std::span<double> data) {
-  std::for_each(data.begin(), data.end(), [](double &val) {
-    val += 0.005; // Mock LN1 effect
-  });
-}
+/**
+ * @class SourceTermNL2
+ * @brief Implementation of NL2 nonlinear interaction source terms.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+class SourceTermNL2 : public ISourceTerm {
+public:
+  SourceTermNL2() = default;
+  ~SourceTermNL2() override = default;
+
+  [[nodiscard]] std::string_view getName() const noexcept override {
+    return "NL2";
+  }
+
+  void calculate(std::span<double> data) override;
+};
 
 } // namespace ww4_core

@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_sourterm_BT4.h
- * @brief Header for BT4 bottom friction source term calculations.
- * @details Concrete implementation of ISourceTerm for BT4 scheme.
+ * @file ww4_sourceterm_BT1.cpp
+ * @brief Implementation of BT1 bottom friction source terms.
+ * @details Concrete subroutine for BT1 source terms in WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,29 +20,15 @@
  * @date Last update : 2026-09-24
  */
 
-#pragma once
-
-#include "ww4_core/source_term.h"
-#include <span>
+#include "ww4_core/ww4_source_terms/ww4_sourceterm_BT1.h"
+#include <algorithm>
 
 namespace ww4_core {
 
-/**
- * @class SourceTermBT4
- * @brief Implementation of BT4 bottom friction source terms.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class SourceTermBT4 : public ISourceTerm {
-public:
-  SourceTermBT4() = default;
-  ~SourceTermBT4() override = default;
-
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "BT4";
-  }
-
-  void calculate(std::span<double> data) override;
-};
+void SourceTermBT1::calculate(std::span<double> data) {
+  std::for_each(data.begin(), data.end(), [](double &val) {
+    val -= 0.001; // Mock BT1 effect
+  });
+}
 
 } // namespace ww4_core

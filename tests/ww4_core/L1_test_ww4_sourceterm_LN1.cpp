@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_ww4_sourterm_LN1.cpp
+ * @file L1_test_ww4_sourceterm_LN1.cpp
  * @brief Unit tests for LN1 linear input source term.
  * @details Verifies the behavior and interface compliance of SourceTermLN1.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -20,7 +20,7 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ww4_sourterm_LN1.h"
+#include "ww4_core/ww4_source_terms/ww4_sourceterm_LN1.h"
 #include <gtest/gtest.h>
 #include <vector>
 

@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_sourterm_NL3.cpp
- * @brief Implementation of NL3 nonlinear interaction source terms.
- * @details Concrete subroutine for NL3 source terms in WW4 core.
+ * @file L1_test_ww4_sourceterm_ST6.cpp
+ * @brief Unit tests for ST6 input and dissipation source term.
+ * @details Verifies the behavior and interface compliance of SourceTermST6.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,15 +20,20 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ww4_sourterm_NL3.h"
-#include <algorithm>
+#include "ww4_core/ww4_source_terms/ww4_sourceterm_ST6.h"
+#include <gtest/gtest.h>
+#include <vector>
 
 namespace ww4_core {
 
-void SourceTermNL3::calculate(std::span<double> data) {
-  std::for_each(data.begin(), data.end(), [](double &val) {
-    val += 0.003; // Mock NL3 effect
-  });
+TEST(ST6Test, BasicPropertiesAndCalculate) {
+  SourceTermST6 source;
+  EXPECT_EQ(source.getName(), "ST6");
+
+  std::vector<double> data = {1.0, 2.0};
+  source.calculate(data);
+  EXPECT_DOUBLE_EQ(data[0], 1.06);
+  EXPECT_DOUBLE_EQ(data[1], 2.06);
 }
 
 } // namespace ww4_core

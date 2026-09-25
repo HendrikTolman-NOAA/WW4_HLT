@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_ww4_sourterm_BT1.cpp
- * @brief Unit tests for BT1 bottom friction source term.
- * @details Verifies the behavior and interface compliance of SourceTermBT1.
+ * @file ww4_sourceterm_ST4.h
+ * @brief Header for ST4 input and dissipation source term calculations.
+ * @details Concrete implementation of ISourceTerm for ST4 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,20 +20,29 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ww4_sourterm_BT1.h"
-#include <gtest/gtest.h>
-#include <vector>
+#pragma once
+
+#include "ww4_core/source_term.h"
+#include <span>
 
 namespace ww4_core {
 
-TEST(BT1Test, BasicPropertiesAndCalculate) {
-  SourceTermBT1 source;
-  EXPECT_EQ(source.getName(), "BT1");
+/**
+ * @class SourceTermST4
+ * @brief Implementation of ST4 input and dissipation source terms.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+class SourceTermST4 : public ISourceTerm {
+public:
+  SourceTermST4() = default;
+  ~SourceTermST4() override = default;
 
-  std::vector<double> data = {1.0, 2.0};
-  source.calculate(data);
-  EXPECT_DOUBLE_EQ(data[0], 0.999);
-  EXPECT_DOUBLE_EQ(data[1], 1.999);
-}
+  [[nodiscard]] std::string_view getName() const noexcept override {
+    return "ST4";
+  }
+
+  void calculate(std::span<double> data) override;
+};
 
 } // namespace ww4_core

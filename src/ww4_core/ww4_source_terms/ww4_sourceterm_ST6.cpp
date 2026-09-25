@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_sourterm_NL3.h
- * @brief Header for NL3 nonlinear interaction source term calculations.
- * @details Concrete implementation of ISourceTerm for NL3 scheme.
+ * @file ww4_sourceterm_ST6.cpp
+ * @brief Implementation of ST6 input and dissipation source terms.
+ * @details Concrete subroutine for ST6 source terms in WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,29 +20,15 @@
  * @date Last update : 2026-09-24
  */
 
-#pragma once
-
-#include "ww4_core/source_term.h"
-#include <span>
+#include "ww4_core/ww4_source_terms/ww4_sourceterm_ST6.h"
+#include <algorithm>
 
 namespace ww4_core {
 
-/**
- * @class SourceTermNL3
- * @brief Implementation of NL3 nonlinear interaction source terms.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class SourceTermNL3 : public ISourceTerm {
-public:
-  SourceTermNL3() = default;
-  ~SourceTermNL3() override = default;
-
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "NL3";
-  }
-
-  void calculate(std::span<double> data) override;
-};
+void SourceTermST6::calculate(std::span<double> data) {
+  std::for_each(data.begin(), data.end(), [](double &val) {
+    val += 0.06; // Mock ST6 effect
+  });
+}
 
 } // namespace ww4_core

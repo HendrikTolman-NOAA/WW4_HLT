@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_sourterm_LN1.h
- * @brief Header for LN1 linear input source term calculations.
- * @details Concrete implementation of ISourceTerm for LN1 scheme.
+ * @file L1_test_ww4_sourceterm_ST4.cpp
+ * @brief Unit tests for ST4 input and dissipation source term.
+ * @details Verifies the behavior and interface compliance of SourceTermST4.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,29 +20,20 @@
  * @date Last update : 2026-09-24
  */
 
-#pragma once
-
-#include "ww4_core/source_term.h"
-#include <span>
+#include "ww4_core/ww4_source_terms/ww4_sourceterm_ST4.h"
+#include <gtest/gtest.h>
+#include <vector>
 
 namespace ww4_core {
 
-/**
- * @class SourceTermLN1
- * @brief Implementation of LN1 linear input source terms.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class SourceTermLN1 : public ISourceTerm {
-public:
-  SourceTermLN1() = default;
-  ~SourceTermLN1() override = default;
+TEST(ST4Test, BasicPropertiesAndCalculate) {
+  SourceTermST4 source;
+  EXPECT_EQ(source.getName(), "ST4");
 
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "LN1";
-  }
-
-  void calculate(std::span<double> data) override;
-};
+  std::vector<double> data = {1.0, 2.0};
+  source.calculate(data);
+  EXPECT_DOUBLE_EQ(data[0], 1.04);
+  EXPECT_DOUBLE_EQ(data[1], 2.04);
+}
 
 } // namespace ww4_core

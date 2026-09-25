@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_sourterm_ST2.h
+ * @file ww4_sourceterm_ST2.h
  * @brief Header for ST2 input and dissipation source term calculations.
  * @details Concrete implementation of ISourceTerm for ST2 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
