@@ -9,15 +9,13 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- *
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
- *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-25
  */
 
 #include "ww4_core/ww4_sourceterms/ww4_compute_all_sourceterms.h"
@@ -27,9 +25,11 @@
 
 namespace ww4_core {
 
+// --- init -------------------------------------------------------------------
 void ComputeAllSources::init() {
   const auto &config = getRunConfig();
 
+  // === Instantiate Linear Input Scheme =====================================
   switch (config.linearInput) {
   case ww4_utils::LinearInputScheme::LN1:
     linearInputTerm_ = SchemeFactory::createSourceTerm("LN1");
@@ -39,6 +39,7 @@ void ComputeAllSources::init() {
     break;
   }
 
+  // === Instantiate Input and Dissipation Scheme ============================
   switch (config.inputDissipation) {
   case ww4_utils::InputDissipationScheme::ST1:
     inputDissipationTerm_ = SchemeFactory::createSourceTerm("ST1");
@@ -57,6 +58,7 @@ void ComputeAllSources::init() {
     break;
   }
 
+  // === Instantiate Nonlinear Interactions Scheme ===========================
   switch (config.nonlinearInteractions) {
   case ww4_utils::NonlinearScheme::NL1:
     nonlinearTerm_ = SchemeFactory::createSourceTerm("NL1");
@@ -72,6 +74,7 @@ void ComputeAllSources::init() {
     break;
   }
 
+  // === Instantiate Bottom Friction Scheme ==================================
   switch (config.bottomFriction) {
   case ww4_utils::BottomFrictionScheme::BT1:
     bottomFrictionTerm_ = SchemeFactory::createSourceTerm("BT1");
@@ -87,6 +90,7 @@ void ComputeAllSources::init() {
   initialized_ = true;
 }
 
+// --- calculate --------------------------------------------------------------
 void ComputeAllSources::calculate(std::span<double> data) {
   if (!getRunConfig().sourceTerms) {
     return;

@@ -9,15 +9,13 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- *
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
- *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-25
  */
 
 #pragma once
@@ -28,9 +26,14 @@
 
 namespace ww4_core {
 
+// --- WaveModelSolver --------------------------------------------------------
 /**
  * @class WaveModelSolver
  * @brief Main engine for the wave model simulation solver.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-09-25
  */
 class WaveModelSolver {
 public:
@@ -55,7 +58,7 @@ public:
    * @brief Get a view of the current data.
    * @return Constant span of the model data.
    */
-  std::span<const double> getData() const { return data_; }
+  [[nodiscard]] std::span<const double> getData() const { return data_; }
 
 private:
   std::unique_ptr<ISolver> solver_;

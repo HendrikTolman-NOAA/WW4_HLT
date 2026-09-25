@@ -9,15 +9,13 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- *
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
- *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-25
  */
 
 #include "ww4_core/scheme_factory.h"
@@ -39,6 +37,16 @@
 
 namespace ww4_core {
 
+// --- createSolver -----------------------------------------------------------
+/**
+ * @brief Instantiates a solver scheme by string name.
+ * @param name Name of requested solver.
+ * @return Unique pointer to created solver.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-09-25
+ */
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   if (name == "UQ" || name == "regular_uq" || name == "uq" ||
       name == "RectangularGrid" || name == "rectangular_grid") {
@@ -56,6 +64,16 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   throw std::invalid_argument("Unknown solver: " + name);
 }
 
+// --- createSourceTerm -------------------------------------------------------
+/**
+ * @brief Instantiates a source term scheme by string name.
+ * @param name Name of requested source term.
+ * @return Unique pointer to created source term.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-09-25
+ */
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
   if (name == "ComputeAllSources" || name == "compute_all_sources" ||

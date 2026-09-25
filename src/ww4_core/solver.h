@@ -10,15 +10,13 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- *
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
- *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-25
  */
 
 #pragma once
@@ -30,11 +28,16 @@
 
 namespace ww4_core {
 
+// --- ISolver ----------------------------------------------------------------
 /**
  * @class ISolver
  * @brief Abstract base class for wave model solvers.
  * @details A solver is responsible for advancing the model state in time,
  *          integrating both propagation and source terms.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-09-25
  */
 class ISolver {
 public:
@@ -44,7 +47,7 @@ public:
    * @brief Get the name of the solver.
    * @return String view containing the solver name.
    */
-  virtual std::string_view getName() const noexcept = 0;
+  [[nodiscard]] virtual std::string_view getName() const noexcept = 0;
 
   /**
    * @brief Add a source term to be handled by this solver.
