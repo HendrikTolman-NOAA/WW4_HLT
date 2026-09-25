@@ -238,4 +238,8 @@ classDiagram
     ComputeAllSources o-- ISourceTerm : manages & calls
     SchemeFactory ..> ISolver : creates
     SchemeFactory ..> ISourceTerm : creates
+
+    SourceTermLN1 .. SourceTermST1
+    SourceTermST6 .. SourceTermNL1
+    SourceTermNL3 .. SourceTermBT1
 ```
