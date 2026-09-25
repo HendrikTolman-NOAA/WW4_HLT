@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_smc.h
- * @brief Header for the SMC grid solver stub.
- * @details Concrete implementation of the ISolver interface using the UK
- * MetOffice SMC grid scheme.
+ * @file ww4_compute_all_sourceterms.h
+ * @brief Header for physical source term calculations in WW4 core.
+ * @details Concrete implementation of ISourceTerm interface for computing all
+ * source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -21,53 +21,40 @@
 
 #pragma once
 
-#include "ww4_core/solver.h"
 #include "ww4_core/source_term.h"
-#include <iostream>
 #include <memory>
 #include <span>
-#include <vector>
 
 namespace ww4_core {
 
-// --- w4core_init_smc --------------------------------------------------------
+// --- ComputeAllSources ------------------------------------------------------
 /**
- * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
- * solver.
- * @param os Output stream for logging.
+ * @class ComputeAllSources
+ * @brief Implementation for physical source term calculations.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
  * @date Last update : 2026-09-25
  */
-void w4core_init_smc(std::ostream &os = std::cout);
-
-// --- SolverSMCGrid ----------------------------------------------------------
-/**
- * @class SolverSMCGrid
- * @brief Implementation of the SMC grid solver stub.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
- */
-class SolverSMCGrid : public ISolver {
+class ComputeAllSources : public ISourceTerm {
 public:
-  SolverSMCGrid() = default;
-  ~SolverSMCGrid() override = default;
+  ComputeAllSources() = default;
+  ~ComputeAllSources() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "SMC";
+    return "ComputeAllSources";
   }
 
-  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
+  void init();
 
-  void init() override;
-
-  void solve(std::span<double> data) override;
+  void calculate(std::span<double> data) override;
 
 private:
-  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
+  std::unique_ptr<ISourceTerm> linearInputTerm_{nullptr};
+  std::unique_ptr<ISourceTerm> inputDissipationTerm_{nullptr};
+  std::unique_ptr<ISourceTerm> nonlinearTerm_{nullptr};
+  std::unique_ptr<ISourceTerm> bottomFrictionTerm_{nullptr};
+  bool initialized_{false};
 };
 
 } // namespace ww4_core

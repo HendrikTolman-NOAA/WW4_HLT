@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_finalize.h
- * @brief Finalization routine for the WAVEWATCH IV core.
- * @details This header defines the finalization routine for the WW4 core.
+ * @file ww4_sourceterm_NL1.h
+ * @brief Header for NL1 nonlinear interaction source term calculations.
+ * @details Concrete implementation of ISourceTerm for NL1 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -14,31 +14,36 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
+ * @date Initial, 2026-09-24
  * @date Last update : 2026-09-25
- * @note The architectural design of this routine follows the structure of
- *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
- *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
 #pragma once
 
-#include "ww4_utils/time_management.h"
+#include "ww4_core/source_term.h"
+#include <span>
 
 namespace ww4_core {
 
-// --- w4core_finalize --------------------------------------------------------
+// --- SourceTermNL1 ----------------------------------------------------------
 /**
- * @brief Finalization routine for the WAVEWATCH IV core.
- * @details Performs all necessary cleanup and final reporting for the wave
- * model core.
- * @param endTime Simulation end time.
- * @param os Output stream for reporting.
+ * @class SourceTermNL1
+ * @brief Implementation of NL1 nonlinear interaction source terms.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
+ * @date Initial, 2026-09-24
  * @date Last update : 2026-09-25
  */
-void w4core_finalize(const ww4_utils::DateTime &endTime, std::ostream &os);
+class SourceTermNL1 : public ISourceTerm {
+public:
+  SourceTermNL1() = default;
+  ~SourceTermNL1() override = default;
+
+  [[nodiscard]] std::string_view getName() const noexcept override {
+    return "NL1";
+  }
+
+  void calculate(std::span<double> data) override;
+};
 
 } // namespace ww4_core

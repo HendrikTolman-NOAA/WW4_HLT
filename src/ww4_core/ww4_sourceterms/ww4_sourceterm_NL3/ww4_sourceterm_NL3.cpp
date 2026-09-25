@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file wave_model_solver.cpp
- * @brief Implementation of the WaveModelSolver class.
- * @details Orchestrates the model initialization and execution loop.
+ * @file ww4_sourceterm_NL3.cpp
+ * @brief Implementation of NL3 nonlinear interaction source term calculations.
+ * @details Concrete subroutine for NL3 nonlinear interaction source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -14,29 +14,18 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
+ * @date Initial, 2026-09-24
  * @date Last update : 2026-09-25
  */
 
-#include "ww4_core/wave_model_solver.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_NL3/ww4_sourceterm_NL3.h"
+#include <algorithm>
 
 namespace ww4_core {
 
-// --- initialize -------------------------------------------------------------
-void WaveModelSolver::initialize(std::unique_ptr<ISolver> solver) {
-  solver_ = std::move(solver);
-}
-
-// --- setData ----------------------------------------------------------------
-void WaveModelSolver::setData(std::vector<double> initialData) {
-  data_ = std::move(initialData);
-}
-
-// --- step -------------------------------------------------------------------
-void WaveModelSolver::step() {
-  if (solver_) {
-    solver_->solve(data_);
-  }
+// --- calculate --------------------------------------------------------------
+void SourceTermNL3::calculate(std::span<double> data) {
+  std::for_each(data.begin(), data.end(), [](double &val) { val += 0.003; });
 }
 
 } // namespace ww4_core

@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-25
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -30,10 +30,40 @@
 
 namespace ww4_core {
 
-void w4core_wave_uq(double timeStep, std::ostream &os);
-void w4core_wave_triangular(double timeStep, std::ostream &os);
-void w4core_wave_smc(double timeStep, std::ostream &os);
+// --- Solver Sub-Routines ----------------------------------------------------
+/**
+ * @brief Solver routine for Ultimate Quickest (UQ) scheme on a regular grid.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ */
+void w4core_wave_uq(double timeStep, std::ostream &os = std::cout);
 
+/**
+ * @brief Solver routine for triangular unstructured grid approach.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ */
+void w4core_wave_triangular(double timeStep, std::ostream &os = std::cout);
+
+/**
+ * @brief Solver routine for Spherical Multiple-Cell (SMC) grid solver.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ */
+void w4core_wave_smc(double timeStep, std::ostream &os = std::cout);
+
+// --- w4core_wave ------------------------------------------------------------
+/**
+ * @brief Time stepping routine for the WAVEWATCH IV core.
+ * @details Performs time stepping for the wave model core.
+ * @param startTime Simulation start time.
+ * @param endTime Simulation end time.
+ * @param os Output stream for reporting.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-25
+ */
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os);
 

@@ -9,36 +9,44 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- *
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
- *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-25
  */
 
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/solver_smc/solver_smc.h"
 #include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/solver_uq/solver_uq.h"
-#include "ww4_core/ww4_source_terms/bt1.h"
-#include "ww4_core/ww4_source_terms/bt4.h"
-#include "ww4_core/ww4_source_terms/compute_all_sources.h"
-#include "ww4_core/ww4_source_terms/ln1.h"
-#include "ww4_core/ww4_source_terms/nl1.h"
-#include "ww4_core/ww4_source_terms/nl2.h"
-#include "ww4_core/ww4_source_terms/nl3.h"
-#include "ww4_core/ww4_source_terms/st1.h"
-#include "ww4_core/ww4_source_terms/st2.h"
-#include "ww4_core/ww4_source_terms/st4.h"
-#include "ww4_core/ww4_source_terms/st6.h"
+#include "ww4_core/ww4_sourceterms/ww4_compute_all_sourceterms.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_BT1/ww4_sourceterm_BT1.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_BT4/ww4_sourceterm_BT4.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_LN1/ww4_sourceterm_LN1.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_NL1/ww4_sourceterm_NL1.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_NL2/ww4_sourceterm_NL2.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_NL3/ww4_sourceterm_NL3.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST1/ww4_sourceterm_ST1.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST2/ww4_sourceterm_ST2.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST4/ww4_sourceterm_ST4.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST6/ww4_sourceterm_ST6.h"
 #include <stdexcept>
 
 namespace ww4_core {
 
+// --- createSolver -----------------------------------------------------------
+/**
+ * @brief Instantiates a solver scheme by string name.
+ * @param name Name of requested solver.
+ * @return Unique pointer to created solver.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-09-25
+ */
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   if (name == "UQ" || name == "regular_uq" || name == "uq" ||
       name == "RectangularGrid" || name == "rectangular_grid") {
@@ -56,6 +64,16 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   throw std::invalid_argument("Unknown solver: " + name);
 }
 
+// --- createSourceTerm -------------------------------------------------------
+/**
+ * @brief Instantiates a source term scheme by string name.
+ * @param name Name of requested source term.
+ * @return Unique pointer to created source term.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-06-24
+ * @date Last update : 2026-09-25
+ */
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
   if (name == "ComputeAllSources" || name == "compute_all_sources" ||

@@ -316,6 +316,12 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
@@ -357,6 +363,12 @@ TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   std::ofstream file(filename);
   file << "general:\n";
   file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: uq\n";
+  file << "  linear_input: ln1\n";
+  file << "  input_dissipation: st4\n";
+  file << "  nonlinear_interactions: nl1\n";
+  file << "  bottom_friction: bt1\n";
   file << "forcing:\n";
   file << "  water_levels: none\n";
   file << "  currents: none\n";
