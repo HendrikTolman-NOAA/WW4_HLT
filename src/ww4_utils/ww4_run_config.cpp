@@ -14,9 +14,10 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
+ *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-24
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -33,10 +34,15 @@ namespace ww4_utils {
 
 namespace {
 
+// --- parseHomogeneousString -------------------------------------------------
 /**
  * @brief Helper to parse a homogeneous data string.
  * @param s The string to parse (format: "YYYYMMDD HHMMSS val1 val2 ...").
  * @return A HomogeneousDataPoint if successful.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
   if (s.empty())
@@ -87,11 +93,16 @@ std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
   return dp;
 }
 
+// --- parseInputOption -------------------------------------------------------
 /**
  * @brief Helper to parse InputFieldOption from string.
  * @param value The string value to parse.
  * @param allowFromGrid Whether to allow the 'from_grid' option.
  * @return The corresponding InputFieldOption.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 InputFieldOption parseInputOption(const std::string_view value,
                                   const bool allowFromGrid = false) {
@@ -111,10 +122,15 @@ InputFieldOption parseInputOption(const std::string_view value,
   return InputFieldOption::Undefined;
 }
 
+// --- inputOptionToString ----------------------------------------------------
 /**
  * @brief Helper to convert InputFieldOption to string for reporting.
  * @param option The InputFieldOption to convert.
  * @return A string representation of the option.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 std::string inputOptionToString(const InputFieldOption option) {
   switch (option) {
@@ -133,10 +149,15 @@ std::string inputOptionToString(const InputFieldOption option) {
   }
 }
 
+// --- parseOutputConfig ------------------------------------------------------
 /**
  * @brief Helper to update OutputConfig from a YAML node.
  * @param oc The OutputConfig structure to update.
  * @param node The YAML node for the output type.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
   if (!node)
@@ -159,12 +180,17 @@ void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
   }
 }
 
+// --- echoHomogeneousData ----------------------------------------------------
 /**
  * @brief Helper to echo a homogeneous data series.
  * @param processed Vector of data points.
  * @param fieldName Name of the field.
  * @param option Echo level.
  * @param os Output stream.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
                          std::string_view /*fieldName*/, EchoOption option,
@@ -185,11 +211,16 @@ void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
   }
 }
 
+// --- reportOutput -----------------------------------------------------------
 /**
  * @brief Helper to report OutputConfig settings.
  * @param oc The OutputConfig structure to report.
  * @param label The label for the output type.
  * @param os The output stream to write to.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 void reportOutput(const OutputConfig &oc, const std::string_view label,
                   std::ostream &os) {
@@ -215,10 +246,15 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
 
 } // namespace
 
+// --- cleanValue -------------------------------------------------------------
 /**
  * @brief Internal helper to trim whitespace and quotes from a string.
  * @param s The string view to clean.
  * @return A cleaned string view.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 std::string_view cleanValue(const std::string_view s) {
   const size_t start = s.find_first_not_of(" \t\r\n\"");
@@ -228,6 +264,7 @@ std::string_view cleanValue(const std::string_view s) {
   return s.substr(start, end - start + 1);
 }
 
+// --- loadRunConfig ----------------------------------------------------------
 /**
  * @brief Loads the run-time configuration from a YAML file.
  * @details Reads the specified YAML file, extracts configuration settings
@@ -238,7 +275,10 @@ std::string_view cleanValue(const std::string_view s) {
  * @return A RunConfig structure containing the loaded (or default) settings,
  *         or std::nullopt if the file could not be opened.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
+ *                       Ming Chen
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-24
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
@@ -247,7 +287,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     RunConfig config{};
 
-    // 1. General section
+    // === General section =====================================================
     if (const auto node = config_node["general"]) {
       if (node["calendar_type"]) {
         const auto val = node["calendar_type"].as<std::string>();
@@ -282,7 +322,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // 2. Physics section
+    // === Physics section =====================================================
     if (const auto node = config_node["physics"]) {
       if (node["dry_run"]) {
         config.dryRun = (node["dry_run"].as<std::string>() == "yes");
@@ -305,7 +345,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // 3. Forcing section
+    // === Forcing section =====================================================
     if (const auto node = config_node["forcing"]) {
       if (node["bottom_depth"]) {
         config.bottomDepth =
@@ -337,7 +377,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
     }
 
-    // 4. Homogeneous Data section
+    // === Homogeneous Data section ============================================
     if (const auto node = config_node["homogeneous_data"]) {
       auto parsePoints = [&](const std::string &key,
                              std::vector<HomogeneousDataPoint> &list) {
@@ -357,7 +397,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parsePoints("bottom_depth", config.homogeneousBottomDepth);
     }
 
-    // 5. Output section
+    // === Output section ======================================================
     if (const auto node = config_node["output"]) {
       parseOutputConfig(config.outputFields, node["fields"]);
       parseOutputConfig(config.outputPoints, node["points"]);
@@ -365,7 +405,67 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parseOutputConfig(config.outputApi, node["api"]);
     }
 
-    // Mandatory fields check
+    // === Spectral space section ==============================================
+    if (const auto node = config_node["spectral_space"]) {
+      if (node["num_directions"]) {
+        config.spectralSpace.numDirections = node["num_directions"].as<int>();
+      }
+
+      if (node["num_frequencies"]) {
+        config.spectralSpace.numFrequencies = node["num_frequencies"].as<int>();
+      }
+
+      if (node["freq_increment_factor"]) {
+        config.spectralSpace.freqIncrementFactor =
+            node["freq_increment_factor"].as<double>();
+      }
+
+      if (node["first_frequency"]) {
+        config.spectralSpace.firstFrequency =
+            node["first_frequency"].as<double>();
+      }
+
+      if (node["first_direction_offset"]) {
+        config.spectralSpace.firstDirectionOffset =
+            node["first_direction_offset"].as<double>();
+      }
+    }
+
+    // === Spectral space parameters validation ================================
+    if (config.spectralSpace.numDirections <= 0 ||
+        config.spectralSpace.numFrequencies <= 0 ||
+        config.spectralSpace.freqIncrementFactor <= 1.0 ||
+        config.spectralSpace.firstFrequency <= 0.0 ||
+        config.spectralSpace.firstDirectionOffset < 0.0 ||
+        config.spectralSpace.firstDirectionOffset > 1.0) {
+      os << "WW4 ERROR: Invalid parameters defining spectral space in "
+            "configuration."
+         << std::endl;
+      if (config.spectralSpace.numDirections <= 0)
+        os << "   Missing/invalid: spectral_space -> num_directions"
+           << std::endl;
+      if (config.spectralSpace.numFrequencies <= 0)
+        os << "   Missing/invalid: spectral_space -> num_frequencies"
+           << std::endl;
+      if (config.spectralSpace.freqIncrementFactor <= 1.0)
+        os << "   Missing/invalid: spectral_space -> freq_increment_factor"
+           << std::endl;
+      if (config.spectralSpace.firstFrequency <= 0.0)
+        os << "   Missing/invalid: spectral_space -> first_frequency"
+           << std::endl;
+      if (config.spectralSpace.firstDirectionOffset < 0.0 ||
+          config.spectralSpace.firstDirectionOffset > 1.0)
+        os << "   Missing/invalid: spectral_space -> first_direction_offset"
+           << std::endl;
+
+      // Passing source file name (__FILE__) and line number (__LINE__) for
+      // error reporting and location tracing
+      ww4_std_out::extcde(
+          1, os, "Missing or invalid parameters defining spectral space.",
+          __FILE__, __LINE__);
+    }
+
+    // === Mandatory fields check ==============================================
     if (config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
@@ -389,7 +489,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // Time step validation
+    // === Time step validation ================================================
     if (config.timeStep < 0.0) {
       os << "WW4 ERROR: Mandatory time step missing or invalid "
             "in configuration."
@@ -398,7 +498,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // Output validation
+    // === Output validation ===================================================
     bool outputValid = true;
     auto validateOutput = [&](const OutputConfig &oc,
                               const std::string_view name) {
@@ -422,7 +522,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
-    // Update TimeManagement with the loaded calendar type.
+    // === TimeManagement calendar type update =================================
     TimeManagement::setCalendarType(config.calendarType);
 
     return config;
@@ -433,12 +533,15 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
   }
 }
 
+// --- reportRunConfig --------------------------------------------------------
 /**
  * @brief Reports the current configuration to the provided output stream.
  * @param config The RunConfig structure to report.
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  Configuration settings :" << std::endl;
@@ -498,6 +601,19 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   }
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
+
+  os << "\n     Spectral space parameters :" << std::endl;
+  os << "        Number of directions     : "
+     << config.spectralSpace.numDirections << std::endl;
+  os << "        Number of frequencies    : "
+     << config.spectralSpace.numFrequencies << std::endl;
+  os << "        Freq increment factor    : "
+     << config.spectralSpace.freqIncrementFactor << std::endl;
+  os << "        First frequency          : "
+     << config.spectralSpace.firstFrequency << " Hz" << std::endl;
+  os << "        First direction offset   : "
+     << config.spectralSpace.firstDirectionOffset
+     << " (fraction of directional increment)" << std::endl;
 
   os << "\n  Model input:" << std::endl;
 

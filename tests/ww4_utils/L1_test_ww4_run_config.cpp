@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-13
+ * @date Last update : 2026-09-22
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -106,6 +106,76 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   EXPECT_NE(output.find("Water levels         : homogeneous"),
             std::string::npos);
   EXPECT_NE(output.find("1.2 3.4"), std::string::npos);
+
+  std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, SpectralSpaceParametersDefaults) {
+  const SpectralConfig config;
+  EXPECT_EQ(config.numDirections, 36);
+  EXPECT_EQ(config.numFrequencies, 50);
+  EXPECT_DOUBLE_EQ(config.freqIncrementFactor, 1.07);
+  EXPECT_DOUBLE_EQ(config.firstFrequency, 0.035);
+  EXPECT_DOUBLE_EQ(config.firstDirectionOffset, 0.5);
+}
+
+TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
+  const std::string filename = "test_spectral_custom.yaml";
+  std::ofstream file(filename);
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "spectral_space:\n";
+  file << "  num_directions: 24\n";
+  file << "  num_frequencies: 30\n";
+  file << "  freq_increment_factor: 1.10\n";
+  file << "  first_frequency: 0.05\n";
+  file << "  first_direction_offset: 0.25\n";
+  file.close();
+
+  const auto config = loadRunConfig(filename, std::cerr);
+  ASSERT_TRUE(config.has_value());
+
+  EXPECT_EQ(config->spectralSpace.numDirections, 24);
+  EXPECT_EQ(config->spectralSpace.numFrequencies, 30);
+  EXPECT_DOUBLE_EQ(config->spectralSpace.freqIncrementFactor, 1.10);
+  EXPECT_DOUBLE_EQ(config->spectralSpace.firstFrequency, 0.05);
+  EXPECT_DOUBLE_EQ(config->spectralSpace.firstDirectionOffset, 0.25);
+
+  std::stringstream ss;
+  reportRunConfig(*config, ss);
+  const std::string reportStr = ss.str();
+  EXPECT_NE(reportStr.find("Spectral space parameters :"), std::string::npos);
+  EXPECT_NE(reportStr.find("Number of directions     : 24"), std::string::npos);
+  EXPECT_NE(reportStr.find("Number of frequencies    : 30"), std::string::npos);
+  EXPECT_NE(
+      reportStr.find("First direction offset   : 0.25 (fraction of directional "
+                     "increment)"),
+      std::string::npos);
+
+  std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
+  const std::string filename = "test_spectral_invalid.yaml";
+  std::ofstream file(filename);
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file << "spectral_space:\n";
+  file << "  first_direction_offset: 1.5\n";
+  file.close();
+
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing or invalid parameters defining spectral space.");
 
   std::remove(filename.c_str());
 }

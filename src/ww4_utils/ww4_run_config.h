@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-22
  */
 
 #pragma once
@@ -31,11 +31,14 @@
 
 namespace ww4_utils {
 
+// --- InputFieldOption -------------------------------------------------------
 /**
  * @enum InputFieldOption
  * @brief Options for model input fields.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var InputFieldOption::Undefined
  * @brief Mandatory field not yet defined.
  * @var InputFieldOption::None
@@ -58,12 +61,15 @@ enum class InputFieldOption {
   FromGrid
 };
 
+// --- ScreenOutputLevel ------------------------------------------------------
 /**
  * @enum ScreenOutputLevel
  * @brief Options for the level of output to standard output during time
  * stepping.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var ScreenOutputLevel::None
  * @brief No output in the time stepping loop.
  * @var ScreenOutputLevel::Summary
@@ -73,11 +79,14 @@ enum class InputFieldOption {
  */
 enum class ScreenOutputLevel { None, Summary, Full };
 
+// --- EchoOption -------------------------------------------------------------
 /**
  * @enum EchoOption
  * @brief Options for echoing input data to standard output and log files.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var EchoOption::None
  * @brief No echoing of input data.
  * @var EchoOption::Summary
@@ -87,11 +96,44 @@ enum class ScreenOutputLevel { None, Summary, Full };
  */
 enum class EchoOption { None, Summary, Full };
 
+// --- SpectralConfig ---------------------------------------------------------
+/**
+ * @struct SpectralConfig
+ * @brief Parameters defining the spectral space.
+ * @details Defines discrete frequency and direction parameters for setting up
+ * the spectral space based on WAVEWATCH III.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
+ * @var SpectralConfig::numDirections
+ * @brief Number of discrete directions (default: 36).
+ * @var SpectralConfig::numFrequencies
+ * @brief Number of discrete frequencies (default: 50).
+ * @var SpectralConfig::freqIncrementFactor
+ * @brief Frequency increment factor X (default: 1.07).
+ * @var SpectralConfig::firstFrequency
+ * @brief First discrete frequency in Hz (default: 0.035).
+ * @var SpectralConfig::firstDirectionOffset
+ * @brief Offset of the first direction as a fraction of the directional step
+ * in range [0.0, 1.0] (default: 0.5).
+ */
+struct SpectralConfig {
+  int numDirections = 36;
+  int numFrequencies = 50;
+  double freqIncrementFactor = 1.07;
+  double firstFrequency = 0.035;
+  double firstDirectionOffset = 0.5;
+};
+
+// --- HomogeneousDataPoint ---------------------------------------------------
 /**
  * @struct HomogeneousDataPoint
  * @brief Data point for a homogeneous input field.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var HomogeneousDataPoint::time
  * @brief Time of the data point.
  * @var HomogeneousDataPoint::values
@@ -102,12 +144,15 @@ struct HomogeneousDataPoint {
   std::vector<double> values;
 };
 
+// --- RunConfig --------------------------------------------------------------
 /**
  * @struct RunConfig
  * @brief Configuration for the run-time environment.
  * @details Stores the calendar type, output preferences, and input options.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-09-22
  * @var RunConfig::calendarType
  * @brief Calendar type.
  * @var RunConfig::produceStdOut
@@ -150,6 +195,8 @@ struct HomogeneousDataPoint {
  * @brief Homogeneous ice concentrations data.
  * @var RunConfig::homogeneousBottomDepth
  * @brief Homogeneous bottom depth data.
+ * @var RunConfig::spectralSpace
+ * @brief Parameters defining the spectral space.
  * @var RunConfig::timeStep
  * @brief Model time step in seconds.
  * @var RunConfig::outputApi
@@ -189,6 +236,8 @@ struct RunConfig {
   std::vector<HomogeneousDataPoint> homogeneousIceConcentrations;
   std::vector<HomogeneousDataPoint> homogeneousBottomDepth;
 
+  SpectralConfig spectralSpace;
+
   double timeStep = -1.0;
 
   OutputConfig outputApi;
@@ -198,11 +247,14 @@ struct RunConfig {
   OutputConfig outputRestart;
 };
 
+// --- cleanValue -------------------------------------------------------------
 std::string_view cleanValue(std::string_view s);
 
+// --- loadRunConfig ----------------------------------------------------------
 std::optional<RunConfig> loadRunConfig(std::string_view filename,
                                        std::ostream &os) noexcept;
 
+// --- reportRunConfig --------------------------------------------------------
 void reportRunConfig(const RunConfig &config, std::ostream &os);
 
 } // namespace ww4_utils
