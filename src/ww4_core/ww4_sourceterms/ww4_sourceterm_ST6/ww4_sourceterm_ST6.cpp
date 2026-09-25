@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_sourceterm_BT4.cpp
- * @brief Implementation of BT4 bottom friction source terms.
- * @details Concrete subroutine for BT4 source terms in WW4 core.
+ * @file ww4_sourceterm_ST6.cpp
+ * @brief Implementation of ST6 input and dissipation source terms.
+ * @details Concrete subroutine for ST6 source terms in WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,14 +20,14 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ww4_sourceterm_BT4.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST6/ww4_sourceterm_ST6.h"
 #include <algorithm>
 
 namespace ww4_core {
 
-void SourceTermBT4::calculate(std::span<double> data) {
+void SourceTermST6::calculate(std::span<double> data) {
   std::for_each(data.begin(), data.end(), [](double &val) {
-    val -= 0.004; // Mock BT4 effect
+    val += 0.06; // Mock ST6 effect
   });
 }
 

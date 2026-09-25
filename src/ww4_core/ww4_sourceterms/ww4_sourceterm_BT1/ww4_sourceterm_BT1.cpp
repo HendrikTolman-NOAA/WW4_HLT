@@ -20,7 +20,7 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ww4_sourceterm_BT1.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_BT1/ww4_sourceterm_BT1.h"
 #include <algorithm>
 
 namespace ww4_core {

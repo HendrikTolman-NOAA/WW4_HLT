@@ -94,17 +94,17 @@ add_library(
     src/ww4_core/solver_uq/solver_uq.cpp
     src/ww4_core/solver_triangular/solver_triangular.cpp
     src/ww4_core/solver_smc/solver_smc.cpp
-    src/ww4_core/ww4_source_terms/compute_all_sources.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_ST1.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_ST2.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_ST4.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_ST6.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_LN1.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_NL1.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_NL2.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_NL3.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_BT1.cpp
-    src/ww4_core/ww4_source_terms/ww4_sourceterm_BT4.cpp
+    src/ww4_core/ww4_sourceterms/ww4_compute_all_sourceterms.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_ST1/ww4_sourceterm_ST1.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_ST2/ww4_sourceterm_ST2.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_ST4/ww4_sourceterm_ST4.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_ST6/ww4_sourceterm_ST6.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_LN1/ww4_sourceterm_LN1.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_NL1/ww4_sourceterm_NL1.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_NL2/ww4_sourceterm_NL2.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_NL3/ww4_sourceterm_NL3.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_BT1/ww4_sourceterm_BT1.cpp
+    src/ww4_core/ww4_sourceterms/ww4_sourceterm_BT4/ww4_sourceterm_BT4.cpp
     src/ww4_core/wave_model_solver.cpp
 )
 target_include_directories(ww4_core PUBLIC src)
@@ -178,7 +178,7 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_w4core_init tests/ww4_core/L1_test_w4core_init.cpp ww4_core)
     ww4_add_test(test_w4core_wave tests/ww4_core/L1_test_w4core_wave.cpp ww4_core)
     ww4_add_test(test_w4core_finalize tests/ww4_core/L1_test_w4core_finalize.cpp ww4_core)
-    ww4_add_test(test_compute_all_sources tests/ww4_core/L1_test_compute_all_sources.cpp ww4_core)
+    ww4_add_test(test_compute_all_sources tests/ww4_core/L1_test_ww4_compute_all_sourceterms.cpp ww4_core)
     ww4_add_test(test_st1 tests/ww4_core/L1_test_ww4_sourceterm_ST1.cpp ww4_core)
     ww4_add_test(test_st2 tests/ww4_core/L1_test_ww4_sourceterm_ST2.cpp ww4_core)
     ww4_add_test(test_st4 tests/ww4_core/L1_test_ww4_sourceterm_ST4.cpp ww4_core)

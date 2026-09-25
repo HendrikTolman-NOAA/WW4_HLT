@@ -20,7 +20,7 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ww4_sourceterm_ST6.h"
+#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST6/ww4_sourceterm_ST6.h"
 #include <gtest/gtest.h>
 #include <vector>
 
