@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file nl2.h
- * @brief Header for NL2 nonlinear interaction source term calculations.
- * @details Concrete implementation of ISourceTerm for NL2 scheme.
+ * @file L1_test_ww4_sourterm_BT4.cpp
+ * @brief Unit tests for BT4 bottom friction source term.
+ * @details Verifies the behavior and interface compliance of SourceTermBT4.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,29 +20,20 @@
  * @date Last update : 2026-09-24
  */
 
-#pragma once
-
-#include "ww4_core/source_term.h"
-#include <span>
+#include "ww4_core/ww4_source_terms/ww4_sourterm_BT4.h"
+#include <gtest/gtest.h>
+#include <vector>
 
 namespace ww4_core {
 
-/**
- * @class SourceTermNL2
- * @brief Implementation of NL2 nonlinear interaction source terms.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class SourceTermNL2 : public ISourceTerm {
-public:
-  SourceTermNL2() = default;
-  ~SourceTermNL2() override = default;
+TEST(BT4Test, BasicPropertiesAndCalculate) {
+  SourceTermBT4 source;
+  EXPECT_EQ(source.getName(), "BT4");
 
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "NL2";
-  }
-
-  void calculate(std::span<double> data) override;
-};
+  std::vector<double> data = {1.0, 2.0};
+  source.calculate(data);
+  EXPECT_DOUBLE_EQ(data[0], 0.996);
+  EXPECT_DOUBLE_EQ(data[1], 1.996);
+}
 
 } // namespace ww4_core

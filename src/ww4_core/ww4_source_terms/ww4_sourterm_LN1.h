@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ln1.cpp
- * @brief Implementation of LN1 linear input source terms.
- * @details Concrete subroutine for LN1 source terms in WW4 core.
+ * @file ww4_sourterm_LN1.h
+ * @brief Header for LN1 linear input source term calculations.
+ * @details Concrete implementation of ISourceTerm for LN1 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,15 +20,29 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/ln1.h"
-#include <algorithm>
+#pragma once
+
+#include "ww4_core/source_term.h"
+#include <span>
 
 namespace ww4_core {
 
-void SourceTermLN1::calculate(std::span<double> data) {
-  std::for_each(data.begin(), data.end(), [](double &val) {
-    val += 0.005; // Mock LN1 effect
-  });
-}
+/**
+ * @class SourceTermLN1
+ * @brief Implementation of LN1 linear input source terms.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+class SourceTermLN1 : public ISourceTerm {
+public:
+  SourceTermLN1() = default;
+  ~SourceTermLN1() override = default;
+
+  [[nodiscard]] std::string_view getName() const noexcept override {
+    return "LN1";
+  }
+
+  void calculate(std::span<double> data) override;
+};
 
 } // namespace ww4_core

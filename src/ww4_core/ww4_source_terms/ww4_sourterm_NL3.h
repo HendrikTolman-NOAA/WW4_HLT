@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_nl3.cpp
- * @brief Unit tests for NL3 nonlinear interaction source term.
- * @details Verifies the behavior and interface compliance of SourceTermNL3.
+ * @file ww4_sourterm_NL3.h
+ * @brief Header for NL3 nonlinear interaction source term calculations.
+ * @details Concrete implementation of ISourceTerm for NL3 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,20 +20,29 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/nl3.h"
-#include <gtest/gtest.h>
-#include <vector>
+#pragma once
+
+#include "ww4_core/source_term.h"
+#include <span>
 
 namespace ww4_core {
 
-TEST(NL3Test, BasicPropertiesAndCalculate) {
-  SourceTermNL3 source;
-  EXPECT_EQ(source.getName(), "NL3");
+/**
+ * @class SourceTermNL3
+ * @brief Implementation of NL3 nonlinear interaction source terms.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ */
+class SourceTermNL3 : public ISourceTerm {
+public:
+  SourceTermNL3() = default;
+  ~SourceTermNL3() override = default;
 
-  std::vector<double> data = {1.0, 2.0};
-  source.calculate(data);
-  EXPECT_DOUBLE_EQ(data[0], 1.003);
-  EXPECT_DOUBLE_EQ(data[1], 2.003);
-}
+  [[nodiscard]] std::string_view getName() const noexcept override {
+    return "NL3";
+  }
+
+  void calculate(std::span<double> data) override;
+};
 
 } // namespace ww4_core

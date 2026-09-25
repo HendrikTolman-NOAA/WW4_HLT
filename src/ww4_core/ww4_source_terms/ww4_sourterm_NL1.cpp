@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file bt1.h
- * @brief Header for BT1 bottom friction source term calculations.
- * @details Concrete implementation of ISourceTerm for BT1 scheme.
+ * @file ww4_sourterm_NL1.cpp
+ * @brief Implementation of NL1 nonlinear interaction source terms.
+ * @details Concrete subroutine for NL1 source terms in WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,29 +20,15 @@
  * @date Last update : 2026-09-24
  */
 
-#pragma once
-
-#include "ww4_core/source_term.h"
-#include <span>
+#include "ww4_core/ww4_source_terms/ww4_sourterm_NL1.h"
+#include <algorithm>
 
 namespace ww4_core {
 
-/**
- * @class SourceTermBT1
- * @brief Implementation of BT1 bottom friction source terms.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class SourceTermBT1 : public ISourceTerm {
-public:
-  SourceTermBT1() = default;
-  ~SourceTermBT1() override = default;
-
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "BT1";
-  }
-
-  void calculate(std::span<double> data) override;
-};
+void SourceTermNL1::calculate(std::span<double> data) {
+  std::for_each(data.begin(), data.end(), [](double &val) {
+    val += 0.001; // Mock NL1 effect
+  });
+}
 
 } // namespace ww4_core

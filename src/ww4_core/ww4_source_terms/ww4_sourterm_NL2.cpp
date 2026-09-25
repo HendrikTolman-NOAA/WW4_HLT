@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file nl2.cpp
+ * @file ww4_sourterm_NL2.cpp
  * @brief Implementation of NL2 nonlinear interaction source terms.
  * @details Concrete subroutine for NL2 source terms in WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -20,7 +20,7 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/nl2.h"
+#include "ww4_core/ww4_source_terms/ww4_sourterm_NL2.h"
 #include <algorithm>
 
 namespace ww4_core {

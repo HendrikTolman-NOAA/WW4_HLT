@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_bt1.cpp
- * @brief Unit tests for BT1 bottom friction source term.
- * @details Verifies the behavior and interface compliance of SourceTermBT1.
+ * @file ww4_sourterm_ST4.cpp
+ * @brief Implementation of ST4 input and dissipation source terms.
+ * @details Concrete subroutine for ST4 source terms in WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,20 +20,15 @@
  * @date Last update : 2026-09-24
  */
 
-#include "ww4_core/ww4_source_terms/bt1.h"
-#include <gtest/gtest.h>
-#include <vector>
+#include "ww4_core/ww4_source_terms/ww4_sourterm_ST4.h"
+#include <algorithm>
 
 namespace ww4_core {
 
-TEST(BT1Test, BasicPropertiesAndCalculate) {
-  SourceTermBT1 source;
-  EXPECT_EQ(source.getName(), "BT1");
-
-  std::vector<double> data = {1.0, 2.0};
-  source.calculate(data);
-  EXPECT_DOUBLE_EQ(data[0], 0.999);
-  EXPECT_DOUBLE_EQ(data[1], 1.999);
+void SourceTermST4::calculate(std::span<double> data) {
+  std::for_each(data.begin(), data.end(), [](double &val) {
+    val += 0.04; // Mock ST4 effect
+  });
 }
 
 } // namespace ww4_core

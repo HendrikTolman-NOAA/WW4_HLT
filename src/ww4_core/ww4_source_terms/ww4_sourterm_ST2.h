@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file st1.h
- * @brief Header for ST1 input and dissipation source term calculations.
- * @details Concrete implementation of ISourceTerm for ST1 scheme.
+ * @file ww4_sourterm_ST2.h
+ * @brief Header for ST2 input and dissipation source term calculations.
+ * @details Concrete implementation of ISourceTerm for ST2 scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -28,18 +28,18 @@
 namespace ww4_core {
 
 /**
- * @class SourceTermST1
- * @brief Implementation of ST1 input and dissipation source terms.
+ * @class SourceTermST2
+ * @brief Implementation of ST2 input and dissipation source terms.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  */
-class SourceTermST1 : public ISourceTerm {
+class SourceTermST2 : public ISourceTerm {
 public:
-  SourceTermST1() = default;
-  ~SourceTermST1() override = default;
+  SourceTermST2() = default;
+  ~SourceTermST2() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "ST1";
+    return "ST2";
   }
 
   void calculate(std::span<double> data) override;

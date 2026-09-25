@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file st6.h
- * @brief Header for ST6 input and dissipation source term calculations.
- * @details Concrete implementation of ISourceTerm for ST6 scheme.
+ * @file L1_test_ww4_sourterm_ST6.cpp
+ * @brief Unit tests for ST6 input and dissipation source term.
+ * @details Verifies the behavior and interface compliance of SourceTermST6.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,29 +20,20 @@
  * @date Last update : 2026-09-24
  */
 
-#pragma once
-
-#include "ww4_core/source_term.h"
-#include <span>
+#include "ww4_core/ww4_source_terms/ww4_sourterm_ST6.h"
+#include <gtest/gtest.h>
+#include <vector>
 
 namespace ww4_core {
 
-/**
- * @class SourceTermST6
- * @brief Implementation of ST6 input and dissipation source terms.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- */
-class SourceTermST6 : public ISourceTerm {
-public:
-  SourceTermST6() = default;
-  ~SourceTermST6() override = default;
+TEST(ST6Test, BasicPropertiesAndCalculate) {
+  SourceTermST6 source;
+  EXPECT_EQ(source.getName(), "ST6");
 
-  [[nodiscard]] std::string_view getName() const noexcept override {
-    return "ST6";
-  }
-
-  void calculate(std::span<double> data) override;
-};
+  std::vector<double> data = {1.0, 2.0};
+  source.calculate(data);
+  EXPECT_DOUBLE_EQ(data[0], 1.06);
+  EXPECT_DOUBLE_EQ(data[1], 2.06);
+}
 
 } // namespace ww4_core
