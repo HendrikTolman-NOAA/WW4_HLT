@@ -459,15 +459,6 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       parseOutputConfig(config.outputApi, node["api"]);
     }
 
-<<<<<<< HEAD
-    // Mandatory fields check
-    if (config.solver == SolverType::Undefined ||
-        config.inputDissipation == InputDissipationScheme::Undefined ||
-        config.nonlinearInteractions == NonlinearScheme::Undefined ||
-        config.linearInput == LinearInputScheme::Undefined ||
-        config.bottomFriction == BottomFrictionScheme::Undefined ||
-        config.waterLevels == InputFieldOption::Undefined ||
-=======
     // === Spectral space section ==============================================
     if (const auto node = config_node["spectral_space"]) {
       if (node["num_directions"]) {
@@ -529,8 +520,12 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // === Mandatory fields check ==============================================
-    if (config.waterLevels == InputFieldOption::Undefined ||
->>>>>>> upstream
+    if (config.solver == SolverType::Undefined ||
+        config.inputDissipation == InputDissipationScheme::Undefined ||
+        config.nonlinearInteractions == NonlinearScheme::Undefined ||
+        config.linearInput == LinearInputScheme::Undefined ||
+        config.bottomFriction == BottomFrictionScheme::Undefined ||
+        config.waterLevels == InputFieldOption::Undefined ||
         config.currents == InputFieldOption::Undefined ||
         config.winds == InputFieldOption::Undefined ||
         config.iceConcentrations == InputFieldOption::Undefined ||
