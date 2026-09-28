@@ -19,7 +19,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 
 #include "ww4_core/scheme_factory.h"
@@ -40,8 +40,9 @@ TEST(WaveModelSolverTest, SimulationStep) {
 
   WaveModelSolver model;
 
-  // Assemble the model: UQ solver with ComputeAllSources source term
-  auto solver = SchemeFactory::createSolver("UQ");
+  // Assemble the model: SolverUQ solver with ComputeAllSources source
+  // term
+  auto solver = SchemeFactory::createSolver("SolverUQ");
   auto source = SchemeFactory::createSourceTerm("compute_all_sources");
   solver->addSourceTerm(std::move(source));
 

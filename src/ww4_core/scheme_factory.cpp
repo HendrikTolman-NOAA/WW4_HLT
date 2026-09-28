@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-27
+ * @date Last update : 2026-09-28
  */
 
 #include "ww4_core/scheme_factory.h"
@@ -51,20 +51,16 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-27
+ * @date Last update : 2026-09-28
  */
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
-  if (name == "UQ" || name == "regular_uq" || name == "uq" ||
-      name == "RectangularGrid" || name == "rectangular_grid") {
+  if (name == "SolverUQ") {
     return std::make_unique<SolverRectangularGrid>();
   }
-  if (name == "Triangular" || name == "triangular" ||
-      name == "tbd_triangular" || name == "TriangularGrid" ||
-      name == "triangular_grid") {
+  if (name == "SolverTriangular") {
     return std::make_unique<SolverTriangularGrid>();
   }
-  if (name == "SMC" || name == "smc" || name == "SMCGrid" ||
-      name == "smc_grid") {
+  if (name == "SolverSMC") {
     return std::make_unique<SolverSMCGrid>();
   }
   throw std::invalid_argument("Unknown solver: " + name);
@@ -78,12 +74,11 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-28
  */
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
-  if (name == "ComputeAllSources" || name == "compute_all_sources" ||
-      name == "Stub" || name == "stub") {
+  if (name == "ComputeAllSources" || name == "compute_all_sources") {
     return std::make_unique<ComputeAllSources>();
   }
   if (name == "LN1" || name == "ln1") {

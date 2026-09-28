@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 
 #include "ww4_core/scheme_factory.h"
@@ -27,33 +27,21 @@
 namespace ww4_core {
 
 TEST(SchemeFactoryTest, CreateSolverUQ) {
-  auto solver = SchemeFactory::createSolver("UQ");
+  auto solver = SchemeFactory::createSolver("SolverUQ");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "UQ");
-
-  auto solverGrid = SchemeFactory::createSolver("RectangularGrid");
-  ASSERT_NE(solverGrid, nullptr);
-  EXPECT_EQ(solverGrid->getName(), "UQ");
 }
 
 TEST(SchemeFactoryTest, CreateSolverTriangular) {
-  auto solver = SchemeFactory::createSolver("Triangular");
+  auto solver = SchemeFactory::createSolver("SolverTriangular");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "Triangular");
-
-  auto solverGrid = SchemeFactory::createSolver("TriangularGrid");
-  ASSERT_NE(solverGrid, nullptr);
-  EXPECT_EQ(solverGrid->getName(), "Triangular");
 }
 
 TEST(SchemeFactoryTest, CreateSolverSMC) {
-  auto solver = SchemeFactory::createSolver("SMC");
+  auto solver = SchemeFactory::createSolver("SolverSMC");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "SMC");
-
-  auto solverGrid = SchemeFactory::createSolver("SMCGrid");
-  ASSERT_NE(solverGrid, nullptr);
-  EXPECT_EQ(solverGrid->getName(), "SMC");
 }
 
 TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
