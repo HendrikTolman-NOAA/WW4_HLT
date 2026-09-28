@@ -40,8 +40,8 @@ class SchemeFactory {
 public:
   /**
    * @brief Create a solver scheme.
-   * @param name The name of the solver (e.g., "RectangularGrid",
-   * "TriangularGrid", "SMCGrid").
+   * @param name The name of the solver (e.g., "SolverUQ", "SolverTriangular",
+   * "SolverSMC").
    * @return A unique pointer to the created ISolver.
    */
   static std::unique_ptr<ISolver> createSolver(const std::string &name);

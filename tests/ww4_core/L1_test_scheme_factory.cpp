@@ -26,11 +26,13 @@
 
 namespace ww4_core {
 
-TEST(SchemeFactoryTest, CreateSolverRectangularGrid) {
-  auto solverGrid = SchemeFactory::createSolver("RectangularGrid");
-  ASSERT_NE(solverGrid, nullptr);
-  EXPECT_EQ(solverGrid->getName(), "UQ");
+TEST(SchemeFactoryTest, CreateSolverUQ) {
+  auto solver = SchemeFactory::createSolver("SolverUQ");
+  ASSERT_NE(solver, nullptr);
+  EXPECT_EQ(solver->getName(), "UQ");
 
+  EXPECT_THROW(SchemeFactory::createSolver("RectangularGrid"),
+               std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("UQ"), std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("uq"), std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("regular_uq"),
@@ -39,11 +41,13 @@ TEST(SchemeFactoryTest, CreateSolverRectangularGrid) {
                std::invalid_argument);
 }
 
-TEST(SchemeFactoryTest, CreateSolverTriangularGrid) {
-  auto solverGrid = SchemeFactory::createSolver("TriangularGrid");
-  ASSERT_NE(solverGrid, nullptr);
-  EXPECT_EQ(solverGrid->getName(), "Triangular");
+TEST(SchemeFactoryTest, CreateSolverTriangular) {
+  auto solver = SchemeFactory::createSolver("SolverTriangular");
+  ASSERT_NE(solver, nullptr);
+  EXPECT_EQ(solver->getName(), "Triangular");
 
+  EXPECT_THROW(SchemeFactory::createSolver("TriangularGrid"),
+               std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("Triangular"),
                std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("triangular"),
@@ -54,11 +58,12 @@ TEST(SchemeFactoryTest, CreateSolverTriangularGrid) {
                std::invalid_argument);
 }
 
-TEST(SchemeFactoryTest, CreateSolverSMCGrid) {
-  auto solverGrid = SchemeFactory::createSolver("SMCGrid");
-  ASSERT_NE(solverGrid, nullptr);
-  EXPECT_EQ(solverGrid->getName(), "SMC");
+TEST(SchemeFactoryTest, CreateSolverSMC) {
+  auto solver = SchemeFactory::createSolver("SolverSMC");
+  ASSERT_NE(solver, nullptr);
+  EXPECT_EQ(solver->getName(), "SMC");
 
+  EXPECT_THROW(SchemeFactory::createSolver("SMCGrid"), std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("SMC"), std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("smc"), std::invalid_argument);
   EXPECT_THROW(SchemeFactory::createSolver("smc_grid"), std::invalid_argument);
@@ -68,6 +73,9 @@ TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
   auto scheme = SchemeFactory::createSourceTerm("compute_all_sources");
   ASSERT_NE(scheme, nullptr);
   EXPECT_EQ(scheme->getName(), "ComputeAllSources");
+
+  EXPECT_THROW(SchemeFactory::createSourceTerm("Stub"), std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSourceTerm("stub"), std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateSubSourceTerms) {

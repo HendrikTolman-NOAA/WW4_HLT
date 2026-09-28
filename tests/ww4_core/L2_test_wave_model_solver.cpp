@@ -40,9 +40,9 @@ TEST(WaveModelSolverTest, SimulationStep) {
 
   WaveModelSolver model;
 
-  // Assemble the model: RectangularGrid solver with ComputeAllSources source
+  // Assemble the model: SolverUQ solver with ComputeAllSources source
   // term
-  auto solver = SchemeFactory::createSolver("RectangularGrid");
+  auto solver = SchemeFactory::createSolver("SolverUQ");
   auto source = SchemeFactory::createSourceTerm("compute_all_sources");
   solver->addSourceTerm(std::move(source));
 
