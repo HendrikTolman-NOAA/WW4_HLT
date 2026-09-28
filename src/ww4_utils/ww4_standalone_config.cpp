@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-02
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-24
  */
 
 #include "ww4_utils/ww4_standalone_config.h"
@@ -26,18 +26,9 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 
-/**
- * @namespace ww4_utils
- * @brief Utilities for WAVEWATCH IV.
- */
 namespace ww4_utils {
 
-/**
- * @brief Internal helper to parse a date-time string in "YYYYMMDD HHMMSS"
- * format.
- * @param s The string view to parse.
- * @return A DateTime structure if successful, or std::nullopt.
- */
+// --- parseDateTimeString ----------------------------------------------------
 std::optional<DateTime> parseDateTimeString(const std::string_view s) {
   const std::string_view clean = cleanValue(s);
 
@@ -59,19 +50,7 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
   return DateTime{ymd, hms};
 }
 
-/**
- * @brief Loads the stand-alone configuration from a YAML file.
- * @details Reads the specified YAML file, extracts the start and end times
- *          from the 'simulation' node, and validates that the end time is
- *          not before the start time.
- * @param filename The name of the YAML file to load.
- * @param os Output stream for reporting.
- * @return A StandaloneConfig structure if successful, or std::nullopt
- *         if an error occurred (e.g., file not found, invalid format,
- *         or validation failure).
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- */
+// --- loadStandaloneConfig ---------------------------------------------------
 std::optional<StandaloneConfig>
 loadStandaloneConfig(const std::string_view filename,
                      std::ostream &os) noexcept {
@@ -123,7 +102,6 @@ loadStandaloneConfig(const std::string_view filename,
       return std::nullopt;
     }
 
-    // Validation: endTime >= startTime
     if (TimeManagement::differenceInSeconds(config.startTime, config.endTime) <
         0.0) {
       os << "WW4 ERROR: End time before start time in '" << filename
@@ -143,14 +121,7 @@ loadStandaloneConfig(const std::string_view filename,
   }
 }
 
-/**
- * @brief Reports the stand-alone configuration to the provided output stream.
- * @param config The StandaloneConfig structure to report.
- * @param os The output stream to write to (default: std::cout).
- * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date 2026-05-01
- */
+// --- reportStandaloneConfig -------------------------------------------------
 void reportStandaloneConfig(const StandaloneConfig &config, std::ostream &os) {
   os << "\n  Stand-alone configuration settings :" << std::endl;
   os << "     Start time         : "
