@@ -19,7 +19,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-27
+ * @date Last update : 2026-09-28
  */
 
 #include "ww4_core/scheme_factory.h"

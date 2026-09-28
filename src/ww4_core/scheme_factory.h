@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-28
  */
 
 #pragma once
@@ -34,13 +34,14 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-28
  */
 class SchemeFactory {
 public:
   /**
    * @brief Create a solver scheme.
-   * @param name The name of the solver (e.g., "UQ", "Triangular", "SMC").
+   * @param name The name of the solver (e.g., "RectangularGrid",
+   * "TriangularGrid", "SMCGrid").
    * @return A unique pointer to the created ISolver.
    */
   static std::unique_ptr<ISolver> createSolver(const std::string &name);
