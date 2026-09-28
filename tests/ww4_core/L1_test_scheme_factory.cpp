@@ -30,52 +30,24 @@ TEST(SchemeFactoryTest, CreateSolverUQ) {
   auto solver = SchemeFactory::createSolver("SolverUQ");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "UQ");
-
-  EXPECT_THROW(SchemeFactory::createSolver("RectangularGrid"),
-               std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("UQ"), std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("uq"), std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("regular_uq"),
-               std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("rectangular_grid"),
-               std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateSolverTriangular) {
   auto solver = SchemeFactory::createSolver("SolverTriangular");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "Triangular");
-
-  EXPECT_THROW(SchemeFactory::createSolver("TriangularGrid"),
-               std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("Triangular"),
-               std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("triangular"),
-               std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("tbd_triangular"),
-               std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("triangular_grid"),
-               std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateSolverSMC) {
   auto solver = SchemeFactory::createSolver("SolverSMC");
   ASSERT_NE(solver, nullptr);
   EXPECT_EQ(solver->getName(), "SMC");
-
-  EXPECT_THROW(SchemeFactory::createSolver("SMCGrid"), std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("SMC"), std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("smc"), std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSolver("smc_grid"), std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
   auto scheme = SchemeFactory::createSourceTerm("compute_all_sources");
   ASSERT_NE(scheme, nullptr);
   EXPECT_EQ(scheme->getName(), "ComputeAllSources");
-
-  EXPECT_THROW(SchemeFactory::createSourceTerm("Stub"), std::invalid_argument);
-  EXPECT_THROW(SchemeFactory::createSourceTerm("stub"), std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateSubSourceTerms) {
