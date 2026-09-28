@@ -54,17 +54,13 @@ namespace ww4_core {
  * @date Last update : 2026-09-27
  */
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
-  if (name == "UQ" || name == "regular_uq" || name == "uq" ||
-      name == "RectangularGrid" || name == "rectangular_grid") {
+  if (name == "RectangularGrid") {
     return std::make_unique<SolverRectangularGrid>();
   }
-  if (name == "Triangular" || name == "triangular" ||
-      name == "tbd_triangular" || name == "TriangularGrid" ||
-      name == "triangular_grid") {
+  if (name == "TriangularGrid") {
     return std::make_unique<SolverTriangularGrid>();
   }
-  if (name == "SMC" || name == "smc" || name == "SMCGrid" ||
-      name == "smc_grid") {
+  if (name == "SMCGrid") {
     return std::make_unique<SolverSMCGrid>();
   }
   throw std::invalid_argument("Unknown solver: " + name);

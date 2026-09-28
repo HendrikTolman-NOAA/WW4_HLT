@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-27
  */
 
 #include "ww4_core/scheme_factory.h"
@@ -26,34 +26,42 @@
 
 namespace ww4_core {
 
-TEST(SchemeFactoryTest, CreateSolverUQ) {
-  auto solver = SchemeFactory::createSolver("UQ");
-  ASSERT_NE(solver, nullptr);
-  EXPECT_EQ(solver->getName(), "UQ");
-
+TEST(SchemeFactoryTest, CreateSolverRectangularGrid) {
   auto solverGrid = SchemeFactory::createSolver("RectangularGrid");
   ASSERT_NE(solverGrid, nullptr);
   EXPECT_EQ(solverGrid->getName(), "UQ");
+
+  EXPECT_THROW(SchemeFactory::createSolver("UQ"), std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("uq"), std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("regular_uq"),
+               std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("rectangular_grid"),
+               std::invalid_argument);
 }
 
-TEST(SchemeFactoryTest, CreateSolverTriangular) {
-  auto solver = SchemeFactory::createSolver("Triangular");
-  ASSERT_NE(solver, nullptr);
-  EXPECT_EQ(solver->getName(), "Triangular");
-
+TEST(SchemeFactoryTest, CreateSolverTriangularGrid) {
   auto solverGrid = SchemeFactory::createSolver("TriangularGrid");
   ASSERT_NE(solverGrid, nullptr);
   EXPECT_EQ(solverGrid->getName(), "Triangular");
+
+  EXPECT_THROW(SchemeFactory::createSolver("Triangular"),
+               std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("triangular"),
+               std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("tbd_triangular"),
+               std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("triangular_grid"),
+               std::invalid_argument);
 }
 
-TEST(SchemeFactoryTest, CreateSolverSMC) {
-  auto solver = SchemeFactory::createSolver("SMC");
-  ASSERT_NE(solver, nullptr);
-  EXPECT_EQ(solver->getName(), "SMC");
-
+TEST(SchemeFactoryTest, CreateSolverSMCGrid) {
   auto solverGrid = SchemeFactory::createSolver("SMCGrid");
   ASSERT_NE(solverGrid, nullptr);
   EXPECT_EQ(solverGrid->getName(), "SMC");
+
+  EXPECT_THROW(SchemeFactory::createSolver("SMC"), std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("smc"), std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("smc_grid"), std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
