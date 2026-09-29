@@ -46,11 +46,13 @@
 int main(int argc, char **argv) {
   try {
     // === Program initialization =============================================
+    // --- Extract program name -----------------------------------------------
     std::string programName = "ww4_standalone";
     if (argc > 0) {
       programName = std::filesystem::path(argv[0]).stem().string();
     }
 
+    // --- Load configuration from ww4_standalone.yaml file -------------------
     const auto config =
         ww4_utils::loadStandaloneConfig("ww4_standalone.yaml", std::cout);
     if (!config) {
@@ -62,6 +64,8 @@ int main(int argc, char **argv) {
     }
 
     ww4_utils::reportStandaloneConfig(*config, std::cout);
+
+    // --- MPI initialization (if applicable) ---------------------------------
 
     // === Run initialization routine =========================================
     ww4_core::w4core_init(config->startTime, programName, std::cout);
