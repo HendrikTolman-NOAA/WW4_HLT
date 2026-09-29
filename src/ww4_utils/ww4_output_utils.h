@@ -16,7 +16,7 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-05-01
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 
 #pragma once
@@ -36,7 +36,7 @@ struct RunConfig;
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-05-01
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var OutputConfig::requested
  * @brief Is this output requested?
  * @var OutputConfig::startTime

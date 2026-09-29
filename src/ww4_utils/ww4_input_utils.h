@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 
 #pragma once
@@ -37,7 +37,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var InputType::WaterLevels
  * @brief Water levels input.
  * @var InputType::Currents
@@ -64,7 +64,7 @@ enum class InputType {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var intTimeData::time1
  * @brief First time tag.
  * @var intTimeData::time2
@@ -85,7 +85,7 @@ struct intTimeData {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var waveTimeData::timeStep
  * @brief Model time step.
  * @var waveTimeData::modelTime
@@ -118,7 +118,7 @@ struct waveTimeData {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var InputUpdateState::lastWlTime1
  * @brief Last reported time1 for water levels.
  * @var InputUpdateState::lastWlTime2

@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-02
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 
 #pragma once
@@ -37,7 +37,7 @@ namespace ww4_utils {
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-02
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var StandaloneConfig::startTime
  * @brief Simulation start time.
  * @var StandaloneConfig::endTime

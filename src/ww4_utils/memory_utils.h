@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 
 #pragma once
@@ -49,7 +49,7 @@ void resetMemoryStatusPath() noexcept;
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var MemoryUsage::vmPeak
  * @brief Peak virtual memory size.
  * @var MemoryUsage::vmSize
@@ -74,7 +74,7 @@ struct MemoryUsage {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 class MemoryUtils {
 public:

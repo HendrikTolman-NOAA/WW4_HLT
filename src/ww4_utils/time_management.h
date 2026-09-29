@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @note This file is converted from WAVEWATCH III (WW3) source file
  *       w3timemd.F90. Original author in WW3: Hendrik L. Tolman.
  */
@@ -40,7 +40,7 @@ namespace ww4_utils {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  * @var DateTime::ymd
  * @brief Current date in YYYYMMDD format.
  * @var DateTime::hms
@@ -73,7 +73,7 @@ using DateArray = std::array<int, 8>;
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-03-11
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-28
  */
 class TimeManagement {
 public:
@@ -85,7 +85,7 @@ public:
    * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
    * @author Contributors: Jules (Agentic AI)
    * @date Initial, 2026-03-11
-   * @date Last update : 2026-09-24
+   * @date Last update : 2026-09-28
    * @var CalendarType::Standard
    * @brief Standard Gregorian calendar.
    * @var CalendarType::NoLeap
