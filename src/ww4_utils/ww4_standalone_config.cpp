@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-02
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-07-07
  */
 
 #include "ww4_utils/ww4_standalone_config.h"
@@ -32,16 +32,11 @@
  */
 namespace ww4_utils {
 
-// --- parseDateTimeString ----------------------------------------------------
 /**
  * @brief Internal helper to parse a date-time string in "YYYYMMDD HHMMSS"
  * format.
  * @param s The string view to parse.
  * @return A DateTime structure if successful, or std::nullopt.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-02
- * @date Last update : 2026-09-29
  */
 std::optional<DateTime> parseDateTimeString(const std::string_view s) {
   const std::string_view clean = cleanValue(s);
@@ -64,7 +59,6 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
   return DateTime{ymd, hms};
 }
 
-// --- loadStandaloneConfig ---------------------------------------------------
 /**
  * @brief Loads the stand-alone configuration from a YAML file.
  * @details Reads the specified YAML file, extracts the start and end times
@@ -77,8 +71,6 @@ std::optional<DateTime> parseDateTimeString(const std::string_view s) {
  *         or validation failure).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-02
- * @date Last update : 2026-09-29
  */
 std::optional<StandaloneConfig>
 loadStandaloneConfig(const std::string_view filename,
@@ -151,15 +143,13 @@ loadStandaloneConfig(const std::string_view filename,
   }
 }
 
-// --- reportStandaloneConfig -------------------------------------------------
 /**
  * @brief Reports the stand-alone configuration to the provided output stream.
  * @param config The StandaloneConfig structure to report.
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-05-01
- * @date Last update : 2026-09-29
+ * @date 2026-05-01
  */
 void reportStandaloneConfig(const StandaloneConfig &config, std::ostream &os) {
   os << "\n  Stand-alone configuration settings :" << std::endl;
