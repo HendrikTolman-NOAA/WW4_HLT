@@ -24,7 +24,7 @@
 #include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/solver_uq/solver_uq.h"
 
-#include "ww4_core/source_terms/ww4_compute_all_sourceterms.h"
+#include "ww4_core/source_terms/compute_all_source_terms.h"
 
 #include "ww4_core/source_terms/ww4_LN1/ww4_LN1.h"
 

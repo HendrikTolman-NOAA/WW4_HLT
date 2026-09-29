@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_compute_all_sourceterms.cpp
+ * @file compute_all_source_terms.cpp
  * @brief Implementation of physical source term calculations.
  * @details Concrete subroutine for physical source terms in WW4 core.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -18,7 +18,7 @@
  * @date Last update : 2026-09-29
  */
 
-#include "ww4_core/source_terms/ww4_compute_all_sourceterms.h"
+#include "ww4_core/source_terms/compute_all_source_terms.h"
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/ww4_run_config.h"
