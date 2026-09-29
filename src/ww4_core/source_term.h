@@ -39,14 +39,14 @@ class ISourceTerm {
 public:
   virtual ~ISourceTerm() = default;
 
-  // --- Get the name of the source term scheme ---------------------------------
+  // --- Get name of scheme ----------------------------------------------------
   /**
    * @brief Get the name of the source term scheme.
    * @return String view containing scheme name.
    */
   [[nodiscard]] virtual std::string_view getName() const noexcept = 0;
 
-  // --- Calculate source term changes for given model data ---------------------
+  // --- Calculate changes -----------------------------------------------------
   /**
    * @brief Calculate source term changes for given model data.
    * @param data Span of model data to update.
