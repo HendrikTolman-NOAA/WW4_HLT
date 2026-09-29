@@ -17,11 +17,11 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-29
  */
 
+#include "ww4_core/source_terms/ww4_compute_all_sourceterms.h"
 #include "ww4_core/w4core_init.h"
-#include "ww4_core/ww4_sourceterms/ww4_compute_all_sourceterms.h"
 #include <fstream>
 #include <gtest/gtest.h>
 #include <vector>

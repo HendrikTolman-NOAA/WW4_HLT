@@ -15,10 +15,10 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-29
  * @note The architectural design of this routine follows the structure of
- *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
- *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
+ *       the stand-alone shell (ww3_shel.F90) in WAVEWATCH III.
+ *       Original author of WW3 stand-alone shell: Hendrik L. Tolman.
  */
 
 #pragma once
@@ -42,7 +42,7 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-29
  */
 void w4core_init(const ww4_utils::DateTime &startTime,
                  std::string_view programName, std::ostream &os);
@@ -55,7 +55,7 @@ void w4core_init(const ww4_utils::DateTime &startTime,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-29
  */
 void resetInternalState() noexcept;
 

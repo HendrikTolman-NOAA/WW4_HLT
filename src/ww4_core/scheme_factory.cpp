@@ -24,21 +24,21 @@
 #include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/solver_uq/solver_uq.h"
 
-#include "ww4_core/ww4_sourceterms/ww4_compute_all_sourceterms.h"
+#include "ww4_core/source_terms/ww4_compute_all_sourceterms.h"
 
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_LN1/ww4_sourceterm_LN1.h"
+#include "ww4_core/source_terms/ww4_LN1/ww4_LN1.h"
 
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST1/ww4_sourceterm_ST1.h"
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST2/ww4_sourceterm_ST2.h"
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST4/ww4_sourceterm_ST4.h"
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_ST6/ww4_sourceterm_ST6.h"
+#include "ww4_core/source_terms/ww4_ST1/ww4_ST1.h"
+#include "ww4_core/source_terms/ww4_ST2/ww4_ST2.h"
+#include "ww4_core/source_terms/ww4_ST4/ww4_ST4.h"
+#include "ww4_core/source_terms/ww4_ST6/ww4_ST6.h"
 
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_NL1/ww4_sourceterm_NL1.h"
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_NL2/ww4_sourceterm_NL2.h"
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_NL3/ww4_sourceterm_NL3.h"
+#include "ww4_core/source_terms/ww4_NL1/ww4_NL1.h"
+#include "ww4_core/source_terms/ww4_NL2/ww4_NL2.h"
+#include "ww4_core/source_terms/ww4_NL3/ww4_NL3.h"
 
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_BT1/ww4_sourceterm_BT1.h"
-#include "ww4_core/ww4_sourceterms/ww4_sourceterm_BT4/ww4_sourceterm_BT4.h"
+#include "ww4_core/source_terms/ww4_BT1/ww4_BT1.h"
+#include "ww4_core/source_terms/ww4_BT4/ww4_BT4.h"
 #include <stdexcept>
 
 namespace ww4_core {
@@ -51,7 +51,7 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-28
+ * @date Last update : 2026-09-29
  */
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   if (name == "SolverUQ") {
@@ -74,7 +74,7 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-28
+ * @date Last update : 2026-09-29
  */
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
