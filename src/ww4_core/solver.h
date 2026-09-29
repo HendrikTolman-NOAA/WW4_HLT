@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-29
  */
 
 #pragma once
@@ -43,23 +43,27 @@ class ISolver {
 public:
   virtual ~ISolver() = default;
 
+  // --- Get the name of the solver -------------------------------------------
   /**
    * @brief Get the name of the solver.
    * @return String view containing the solver name.
    */
   [[nodiscard]] virtual std::string_view getName() const noexcept = 0;
 
+  // --- Add a source term to be handled by this solver -----------------------
   /**
    * @brief Add a source term to be handled by this solver.
    * @param source Unique pointer to the source term scheme.
    */
   virtual void addSourceTerm(std::unique_ptr<ISourceTerm> source) = 0;
 
+  // --- Initialize solver state and data structures --------------------------
   /**
    * @brief Initialize solver state and data structures.
    */
   virtual void init() {}
 
+  // --- Solve the wave action balance equation for one step ------------------
   /**
    * @brief Solve the wave action balance equation for one step.
    * @param data Model data to be updated.

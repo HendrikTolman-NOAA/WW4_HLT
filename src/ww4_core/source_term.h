@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-09-29
  */
 
 #pragma once
@@ -39,12 +39,14 @@ class ISourceTerm {
 public:
   virtual ~ISourceTerm() = default;
 
+  // --- Get the name of the source term scheme ---------------------------------
   /**
    * @brief Get the name of the source term scheme.
    * @return String view containing scheme name.
    */
   [[nodiscard]] virtual std::string_view getName() const noexcept = 0;
 
+  // --- Calculate source term changes for given model data ---------------------
   /**
    * @brief Calculate source term changes for given model data.
    * @param data Span of model data to update.
