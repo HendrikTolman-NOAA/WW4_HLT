@@ -15,25 +15,16 @@
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-05-01
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-28
  */
 
 #include "ww4_utils/ww4_output_utils.h"
 #include "ww4_utils/ww4_run_config.h"
 #include <algorithm>
 
-/**
- * @namespace ww4_utils
- * @brief Utilities for WAVEWATCH IV.
- */
 namespace ww4_utils {
 
-/**
- * @brief Assesses and initializes output configurations.
- * @param modelTime Current model time.
- * @param endTime Simulation end time.
- * @param config Run configuration to update.
- */
+// --- assessOutputConfig -----------------------------------------------------
 void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
                         RunConfig &config) {
   auto assess = [&](OutputConfig &oc, bool isApi) {
@@ -55,7 +46,6 @@ void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
       }
     }
 
-    // Deactivate if past endTime
     if (oc.actualTime.has_value()) {
       if (TimeManagement::differenceInSeconds(*oc.actualTime, endTime) <
           -0.001) {
@@ -74,13 +64,7 @@ void assessOutputConfig(const DateTime &modelTime, const DateTime &endTime,
   assess(config.outputApi, true);
 }
 
-/**
- * @brief Computes the minimum time step to the next requested output.
- * @param modelTime Current model time.
- * @param endTime Simulation end time.
- * @param config Run configuration.
- * @return Minimum time step in seconds.
- */
+// --- computeOutputTimeStep --------------------------------------------------
 double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
                              const RunConfig &config) {
   double minStep = TimeManagement::differenceInSeconds(modelTime, endTime);
@@ -103,12 +87,7 @@ double computeOutputTimeStep(const DateTime &modelTime, const DateTime &endTime,
   return std::max(0.0, minStep);
 }
 
-/**
- * @brief Updates actual output times after output has been performed.
- * @param modelTime Current model time.
- * @param endTime Simulation end time.
- * @param config Run configuration to update.
- */
+// --- updateOutputActualTimes ------------------------------------------------
 void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
                              RunConfig &config) {
   auto update = [&](OutputConfig &oc) {
@@ -119,7 +98,6 @@ void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
       TimeManagement::incrementDateTime(*oc.actualTime, oc.interval);
     }
 
-    // Deactivate if past endTime
     if (TimeManagement::differenceInSeconds(*oc.actualTime, endTime) < -0.001) {
       oc.requested = false;
     } else if (oc.endTime.has_value() &&
@@ -132,8 +110,6 @@ void updateOutputActualTimes(const DateTime &modelTime, const DateTime &endTime,
   update(config.outputFields);
   update(config.outputPoints);
   update(config.outputRestart);
-  // API output is typically one-shot at the end, interval is -1.0 so update
-  // will just pass.
   update(config.outputApi);
 }
 
