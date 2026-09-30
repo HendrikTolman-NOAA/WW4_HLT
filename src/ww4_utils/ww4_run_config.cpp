@@ -355,45 +355,45 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
       if (node["input_dissipation"]) {
         const auto val = node["input_dissipation"].as<std::string>();
-        if (val == "do_not_use") {
+        if (val == "none") {
           config.inputDissipation = InputDissipationScheme::DoNotUse;
-        } else if (val == "st1") {
+        } else if (val == "ST1") {
           config.inputDissipation = InputDissipationScheme::ST1;
-        } else if (val == "st2") {
+        } else if (val == "ST2") {
           config.inputDissipation = InputDissipationScheme::ST2;
-        } else if (val == "st4") {
+        } else if (val == "ST4") {
           config.inputDissipation = InputDissipationScheme::ST4;
-        } else if (val == "st6") {
+        } else if (val == "ST6") {
           config.inputDissipation = InputDissipationScheme::ST6;
         }
       }
       if (node["nonlinear_interactions"]) {
         const auto val = node["nonlinear_interactions"].as<std::string>();
-        if (val == "do_not_use") {
+        if (val == "none") {
           config.nonlinearInteractions = NonlinearScheme::DoNotUse;
-        } else if (val == "nl1") {
+        } else if (val == "NL1") {
           config.nonlinearInteractions = NonlinearScheme::NL1;
-        } else if (val == "nl2") {
+        } else if (val == "NL2") {
           config.nonlinearInteractions = NonlinearScheme::NL2;
-        } else if (val == "nl3") {
+        } else if (val == "NL3") {
           config.nonlinearInteractions = NonlinearScheme::NL3;
         }
       }
       if (node["linear_input"]) {
         const auto val = node["linear_input"].as<std::string>();
-        if (val == "do_not_use") {
+        if (val == "none") {
           config.linearInput = LinearInputScheme::DoNotUse;
-        } else if (val == "ln1") {
+        } else if (val == "LN1") {
           config.linearInput = LinearInputScheme::LN1;
         }
       }
       if (node["bottom_friction"]) {
         const auto val = node["bottom_friction"].as<std::string>();
-        if (val == "do_not_use") {
+        if (val == "none") {
           config.bottomFriction = BottomFrictionScheme::DoNotUse;
-        } else if (val == "bt1") {
+        } else if (val == "BT1") {
           config.bottomFriction = BottomFrictionScheme::BT1;
-        } else if (val == "bt4") {
+        } else if (val == "BT4") {
           config.bottomFriction = BottomFrictionScheme::BT4;
         }
       }
@@ -685,45 +685,45 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   std::string inputDissStr = "undefined";
   if (config.inputDissipation == InputDissipationScheme::DoNotUse) {
-    inputDissStr = "do_not_use";
+    inputDissStr = "none";
   } else if (config.inputDissipation == InputDissipationScheme::ST1) {
-    inputDissStr = "st1";
+    inputDissStr = "ST1";
   } else if (config.inputDissipation == InputDissipationScheme::ST2) {
-    inputDissStr = "st2";
+    inputDissStr = "ST2";
   } else if (config.inputDissipation == InputDissipationScheme::ST4) {
-    inputDissStr = "st4";
+    inputDissStr = "ST4";
   } else if (config.inputDissipation == InputDissipationScheme::ST6) {
-    inputDissStr = "st6";
+    inputDissStr = "ST6";
   }
   os << "     Input and dissipation: " << inputDissStr << std::endl;
 
   std::string nlStr = "undefined";
   if (config.nonlinearInteractions == NonlinearScheme::DoNotUse) {
-    nlStr = "do_not_use";
+    nlStr = "none";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL1) {
-    nlStr = "nl1";
+    nlStr = "NL1";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL2) {
-    nlStr = "nl2";
+    nlStr = "NL2";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
-    nlStr = "nl3";
+    nlStr = "NL3";
   }
   os << "     Nonlinear interactions: " << nlStr << std::endl;
 
   std::string lnStr = "undefined";
   if (config.linearInput == LinearInputScheme::DoNotUse) {
-    lnStr = "do_not_use";
+    lnStr = "none";
   } else if (config.linearInput == LinearInputScheme::LN1) {
-    lnStr = "ln1";
+    lnStr = "LN1";
   }
   os << "     Linear input         : " << lnStr << std::endl;
 
   std::string btStr = "undefined";
   if (config.bottomFriction == BottomFrictionScheme::DoNotUse) {
-    btStr = "do_not_use";
+    btStr = "none";
   } else if (config.bottomFriction == BottomFrictionScheme::BT1) {
-    btStr = "bt1";
+    btStr = "BT1";
   } else if (config.bottomFriction == BottomFrictionScheme::BT4) {
-    btStr = "bt4";
+    btStr = "BT4";
   }
   os << "     Bottom friction      : " << btStr << std::endl;
 

@@ -39,9 +39,8 @@ protected:
   }
 
   void writeYaml(const std::string &inputDiss, const std::string &nlInter,
-                 const std::string &linInput = "do_not_use",
-                 const std::string &botFric = "do_not_use",
-                 bool sourceTerms = true) {
+                 const std::string &linInput = "none",
+                 const std::string &botFric = "none", bool sourceTerms = true) {
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
@@ -67,7 +66,7 @@ TEST_F(ComputeAllSourcesL1Test, NameCheck) {
 }
 
 TEST_F(ComputeAllSourcesL1Test, CalculateST1AndNL1) {
-  writeYaml("st1", "nl1");
+  writeYaml("ST1", "NL1");
   ww4_utils::DateTime startTime = {20260101, 0.0};
   w4core_init(startTime, "test_sources", std::cout);
 
@@ -83,7 +82,7 @@ TEST_F(ComputeAllSourcesL1Test, CalculateST1AndNL1) {
 }
 
 TEST_F(ComputeAllSourcesL1Test, CalculateST4AndNL3) {
-  writeYaml("st4", "nl3");
+  writeYaml("ST4", "NL3");
   ww4_utils::DateTime startTime = {20260101, 0.0};
   w4core_init(startTime, "test_sources", std::cout);
 
@@ -97,7 +96,7 @@ TEST_F(ComputeAllSourcesL1Test, CalculateST4AndNL3) {
 }
 
 TEST_F(ComputeAllSourcesL1Test, CalculateST2ST6AndNL2) {
-  writeYaml("st2", "nl2");
+  writeYaml("ST2", "NL2");
   ww4_utils::DateTime startTime = {20260101, 0.0};
   w4core_init(startTime, "test_sources", std::cout);
 
@@ -110,7 +109,7 @@ TEST_F(ComputeAllSourcesL1Test, CalculateST2ST6AndNL2) {
   EXPECT_NEAR(data[1], 2.522, 1e-9);
 
   resetInternalState();
-  writeYaml("st6", "nl2");
+  writeYaml("ST6", "NL2");
   w4core_init(startTime, "test_sources_st6", std::cout);
 
   ComputeAllSources sources2;
@@ -123,7 +122,7 @@ TEST_F(ComputeAllSourcesL1Test, CalculateST2ST6AndNL2) {
 }
 
 TEST_F(ComputeAllSourcesL1Test, CalculateLN1AndBT1BT4) {
-  writeYaml("do_not_use", "do_not_use", "ln1", "bt1");
+  writeYaml("none", "none", "LN1", "BT1");
   ww4_utils::DateTime startTime = {20260101, 0.0};
   w4core_init(startTime, "test_sources_ln1_bt1", std::cout);
 
@@ -136,7 +135,7 @@ TEST_F(ComputeAllSourcesL1Test, CalculateLN1AndBT1BT4) {
   EXPECT_NEAR(data[1], 2.504, 1e-9);
 
   resetInternalState();
-  writeYaml("do_not_use", "do_not_use", "do_not_use", "bt4");
+  writeYaml("none", "none", "none", "BT4");
   w4core_init(startTime, "test_sources_bt4", std::cout);
 
   ComputeAllSources sources2;
@@ -149,7 +148,7 @@ TEST_F(ComputeAllSourcesL1Test, CalculateLN1AndBT1BT4) {
 }
 
 TEST_F(ComputeAllSourcesL1Test, CalculateDoNotUse) {
-  writeYaml("do_not_use", "do_not_use");
+  writeYaml("none", "none");
   ww4_utils::DateTime startTime = {20260101, 0.0};
   w4core_init(startTime, "test_sources", std::cout);
 
@@ -165,7 +164,7 @@ TEST_F(ComputeAllSourcesL1Test, CalculateDoNotUse) {
 }
 
 TEST_F(ComputeAllSourcesL1Test, DisabledSourceTerms) {
-  writeYaml("st4", "nl3", "do_not_use", "do_not_use",
+  writeYaml("ST4", "NL3", "none", "none",
             false); // source_terms: no
   ww4_utils::DateTime startTime = {20260101, 0.0};
   w4core_init(startTime, "test_sources", std::cout);

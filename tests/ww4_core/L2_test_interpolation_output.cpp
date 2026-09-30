@@ -64,10 +64,10 @@ TEST_F(InterpolationOutputTest, RedundantOutputCheck) {
   time_step: 3600.0
 physics:
   solver: uq
-  linear_input: ln1
-  input_dissipation: st4
-  nonlinear_interactions: nl1
-  bottom_friction: bt1
+  linear_input: LN1
+  input_dissipation: ST4
+  nonlinear_interactions: NL1
+  bottom_friction: BT1
 forcing:
   water_levels: none
   currents: none
