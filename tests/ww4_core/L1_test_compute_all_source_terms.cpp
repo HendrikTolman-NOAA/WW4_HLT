@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_core/source_terms/compute_all_source_terms.h"
@@ -45,7 +45,7 @@ protected:
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";
-    runFile << "  solver: uq\n";
+    runFile << "  solver: UQ\n";
     runFile << "  source_terms: " << (sourceTerms ? "yes" : "no") << "\n";
     runFile << "  linear_input: " << linInput << "\n";
     runFile << "  input_dissipation: " << inputDiss << "\n";

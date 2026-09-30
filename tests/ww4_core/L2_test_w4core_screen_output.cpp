@@ -13,7 +13,7 @@
  * added to its repositories.
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-06-18
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -46,7 +46,7 @@ protected:
     runFile << "  time_step: 1800.0\n";
     runFile << "  screen_output_level: " << screenLevel << "\n";
     runFile << "physics:\n";
-    runFile << "  solver: uq\n";
+    runFile << "  solver: UQ\n";
     runFile << "  linear_input: LN1\n";
     runFile << "  input_dissipation: ST4\n";
     runFile << "  nonlinear_interactions: NL1\n";

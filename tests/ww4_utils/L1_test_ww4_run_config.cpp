@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -35,7 +35,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "  produce_log_file: \"no\"\n";
   file << "  time_step: 1800.0\n";
   file << "physics:\n";
-  file << "  solver: \"uq\"\n";
+  file << "  solver: \"UQ\"\n";
   file << "  linear_input: \"LN1\"\n";
   file << "  input_dissipation: \"ST1\"\n";
   file << "  nonlinear_interactions: \"NL3\"\n";
@@ -200,7 +200,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: uq\n";
+    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST1\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -226,7 +226,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: uq\n";
+    file << "  solver: UQ\n";
     file << "  linear_input: none\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL3\n";
@@ -252,7 +252,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: uq\n";
+    file << "  solver: UQ\n";
     file << "  linear_input: none\n";
     file << "  input_dissipation: none\n";
     file << "  nonlinear_interactions: none\n";
@@ -278,7 +278,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: uq\n";
+    file << "  solver: UQ\n";
     file << "  nonlinear_interactions: NL1\n";
     file << "forcing:\n";
     file << "  water_levels: none\n";
@@ -307,7 +307,7 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -365,7 +365,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -412,7 +412,7 @@ TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -439,7 +439,7 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   file << "  time_step: 3600.0\n";
   file << "  screen_output_level: summary\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -469,7 +469,7 @@ TEST(RunConfigTest, OutputConfigParsing) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -520,7 +520,7 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -581,7 +581,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "  propagate_theta: no\n";
   file << "  propagate_k: no\n";
   file << "  source_terms: no\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -643,7 +643,7 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "  produce_log_file : \"no\"\n";
   file << "  time_step : 3600.0\n";
   file << "physics:\n";
-  file << "  solver: \"uq\"\n";
+  file << "  solver: \"UQ\"\n";
   file << "  linear_input: \"LN1\"\n";
   file << "  input_dissipation: \"ST4\"\n";
   file << "  nonlinear_interactions: \"NL1\"\n";
@@ -722,7 +722,7 @@ TEST(RunConfigTest, ApiOutputConfig) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -817,7 +817,7 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   file << "  calendar_type: \"ThreeSixtyDay\"\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -848,7 +848,7 @@ TEST(RunConfigTest, PartialConfig) {
   file << "  produce_std_out: \"no\"\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -876,7 +876,7 @@ TEST(RunConfigTest, TimeStepFailure) {
   file << "general:\n";
   file << "  time_step: -1.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -916,7 +916,7 @@ TEST(RunConfigTest, BottomDepthDefault) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -942,7 +942,7 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -968,7 +968,7 @@ TEST(RunConfigTest, FromGridRejection) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -994,7 +994,7 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: uq\n";
+  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";

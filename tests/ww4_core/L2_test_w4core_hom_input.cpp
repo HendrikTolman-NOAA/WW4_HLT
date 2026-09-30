@@ -13,7 +13,7 @@
  * added to its repositories.
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-06-08
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_core/w4core_init.h"
@@ -50,7 +50,7 @@ TEST_F(W4CoreHomInputTest, ValidHomogeneousInput) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -97,7 +97,7 @@ TEST_F(W4CoreHomInputTest, SummaryEcho) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -130,7 +130,7 @@ TEST_F(W4CoreHomInputTest, MultipleFields) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -174,7 +174,7 @@ TEST_F(W4CoreHomInputTest, BackwardTimeStamps) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -200,7 +200,7 @@ TEST_F(W4CoreHomInputTest, MissingDataForHomogeneousField) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -223,7 +223,7 @@ TEST_F(W4CoreHomInputTest, IceConcentrationRange) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -249,7 +249,7 @@ TEST_F(W4CoreHomInputTest, WindsParameterCount) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -275,7 +275,7 @@ TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1

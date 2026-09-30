@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -42,7 +42,7 @@ namespace {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
   if (s.empty())
@@ -102,7 +102,7 @@ std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 InputFieldOption parseInputOption(const std::string_view value,
                                   const bool allowFromGrid = false) {
@@ -130,7 +130,7 @@ InputFieldOption parseInputOption(const std::string_view value,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 std::string inputOptionToString(const InputFieldOption option) {
   switch (option) {
@@ -157,7 +157,7 @@ std::string inputOptionToString(const InputFieldOption option) {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
   if (!node)
@@ -190,7 +190,7 @@ void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
                          std::string_view /*fieldName*/, EchoOption option,
@@ -220,7 +220,7 @@ void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 void reportOutput(const OutputConfig &oc, const std::string_view label,
                   std::ostream &os) {
@@ -254,7 +254,7 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 std::string_view cleanValue(const std::string_view s) {
   const size_t start = s.find_first_not_of(" \t\r\n\"");
@@ -278,7 +278,7 @@ std::string_view cleanValue(const std::string_view s) {
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-24
+ * @date Last update : 2026-09-30
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
@@ -345,11 +345,11 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
       if (node["solver"]) {
         const auto solverStr = node["solver"].as<std::string>();
-        if (solverStr == "UQ" || solverStr == "uq") {
+        if (solverStr == "UQ") {
           config.solver = SolverType::UQ;
-        } else if (solverStr == "triangular" || solverStr == "Triangular") {
+        } else if (solverStr == "triangular") {
           config.solver = SolverType::Triangular;
-        } else if (solverStr == "SMC" || solverStr == "smc") {
+        } else if (solverStr == "SMC") {
           config.solver = SolverType::SMC;
         }
       }
@@ -614,7 +614,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  General settings :" << std::endl;

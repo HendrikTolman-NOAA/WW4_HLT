@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-06-18
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -50,7 +50,7 @@ TEST_F(W4CoreZeroStepTest, FailsWithTwoConsecutiveZeroSteps) {
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 0.0\n";
   runFile << "physics:\n";
-  runFile << "  solver: uq\n";
+  runFile << "  solver: UQ\n";
   runFile << "  linear_input: LN1\n";
   runFile << "  input_dissipation: ST4\n";
   runFile << "  nonlinear_interactions: NL1\n";

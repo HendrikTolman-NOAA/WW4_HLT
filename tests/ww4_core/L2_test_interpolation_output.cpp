@@ -14,7 +14,7 @@
  * added to its repositories.
  * @author Contributors: Jules (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-06-18
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -63,7 +63,7 @@ TEST_F(InterpolationOutputTest, RedundantOutputCheck) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
