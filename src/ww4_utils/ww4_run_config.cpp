@@ -227,16 +227,16 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
   if (oc.requested) {
     os << "\n     " << label << " output" << std::endl;
     if (label != "API") {
-      os << "        Interval          : " << oc.interval << " s" << std::endl;
-      os << "        At first time     : " << (oc.atFirstTime ? "yes" : "no")
+      os << "        Interval              : " << oc.interval << " s" << std::endl;
+      os << "        At first time         : " << (oc.atFirstTime ? "yes" : "no")
          << std::endl;
     }
     if (oc.startTime) {
-      os << "        Start time        : "
+      os << "        Start time            : "
          << TimeManagement::toFormattedString(*oc.startTime) << std::endl;
     }
     if (oc.endTime) {
-      os << "        End time          : "
+      os << "        End time              : "
          << TimeManagement::toFormattedString(*oc.endTime) << std::endl;
     }
   } else {
