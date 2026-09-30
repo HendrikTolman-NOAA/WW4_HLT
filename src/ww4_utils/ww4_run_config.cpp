@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-09-30
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -614,7 +614,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  General settings :" << std::endl;
@@ -709,7 +709,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
     nlStr = "NL3 (Generalized Multiple DIA)";
   }
-  os << "     Nonlinear interactions: " << nlStr << std::endl;
+  os << "     Nonl. interactions   : " << nlStr << std::endl;
 
   std::string lnStr = "undefined";
   if (config.linearInput == LinearInputScheme::DoNotUse) {
@@ -731,16 +731,16 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "     Time step            : " << config.timeStep << " s" << std::endl;
 
-  os << "\n     Spectral space parameters :" << std::endl;
-  os << "        Number of directions     : "
+  os << "\n  Spectral space parameters :" << std::endl;
+  os << "     Number of directions     : "
      << config.spectralSpace.numDirections << std::endl;
-  os << "        Number of frequencies    : "
+  os << "     Number of frequencies    : "
      << config.spectralSpace.numFrequencies << std::endl;
-  os << "        Freq increment factor    : "
+  os << "     Freq increment factor    : "
      << config.spectralSpace.freqIncrementFactor << std::endl;
-  os << "        First frequency          : "
+  os << "     First frequency          : "
      << config.spectralSpace.firstFrequency << " Hz" << std::endl;
-  os << "        First direction offset   : "
+  os << "     First direction offset   : "
      << config.spectralSpace.firstDirectionOffset
      << " (fraction of directional increment)" << std::endl;
 
