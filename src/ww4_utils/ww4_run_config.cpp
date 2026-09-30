@@ -220,7 +220,7 @@ void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-30
  */
 void reportOutput(const OutputConfig &oc, const std::string_view label,
                   std::ostream &os) {
@@ -627,7 +627,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     calType = "ThreeSixtyDay";
   }
 
-  os << "     Calendar type            : " << calType << std::endl;
+  os << "\n     Calendar type            : " << calType << std::endl;
   os << "     Screen output            : " << (config.produceStdOut ? "yes" : "no")
      << std::endl;
   os << "     Log file                 : " << (config.produceLogFile ? "yes" : "no")
@@ -656,7 +656,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   if (isConventional) {
     os << "     Conventional model run" << std::endl;
   } else {
-    os << "     Unconventional model run" << std::endl;
+    os << "\n     Unconventional model run" << std::endl;
     if (config.dryRun) {
       os << "        Dry run" << std::endl;
     } else {
@@ -732,7 +732,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n     Time step                : " << config.timeStep << " s" << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
-  os << "     Number of directions     : "
+  os << "\n     Number of directions     : "
      << config.spectralSpace.numDirections << std::endl;
   os << "     Number of frequencies    : "
      << config.spectralSpace.numFrequencies << std::endl;
@@ -746,7 +746,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Model input:" << std::endl;
 
-  os << "     Bottom depth             : "
+  os << "\n     Bottom depth             : "
      << inputOptionToString(config.bottomDepth) << std::endl;
   if (config.bottomDepth == InputFieldOption::Homogeneous) {
     echoHomogeneousData(config.homogeneousBottomDepth, "bottom depth",
