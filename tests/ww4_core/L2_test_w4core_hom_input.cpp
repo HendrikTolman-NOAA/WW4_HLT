@@ -86,7 +86,7 @@ homogeneous_data:
   std::string output = ss.str();
   EXPECT_EQ(output.find("Input data (w4core_hom_input) processing:"),
             std::string::npos);
-  EXPECT_NE(output.find("Water levels         : homogeneous"),
+  EXPECT_NE(output.find("Water levels             : homogeneous"),
             std::string::npos);
   EXPECT_NE(output.find("2026/01/01 00:00:00 UTC : 0.5"), std::string::npos);
   EXPECT_NE(output.find("2026/01/01 12:00:00 UTC : 0.6"), std::string::npos);
@@ -163,9 +163,9 @@ homogeneous_data:
   EXPECT_NEAR(wi[0].values[1], 5.0, 1e-6);
 
   std::string output = ss.str();
-  EXPECT_NE(output.find("Water levels         : homogeneous"),
+  EXPECT_NE(output.find("Water levels             : homogeneous"),
             std::string::npos);
-  EXPECT_NE(output.find("Winds                : homogeneous"),
+  EXPECT_NE(output.find("Winds                    : homogeneous"),
             std::string::npos);
 }
 
@@ -300,7 +300,7 @@ homogeneous_data:
   EXPECT_NEAR(bd[0].values[0], -10.0, 1e-6);
 
   std::string output = ss.str();
-  EXPECT_NE(output.find("Bottom depth         : homogeneous"),
+  EXPECT_NE(output.find("Bottom depth             : homogeneous"),
             std::string::npos);
   EXPECT_NE(output.find("2026/01/01 00:00:00 UTC : -10"), std::string::npos);
 }
