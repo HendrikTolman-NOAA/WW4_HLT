@@ -683,8 +683,16 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.solver == SolverType::SMC) {
     solverStr = "SMC (Spherical Multiple-Cell)";
   }
-  os << "     Solver scheme        : " << solverStr << std::endl;
+  os << "\n     Solver scheme        : " << solverStr << std::endl;
 
+  std::string lnStr = "undefined";
+  if (config.linearInput == LinearInputScheme::DoNotUse) {
+    lnStr = "none";
+  } else if (config.linearInput == LinearInputScheme::LN1) {
+    lnStr = "LN1 (Cavaleri and Rizzoli 1981)";
+  }
+  os << "     Linear input           : " << lnStr << std::endl;
+  
   std::string inputDissStr = "undefined";
   if (config.inputDissipation == InputDissipationScheme::DoNotUse) {
     inputDissStr = "none";
@@ -697,7 +705,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.inputDissipation == InputDissipationScheme::ST6) {
     inputDissStr = "ST6 (Zieger et al. 2015)";
   }
-  os << "     Input and dissipation: " << inputDissStr << std::endl;
+  os << "\n     Input and dissipation  : " << inputDissStr << std::endl;
 
   std::string nlStr = "undefined";
   if (config.nonlinearInteractions == NonlinearScheme::DoNotUse) {
@@ -709,15 +717,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
     nlStr = "NL3 (Generalized Multiple DIA)";
   }
-  os << "     Nonl. interactions   : " << nlStr << std::endl;
-
-  std::string lnStr = "undefined";
-  if (config.linearInput == LinearInputScheme::DoNotUse) {
-    lnStr = "none";
-  } else if (config.linearInput == LinearInputScheme::LN1) {
-    lnStr = "LN1 (Cavaleri and Rizzoli 1981)";
-  }
-  os << "     Linear input         : " << lnStr << std::endl;
+  os << "     Nonlinear interactions : " << nlStr << std::endl;
 
   std::string btStr = "undefined";
   if (config.bottomFriction == BottomFrictionScheme::DoNotUse) {
@@ -727,9 +727,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.bottomFriction == BottomFrictionScheme::BT4) {
     btStr = "BT4 (SHOWEX)";
   }
-  os << "     Bottom friction      : " << btStr << std::endl;
+  os << "     Bottom friction        : " << btStr << std::endl;
 
-  os << "     Time step            : " << config.timeStep << " s" << std::endl;
+  os << "\n     Time step              : " << config.timeStep << " s" << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
   os << "     Number of directions     : "
