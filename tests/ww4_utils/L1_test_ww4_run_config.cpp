@@ -96,7 +96,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     std::stringstream ss;
     reportRunConfig(*config, ss);
     std::string output = ss.str();
-    EXPECT_NE(output.find("Solver scheme        : UQ (Ultimate Quickest)"),
+    EXPECT_NE(output.find("Solver scheme            : UQ (Ultimate Quickest)"),
               std::string::npos);
 
     std::remove(filename.c_str());
@@ -128,9 +128,9 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     std::stringstream ss;
     reportRunConfig(*config, ss);
     std::string output = ss.str();
-    EXPECT_NE(
-        output.find("Solver scheme        : triangular (unstructured grid)"),
-        std::string::npos);
+    EXPECT_NE(output.find(
+                  "Solver scheme            : triangular (unstructured grid)"),
+              std::string::npos);
 
     std::remove(filename.c_str());
   }
@@ -162,7 +162,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     reportRunConfig(*config, ss);
     std::string output = ss.str();
     EXPECT_NE(
-        output.find("Solver scheme        : SMC (Spherical Multiple-Cell)"),
+        output.find("Solver scheme            : SMC (Spherical Multiple-Cell)"),
         std::string::npos);
 
     std::remove(filename.c_str());
@@ -343,7 +343,7 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   std::stringstream ss;
   reportRunConfig(*config, ss);
   std::string output = ss.str();
-  EXPECT_NE(output.find("Water levels         : homogeneous"),
+  EXPECT_NE(output.find("Water levels             : homogeneous"),
             std::string::npos);
   EXPECT_NE(output.find("1.2 3.4"), std::string::npos);
 
@@ -458,7 +458,8 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   std::stringstream ss;
   reportRunConfig(*config, ss);
   std::string output = ss.str();
-  EXPECT_NE(output.find("Screen output level  : summary"), std::string::npos);
+  EXPECT_NE(output.find("Screen output level      : summary"),
+            std::string::npos);
 
   std::remove(filename.c_str());
 }
@@ -561,11 +562,12 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
   std::string output = ss.str();
 
   EXPECT_NE(output.find("Gridded fields output"), std::string::npos);
-  EXPECT_NE(output.find("Interval          : 3600 s"), std::string::npos);
-  EXPECT_NE(output.find("At first time     : no"), std::string::npos);
-  EXPECT_NE(output.find("Start time        : 2026/01/01 00:00:00 UTC"),
+  EXPECT_NE(output.find("Interval              : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("At first time         : no"), std::string::npos);
+  EXPECT_NE(output.find("Start time            : 2026/01/01 00:00:00 UTC"),
             std::string::npos);
-  EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Time step                : 3600 s"),
+            std::string::npos);
   EXPECT_NE(output.find("Point output not requested"), std::string::npos);
 }
 
@@ -688,32 +690,34 @@ TEST(RunConfigTest, ReportConfigStandard) {
 
   EXPECT_NE(output.find("General settings :"), std::string::npos);
   EXPECT_NE(output.find("Configuration settings :"), std::string::npos);
-  EXPECT_NE(output.find("Solver scheme        : UQ (Ultimate Quickest)"),
+  EXPECT_NE(output.find("Solver scheme            : UQ (Ultimate Quickest)"),
             std::string::npos);
-  EXPECT_NE(output.find("Input and dissipation: ST1 (WAM 3)"),
+  EXPECT_NE(output.find("Input and dissipation    : ST1 (WAM 3)"),
+            std::string::npos);
+  EXPECT_NE(output.find("Nonlinear interactions   : NL1 (Discrete Interaction "
+                        "Approximation)"),
             std::string::npos);
   EXPECT_NE(
-      output.find(
-          "Nonlinear interactions: NL1 (Discrete Interaction Approximation)"),
+      output.find("Linear input             : LN1 (Cavaleri and Rizzoli 1981)"),
       std::string::npos);
-  EXPECT_NE(
-      output.find("Linear input         : LN1 (Cavaleri and Rizzoli 1981)"),
-      std::string::npos);
-  EXPECT_NE(output.find("Bottom friction      : BT1 (JONSWAP)"),
+  EXPECT_NE(output.find("Bottom friction          : BT1 (JONSWAP)"),
             std::string::npos);
-  EXPECT_NE(output.find("Calendar type        : Standard"), std::string::npos);
-  EXPECT_NE(output.find("Screen output        : yes"), std::string::npos);
-  EXPECT_NE(output.find("Log file             : yes"), std::string::npos);
+  EXPECT_NE(output.find("Calendar type            : Standard"),
+            std::string::npos);
+  EXPECT_NE(output.find("Screen output            : yes"), std::string::npos);
+  EXPECT_NE(output.find("Log file                 : yes"), std::string::npos);
   EXPECT_NE(output.find("Conventional model run"), std::string::npos);
   // Ensure no detailed flag reporting when conventional
   EXPECT_EQ(output.find("Dry run"), std::string::npos);
 
-  EXPECT_NE(output.find("Water levels         : none"), std::string::npos);
-  EXPECT_NE(output.find("Currents             : none"), std::string::npos);
-  EXPECT_NE(output.find("Winds                : none"), std::string::npos);
-  EXPECT_NE(output.find("Ice concentrations   : none"), std::string::npos);
-  EXPECT_NE(output.find("Bottom depth         : from_grid"), std::string::npos);
-  EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Water levels             : none"), std::string::npos);
+  EXPECT_NE(output.find("Currents                 : none"), std::string::npos);
+  EXPECT_NE(output.find("Winds                    : none"), std::string::npos);
+  EXPECT_NE(output.find("Ice concentrations       : none"), std::string::npos);
+  EXPECT_NE(output.find("Bottom depth             : from_grid"),
+            std::string::npos);
+  EXPECT_NE(output.find("Time step                : 3600 s"),
+            std::string::npos);
 }
 
 TEST(RunConfigTest, ApiOutputConfig) {
@@ -769,7 +773,8 @@ TEST(RunConfigTest, ReportConfigNonConventional) {
   EXPECT_NE(output.find("Unconventional model run"), std::string::npos);
   EXPECT_NE(output.find("Dry run"), std::string::npos);
   EXPECT_EQ(output.find("Propagate X"), std::string::npos);
-  EXPECT_NE(output.find("Time step            : 3600 s"), std::string::npos);
+  EXPECT_NE(output.find("Time step                : 3600 s"),
+            std::string::npos);
 }
 
 TEST(RunConfigTest, ReportConfigNoLeap) {
@@ -782,9 +787,10 @@ TEST(RunConfigTest, ReportConfigNoLeap) {
   reportRunConfig(config, ss);
   std::string output = ss.str();
 
-  EXPECT_NE(output.find("Calendar type        : NoLeap"), std::string::npos);
-  EXPECT_NE(output.find("Screen output        : no"), std::string::npos);
-  EXPECT_NE(output.find("Log file             : no"), std::string::npos);
+  EXPECT_NE(output.find("Calendar type            : NoLeap"),
+            std::string::npos);
+  EXPECT_NE(output.find("Screen output            : no"), std::string::npos);
+  EXPECT_NE(output.find("Log file                 : no"), std::string::npos);
 }
 
 TEST(RunConfigTest, ReportConfigThreeSixtyDay) {
@@ -795,7 +801,7 @@ TEST(RunConfigTest, ReportConfigThreeSixtyDay) {
   reportRunConfig(config, ss);
   std::string output = ss.str();
 
-  EXPECT_NE(output.find("Calendar type        : ThreeSixtyDay"),
+  EXPECT_NE(output.find("Calendar type            : ThreeSixtyDay"),
             std::string::npos);
 }
 

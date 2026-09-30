@@ -227,9 +227,10 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
   if (oc.requested) {
     os << "\n     " << label << " output" << std::endl;
     if (label != "API") {
-      os << "        Interval              : " << oc.interval << " s" << std::endl;
-      os << "        At first time         : " << (oc.atFirstTime ? "yes" : "no")
+      os << "        Interval              : " << oc.interval << " s"
          << std::endl;
+      os << "        At first time         : "
+         << (oc.atFirstTime ? "yes" : "no") << std::endl;
     }
     if (oc.startTime) {
       os << "        Start time            : "
@@ -628,10 +629,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   }
 
   os << "\n     Calendar type            : " << calType << std::endl;
-  os << "     Screen output            : " << (config.produceStdOut ? "yes" : "no")
-     << std::endl;
-  os << "     Log file                 : " << (config.produceLogFile ? "yes" : "no")
-     << std::endl;
+  os << "     Screen output            : "
+     << (config.produceStdOut ? "yes" : "no") << std::endl;
+  os << "     Log file                 : "
+     << (config.produceLogFile ? "yes" : "no") << std::endl;
 
   std::string echoStr = "summary";
   if (config.echoHomInput == EchoOption::None) {
@@ -660,14 +661,14 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     if (config.dryRun) {
       os << "        Dry run" << std::endl;
     } else {
-      os << "        Propagate X           : " << (config.propagateX ? "yes" : "no")
-         << std::endl;
-      os << "        Propagate Y           : " << (config.propagateY ? "yes" : "no")
-         << std::endl;
+      os << "        Propagate X           : "
+         << (config.propagateX ? "yes" : "no") << std::endl;
+      os << "        Propagate Y           : "
+         << (config.propagateY ? "yes" : "no") << std::endl;
       os << "        Propagate Theta       : "
          << (config.propagateTheta ? "yes" : "no") << std::endl;
-      os << "        Propagate K           : " << (config.propagateK ? "yes" : "no")
-         << std::endl;
+      os << "        Propagate K           : "
+         << (config.propagateK ? "yes" : "no") << std::endl;
       os << "        Source terms          : "
          << (config.sourceTerms ? "yes" : "no") << std::endl;
     }
@@ -729,7 +730,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   }
   os << "     Bottom friction          : " << btStr << std::endl;
 
-  os << "\n     Time step                : " << config.timeStep << " s" << std::endl;
+  os << "\n     Time step                : " << config.timeStep << " s"
+     << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
   os << "\n     Number of directions     : "
@@ -758,8 +760,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     echoHomogeneousData(config.homogeneousWaterLevels, "water levels",
                         config.echoHomInput, os);
   }
-  os << "     Currents                 : " << inputOptionToString(config.currents)
-     << std::endl;
+  os << "     Currents                 : "
+     << inputOptionToString(config.currents) << std::endl;
   if (config.currents == InputFieldOption::Homogeneous) {
     echoHomogeneousData(config.homogeneousCurrents, "currents",
                         config.echoHomInput, os);
