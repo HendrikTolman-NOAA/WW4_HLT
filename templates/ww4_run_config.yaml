@@ -90,20 +90,20 @@ physics:
   solver: "uq"
 
   # Mandatory input and dissipation source term selection (no default).
-  # Options: "do_not_use", "st1", "st2", "st4", "st6"
-  input_dissipation: "st4"
+  # Options: "none", "ST1", "ST2", "ST4", "ST6"
+  input_dissipation: "ST4"
 
   # Mandatory nonlinear interaction source term selection (no default).
-  # Options: "do_not_use", "nl1", "nl2", "nl3"
-  nonlinear_interactions: "nl1"
+  # Options: "none", "NL1", "NL2", "NL3"
+  nonlinear_interactions: "NL1"
 
   # Mandatory linear input source term selection (no default).
-  # Options: "do_not_use", "ln1"
-  linear_input: "ln1"
+  # Options: "none", "LN1"
+  linear_input: "LN1"
 
   # Mandatory bottom friction source term selection (no default).
-  # Options: "do_not_use", "bt1", "bt4"
-  bottom_friction: "bt1"
+  # Options: "none", "BT1", "BT4"
+  bottom_friction: "BT1"
 
 forcing:
   # Mandatory input field options.
