@@ -746,31 +746,31 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Model input:" << std::endl;
 
-  os << "     Bottom depth         : "
+  os << "     Bottom depth             : "
      << inputOptionToString(config.bottomDepth) << std::endl;
   if (config.bottomDepth == InputFieldOption::Homogeneous) {
     echoHomogeneousData(config.homogeneousBottomDepth, "bottom depth",
                         config.echoHomInput, os);
   }
-  os << "     Water levels         : "
+  os << "     Water levels             : "
      << inputOptionToString(config.waterLevels) << std::endl;
   if (config.waterLevels == InputFieldOption::Homogeneous) {
     echoHomogeneousData(config.homogeneousWaterLevels, "water levels",
                         config.echoHomInput, os);
   }
-  os << "     Currents             : " << inputOptionToString(config.currents)
+  os << "     Currents                 : " << inputOptionToString(config.currents)
      << std::endl;
   if (config.currents == InputFieldOption::Homogeneous) {
     echoHomogeneousData(config.homogeneousCurrents, "currents",
                         config.echoHomInput, os);
   }
-  os << "     Winds                : " << inputOptionToString(config.winds)
+  os << "     Winds                    : " << inputOptionToString(config.winds)
      << std::endl;
   if (config.winds == InputFieldOption::Homogeneous) {
     echoHomogeneousData(config.homogeneousWinds, "winds", config.echoHomInput,
                         os);
   }
-  os << "     Ice concentrations   : "
+  os << "     Ice concentrations       : "
      << inputOptionToString(config.iceConcentrations) << std::endl;
   if (config.iceConcentrations == InputFieldOption::Homogeneous) {
     echoHomogeneousData(config.homogeneousIceConcentrations,
