@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-30
+ * @date Last update : 2026-09-29
  */
 
 #include "ww4_core/source_terms/compute_all_source_terms.h"
