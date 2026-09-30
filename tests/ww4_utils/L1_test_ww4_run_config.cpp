@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-29
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -180,9 +180,9 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "physics:\n";
     file << "  solver: uq\n";
     file << "  linear_input: do_not_use\n";
-    file << "  input_dissipation: ST4\n";
-    file << "  nonlinear_interactions: NL3\n";
-    file << "  bottom_friction: BT4\n";
+    file << "  input_dissipation: st4\n";
+    file << "  nonlinear_interactions: nl3\n";
+    file << "  bottom_friction: bt4\n";
     file << "forcing:\n";
     file << "  water_levels: none\n";
     file << "  currents: none\n";

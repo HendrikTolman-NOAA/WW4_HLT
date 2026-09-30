@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Last update : 2026-09-29
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -355,45 +355,45 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
       if (node["input_dissipation"]) {
         const auto val = node["input_dissipation"].as<std::string>();
-        if (val == "do_not_use" || val == "none" || val == "do not use") {
+        if (val == "do_not_use") {
           config.inputDissipation = InputDissipationScheme::DoNotUse;
-        } else if (val == "st1" || val == "ST1") {
+        } else if (val == "st1") {
           config.inputDissipation = InputDissipationScheme::ST1;
-        } else if (val == "st2" || val == "ST2") {
+        } else if (val == "st2") {
           config.inputDissipation = InputDissipationScheme::ST2;
-        } else if (val == "st4" || val == "ST4") {
+        } else if (val == "st4") {
           config.inputDissipation = InputDissipationScheme::ST4;
-        } else if (val == "st6" || val == "ST6") {
+        } else if (val == "st6") {
           config.inputDissipation = InputDissipationScheme::ST6;
         }
       }
       if (node["nonlinear_interactions"]) {
         const auto val = node["nonlinear_interactions"].as<std::string>();
-        if (val == "do_not_use" || val == "none" || val == "do not use") {
+        if (val == "do_not_use") {
           config.nonlinearInteractions = NonlinearScheme::DoNotUse;
-        } else if (val == "nl1" || val == "NL1") {
+        } else if (val == "nl1") {
           config.nonlinearInteractions = NonlinearScheme::NL1;
-        } else if (val == "nl2" || val == "NL2") {
+        } else if (val == "nl2") {
           config.nonlinearInteractions = NonlinearScheme::NL2;
-        } else if (val == "nl3" || val == "NL3") {
+        } else if (val == "nl3") {
           config.nonlinearInteractions = NonlinearScheme::NL3;
         }
       }
       if (node["linear_input"]) {
         const auto val = node["linear_input"].as<std::string>();
-        if (val == "do_not_use" || val == "none" || val == "do not use") {
+        if (val == "do_not_use") {
           config.linearInput = LinearInputScheme::DoNotUse;
-        } else if (val == "ln1" || val == "LN1") {
+        } else if (val == "ln1") {
           config.linearInput = LinearInputScheme::LN1;
         }
       }
       if (node["bottom_friction"]) {
         const auto val = node["bottom_friction"].as<std::string>();
-        if (val == "do_not_use" || val == "none" || val == "do not use") {
+        if (val == "do_not_use") {
           config.bottomFriction = BottomFrictionScheme::DoNotUse;
-        } else if (val == "bt1" || val == "BT1") {
+        } else if (val == "bt1") {
           config.bottomFriction = BottomFrictionScheme::BT1;
-        } else if (val == "bt4" || val == "BT4") {
+        } else if (val == "bt4") {
           config.bottomFriction = BottomFrictionScheme::BT4;
         }
       }
