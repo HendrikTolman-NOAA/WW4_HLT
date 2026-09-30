@@ -84,10 +84,10 @@ physics:
 
   # Mandatory numerical solver selection (no default).
   # Options:
-  #   "uq"         : Regular grid using the Ultimate Quickest (UQ) scheme
+  #   "UQ"         : Regular grid using the ULTIMATE QUICKEST (UQ) scheme
   #   "triangular" : Triangular unstructured grid approach (TBD)
-  #   "smc"        : Spherical Multiple-Cell (SMC) grid from UK MetOffice
-  solver: "uq"
+  #   "SMC"        : Spherical Multiple-Cell (SMC) grid from UK MetOffice
+  solver: "UQ"
 
   # Mandatory input and dissipation source term selection (no default).
   # Options: "none", "ST1", "ST2", "ST4", "ST6"

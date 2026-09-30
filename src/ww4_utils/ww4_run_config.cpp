@@ -345,11 +345,11 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
       if (node["solver"]) {
         const auto solverStr = node["solver"].as<std::string>();
-        if (solverStr == "uq") {
+        if (solverStr == "UQ" || solverStr == "uq") {
           config.solver = SolverType::UQ;
-        } else if (solverStr == "triangular") {
+        } else if (solverStr == "triangular" || solverStr == "Triangular") {
           config.solver = SolverType::Triangular;
-        } else if (solverStr == "smc") {
+        } else if (solverStr == "SMC" || solverStr == "smc") {
           config.solver = SolverType::SMC;
         }
       }
@@ -617,7 +617,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
  * @date Last update : 2026-09-22
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
-  os << "\n  Configuration settings :" << std::endl;
+  os << "\n  General settings :" << std::endl;
 
   std::string calType = "Standard";
   if (config.calendarType == TimeManagement::CalendarType::NoLeap) {
@@ -673,13 +673,15 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     }
   }
 
+  os << "\n  Configuration settings :" << std::endl;
+
   std::string solverStr = "undefined";
   if (config.solver == SolverType::UQ) {
-    solverStr = "uq";
+    solverStr = "UQ (Ultimate Quickest)";
   } else if (config.solver == SolverType::Triangular) {
-    solverStr = "triangular";
+    solverStr = "triangular (unstructured grid)";
   } else if (config.solver == SolverType::SMC) {
-    solverStr = "smc";
+    solverStr = "SMC (Spherical Multiple-Cell)";
   }
   os << "     Solver scheme        : " << solverStr << std::endl;
 
@@ -687,13 +689,13 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   if (config.inputDissipation == InputDissipationScheme::DoNotUse) {
     inputDissStr = "none";
   } else if (config.inputDissipation == InputDissipationScheme::ST1) {
-    inputDissStr = "ST1";
+    inputDissStr = "ST1 (WAM 3)";
   } else if (config.inputDissipation == InputDissipationScheme::ST2) {
-    inputDissStr = "ST2";
+    inputDissStr = "ST2 (Tolman and Chalikov 1996)";
   } else if (config.inputDissipation == InputDissipationScheme::ST4) {
-    inputDissStr = "ST4";
+    inputDissStr = "ST4 (Ardhuin et al. 2010)";
   } else if (config.inputDissipation == InputDissipationScheme::ST6) {
-    inputDissStr = "ST6";
+    inputDissStr = "ST6 (Zieger et al. 2015)";
   }
   os << "     Input and dissipation: " << inputDissStr << std::endl;
 
@@ -701,11 +703,11 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   if (config.nonlinearInteractions == NonlinearScheme::DoNotUse) {
     nlStr = "none";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL1) {
-    nlStr = "NL1";
+    nlStr = "NL1 (Discrete Interaction Approximation)";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL2) {
-    nlStr = "NL2";
+    nlStr = "NL2 (Exact interaction)";
   } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
-    nlStr = "NL3";
+    nlStr = "NL3 (Generalized Multiple DIA)";
   }
   os << "     Nonlinear interactions: " << nlStr << std::endl;
 
@@ -713,7 +715,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   if (config.linearInput == LinearInputScheme::DoNotUse) {
     lnStr = "none";
   } else if (config.linearInput == LinearInputScheme::LN1) {
-    lnStr = "LN1";
+    lnStr = "LN1 (Cavaleri and Rizzoli 1981)";
   }
   os << "     Linear input         : " << lnStr << std::endl;
 
@@ -721,9 +723,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   if (config.bottomFriction == BottomFrictionScheme::DoNotUse) {
     btStr = "none";
   } else if (config.bottomFriction == BottomFrictionScheme::BT1) {
-    btStr = "BT1";
+    btStr = "BT1 (JONSWAP)";
   } else if (config.bottomFriction == BottomFrictionScheme::BT4) {
-    btStr = "BT4";
+    btStr = "BT4 (SHOWEX)";
   }
   os << "     Bottom friction      : " << btStr << std::endl;
 

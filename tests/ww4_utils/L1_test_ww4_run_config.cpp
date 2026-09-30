@@ -70,6 +70,38 @@ TEST(RunConfigTest, NonDefaultConfig) {
 }
 
 TEST(RunConfigTest, SolverSelectionParsing) {
+  // Test UQ solver (capitalized)
+  {
+    const std::string filename = "test_solver_uq_cap.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: UQ\n";
+    file << "  linear_input: LN1\n";
+    file << "  input_dissipation: ST4\n";
+    file << "  nonlinear_interactions: NL1\n";
+    file << "  bottom_friction: BT1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->solver, SolverType::UQ);
+
+    std::stringstream ss;
+    reportRunConfig(*config, ss);
+    std::string output = ss.str();
+    EXPECT_NE(output.find("Solver scheme        : UQ (Ultimate Quickest)"),
+              std::string::npos);
+
+    std::remove(filename.c_str());
+  }
+
   // Test triangular solver
   {
     const std::string filename = "test_solver_tri.yaml";
@@ -92,17 +124,25 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     const auto config = loadRunConfig(filename, std::cerr);
     ASSERT_TRUE(config.has_value());
     EXPECT_EQ(config->solver, SolverType::Triangular);
+
+    std::stringstream ss;
+    reportRunConfig(*config, ss);
+    std::string output = ss.str();
+    EXPECT_NE(
+        output.find("Solver scheme        : triangular (unstructured grid)"),
+        std::string::npos);
+
     std::remove(filename.c_str());
   }
 
-  // Test SMC solver
+  // Test SMC solver (capitalized)
   {
     const std::string filename = "test_solver_smc.yaml";
     std::ofstream file(filename);
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: smc\n";
+    file << "  solver: SMC\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -117,6 +157,14 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     const auto config = loadRunConfig(filename, std::cerr);
     ASSERT_TRUE(config.has_value());
     EXPECT_EQ(config->solver, SolverType::SMC);
+
+    std::stringstream ss;
+    reportRunConfig(*config, ss);
+    std::string output = ss.str();
+    EXPECT_NE(
+        output.find("Solver scheme        : SMC (Spherical Multiple-Cell)"),
+        std::string::npos);
+
     std::remove(filename.c_str());
   }
 
@@ -628,12 +676,31 @@ TEST(RunConfigTest, ReportConfigStandard) {
   config.iceConcentrations = InputFieldOption::None;
   config.bottomDepth = InputFieldOption::FromGrid;
   config.timeStep = 3600.0;
+  config.solver = SolverType::UQ;
+  config.inputDissipation = InputDissipationScheme::ST1;
+  config.nonlinearInteractions = NonlinearScheme::NL1;
+  config.linearInput = LinearInputScheme::LN1;
+  config.bottomFriction = BottomFrictionScheme::BT1;
 
   std::stringstream ss;
   reportRunConfig(config, ss);
   std::string output = ss.str();
 
+  EXPECT_NE(output.find("General settings :"), std::string::npos);
   EXPECT_NE(output.find("Configuration settings :"), std::string::npos);
+  EXPECT_NE(output.find("Solver scheme        : UQ (Ultimate Quickest)"),
+            std::string::npos);
+  EXPECT_NE(output.find("Input and dissipation: ST1 (WAM 3)"),
+            std::string::npos);
+  EXPECT_NE(
+      output.find(
+          "Nonlinear interactions: NL1 (Discrete Interaction Approximation)"),
+      std::string::npos);
+  EXPECT_NE(
+      output.find("Linear input         : LN1 (Cavaleri and Rizzoli 1981)"),
+      std::string::npos);
+  EXPECT_NE(output.find("Bottom friction      : BT1 (JONSWAP)"),
+            std::string::npos);
   EXPECT_NE(output.find("Calendar type        : Standard"), std::string::npos);
   EXPECT_NE(output.find("Screen output        : yes"), std::string::npos);
   EXPECT_NE(output.find("Log file             : yes"), std::string::npos);
