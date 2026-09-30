@@ -627,10 +627,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     calType = "ThreeSixtyDay";
   }
 
-  os << "     Calendar type        : " << calType << std::endl;
-  os << "     Screen output        : " << (config.produceStdOut ? "yes" : "no")
+  os << "     Calendar type            : " << calType << std::endl;
+  os << "     Screen output            : " << (config.produceStdOut ? "yes" : "no")
      << std::endl;
-  os << "     Log file             : " << (config.produceLogFile ? "yes" : "no")
+  os << "     Log file                 : " << (config.produceLogFile ? "yes" : "no")
      << std::endl;
 
   std::string echoStr = "summary";
@@ -639,7 +639,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.echoHomInput == EchoOption::Full) {
     echoStr = "full";
   }
-  os << "     Echo input           : " << echoStr << std::endl;
+  os << "     Echo input               : " << echoStr << std::endl;
 
   std::string screenStr = "full";
   if (config.screenOutputLevel == ScreenOutputLevel::None) {
@@ -647,7 +647,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.screenOutputLevel == ScreenOutputLevel::Summary) {
     screenStr = "summary";
   }
-  os << "     Screen output level  : " << screenStr << std::endl;
+  os << "     Screen output level      : " << screenStr << std::endl;
 
   const bool isConventional = !config.dryRun && config.propagateX &&
                               config.propagateY && config.propagateTheta &&
@@ -660,15 +660,15 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     if (config.dryRun) {
       os << "        Dry run" << std::endl;
     } else {
-      os << "        Propagate X       : " << (config.propagateX ? "yes" : "no")
+      os << "        Propagate X           : " << (config.propagateX ? "yes" : "no")
          << std::endl;
-      os << "        Propagate Y       : " << (config.propagateY ? "yes" : "no")
+      os << "        Propagate Y           : " << (config.propagateY ? "yes" : "no")
          << std::endl;
-      os << "        Propagate Theta   : "
+      os << "        Propagate Theta       : "
          << (config.propagateTheta ? "yes" : "no") << std::endl;
-      os << "        Propagate K       : " << (config.propagateK ? "yes" : "no")
+      os << "        Propagate K           : " << (config.propagateK ? "yes" : "no")
          << std::endl;
-      os << "        Source terms      : "
+      os << "        Source terms          : "
          << (config.sourceTerms ? "yes" : "no") << std::endl;
     }
   }
@@ -683,7 +683,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.solver == SolverType::SMC) {
     solverStr = "SMC (Spherical Multiple-Cell)";
   }
-  os << "\n     Solver scheme          : " << solverStr << std::endl;
+  os << "\n     Solver scheme            : " << solverStr << std::endl;
 
   std::string lnStr = "undefined";
   if (config.linearInput == LinearInputScheme::DoNotUse) {
@@ -691,7 +691,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.linearInput == LinearInputScheme::LN1) {
     lnStr = "LN1 (Cavaleri and Rizzoli 1981)";
   }
-  os << "\n     Linear input           : " << lnStr << std::endl;
+  os << "\n     Linear input             : " << lnStr << std::endl;
 
   std::string inputDissStr = "undefined";
   if (config.inputDissipation == InputDissipationScheme::DoNotUse) {
@@ -705,7 +705,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.inputDissipation == InputDissipationScheme::ST6) {
     inputDissStr = "ST6 (Zieger et al. 2015)";
   }
-  os << "     Input and dissipation  : " << inputDissStr << std::endl;
+  os << "     Input and dissipation    : " << inputDissStr << std::endl;
 
   std::string nlStr = "undefined";
   if (config.nonlinearInteractions == NonlinearScheme::DoNotUse) {
@@ -717,7 +717,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.nonlinearInteractions == NonlinearScheme::NL3) {
     nlStr = "NL3 (Generalized Multiple DIA)";
   }
-  os << "     Nonlinear interactions : " << nlStr << std::endl;
+  os << "     Nonlinear interactions   : " << nlStr << std::endl;
 
   std::string btStr = "undefined";
   if (config.bottomFriction == BottomFrictionScheme::DoNotUse) {
@@ -727,9 +727,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.bottomFriction == BottomFrictionScheme::BT4) {
     btStr = "BT4 (SHOWEX)";
   }
-  os << "     Bottom friction        : " << btStr << std::endl;
+  os << "     Bottom friction          : " << btStr << std::endl;
 
-  os << "\n     Time step              : " << config.timeStep << " s" << std::endl;
+  os << "\n     Time step                : " << config.timeStep << " s" << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
   os << "     Number of directions     : "
