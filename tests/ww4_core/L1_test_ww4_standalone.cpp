@@ -81,7 +81,7 @@ TEST_F(WW4StandaloneL1Test, ValidConfigSucceeds) {
           << "  time_step: 3600.0\n"
           << "physics:\n"
           << "  dry_run: \"no\"\n"
-          << "  solver: \"uq\"\n"
+          << "  solver: \"UQ\"\n"
           << "  linear_input: \"LN1\"\n"
           << "  input_dissipation: \"ST4\"\n"
           << "  nonlinear_interactions: \"NL1\"\n"

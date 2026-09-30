@@ -51,7 +51,7 @@ TEST_F(W4CoreInputCyclingTest, CyclingBeforeData) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -89,7 +89,7 @@ TEST_F(W4CoreInputCyclingTest, CyclingDuringData) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -128,7 +128,7 @@ TEST_F(W4CoreInputCyclingTest, CyclingAfterData) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -166,7 +166,7 @@ TEST_F(W4CoreInputCyclingTest, CyclingEmptyData) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -189,7 +189,7 @@ TEST_F(W4CoreInputCyclingTest, IntegrationWithWaveLoop) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1

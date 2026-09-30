@@ -45,7 +45,7 @@ protected:
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";
-    runFile << "  solver: uq\n";
+    runFile << "  solver: UQ\n";
     runFile << "  source_terms: " << (sourceTerms ? "yes" : "no") << "\n";
     runFile << "  linear_input: " << linInput << "\n";
     runFile << "  input_dissipation: " << inputDiss << "\n";

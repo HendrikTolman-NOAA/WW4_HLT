@@ -51,7 +51,7 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";
-    runFile << "  solver: uq\n";
+    runFile << "  solver: UQ\n";
     runFile << "  linear_input: LN1\n";
     runFile << "  input_dissipation: ST4\n";
     runFile << "  nonlinear_interactions: NL1\n";
@@ -86,7 +86,7 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";
-    runFile << "  solver: uq\n";
+    runFile << "  solver: UQ\n";
     runFile << "  linear_input: LN1\n";
     runFile << "  input_dissipation: ST4\n";
     runFile << "  nonlinear_interactions: NL1\n";
@@ -119,7 +119,7 @@ TEST_F(W4CoreWaveOutputTest, DoesNotReportBottomDepthFromGrid) {
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
-  runFile << "  solver: uq\n";
+  runFile << "  solver: UQ\n";
   runFile << "  linear_input: LN1\n";
   runFile << "  input_dissipation: ST4\n";
   runFile << "  nonlinear_interactions: NL1\n";

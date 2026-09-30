@@ -63,7 +63,7 @@ TEST_F(InterpolationOutputTest, RedundantOutputCheck) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: uq
+  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1

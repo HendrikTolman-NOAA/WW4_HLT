@@ -46,7 +46,7 @@ protected:
     runFile << "  time_step: 1800.0\n";
     runFile << "  screen_output_level: " << screenLevel << "\n";
     runFile << "physics:\n";
-    runFile << "  solver: uq\n";
+    runFile << "  solver: UQ\n";
     runFile << "  linear_input: LN1\n";
     runFile << "  input_dissipation: ST4\n";
     runFile << "  nonlinear_interactions: NL1\n";

@@ -81,7 +81,7 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
-  runFile << "  solver: uq\n";
+  runFile << "  solver: UQ\n";
   runFile << "  linear_input: LN1\n";
   runFile << "  input_dissipation: ST4\n";
   runFile << "  nonlinear_interactions: NL1\n";
@@ -175,7 +175,7 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   runFile2 << "  calendar_type: Standard\n";
   runFile2 << "  time_step: 3600.0\n";
   runFile2 << "physics:\n";
-  runFile2 << "  solver: smc\n";
+  runFile2 << "  solver: SMC\n";
   runFile2 << "  linear_input: LN1\n";
   runFile2 << "  input_dissipation: ST4\n";
   runFile2 << "  nonlinear_interactions: NL1\n";
