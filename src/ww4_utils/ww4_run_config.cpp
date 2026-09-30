@@ -683,7 +683,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.solver == SolverType::SMC) {
     solverStr = "SMC (Spherical Multiple-Cell)";
   }
-  os << "\n     Solver scheme        : " << solverStr << std::endl;
+  os << "\n     Solver scheme          : " << solverStr << std::endl;
 
   std::string lnStr = "undefined";
   if (config.linearInput == LinearInputScheme::DoNotUse) {
@@ -691,8 +691,8 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.linearInput == LinearInputScheme::LN1) {
     lnStr = "LN1 (Cavaleri and Rizzoli 1981)";
   }
-  os << "     Linear input           : " << lnStr << std::endl;
-  
+  os << "\n     Linear input           : " << lnStr << std::endl;
+
   std::string inputDissStr = "undefined";
   if (config.inputDissipation == InputDissipationScheme::DoNotUse) {
     inputDissStr = "none";
@@ -705,7 +705,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.inputDissipation == InputDissipationScheme::ST6) {
     inputDissStr = "ST6 (Zieger et al. 2015)";
   }
-  os << "\n     Input and dissipation  : " << inputDissStr << std::endl;
+  os << "     Input and dissipation  : " << inputDissStr << std::endl;
 
   std::string nlStr = "undefined";
   if (config.nonlinearInteractions == NonlinearScheme::DoNotUse) {
