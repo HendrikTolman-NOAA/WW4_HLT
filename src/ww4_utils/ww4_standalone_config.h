@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-02
- * @date Last update : 2026-09-28
+ * @date Last update : 2026-07-07
  */
 
 #pragma once
@@ -29,15 +29,12 @@
 
 namespace ww4_utils {
 
-// --- StandaloneConfig -------------------------------------------------------
 /**
  * @struct StandaloneConfig
  * @brief Configuration for the ww4_standalone program.
  * @details Stores the start and end times for the simulation.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-02
- * @date Last update : 2026-09-28
  * @var StandaloneConfig::startTime
  * @brief Simulation start time.
  * @var StandaloneConfig::endTime
@@ -48,30 +45,11 @@ struct StandaloneConfig {
   DateTime endTime;
 };
 
-// --- parseDateTimeString ----------------------------------------------------
-/**
- * @brief Helper to parse a date-time string in "YYYYMMDD HHMMSS" format.
- * @param s The string view to parse.
- * @return A DateTime structure if successful, or std::nullopt.
- */
 std::optional<DateTime> parseDateTimeString(std::string_view s);
 
-// --- loadStandaloneConfig ---------------------------------------------------
-/**
- * @brief Loads the stand-alone configuration from a YAML file.
- * @param filename The name of the YAML file to load.
- * @param os Output stream for reporting.
- * @return A StandaloneConfig structure if successful, or std::nullopt.
- */
 std::optional<StandaloneConfig> loadStandaloneConfig(std::string_view filename,
                                                      std::ostream &os) noexcept;
 
-// --- reportStandaloneConfig -------------------------------------------------
-/**
- * @brief Reports the stand-alone configuration to the provided output stream.
- * @param config The StandaloneConfig structure to report.
- * @param os The output stream to write to.
- */
 void reportStandaloneConfig(const StandaloneConfig &config, std::ostream &os);
 
 } // namespace ww4_utils
