@@ -170,16 +170,13 @@ void updateHomogeneousInputCycling(
     }
   }
 
-  // Ensure time2 is not before modelTime
-  
+  // --- time2 check ----------------------------------------------------------
   if (data.time2.has_value() &&
       TimeManagement::differenceInSeconds(modelTime, *data.time2) < 0.0) {
     data.time2 = endTime;
   }
 
-  // Calculate maxStep: the time interval from the present model time to the
-  // second time tag.
-  
+  // --- maxStep --------------------------------------------------------------
   if (data.time2.has_value()) {
     data.maxStep = TimeManagement::differenceInSeconds(modelTime, *data.time2);
   } else {
