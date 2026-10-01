@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-10-01
+ * @date Last update : 2026-07-07
  */
 
 #include "ww4_utils/ww4_input_utils.h"
@@ -27,6 +27,10 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * @namespace ww4_utils
+ * @brief Utilities for WAVEWATCH IV.
+ */
 namespace ww4_utils {
 
 namespace {
@@ -37,7 +41,6 @@ std::vector<HomogeneousDataPoint> winds;
 std::vector<HomogeneousDataPoint> iceConcentrations;
 std::vector<HomogeneousDataPoint> bottomDepth;
 
-// --- processSeries ----------------------------------------------------------
 /**
  * @brief Helper to validate and process a data series.
  * @param source Vector of pre-parsed data points from RunConfig.
@@ -56,8 +59,6 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
   }
 
   if (source.empty()) {
-    // Passing source file name (__FILE__) and line number (__LINE__) for error
-    // reporting
     ww4_utils::ww4_std_out::extcde(1, os,
                                    "No data provided for homogeneous field: " +
                                        std::string(fieldName),
@@ -69,8 +70,6 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
       const double diff = ww4_utils::TimeManagement::differenceInSeconds(
           processed.back().time, dp.time);
       if (diff < 0.0) {
-        // Passing source file name (__FILE__) and line number (__LINE__) for
-        // error reporting
         ww4_utils::ww4_std_out::extcde(1, os,
                                        "Time stamps go backward in data for " +
                                            std::string(fieldName),
@@ -81,8 +80,6 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
     // Field-specific validation
     if (fieldName == "water levels" || fieldName == "bottom depth") {
       if (dp.values.size() != 1) {
-        // Passing source file name (__FILE__) and line number (__LINE__) for
-        // error reporting
         ww4_utils::ww4_std_out::extcde(1, os,
                                        "Homogeneous " + std::string(fieldName) +
                                            " requires 1 value.",
@@ -90,16 +87,12 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
       }
     } else if (fieldName == "currents") {
       if (dp.values.size() != 2) {
-        // Passing source file name (__FILE__) and line number (__LINE__) for
-        // error reporting
         ww4_utils::ww4_std_out::extcde(
             1, os, "Homogeneous currents requires 2 values (speed, direction).",
             __FILE__, __LINE__);
       }
     } else if (fieldName == "winds") {
       if (dp.values.size() < 2 || dp.values.size() > 3) {
-        // Passing source file name (__FILE__) and line number (__LINE__) for
-        // error reporting
         ww4_utils::ww4_std_out::extcde(1, os,
                                        "Homogeneous winds requires 2 or 3 "
                                        "values (speed, direction, [temp]).",
@@ -107,16 +100,12 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
       }
     } else if (fieldName == "ice concentrations") {
       if (dp.values.size() != 1) {
-        // Passing source file name (__FILE__) and line number (__LINE__) for
-        // error reporting
         ww4_utils::ww4_std_out::extcde(1, os,
                                        "Homogeneous ice concentrations "
                                        "requires 1 value.",
                                        __FILE__, __LINE__);
       }
       if (dp.values[0] < 0.0 || dp.values[0] > 1.0) {
-        // Passing source file name (__FILE__) and line number (__LINE__) for
-        // error reporting
         ww4_utils::ww4_std_out::extcde(
             1, os, "Ice concentration must be between 0.0 and 1.0.", __FILE__,
             __LINE__);
@@ -127,7 +116,6 @@ void processSeries(const std::vector<HomogeneousDataPoint> &source,
   }
 }
 
-// --- updateHomogeneousInputCycling ------------------------------------------
 /**
  * @brief Helper to cycle through homogeneous input data.
  * @param series The vector of homogeneous data points.
@@ -146,18 +134,28 @@ void updateHomogeneousInputCycling(
     return;
   }
 
+  // Find the interval around the present model time.
+  // The first and second time tags should be around the present model time,
+  // where the first time tag can be equal to the model time.
+
+  // Case 1: If the first time of the homogeneous input is after the present
+  // model time, set the first time to the present model time, and the second
+  // time to the first time for which the homogeneous input is defined.
   if (TimeManagement::differenceInSeconds(modelTime, series.front().time) >
       0.001) {
-    // Case 1: Model time is before the first data point
     data.time1 = modelTime;
     data.time2 = series.front().time;
-  } else if (TimeManagement::differenceInSeconds(series.back().time,
-                                                 modelTime) > -0.001) {
-    // Case 2: Model time is at or beyond the last data point
+  }
+  // Case 2: If the last time for the input is before the model time,
+  // set the second time to the ending time of the run.
+  // (time1 will be the last data point time).
+  else if (TimeManagement::differenceInSeconds(series.back().time, modelTime) >
+           -0.001) {
     data.time1 = series.back().time;
     data.time2 = endTime;
-  } else {
-    // Case 3: Model time is between data points
+  }
+  // Case 3: Model time is within the range of the input data.
+  else {
     for (size_t i = 0; i < series.size() - 1; ++i) {
       if (TimeManagement::differenceInSeconds(series[i].time, modelTime) >=
               -0.001 &&
@@ -170,13 +168,14 @@ void updateHomogeneousInputCycling(
     }
   }
 
-  // --- time2 check ----------------------------------------------------------
+  // Ensure time2 is not before modelTime
   if (data.time2.has_value() &&
       TimeManagement::differenceInSeconds(modelTime, *data.time2) < 0.0) {
     data.time2 = endTime;
   }
 
-  // --- maxStep --------------------------------------------------------------
+  // Calculate maxStep: the time interval from the present model time to the
+  // second time tag.
   if (data.time2.has_value()) {
     data.maxStep = TimeManagement::differenceInSeconds(modelTime, *data.time2);
   } else {
@@ -185,7 +184,6 @@ void updateHomogeneousInputCycling(
   }
 }
 
-// --- processField -----------------------------------------------------------
 /**
  * @brief Helper to process a single input field.
  * @param[in] fieldName Name of the field for logging.
@@ -261,8 +259,16 @@ void processField(std::string_view fieldName, InputFieldOption option,
 
 } // namespace
 
-// --- ww4_input_update -------------------------------------------------------
+/**
+ * @brief Processes and validates input data for the model.
+ * @details Parses input data from the run configuration and
+ *          validates its availability and temporal consistency.
+ * @param config The run configuration.
+ * @param os Output stream for reporting.
+ * @date 2026-05-01
+ */
 void ww4_input_update(const RunConfig &config, std::ostream &os) {
+  // Reset before processing
   resetInputData();
 
   processSeries(config.homogeneousWaterLevels, waterLevels, "water levels",
@@ -276,7 +282,10 @@ void ww4_input_update(const RunConfig &config, std::ostream &os) {
                 config.bottomDepth, os);
 }
 
-// --- resetInputData ---------------------------------------------------------
+/**
+ * @brief Resets all internal input data storage.
+ * @details Clears vectors containing processed homogeneous data.
+ */
 void resetInputData() noexcept {
   waterLevels.clear();
   currents.clear();
@@ -285,63 +294,118 @@ void resetInputData() noexcept {
   bottomDepth.clear();
 }
 
-// --- getHomogeneousWaterLevels ----------------------------------------------
+/**
+ * @brief Accessor for processed homogeneous water levels.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousWaterLevels() noexcept {
   return waterLevels;
 }
 
-// --- getHomogeneousCurrents -------------------------------------------------
+/**
+ * @brief Accessor for processed homogeneous currents.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousCurrents() noexcept {
   return currents;
 }
 
-// --- getHomogeneousWinds ----------------------------------------------------
+/**
+ * @brief Accessor for processed homogeneous winds.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousWinds() noexcept {
   return winds;
 }
 
-// --- getHomogeneousIceConcentrations ----------------------------------------
+/**
+ * @brief Accessor for processed homogeneous ice concentrations.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &
 getHomogeneousIceConcentrations() noexcept {
   return iceConcentrations;
 }
 
-// --- getHomogeneousBottomDepth ----------------------------------------------
+/**
+ * @brief Accessor for processed homogeneous bottom depth.
+ * @return Reference to the vector of data points.
+ */
 const std::vector<HomogeneousDataPoint> &getHomogeneousBottomDepth() noexcept {
   return bottomDepth;
 }
 
-// --- ww4_hom_water_levels ---------------------------------------------------
+/**
+ * @brief Cycle through homogeneous water levels to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_water_levels(const DateTime &modelTime, const DateTime &endTime,
                           intTimeData &data) {
   updateHomogeneousInputCycling(waterLevels, modelTime, endTime, data);
 }
 
-// --- ww4_hom_currents -------------------------------------------------------
+/**
+ * @brief Cycle through homogeneous currents to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_currents(const DateTime &modelTime, const DateTime &endTime,
                       intTimeData &data) {
   updateHomogeneousInputCycling(currents, modelTime, endTime, data);
 }
 
-// --- ww4_hom_winds ----------------------------------------------------------
+/**
+ * @brief Cycle through homogeneous winds to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_winds(const DateTime &modelTime, const DateTime &endTime,
                    intTimeData &data) {
   updateHomogeneousInputCycling(winds, modelTime, endTime, data);
 }
 
-// --- ww4_hom_ice ------------------------------------------------------------
+/**
+ * @brief Cycle through homogeneous ice concentrations to find interpolation
+ * interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_ice(const DateTime &modelTime, const DateTime &endTime,
                  intTimeData &data) {
   updateHomogeneousInputCycling(iceConcentrations, modelTime, endTime, data);
 }
 
-// --- ww4_hom_bottom_depth ---------------------------------------------------
+/**
+ * @brief Cycle through homogeneous bottom depth to find interpolation interval.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time for capping max step.
+ * @param data Output structure to store interpolation interval and max step.
+ */
 void ww4_hom_bottom_depth(const DateTime &modelTime, const DateTime &endTime,
                           intTimeData &data) {
   updateHomogeneousInputCycling(bottomDepth, modelTime, endTime, data);
 }
 
-// --- updateAllInputs --------------------------------------------------------
+/**
+ * @brief Processes all input fields and calculates next time step.
+ * @details Orchestrates the update of all active input fields and returns
+ *          the time interval to the next required update.
+ * @param[in] modelTime Current model time.
+ * @param[in] endTime Simulation end time.
+ * @param[in,out] waveTime Global wave time data to update.
+ * @param[in,out] state Persistent state for reporting interpolation intervals.
+ * @param[in] config The run configuration.
+ * @param[in,out] headerPrinted Flag to track if the step header was printed.
+ * @param[in] os Output stream for reporting.
+ * @param[in,out] logData Data for tabular log output.
+ * @return The time step (seconds) from the present model time to the next
+ * update.
+ */
 double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
                        waveTimeData &waveTime, InputUpdateState &state,
                        const RunConfig &config, bool &headerPrinted,
@@ -370,10 +434,18 @@ double updateAllInputs(const DateTime &modelTime, const DateTime &endTime,
   return computeInputTimeStep(modelTime, endTime, waveTime, config);
 }
 
-// --- computeInputTimeStep ---------------------------------------------------
+/**
+ * @brief Computes the minimum input time step based on active fields.
+ * @param modelTime Current model time.
+ * @param endTime Simulation end time.
+ * @param waveTime Global wave time data.
+ * @param config The run configuration.
+ * @return The minimum required time step (seconds).
+ */
 double computeInputTimeStep(const DateTime &modelTime, const DateTime &endTime,
                             const waveTimeData &waveTime,
                             const RunConfig &config) {
+  // Calculate minimum maxStep for inputs only
   double inputTimeStep =
       TimeManagement::differenceInSeconds(modelTime, endTime);
 
