@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-21
- * @date Last update : 2026-09-28
+ * @date Last update : 2026-10-01
  */
 
 #include "ww4_utils/ww4_input_utils.h"
@@ -148,13 +148,16 @@ void updateHomogeneousInputCycling(
 
   if (TimeManagement::differenceInSeconds(modelTime, series.front().time) >
       0.001) {
+    // Case 1: Model time is before the first data point
     data.time1 = modelTime;
     data.time2 = series.front().time;
   } else if (TimeManagement::differenceInSeconds(series.back().time,
                                                  modelTime) > -0.001) {
+    // Case 2: Model time is at or beyond the last data point
     data.time1 = series.back().time;
     data.time2 = endTime;
   } else {
+    // Case 3: Model time is between data points
     for (size_t i = 0; i < series.size() - 1; ++i) {
       if (TimeManagement::differenceInSeconds(series[i].time, modelTime) >=
               -0.001 &&
