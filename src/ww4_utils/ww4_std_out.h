@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update : 2026-09-28
+ * @date Last update : 2026-10-01
  * @note Converted from WAVEWATCH III (ww3_shel.F90, ww3_multi.F90, and
  *       w3servmd.F90).
  *       Original author: Hendrik L. Tolman.
@@ -70,7 +70,7 @@ void writeExtcdeOutput(std::ostream &os,
                        std::optional<std::string_view> file = std::nullopt,
                        std::optional<int> line = std::nullopt);
 
-// --- writeWarnngOutput ------------------------------------------------------
+// --- writeWarningOutput -----------------------------------------------------
 /**
  * @brief Writes a warning message to the provided output stream in standard
  * format.
@@ -79,9 +79,9 @@ void writeExtcdeOutput(std::ostream &os,
  * @param file Optional source file name where warning occurred.
  * @param line Optional line number in source file.
  */
-void writeWarnngOutput(std::ostream &os, std::string_view msg,
-                       std::optional<std::string_view> file = std::nullopt,
-                       std::optional<int> line = std::nullopt);
+void writeWarningOutput(std::ostream &os, std::string_view msg,
+                        std::optional<std::string_view> file = std::nullopt,
+                        std::optional<int> line = std::nullopt);
 
 // --- extcde -----------------------------------------------------------------
 /**
@@ -97,7 +97,7 @@ void writeWarnngOutput(std::ostream &os, std::string_view msg,
                          std::optional<std::string_view> file = std::nullopt,
                          std::optional<int> line = std::nullopt);
 
-// --- warnng -----------------------------------------------------------------
+// --- warning ----------------------------------------------------------------
 /**
  * @brief Reports a warning and continues execution.
  * @param os Output stream to write to.
@@ -105,9 +105,9 @@ void writeWarnngOutput(std::ostream &os, std::string_view msg,
  * @param file Optional source file name.
  * @param line Optional line number.
  */
-void warnng(std::ostream &os, std::string_view msg,
-            std::optional<std::string_view> file = std::nullopt,
-            std::optional<int> line = std::nullopt);
+void warning(std::ostream &os, std::string_view msg,
+             std::optional<std::string_view> file = std::nullopt,
+             std::optional<int> line = std::nullopt);
 
 // --- writeUpdatingField -----------------------------------------------------
 /**
