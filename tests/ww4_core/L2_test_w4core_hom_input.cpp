@@ -49,12 +49,6 @@ TEST_F(W4CoreHomInputTest, ValidHomogeneousInput) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -86,7 +80,7 @@ homogeneous_data:
   std::string output = ss.str();
   EXPECT_EQ(output.find("Input data (w4core_hom_input) processing:"),
             std::string::npos);
-  EXPECT_NE(output.find("Water levels             : homogeneous"),
+  EXPECT_NE(output.find("Water levels         : homogeneous"),
             std::string::npos);
   EXPECT_NE(output.find("2026/01/01 00:00:00 UTC : 0.5"), std::string::npos);
   EXPECT_NE(output.find("2026/01/01 12:00:00 UTC : 0.6"), std::string::npos);
@@ -96,12 +90,6 @@ TEST_F(W4CoreHomInputTest, SummaryEcho) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -129,12 +117,6 @@ TEST_F(W4CoreHomInputTest, MultipleFields) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: homogeneous
   winds: homogeneous
@@ -163,9 +145,9 @@ homogeneous_data:
   EXPECT_NEAR(wi[0].values[1], 5.0, 1e-6);
 
   std::string output = ss.str();
-  EXPECT_NE(output.find("Water levels             : homogeneous"),
+  EXPECT_NE(output.find("Water levels         : homogeneous"),
             std::string::npos);
-  EXPECT_NE(output.find("Winds                    : homogeneous"),
+  EXPECT_NE(output.find("Winds                : homogeneous"),
             std::string::npos);
 }
 
@@ -173,12 +155,6 @@ TEST_F(W4CoreHomInputTest, BackwardTimeStamps) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -199,12 +175,6 @@ TEST_F(W4CoreHomInputTest, MissingDataForHomogeneousField) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: homogeneous
   currents: none
@@ -222,12 +192,6 @@ TEST_F(W4CoreHomInputTest, IceConcentrationRange) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: none
   currents: none
@@ -248,12 +212,6 @@ TEST_F(W4CoreHomInputTest, WindsParameterCount) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: none
   currents: none
@@ -274,12 +232,6 @@ TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
   writeYaml(R"(general:
   calendar_type: Standard
   time_step: 3600.0
-physics:
-  solver: UQ
-  linear_input: LN1
-  input_dissipation: ST4
-  nonlinear_interactions: NL1
-  bottom_friction: BT1
 forcing:
   water_levels: none
   currents: none
@@ -300,7 +252,7 @@ homogeneous_data:
   EXPECT_NEAR(bd[0].values[0], -10.0, 1e-6);
 
   std::string output = ss.str();
-  EXPECT_NE(output.find("Bottom depth             : homogeneous"),
+  EXPECT_NE(output.find("Bottom depth         : homogeneous"),
             std::string::npos);
   EXPECT_NE(output.find("2026/01/01 00:00:00 UTC : -10"), std::string::npos);
 }

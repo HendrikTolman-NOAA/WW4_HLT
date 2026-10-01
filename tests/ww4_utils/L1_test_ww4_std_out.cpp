@@ -14,7 +14,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-07-09
+ * @date Last update : 2026-10-01
  */
 
 #include "ww4_utils/time_management.h"
@@ -94,9 +94,9 @@ TEST(StdOutTest, ExtcdeTermination) {
       "WW4 ERROR: Fatal program error.*WW4 ERROR: FILE=test.cpp LINE=123");
 }
 
-TEST(StdOutTest, WriteWarnngOutputFormatting) {
+TEST(StdOutTest, WriteWarningOutputFormatting) {
   std::stringstream ss;
-  writeWarnngOutput(ss, "Warning message", "main.cpp", 42);
+  writeWarningOutput(ss, "Warning message", "main.cpp", 42);
   std::string output = ss.str();
 
   EXPECT_NE(output.find("WW4 WARNING: Warning message"), std::string::npos);
@@ -104,9 +104,9 @@ TEST(StdOutTest, WriteWarnngOutputFormatting) {
             std::string::npos);
 }
 
-TEST(StdOutTest, WarnngReporting) {
+TEST(StdOutTest, WarningReporting) {
   std::stringstream ss;
-  warnng(ss, "Another warning");
+  warning(ss, "Another warning");
   std::string output = ss.str();
 
   EXPECT_NE(output.find("WW4 WARNING: Another warning"), std::string::npos);
