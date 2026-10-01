@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-01
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-28
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -24,46 +24,27 @@
 #include "ww4_utils/ww4_logfile.h"
 #include <iomanip>
 
-/**
- * @namespace ww4_utils
- * @brief Utilities for WAVEWATCH IV.
- */
 namespace ww4_utils {
 
-/**
- * @namespace ww4_logfile
- * @brief Routines for log file output.
- */
 namespace ww4_logfile {
 
-/**
- * @brief Checks if any action (input update or output) occurred.
- * @return True if any flag is set.
- */
+// --- anyAction --------------------------------------------------------------
 bool LogTableData::anyAction() const {
   return wlUpdated || cuUpdated || wiUpdated || icUpdated || bdUpdated ||
          fieldsPerformed || pointsPerformed || restartPerformed || apiPerformed;
 }
 
-/**
- * @brief Resets all flags to false.
- */
+// --- reset ------------------------------------------------------------------
 void LogTableData::reset() {
   wlUpdated = cuUpdated = wiUpdated = icUpdated = bdUpdated = false;
   fieldsPerformed = pointsPerformed = restartPerformed = apiPerformed = false;
 }
 
-/**
- * @brief Writes the initial log entry to the provided output stream.
- * @details Duplicates the initial log formatting from WW3.
- * @param os The output stream to write to (e.g., an std::ofstream).
- * @param programName The name of the executable program.
- */
+// --- writeInitialOutput -----------------------------------------------------
 void writeInitialOutput(std::ostream &os, std::string_view programName) {
   const std::string mid =
       "*** WAVEWATCH IV program " + std::string(programName) + " ***";
 
-  // Generic banner format with 15X (15 spaces) and / (newline)
   const std::string bannerLine = "      " + mid + "      ";
   const std::string separator(bannerLine.length(), '=');
 
@@ -73,19 +54,10 @@ void writeInitialOutput(std::ostream &os, std::string_view programName) {
      << std::endl;
 }
 
-/**
- * @brief Writes the final log entry to the provided output stream.
- * @details Duplicates the final log formatting from WW3.
- *          Optionally includes execution times and memory usage.
- * @param os The output stream to write to.
- * @param programName The name of the executable program.
- * @param initTime Optional initialization time in seconds.
- * @param elapsedTotal Optional total elapsed time in seconds.
- */
+// --- writeFinalOutput -------------------------------------------------------
 void writeFinalOutput(std::ostream &os, std::string_view programName,
                       std::optional<double> initTime,
                       std::optional<double> elapsedTotal) {
-  // Matches FORMAT 997, 998, 999
   if (initTime.has_value()) {
     os << "\n  Initialization time :" << std::fixed << std::setprecision(2)
        << std::setw(10) << *initTime << " s\n";
@@ -101,31 +73,19 @@ void writeFinalOutput(std::ostream &os, std::string_view programName,
      << std::endl;
 }
 
-/**
- * @brief Writes a message identifying that an input field is being updated.
- * @param os The output stream to write to.
- * @param fieldName The name of the field being updated.
- */
+// --- writeUpdatingField -----------------------------------------------------
 void writeUpdatingField(std::ostream &os, std::string_view fieldName) {
   os << "    Updating " << fieldName << std::endl;
 }
 
-/**
- * @brief Writes interpolation interval information for an input field.
- * @param os The output stream to write to.
- * @param time1 First interpolation time tag.
- * @param time2 Second interpolation time tag.
- */
+// --- writeInterpolationInfo -------------------------------------------------
 void writeInterpolationInfo(std::ostream &os, const DateTime &time1,
                             const DateTime &time2) {
   os << "      Interpolation from " << TimeManagement::toFormattedString(time1)
      << " to " << TimeManagement::toFormattedString(time2) << std::endl;
 }
 
-/**
- * @brief Writes the header of the tabular log output.
- * @param os The output stream to write to.
- */
+// --- writeLogTableHeader ----------------------------------------------------
 void writeLogTableHeader(std::ostream &os) {
   os << "  "
         "+-------------------------+---------------------+-----------------+\n"
@@ -137,12 +97,7 @@ void writeLogTableHeader(std::ostream &os) {
      << std::endl;
 }
 
-/**
- * @brief Adds a data line to the tabular log output.
- * @param os The output stream to write to.
- * @param time The time stamp for the end of the interval.
- * @param data The data flags for the line.
- */
+// --- writeLogTableLine ------------------------------------------------------
 void writeLogTableLine(std::ostream &os, const DateTime &time,
                        const LogTableData &data) {
   auto mark = [](bool b) { return b ? 'X' : ' '; };
@@ -156,10 +111,7 @@ void writeLogTableLine(std::ostream &os, const DateTime &time,
      << std::endl;
 }
 
-/**
- * @brief Writes the footer of the tabular log output.
- * @param os The output stream to write to.
- */
+// --- writeLogTableFooter ----------------------------------------------------
 void writeLogTableFooter(std::ostream &os) {
   os << "  +-------------------------+---------------------+-----------------+"
      << std::endl;
