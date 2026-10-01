@@ -17,11 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
-<<<<<<< HEAD
- * @date Last update : 2026-09-30
-=======
- * @date Last update : 2026-09-28
->>>>>>> upstream
+ * @date Last update : 2026-10-01
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -224,11 +220,7 @@ void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
-<<<<<<< HEAD
- * @date Last update : 2026-09-30
-=======
- * @date Last update : 2026-09-28
->>>>>>> upstream
+ * @date Last update : 2026-10-01
  */
 void reportOutput(const OutputConfig &oc, const std::string_view label,
                   std::ostream &os) {
@@ -623,7 +615,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-30
+ * @date Last update : 2026-10-01
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  General settings :" << std::endl;

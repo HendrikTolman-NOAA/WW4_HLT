@@ -44,7 +44,7 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-01
  */
 void w4core_finalize(const ww4_utils::DateTime &endTime, std::ostream &os) {
   try {
@@ -90,15 +90,10 @@ void w4core_finalize(const ww4_utils::DateTime &endTime, std::ostream &os) {
     // === Release persistent model data =====================================
     if (getWaveTimeData().modelTime.has_value() &&
         *getWaveTimeData().modelTime != endTime) {
-<<<<<<< HEAD
       // Explanatory comment preceding __FILE__ and __LINE__
       // Issue warning when model time mismatch occurs
-      ww4_utils::ww4_std_out::warnng(os, "Model time does not match end time.",
-                                     __FILE__, __LINE__);
-=======
       ww4_utils::ww4_std_out::warning(os, "Model time does not match end time.",
                                       __FILE__, __LINE__);
->>>>>>> upstream
     }
 
     ww4_utils::TimeManagement::reset();
