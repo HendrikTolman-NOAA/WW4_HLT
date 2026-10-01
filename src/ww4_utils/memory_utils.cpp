@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-02-27
- * @date Last update : 2026-07-07
+ * @date Last update : 2026-09-28
  */
 
 #include "ww4_utils/memory_utils.h"
@@ -27,44 +27,24 @@
 #include <string>
 #include <string_view>
 
-/**
- * @namespace ww4_utils
- * @brief Utilities for WAVEWATCH IV.
- */
 namespace ww4_utils {
 
 namespace {
+
 const char *defaultStatusFilePath = "/proc/self/status";
 const char *statusFilePath = defaultStatusFilePath;
+
 } // namespace
 
-/**
- * @brief Sets the path to the process status file for testing purposes.
- * @param path The path to the mock status file.
- * @note This is for internal testing only and should not be used in production.
- */
+// --- setMemoryStatusPathForTesting ------------------------------------------
 void setMemoryStatusPathForTesting(const char *path) { statusFilePath = path; }
 
-/**
- * @brief Resets the memory status path to the default "/proc/self/status".
- */
+// --- resetMemoryStatusPath --------------------------------------------------
 void resetMemoryStatusPath() noexcept {
   statusFilePath = defaultStatusFilePath;
 }
 
-/**
- * @class MemoryUtils
- * @brief Utility class for memory-related operations.
- * @details Provides static methods to query memory usage from the system.
- */
-
-/**
- * @brief Captures the current memory usage of the calling process.
- * @details Reads metrics from /proc/self/status on Linux systems.
- * @return A MemoryUsage struct containing the captured metrics, or
- * std::nullopt if capture fails.
- * @pre The operating system must provide /proc/self/status (Linux).
- */
+// --- captureMemoryUsage -----------------------------------------------------
 std::optional<MemoryUsage> MemoryUtils::captureMemoryUsage() noexcept {
   std::ifstream statusFile(statusFilePath);
   if (!statusFile.is_open()) {
@@ -122,12 +102,7 @@ std::optional<MemoryUsage> MemoryUtils::captureMemoryUsage() noexcept {
   return usage;
 }
 
-/**
- * @brief Captures the memory high water mark (HWM) of the calling process.
- * @details Reads the vmHWM metric from /proc/self/status on Linux systems.
- * @return The peak resident set size in kB, or std::nullopt if capture fails.
- * @pre The operating system must provide /proc/self/status (Linux).
- */
+// --- captureMemoryHWM -------------------------------------------------------
 std::optional<std::uint64_t> MemoryUtils::captureMemoryHWM() noexcept {
   const auto usage = captureMemoryUsage();
   if (usage) {

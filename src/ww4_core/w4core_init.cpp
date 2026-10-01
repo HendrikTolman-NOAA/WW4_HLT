@@ -15,16 +15,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-06-18
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
 #include "ww4_core/w4core_init.h"
-#include "ww4_core/solver_smc/solver_smc.h"
-#include "ww4_core/solver_triangular/solver_triangular.h"
-#include "ww4_core/solver_uq/solver_uq.h"
 #include "ww4_utils/time_management.h"
 #include "ww4_utils/ww4_input_utils.h"
 #include "ww4_utils/ww4_logfile.h"
@@ -34,6 +31,10 @@
 #include <fstream>
 #include <iostream>
 
+/**
+ * @namespace ww4_core
+ * @brief Core routines for WAVEWATCH IV.
+ */
 namespace ww4_core {
 
 namespace {
@@ -43,31 +44,32 @@ std::string capturedProgramName;
 ww4_utils::waveTimeData waveTimeData;
 } // namespace
 
-// --- w4core_init ------------------------------------------------------------
 /**
  * @brief Initialization routine for the WAVEWATCH IV core.
  * @details Performs all necessary setup for the wave model core.
  *          Follows the architectural design of the initialization in
  *          ww3_multi.F90 from WAVEWATCH III.
- * @param startTime Simulation start time.
- * @param programName Name of the program to identify in output banners.
- * @param os Output stream for reporting.
+ * @param[in] startTime Simulation start time.
+ * @param[in] programName Name of the program to identify in output banners.
+ * @param[in] os Output stream for reporting.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date 2026-05-01
  */
 void w4core_init(const ww4_utils::DateTime &startTime,
                  std::string_view programName, std::ostream &os) {
   try {
-    // === General initialization =============================================
+    //
+    // 1.  General initialization --------------------------------------------
+    // 1.0 Capture program name
+    //
     capturedProgramName = std::string(programName);
 
-    // === Load run-time configuration =======================================
+    //
+    // 1.1 Load configuration from ww4_run_config.yaml file
+    //
     const auto config = ww4_utils::loadRunConfig("ww4_run_config.yaml", os);
     if (!config) {
-      // Explanatory comment preceding __FILE__ and __LINE__
-      // Exit program when configuration file loading fails
       ww4_utils::ww4_std_out::extcde(1, os,
                                      "Run-time configuration file "
                                      "'ww4_run_config.yaml' not found or could "
@@ -76,82 +78,113 @@ void w4core_init(const ww4_utils::DateTime &startTime,
     }
     globalRunConfig = *config;
 
-    // === Calendar, profiling, and inputs setup ==============================
+    //
+    // 1.2 Initialize calendar type in time management service
+    //
     ww4_utils::TimeManagement::setCalendarType(globalRunConfig.calendarType);
+
+    //
+    // 1.3 Initialize profiling
+    //
     ww4_utils::TimeManagement::initializeProfiling();
+
+    //
+    // 1.4 Process homogeneous input data silently
+    //
     ww4_utils::ww4_input_update(globalRunConfig, os);
 
-    // === Initial standard output ============================================
+    //
+    // 1.5 Initial standard output if requested
+    //
     if (globalRunConfig.produceStdOut) {
+      //
+      // 1.5.1 Initial standard output
+      //
       ww4_utils::ww4_std_out::writeInitialOutput(os, capturedProgramName);
 
+      //
+      // 1.5.2 Report out run start time
+      //
       os << "  Run starts at "
          << ww4_utils::TimeManagement::toFormattedString(
                 ww4_utils::TimeManagement::getPresentDateTime())
          << std::endl;
 
+      //
+      // 1.5.3 Identify being in initialization routine
+      //
       os << "\n  Initialization (w4core_init) starting: "
          << ww4_utils::TimeManagement::toFormattedString(startTime)
          << std::endl;
-
+      //
+      // 1.5.4 Report out run time configuration
+      //
       ww4_utils::reportRunConfig(globalRunConfig, os);
     }
 
-    // === Initial log file output ============================================
+    //
+    // 1.6 Start log file if requested
+    //
     if (globalRunConfig.produceLogFile) {
+      //
+      // 1.6.1 Open log file
+      //
       logFile.open("ww4_log.txt");
+      //
+      // 1.6.2 Initial log file output
+      //
       ww4_utils::ww4_logfile::writeInitialOutput(logFile, capturedProgramName);
 
+      //
+      // 1.6.3 Report out run start time
+      //
       logFile << "  Run starts at "
               << ww4_utils::TimeManagement::toFormattedString(
                      ww4_utils::TimeManagement::getPresentDateTime())
               << std::endl;
 
+      //
+      // 1.6.4 Identify being in initialization routine
+      //
       logFile << "\n  Initialization (w4core_init) starting: "
               << ww4_utils::TimeManagement::toFormattedString(startTime)
               << std::endl;
-
+      //
+      // 1.6.5 Report out run time configuration
+      //
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
+
+      //
+      // 1.6.6 Write tabular log header
+      //
       ww4_utils::ww4_logfile::writeLogTableHeader(logFile);
     }
 
   } catch (const std::exception &e) {
-    // Explanatory comment preceding __FILE__ and __LINE__
-    // Terminate execution on standard exception
     ww4_utils::ww4_std_out::extcde(1, os, e.what(), __FILE__, __LINE__);
   } catch (...) {
-    // Explanatory comment preceding __FILE__ and __LINE__
-    // Terminate execution on unknown exception
     ww4_utils::ww4_std_out::extcde(1, os, "Unknown exception in w4core_init",
                                    __FILE__, __LINE__);
   }
-
-  // === Initialize numerical solver ==========================================
-  switch (globalRunConfig.solver) {
-  case ww4_utils::SolverType::UQ:
-    w4core_init_uq(os);
-    break;
-  case ww4_utils::SolverType::Triangular:
-    w4core_init_triangular(os);
-    break;
-  case ww4_utils::SolverType::SMC:
-    w4core_init_smc(os);
-    break;
-  default:
-    // Explanatory comment preceding __FILE__ and __LINE__
-    // Terminate execution on invalid solver configuration
-    ww4_utils::ww4_std_out::extcde(
-        1, os, "No numerical solver specified or unknown solver.", __FILE__,
-        __LINE__);
-    break;
-  }
-
-  // === Data initialization ==================================================
+  //
+  // 2.  Set up data strucures ---------------------------------------------
+  // 2.1 Set up the global and local (domain) grids
+  //
+  // 2.2  Set up the spectral data structures
+  //
+  //
+  // 3.  Data initialization -----------------------------------------------
+  //     This only needs to be the intial conditions, Input and output are
+  //     initialized as part of their update procedures in w4core_wave
+  //
+  // 3.1 Initialize model time and time step
+  //
   waveTimeData.modelTime = startTime;
   waveTimeData.timeStep = globalRunConfig.timeStep;
+  //
+  //     End of w4core_init ------------------------------------------------
+  //
 }
-
-// --- Accessors --------------------------------------------------------------
 
 /**
  * @brief Provides access to the loaded run-time configuration.
@@ -185,7 +218,7 @@ const ww4_utils::waveTimeData &getWaveTimeData() { return waveTimeData; }
 
 /**
  * @brief Updates the model time in the wave time data.
- * @param time The new model time.
+ * @param[in] time The new model time.
  */
 void updateWaveModelTime(const ww4_utils::DateTime &time) {
   waveTimeData.modelTime = time;
@@ -193,8 +226,8 @@ void updateWaveModelTime(const ww4_utils::DateTime &time) {
 
 /**
  * @brief Updates the input time data for a specific input type.
- * @param type The input type to update.
- * @param data The new input time data.
+ * @param[in] type The input type to update.
+ * @param[in] data The new input time data.
  */
 void updateWaveInputTime(ww4_utils::InputType type,
                          const ww4_utils::intTimeData &data) {
@@ -217,7 +250,6 @@ void updateWaveInputTime(ww4_utils::InputType type,
   }
 }
 
-// --- resetInternalState -----------------------------------------------------
 /**
  * @brief Resets the internal state of the core module.
  * @details Clears global configuration, program name, and ensures log file
