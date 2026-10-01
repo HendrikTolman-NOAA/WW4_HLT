@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-28
  */
 
 #pragma once
@@ -124,7 +124,7 @@ enum class BottomFrictionScheme { Undefined, DoNotUse, BT1, BT4 };
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-28
  * @var InputFieldOption::Undefined
  * @brief Mandatory field not yet defined.
  * @var InputFieldOption::None
@@ -155,7 +155,7 @@ enum class InputFieldOption {
  * @author Main Author(s): Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-28
  * @var ScreenOutputLevel::None
  * @brief No output in the time stepping loop.
  * @var ScreenOutputLevel::Summary
@@ -172,7 +172,7 @@ enum class ScreenOutputLevel { None, Summary, Full };
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-28
  * @var EchoOption::None
  * @brief No echoing of input data.
  * @var EchoOption::Summary
@@ -191,7 +191,7 @@ enum class EchoOption { None, Summary, Full };
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-28
  * @var SpectralConfig::numDirections
  * @brief Number of discrete directions (default: 36).
  * @var SpectralConfig::numFrequencies
@@ -219,7 +219,7 @@ struct SpectralConfig {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-28
  * @var HomogeneousDataPoint::time
  * @brief Time of the data point.
  * @var HomogeneousDataPoint::values
@@ -238,7 +238,7 @@ struct HomogeneousDataPoint {
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-22
+ * @date Last update : 2026-09-28
  * @var RunConfig::calendarType
  * @brief Calendar type.
  * @var RunConfig::produceStdOut
