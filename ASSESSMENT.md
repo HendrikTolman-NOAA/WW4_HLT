@@ -1,16 +1,16 @@
-# Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Bathymetry/Orography in WAVEWATCH IV (WW4)
+# Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Topobathy (Bathymetry / Orography) in WAVEWATCH IV (WW4)
 
 ## 1. Executive Summary
-This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and bathymetry/orography fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, and single-domain full-grid abstraction layer designs.
+This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and unified topobathy (bathymetry/orography elevation) fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, and single-domain full-grid abstraction layer designs.
 
 ---
 
 ## 2. Language Choice (Full C++ vs. C++ / Python Hybrid)
 
 ### Recommendation: **Full C++ Core with Python Tooling Ecosystem**
-* **Core Model (In-Model Grid & Bathymetry Ingestion): Pure C++20**
+* **Core Model (In-Model Grid & Elevation Ingestion): Pure C++20**
   * **Zero Overhead & Operational HPC Readiness:** In high-performance operational environments (e.g., Cray/HPC clusters at NOAA NCEP like Cactus/Dogwood), running Python inside the core numerical iteration loop or during model startup introduces GIL lock risks, non-standard runtime dependencies, and potential multi-threading/MPI interaction issues.
-  * **Memory Safety & Control:** Reading large spatial bathymetry arrays and connectivity meshes directly into C++ data structures via C/C++ APIs ensures zero-copy vectorization, strict RAII memory management, and `std::span` compatibility.
+  * **Memory Safety & Control:** Reading large spatial elevation arrays (bathymetry/orography) and connectivity meshes directly into C++ data structures via C/C++ APIs ensures zero-copy vectorization, strict RAII memory management, and `std::span` compatibility.
 * **Pre-Processing, Analysis, & Test Generation: Python Tooling**
   * Python (using `xarray`, `netCDF4`, `uxarray`, `zarr`) should be used externally for dataset generation, pre-processing, grid validation, and test dataset generation (e.g., in `tools/` and `tests/`).
 
@@ -42,7 +42,7 @@ A survey of NOAA-EMC, UFS (Unified Forecast System), and NCEPLIBS repositories i
 
 * **Is this the time to introduce Kokkos?**
   * **No (for I/O & Grid Parsing):** File I/O and grid parsing are strictly host-side setup routines. Kokkos is designed for compute kernel performance portability (GPUs/CPUs). Introducing Kokkos during grid reading would add significant template complexity, heavy build dependencies, and compiler setup overhead without benefiting I/O.
-  * **Yes (for Data Abstraction Design):** While Kokkos should not be linked now, the **memory layout** of spatial grids, bathymetry, and field data must be architected with flat, contiguous allocation patterns (1D/2D contiguity, 64-byte alignment, strided index accessors via `std::span` or `std::mdspan` / C++20/C++23 abstractions).
+  * **Yes (for Data Abstraction Design):** While Kokkos should not be linked now, the **memory layout** of spatial grids, elevation fields, and field data must be architected with flat, contiguous allocation patterns (1D/2D contiguity, 64-byte alignment, strided index accessors via `std::span` or `std::mdspan` / C++20/C++23 abstractions).
 
 * **Strategic Transition Path:**
   ```
@@ -63,7 +63,7 @@ A survey of NOAA-EMC, UFS (Unified Forecast System), and NCEPLIBS repositories i
 
 ## 5. Full-Grid Ingestion Architecture (Single Domain / Full Grid Focus)
 
-Without domain decomposition constraints at this stage, the full-grid ingestion pipeline can be structured cleanly using an abstract grid interface:
+Without domain decomposition constraints at this stage, the full-grid ingestion pipeline can be structured cleanly using an abstract grid interface. Bathymetry and orography are ingested as a single, unified topobathy elevation array (where positive values indicate water depth and negative values or explicit datum offsets represent subaerial terrain/orography elevation) rather than separate arrays.
 
 ```
                   ┌──────────────────────┐
@@ -82,8 +82,8 @@ Without domain decomposition constraints at this stage, the full-grid ingestion 
                   ┌──────────────────────┐
                   │     SpatialGrid      │
                   │ ──────────────────── │
-                  │ - Bathymetry / Depth │
-                  │ - Orography          │
+                  │ - Topobathy Elevation│
+                  │   (Single Grid Array)│
                   │ - Land/Water Mask    │
                   │ - Coordinates (X, Y) │
                   │ - Mesh Topology      │
@@ -92,11 +92,12 @@ Without domain decomposition constraints at this stage, the full-grid ingestion 
 
 ### Key Components:
 1. **`SpatialGrid` Struct/Class (`src/ww4_utils/`):**
-   * Holds full-grid bathymetry (`depth`), orography, coordinate vectors (`longitude`, `latitude`), and mask arrays (`mask`).
+   * Holds the single, unified spatial elevation array (`elevation` / `topobathy`), containing bathymetry and orography on the single spatial grid.
+   * Holds coordinate vectors (`longitude`, `latitude`) and mask arrays (`mask`).
    * For unstructured grids (triangles/SMC), holds connectivity matrices (`node_x`, `node_y`, `elements`).
    * Provides lightweight `std::span` accessors to the core solver engines (`SolverRectangularGrid`, `SolverTriangularGrid`, `SolverSMCGrid`).
 2. **`IGridDataLoader` Interface:**
-   * Methods: `loadGridGeometry()`, `loadBathymetry()`, `loadMask()`.
+   * Methods: `loadGridGeometry()`, `loadTopobathy()`, `loadMask()`.
 3. **YAML Integration in `ww4_run_config.yaml`:**
    ```yaml
    grid:
@@ -106,8 +107,7 @@ Without domain decomposition constraints at this stage, the full-grid ingestion 
      variables:
        longitude: "lon"
        latitude: "lat"
-       bathymetry: "depth"
-       orography: "orography"
+       topobathy: "elevation" # Unified single field for bathymetry & orography
        land_mask: "mask"
    ```
 
@@ -117,5 +117,5 @@ Without domain decomposition constraints at this stage, the full-grid ingestion 
 
 1. **Step 1:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (as optional/required dependency behind CMake flags, similar to `WW4_ENABLE_TESTING`).
 2. **Step 2:** Define `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors.
-3. **Step 3:** Implement UGRID NetCDF reader capable of handling structured and unstructured grids and bathymetry datasets.
+3. **Step 3:** Implement UGRID NetCDF reader capable of handling structured and unstructured grids and topobathy elevation datasets.
 4. **Step 4:** Add unit tests using small synthesized NetCDF/NCZarr test files under `tests/ww4_utils/`.
