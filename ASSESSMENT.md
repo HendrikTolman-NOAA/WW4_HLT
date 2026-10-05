@@ -45,19 +45,16 @@ A survey of NOAA-EMC, UFS (Unified Forecast System), and NCEPLIBS repositories i
   * **Yes (for Data Abstraction Design):** While Kokkos should not be linked now, the **memory layout** of spatial grids, elevation fields, and field data must be architected with flat, contiguous allocation patterns (1D/2D contiguity, 64-byte alignment, strided index accessors via `std::span` or `std::mdspan` / C++20/C++23 abstractions).
 
 * **Strategic Transition Path:**
-  ```
-  NetCDF / UGRID / Zarr File
-          │
-          ▼
-  C++ I/O Layer (NetCDF-C / NCZarr)
-          │
-          ▼
-  Flat Host Buffer (std::vector<double> + std::span<const double>)
-          │
-  ────────┴──────────────────────────────────────────
-  Future Compute Engine Step (Phase 2):
-  Wrap std::span into Kokkos::View / Execution Spaces for GPU kernels.
-  ```
+
+```mermaid
+flowchart TD
+    A[NetCDF / UGRID / Zarr File] --> B[C++ I/O Layer<br/><i>netcdf-c / NCZarr</i>]
+    B --> C[Flat Host Buffer<br/><i>std::vector&lt;double&gt; + std::span&lt;const double&gt;</i>]
+
+    subgraph Future_Compute_Engine [Phase 2: Compute Acceleration]
+        C -.-> D[Kokkos::View / Execution Spaces<br/><i>GPU Acceleration</i>]
+    end
+```
 
 ---
 
@@ -65,29 +62,24 @@ A survey of NOAA-EMC, UFS (Unified Forecast System), and NCEPLIBS repositories i
 
 Without domain decomposition constraints at this stage, the full-grid ingestion pipeline can be structured cleanly using an abstract grid interface. Bathymetry and orography are ingested as a single, unified topobathy elevation array (where positive values indicate water depth and negative values or explicit datum offsets represent subaerial terrain/orography elevation) rather than separate arrays.
 
-```
-                  ┌──────────────────────┐
-                  │    IGridDataLoader   │
-                  └──────────┬───────────┘
-                             │
-            ┌────────────────┴────────────────┐
-            ▼                                 ▼
-┌───────────────────────┐         ┌───────────────────────┐
-│   NetCdfGridLoader    │         │  ZarrNcZarrGridLoader │
-│ (Rect/UGRID/Triangular)│        │ (Cloud-Native Datasets)│
-└───────────┬───────────┘         └───────────┬───────────┘
-            │                                 │
-            └────────────────┬────────────────┘
-                             ▼
-                  ┌──────────────────────┐
-                  │     SpatialGrid      │
-                  │ ──────────────────── │
-                  │ - Topobathy Elevation│
-                  │   (Single Grid Array)│
-                  │ - Land/Water Mask    │
-                  │ - Coordinates (X, Y) │
-                  │ - Mesh Topology      │
-                  └──────────────────────┘
+```mermaid
+graph TD
+    classDef interfaceStyle fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef loaderStyle fill:#bbf,stroke:#333,stroke-width:1px;
+    classDef dataStyle fill:#bfb,stroke:#333,stroke-width:2px;
+
+    IGridDataLoader["IGridDataLoader Interface"]:::interfaceStyle
+
+    NetCdfGridLoader["NetCdfGridLoader<br/>(Rect / UGRID / Triangular)"]:::loaderStyle
+    ZarrNcZarrGridLoader["ZarrNcZarrGridLoader<br/>(Cloud-Native Datasets)"]:::loaderStyle
+
+    IGridDataLoader --> NetCdfGridLoader
+    IGridDataLoader --> ZarrNcZarrGridLoader
+
+    SpatialGrid["SpatialGrid Data Structure<br/>────────────────────────────<br/>• Topobathy Elevation (Single Grid Array)<br/>• Land/Water Mask<br/>• Coordinates (X, Y)<br/>• Mesh Topology"]:::dataStyle
+
+    NetCdfGridLoader --> SpatialGrid
+    ZarrNcZarrGridLoader --> SpatialGrid
 ```
 
 ### Key Components:
