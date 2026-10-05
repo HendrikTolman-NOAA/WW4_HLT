@@ -22,16 +22,20 @@ This assessment presents a strategic roadmap for bringing spatial grid definitio
 A survey of NOAA-EMC, UFS (Unified Forecast System), and NCEPLIBS repositories indicates the following key patterns:
 1. **`NCEPLIBS` / ESMF (Earth System Modeling Framework):** NOAA-EMC relies heavily on ESMF and standard C NetCDF libraries (`netcdf-c`) across UFS components (e.g., `UFS-Weather-Model`, `NEMS`). ESMF provides UGRID/mesh mapping for coupled modeling.
 2. **NetCDF-C with NCZarr (Standard NetCDF C Library v4.8.0+):**
-   * **Crucial Architecture Finding:** Modern `netcdf-c` includes native support for **NCZarr** (NetCDF4 Zarr backend). This allows C/C++ code calling standard NetCDF APIs to read both traditional NetCDF-4/HDF5 files *and* cloud-native Zarr datasets (via local files, HTTP S3 endpoints, or zip archives) through the exact same C/C++ API without needing separate Zarr libraries!
+   * **Zarr V2 Support:** Modern `netcdf-c` includes native support for **NCZarr** (NetCDF4 Zarr backend) for Zarr V2 datasets. This allows C/C++ code calling standard NetCDF APIs to read both traditional NetCDF-4/HDF5 files and cloud-native Zarr V2 datasets (via local files, HTTP S3 endpoints, or zip archives) through the same C/C++ API.
+   * **Zarr V3 Compatibility Limitations:** Not all C libraries automatically support Zarr V3. The Zarr V3 specification introduces structural changes—including unified `zarr.json` metadata nodes, updated codec pipelines (e.g., sharding), and new node representations that replace legacy `.zarray`/`.zattrs` JSON files. Standard `netcdf-c` NCZarr and traditional C I/O libraries do not automatically handle Zarr V3 stores without dedicated driver updates or conversion layers.
 3. **UGRID Conventions (Unstructured Grid Interchange Format):**
    * Standardized CF-convention extensions for unstructured grids (triangular, polygon, SMC grids).
    * Defines topology variables (`mesh_topology`, `face_node_connectivity`, `edge_node_connectivity`, `node_coordinates`).
 
-### Recommended C++ Library Stack for WW4:
-* **Primary I/O Engine:** `netcdf-c` / `netcdf-cxx4` (or a lightweight modern C++20 RAII wrapper around `netcdf-c`).
-  * Enables reading NetCDF3, NetCDF4, and Zarr (via NCZarr transparently).
-  * Highly optimized, ubiquitous on all HPC modules (`module load netcdf`).
-  * Avoids bringing heavy, experimental non-standard C++ Zarr libraries into operational HPC builds.
+### Recommended C++ Library Stack & Zarr Strategy for WW4:
+* **Primary C++ I/O Engine:** `netcdf-c` / `netcdf-cxx4` (or a modern C++20 RAII wrapper around `netcdf-c`).
+  * Enables reading NetCDF3, NetCDF4, and Zarr V2 (via NCZarr).
+  * Highly optimized and ubiquitous on HPC modules (`module load netcdf`).
+  * Avoids introducing heavy non-standard C++ Zarr dependencies into core operational HPC builds.
+* **Zarr V3 Ingestion Strategy:**
+  * **Operational HPC / Pipeline Approach (Recommended):** Use Python pre-processing tools (`tools/`) leveraging `xarray` and `zarr` v3 to convert Zarr V3 datasets into NetCDF-4 or Zarr V2 before model execution.
+  * **Optional Direct C++ Reader:** For direct Zarr V3 reading without pre-processing, isolate Zarr V3 support behind the `IGridDataLoader` interface (e.g., using specialized libraries like Google TensorStore or modern C++ Zarr V3 adapters) behind an optional CMake build flag (`WW4_ENABLE_ZARR_V3=OFF`), preserving a minimal core build footprint.
 * **Mesh Topology Abstraction:** Modern C++ structs in `ww4_utils` that parse CF/UGRID metadata attributes (`cf_role = "mesh_topology"`, `node_coordinates`, `face_node_connectivity`).
 
 ---
@@ -71,15 +75,18 @@ graph TD
     IGridDataLoader["IGridDataLoader Interface"]:::interfaceStyle
 
     NetCdfGridLoader["NetCdfGridLoader<br/>(Rect / UGRID / Triangular)"]:::loaderStyle
-    ZarrNcZarrGridLoader["ZarrNcZarrGridLoader<br/>(Cloud-Native Datasets)"]:::loaderStyle
+    ZarrNcZarrGridLoader["ZarrNcZarrGridLoader<br/>(Zarr V2 / NCZarr)"]:::loaderStyle
+    ZarrV3AdapterLoader["ZarrV3AdapterLoader<br/>(Zarr V3 via TensorStore / Python Bridge)"]:::loaderStyle
 
     IGridDataLoader --> NetCdfGridLoader
     IGridDataLoader --> ZarrNcZarrGridLoader
+    IGridDataLoader --> ZarrV3AdapterLoader
 
     SpatialGrid["SpatialGrid Data Structure<br/>────────────────────────────<br/>• Topobathy Elevation (Single Grid Array)<br/>• Land/Water Mask<br/>• Coordinates (X, Y)<br/>• Mesh Topology"]:::dataStyle
 
     NetCdfGridLoader --> SpatialGrid
     ZarrNcZarrGridLoader --> SpatialGrid
+    ZarrV3AdapterLoader --> SpatialGrid
 ```
 
 ### Key Components:
@@ -93,7 +100,7 @@ graph TD
 3. **YAML Integration in `ww4_run_config.yaml`:**
    ```yaml
    grid:
-     type: "netcdf" # options: "netcdf", "ugrid", "zarr"
+     type: "netcdf" # options: "netcdf", "ugrid", "zarr_v2", "zarr_v3"
      file_path: "grids/global_mesh.nc"
      mesh_name: "ww4_mesh"
      variables:
@@ -109,5 +116,6 @@ graph TD
 
 1. **Step 1:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (as optional/required dependency behind CMake flags, similar to `WW4_ENABLE_TESTING`).
 2. **Step 2:** Define `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors.
-3. **Step 3:** Implement UGRID NetCDF reader capable of handling structured and unstructured grids and topobathy elevation datasets.
-4. **Step 4:** Add unit tests using small synthesized NetCDF/NCZarr test files under `tests/ww4_utils/`.
+3. **Step 3:** Implement UGRID NetCDF reader capable of handling structured and unstructured grids and topobathy elevation datasets (NetCDF-3/4 and Zarr V2 via NCZarr).
+4. **Step 4:** Implement Python conversion tooling (`tools/`) and optional C++ loader adapter for Zarr V3 dataset support.
+5. **Step 5:** Add unit tests using small synthesized NetCDF/NCZarr test files under `tests/ww4_utils/`.
