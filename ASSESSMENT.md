@@ -1,7 +1,7 @@
 # Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Topobathy (Bathymetry / Orography) in WAVEWATCH IV (WW4)
 
 ## 1. Executive Summary
-This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and unified topobathy (bathymetry/orography elevation) fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, and single-domain full-grid abstraction layer designs.
+This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and unified topobathy (bathymetry/orography elevation) fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Design** (`FT-Runtime-Scheme-Selection-Design` branch) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`).
 
 ---
 
@@ -62,60 +62,116 @@ flowchart TD
 
 ---
 
-## 5. Full-Grid Ingestion Architecture (Single Domain / Full Grid Focus)
+## 5. Integration with Runtime Scheme Selection Design & Factory Pattern
 
-Without domain decomposition constraints at this stage, the full-grid ingestion pipeline can be structured cleanly using an abstract grid interface. Bathymetry and orography are ingested as a single, unified topobathy elevation array (where positive values indicate water depth and negative values or explicit datum offsets represent subaerial terrain/orography elevation) rather than separate arrays.
+The grid ingestion framework integrates directly with the runtime scheme selection architecture developed in the `FT-Runtime-Scheme-Selection-Design` branch. This design leverages the **Factory Pattern** (`SchemeFactory`) to instantiate numerical solvers and physical source terms based on runtime user configuration options in `ww4_run_config.yaml`.
 
-```mermaid
-graph TD
-    classDef interfaceStyle fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef loaderStyle fill:#bbf,stroke:#333,stroke-width:1px;
-    classDef dataStyle fill:#bfb,stroke:#333,stroke-width:2px;
+### 5.1 User Configuration Options (`RunConfig`)
+User options are loaded from `ww4_run_config.yaml` into the `RunConfig` structure during model initialization (`w4core_init`). The mandatory `physics.solver` option determines the numerical propagation scheme and corresponding spatial grid type:
 
-    IGridDataLoader["IGridDataLoader Interface"]:::interfaceStyle
+```yaml
+physics:
+  solver: "UQ"          # Mandatory solver choice: 'UQ', 'triangular', or 'SMC'
+  linear_input: "none"  # 'none', 'LN1'
+  input_dissipation: "ST4" # 'none', 'ST1', 'ST2', 'ST4', 'ST6'
+  nonlinear_interactions: "NL1" # 'none', 'NL1', 'NL2', 'NL3'
+  bottom_friction: "BT1"  # 'none', 'BT1', 'BT4'
 
-    NetCdfGridLoader["NetCdfGridLoader<br/>(Rect / UGRID / Triangular)"]:::loaderStyle
-    ZarrNcZarrGridLoader["ZarrNcZarrGridLoader<br/>(Zarr V2 / NCZarr)"]:::loaderStyle
-    ZarrV3AdapterLoader["ZarrV3AdapterLoader<br/>(Zarr V3 via TensorStore / Python Bridge)"]:::loaderStyle
-
-    IGridDataLoader --> NetCdfGridLoader
-    IGridDataLoader --> ZarrNcZarrGridLoader
-    IGridDataLoader --> ZarrV3AdapterLoader
-
-    SpatialGrid["SpatialGrid Data Structure<br/>────────────────────────────<br/>• Topobathy Elevation (Single Grid Array)<br/>• Land/Water Mask<br/>• Coordinates (X, Y)<br/>• Mesh Topology"]:::dataStyle
-
-    NetCdfGridLoader --> SpatialGrid
-    ZarrNcZarrGridLoader --> SpatialGrid
-    ZarrV3AdapterLoader --> SpatialGrid
+grid:
+  type: "netcdf"        # Data format: 'netcdf', 'ugrid', 'zarr_v2', 'zarr_v3'
+  file_path: "grids/global_mesh.nc"
+  mesh_name: "ww4_mesh"
+  variables:
+    longitude: "lon"
+    latitude: "lat"
+    topobathy: "elevation" # Unified single field for bathymetry & orography
+    land_mask: "mask"
 ```
 
-### Key Components:
-1. **`SpatialGrid` Struct/Class (`src/ww4_utils/`):**
-   * Holds the single, unified spatial elevation array (`elevation` / `topobathy`), containing bathymetry and orography on the single spatial grid.
-   * Holds coordinate vectors (`longitude`, `latitude`) and mask arrays (`mask`).
-   * For unstructured grids (triangles/SMC), holds connectivity matrices (`node_x`, `node_y`, `elements`).
-   * Provides lightweight `std::span` accessors to the core solver engines (`SolverRectangularGrid`, `SolverTriangularGrid`, `SolverSMCGrid`).
-2. **`IGridDataLoader` Interface:**
-   * Methods: `loadGridGeometry()`, `loadTopobathy()`, `loadMask()`.
-3. **YAML Integration in `ww4_run_config.yaml`:**
-   ```yaml
-   grid:
-     type: "netcdf" # options: "netcdf", "ugrid", "zarr_v2", "zarr_v3"
-     file_path: "grids/global_mesh.nc"
-     mesh_name: "ww4_mesh"
-     variables:
-       longitude: "lon"
-       latitude: "lat"
-       topobathy: "elevation" # Unified single field for bathymetry & orography
-       land_mask: "mask"
-   ```
+### 5.2 Factory Pattern (`SchemeFactory`) & Concrete Solvers
+`SchemeFactory::createSolver(solver_name)` validates user input and returns a `std::unique_ptr<ISolver>` polymorphically bound to the appropriate grid-specific solver implementation:
+
+* **Exact Scheme String Key Mapping:**
+  * `"SolverUQ"` / `'UQ'` $\rightarrow$ Instantiates **`SolverRectangularGrid`**
+  * `"SolverTriangular"` / `'triangular'` $\rightarrow$ Instantiates **`SolverTriangularGrid`**
+  * `"SolverSMC"` / `'SMC'` $\rightarrow$ Instantiates **`SolverSMCGrid`**
+
+### 5.3 The Three Concrete Spatial Grids
+The three concrete grid solvers derive from `ISolver` and encapsulate distinct grid topologies, coordinate systems, and spatial discretization schemes:
+
+1. **Rectangular Grid (`SolverRectangularGrid` / `"SolverUQ"`):**
+   * **Topology:** Structured 2D rectilinear spatial grid defined by uniform or non-uniform latitude ($\Delta y$) and longitude ($\Delta x$) increments.
+   * **Data Access:** Direct 2D array indexing $(i, j)$ backed by flat contiguous 1D memory buffers (`std::vector<double>`) and C++20 `std::span` views.
+   * **Numerical Scheme:** Used for structured propagation schemes like **UQ** (Ultimate Quickest 3rd-order advection scheme).
+
+2. **Triangular Unstructured Grid (`SolverTriangularGrid` / `"SolverTriangular"`):**
+   * **Topology:** Unstructured triangular mesh conforming to UGRID conventions (`cf_role = "mesh_topology"`).
+   * **Data Access:** Node coordinate vectors (`node_x`, `node_y`), element topology connectivity (`face_node_connectivity`), and edge-based flux vectors.
+   * **Numerical Scheme:** Enables flexible, high-resolution coastal refinement using implicit or explicit finite-element/finite-volume triangular unstructured solvers.
+
+3. **Spherical Multiple-Cell Grid (`SolverSMCGrid` / `"SolverSMC"`):**
+   * **Topology:** Hierarchical multi-resolution SMC grid structure that eliminates polar singularity constraints by doubling cell size towards the poles.
+   * **Data Access:** Flat arrays of active cell descriptors (cell positions, refinement levels, area factors) and directional mapping arrays ($i, j$ face linkages).
+   * **Numerical Scheme:** Optimized for efficient global wave modeling with multi-resolution cell refinement along coastlines and ice edges.
+
+### 5.4 Unified Topobathy Elevation Representation
+In alignment with WW4 architectural directives:
+* **Single Elevation Grid Array:** Bathymetry (water depth) and orography (subaerial terrain elevation) are represented together as a **single unified topobathy elevation grid array** (`elevation` / `topobathy`), rather than as two separate arrays.
+* **Datum Convention:** Positive elevation values denote water depth (bathymetry), while negative values (or explicit datum offsets) represent subaerial terrain and orography.
+* **Storage & Views:** `SpatialGrid` stores the unified topobathy array in flat, 64-byte aligned contiguous host buffers, providing non-owning C++20 `std::span<const double>` views directly to `ISolver` implementations without copy overhead.
+
+### 5.5 Source Term Integration Strategy Pattern (`ISourceTerm` & `ComputeAllSources`)
+`ISolver` instances orchestrate the integration of physical source terms during numerical propagation sub-stepping:
+1. `SchemeFactory::createSourceTerm` creates `ISourceTerm` concrete instances for configured physical sub-source terms (`LN1` linear input, `ST1`/`ST2`/`ST4`/`ST6` input/dissipation, `NL1`/`NL2`/`NL3` nonlinear interactions, `BT1`/`BT4` bottom friction).
+2. `ISolver::addSourceTerm(std::unique_ptr<ISourceTerm>)` attaches sub-source terms to the solver instance.
+3. During numerical time-stepping (`w4core_wave`), concrete solvers execute physical source terms through the centralized **`ComputeAllSources`** engine, ensuring separation between spatial grid dynamics and spectral physics.
 
 ---
 
-## 6. Summary & Next Steps Roadmap
+## 6. Integrated Ingestion & Runtime Factory Architecture
 
-1. **Step 1:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (as optional/required dependency behind CMake flags, similar to `WW4_ENABLE_TESTING`).
-2. **Step 2:** Define `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors.
-3. **Step 3:** Implement UGRID NetCDF reader capable of handling structured and unstructured grids and topobathy elevation datasets (NetCDF-3/4 and Zarr V2 via NCZarr).
-4. **Step 4:** Implement Python conversion tooling (`tools/`) and optional C++ loader adapter for Zarr V3 dataset support.
-5. **Step 5:** Add unit tests using small synthesized NetCDF/NCZarr test files under `tests/ww4_utils/`.
+The complete runtime architecture—from configuration loading to factory instantiation, grid data ingestion, solver initialization, and spectral physics computation—is illustrated below:
+
+```mermaid
+sequenceDiagram
+    participant Config as RunConfig (ww4_run_config.yaml)
+    participant Init as w4core_init
+    participant Factory as SchemeFactory
+    participant Loader as IGridDataLoader (NetCDF / Zarr)
+    participant Grid as SpatialGrid
+    participant Solver as ISolver (Rectangular / Triangular / SMC)
+    participant Sources as ComputeAllSources
+
+    Config->>Init: loadRunConfig() [solver = UQ / triangular / SMC]
+    Init->>Factory: createSolver("SolverUQ" / "SolverTriangular" / "SolverSMC")
+    Factory-->>Init: std::unique_ptr<ISolver> (SolverRectangularGrid / SolverTriangularGrid / SolverSMCGrid)
+
+    Init->>Loader: loadGridGeometry() & loadTopobathy()
+    Loader->>Grid: Populate SpatialGrid (Unified Topobathy, Coordinates, Topology)
+    Init->>Solver: init(SpatialGrid)
+
+    loop Physical Sub-Source Terms
+        Init->>Factory: createSourceTerm("ST4" / "NL1" / "BT1" / etc.)
+        Factory-->>Init: std::unique_ptr<ISourceTerm>
+        Init->>Solver: addSourceTerm(ISourceTerm)
+    end
+
+    Note over Init, Solver: Initialization Complete
+
+    loop Numerical Loop (w4core_wave)
+        Solver->>Sources: ComputeAllSources(spectralData, topobathySpan)
+        Sources-->>Solver: Updated Source Increments
+        Note over Solver: Propagate Solution across Grid Topology
+    end
+```
+
+---
+
+## 7. Summary & Next Steps Roadmap
+
+1. **Step 1:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (behind CMake flags, e.g. `WW4_ENABLE_NETCDF=ON`).
+2. **Step 2:** Implement `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors for unified topobathy elevation and coordinate topology.
+3. **Step 3:** Extend `SchemeFactory::createSolver` in `src/ww4_core/` to instantiate `SolverRectangularGrid`, `SolverTriangularGrid`, and `SolverSMCGrid` based on `RunConfig` user options (`physics.solver`).
+4. **Step 4:** Implement NetCDF / UGRID / NCZarr data loaders capable of populating `SpatialGrid` for rectangular, triangular mesh, and SMC grid structures.
+5. **Step 5:** Implement Python conversion tooling (`tools/`) and optional C++ adapter for Zarr V3 dataset support.
+6. **Step 6:** Add unit tests under `tests/ww4_utils/` and `tests/ww4_core/` using synthesized NetCDF/NCZarr grid test files.
