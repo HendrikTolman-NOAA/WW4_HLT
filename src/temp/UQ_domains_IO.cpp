@@ -35,6 +35,7 @@
 #include <vector>
 
 namespace ww4_utils {
+namespace UQ_utils {
 
 namespace {
 
@@ -424,4 +425,5 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
   return true;
 }
 
+} // namespace UQ_utils
 } // namespace ww4_utils

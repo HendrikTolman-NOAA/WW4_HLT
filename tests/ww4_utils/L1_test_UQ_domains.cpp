@@ -36,6 +36,7 @@
 #include "temp/UQ_domains_IO.h"
 
 using namespace ww4_utils;
+using namespace ww4_utils::UQ_utils;
 
 TEST(UQDomainsTest, PartitionGlobalGridBasic) {
   int nx = 10;
