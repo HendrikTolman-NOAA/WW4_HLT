@@ -14,7 +14,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner
 #@date Initial : 2026-07-09
-#@date Last update : 2026-08-21
+#@date Last update : 2026-10-14
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -78,6 +78,7 @@ add_library(
     src/ww4_utils/ww4_input_utils.cpp
     src/ww4_utils/ww4_output_utils.cpp
     src/ww4_utils/ww4_service.cpp
+    src/ww4_utils/ww4_domain.cpp
 )
 target_include_directories(ww4_utils PUBLIC src)
 target_link_libraries(ww4_utils PRIVATE yaml-cpp)
@@ -155,6 +156,7 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_ww4_output_utils tests/ww4_utils/L1_test_ww4_output_utils.cpp ww4_utils)
     ww4_add_test(test_ww4_service tests/ww4_utils/L1_test_ww4_service.cpp ww4_utils)
     ww4_add_test(test_ww4_constants tests/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
+    ww4_add_test(test_ww4_domain tests/ww4_utils/L1_test_ww4_domain.cpp ww4_utils)
 
     # Core tests
     ww4_add_test(test_ww4_standalone tests/ww4_core/L1_test_ww4_standalone.cpp ww4_core)
