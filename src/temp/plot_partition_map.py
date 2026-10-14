@@ -6,11 +6,12 @@
 @file plot_partition_map.py
 @brief Python tool to display WAVEWATCH IV grid partitioning maps from NetCDF files.
 @details Reads 2D partition map arrays from .nc NetCDF files and generates a color-coded
-         grid visualization with colorbar and axis labels.
+         grid visualization with colorbar and axis labels. Supports plot file cleanup.
 
 Usage
 -----
     python3 src/temp/plot_partition_map.py --file partition_map.nc [--output partition_plot.png]
+    python3 src/temp/plot_partition_map.py --clean
 
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -221,6 +222,33 @@ def plot_partition_map(
     return fig
 
 
+def clean_plot_files(directory: Path = Path(".")) -> None:
+    """
+    Remove all generated plot graphics files while preserving data files.
+
+    Parameters
+    ----------
+    directory : Path, optional
+        Directory to search and clean, by default Path(".")
+    """
+    extensions = {".png", ".pdf", ".svg", ".eps", ".jpg", ".jpeg", ".tiff", ".tif"}
+    cleaned_count = 0
+
+    for file_path in directory.glob("*"):
+        if file_path.is_file() and file_path.suffix.lower() in extensions:
+            try:
+                file_path.unlink()
+                print(f"Removed plot file: {file_path}")
+                cleaned_count += 1
+            except OSError as e:
+                print(f"Failed to remove {file_path}: {e}", file=sys.stderr)
+
+    if cleaned_count == 0:
+        print("No generated plot graphics files found to clean.")
+    else:
+        print(f"Cleaned {cleaned_count} plot graphics file(s). Data files preserved.")
+
+
 def main() -> None:
     """Main CLI entry point for partitioning map visualization."""
     parser = argparse.ArgumentParser(
@@ -228,18 +256,35 @@ def main() -> None:
     )
     parser.add_argument(
         "--file",
+        "-f",
         type=Path,
-        required=True,
+        default=None,
         help="Path to input NetCDF (.nc) partitioning map file.",
     )
     parser.add_argument(
         "--output",
+        "-o",
         type=Path,
         default=None,
         help="Optional output image file path (e.g. partition_grid.png).",
     )
+    parser.add_argument(
+        "--clean",
+        "-c",
+        action="store_true",
+        help="Remove all generated plot graphics files (*.png, *.pdf, *.svg, etc.) while preserving NetCDF data files.",
+    )
 
     args = parser.parse_args()
+
+    if args.clean:
+        clean_plot_files()
+        return
+
+    if args.file is None:
+        parser.error(
+            "The --file / -f argument is required unless --clean is specified."
+        )
 
     if not args.file.exists():
         print(f"Error: Input file '{args.file}' does not exist.", file=sys.stderr)
