@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
- * ww3_gspl by Hendrik L. Tolman and the WAVEWATCH III Development Group.
+ * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-14
  * @date Last update : 2026-10-14
  */
