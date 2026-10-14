@@ -30,10 +30,10 @@ import argparse
 import struct
 import sys
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any
 
 
-def read_netcdf_partition_map(file_path: Path) -> Tuple[int, int, int, list[int]]:
+def read_netcdf_partition_map(file_path: Path) -> tuple[int, int, int, list[int]]:
     """
     Read partition map data and dimensions from a NetCDF (CDF-1/CDF-2) file.
 
@@ -44,7 +44,7 @@ def read_netcdf_partition_map(file_path: Path) -> Tuple[int, int, int, list[int]
 
     Returns
     -------
-    Tuple[int, int, int, list[int]]
+    tuple[int, int, int, list[int]]
         Tuple containing (nx, ny, num_partitions, partition_map_flat).
     """
     with open(file_path, "rb") as f:
@@ -180,10 +180,7 @@ def plot_partition_map(
     import matplotlib.pyplot as plt
 
     # Reshape 1D list into 2D grid [ny, nx]
-    grid = [
-        partition_map[y * nx : (y + 1) * nx]
-        for y in range(ny)
-    ]
+    grid = [partition_map[y * nx : (y + 1) * nx] for y in range(ny)]
 
     fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -254,7 +251,7 @@ def main() -> None:
             f"Successfully read NetCDF grid: nx={nx}, ny={ny}, num_partitions={num_partitions}"
         )
         plot_partition_map(nx, ny, num_partitions, pmap, args.output)
-    except Exception as e:
+    except (ValueError, OSError, RuntimeError) as e:
         print(f"Error processing NetCDF file: {e}", file=sys.stderr)
         sys.exit(1)
 
