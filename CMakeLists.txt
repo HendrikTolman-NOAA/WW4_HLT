@@ -78,7 +78,7 @@ add_library(
     src/ww4_utils/ww4_input_utils.cpp
     src/ww4_utils/ww4_output_utils.cpp
     src/ww4_utils/ww4_service.cpp
-    src/ww4_utils/ww4_domain.cpp
+    src/temp/ww4_domain.cpp
 )
 target_include_directories(ww4_utils PUBLIC src)
 target_link_libraries(ww4_utils PRIVATE yaml-cpp)

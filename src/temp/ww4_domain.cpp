@@ -1,26 +1,29 @@
-//+ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-//-- -- -- + | WAVEWATCH IV, open source, code management by NOAA / NWS |
-//+ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-//-- -- -- +
-//
-// @file ww4_domain.cpp
-// @brief Domain partitioning and NetCDF I/O routines for WAVEWATCH IV (WW4).
-// @details Provides functions to partition global UQ structured grids into
-// sub-domains based on active sea points (derived from WW3 ww3_gspl) and
-// routines to write and read partitioning maps in NetCDF format.
-//
-// @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
-// Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks
-// of the National Weather Service.
-// NWS often uses Generative AI (GenAI) for code development and refactoring.
-// Whenever GenAI is used, NWS requires a full human review of code before it is
-// added to its repositories.
-// @author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
-// @author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner
-// @date Initial : 2026-10-14
-// @date Last update : 2026-10-14
+/**
+ *       +--------------------------------------------------------+
+ *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
+ *       +--------------------------------------------------------+
+ *
+ * @file ww4_domain.cpp
+ * @brief Domain partitioning and NetCDF I/O routines for WAVEWATCH IV (WW4).
+ * @details Provides functions to partition global UQ structured grids into
+ * sub-domains based on active sea points (derived from WW3 ww3_gspl) and
+ * routines to write and read partitioning maps in NetCDF format.
+ *
+ * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
+ * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
+ * Weather Service.
+ * NWS often uses Generative AI (GenAI) for code development and refactoring.
+ * Whenever GenAI is used, NWS requires a full human review of code before it is
+ * added to its repositories.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI)
+ * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
+ * ww3_gspl by Hendrik L. Tolman and the WAVEWATCH III Development Group.
+ * @date Initial, 2026-10-14
+ * @date Last update : 2026-10-14
+ */
 
-#include "ww4_utils/ww4_domain.h"
+#include "temp/ww4_domain.h"
 
 #include <algorithm>
 #include <cmath>
