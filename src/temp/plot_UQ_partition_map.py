@@ -3,15 +3,15 @@
       | WAVEWATCH IV, open source, code management by NOAA/NWS |
       +--------------------------------------------------------+
 
-@file plot_partition_map.py
+@file plot_UQ_partition_map.py
 @brief Python tool to display WAVEWATCH IV grid partitioning maps from NetCDF files.
 @details Reads 2D partition map arrays from .nc NetCDF files and generates a color-coded
          grid visualization with colorbar and axis labels. Supports plot file cleanup.
 
 Usage
 -----
-    python3 src/temp/plot_partition_map.py --file partition_map.nc [--output partition_plot.png]
-    python3 src/temp/plot_partition_map.py --clean
+    python3 src/temp/plot_UQ_partition_map.py --file partition_map.nc [--output partition_plot.png]
+    python3 src/temp/plot_UQ_partition_map.py --clean
 
 @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
 Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
