@@ -6,10 +6,10 @@
 # Shell script wrapper to run the Python partitioning map visualization tool.
 #
 # Usage:
-#   ./src/temp/run_plot_partition_map.sh --file partition_map.nc [--output partition_plot.png]
+#   ./src/temp/run_plot_UQ_partition_map.sh --file partition_map.nc [--output partition_plot.png]
 #
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-python3 "${SCRIPT_DIR}/plot_partition_map.py" "$@"
+python3 "${SCRIPT_DIR}/plot_UQ_partition_map.py" "$@"

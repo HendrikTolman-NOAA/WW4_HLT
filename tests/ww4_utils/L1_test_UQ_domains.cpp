@@ -3,8 +3,8 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_ww4_domain.cpp
- * @brief Unit tests for domain partitioning and NetCDF I/O routines.
+ * @file L1_test_UQ_domains.cpp
+ * @brief Unit tests for UQ domain partitioning and NetCDF I/O routines.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -21,9 +21,9 @@
  */
 
 // Routine coverage references for anonymous namespace helper functions:
+// countSeaPointsInRect recursiveBisectDomain
 // toBigEndian32 fromBigEndian32 writeU32 writeNcString readU32 readNcString
-// countSeaPointsInRect recursiveBisectDomain writeNcCharAttribute
-// writeNcIntAttribute
+// writeNcCharAttribute writeNcIntAttribute
 
 #include <gtest/gtest.h>
 
@@ -32,11 +32,12 @@
 #include <set>
 #include <vector>
 
-#include "temp/ww4_domain.h"
+#include "temp/UQ_domains.h"
+#include "temp/UQ_domains_IO.h"
 
 using namespace ww4_utils;
 
-TEST(WW4DomainTest, PartitionGlobalGridBasic) {
+TEST(UQDomainsTest, PartitionGlobalGridBasic) {
   int nx = 10;
   int ny = 10;
   std::vector<int> land_sea_map(nx * ny, 1); // All sea points
@@ -70,7 +71,7 @@ TEST(WW4DomainTest, PartitionGlobalGridBasic) {
   EXPECT_EQ(assigned_partitions.size(), static_cast<size_t>(num_partitions));
 }
 
-TEST(WW4DomainTest, PartitionGlobalGridSinglePartition) {
+TEST(UQDomainsTest, PartitionGlobalGridSinglePartition) {
   int nx = 6;
   int ny = 6;
   std::vector<int> land_sea_map(nx * ny, 1);
@@ -90,7 +91,7 @@ TEST(WW4DomainTest, PartitionGlobalGridSinglePartition) {
   }
 }
 
-TEST(WW4DomainTest, PartitionGlobalGridAllLand) {
+TEST(UQDomainsTest, PartitionGlobalGridAllLand) {
   int nx = 5;
   int ny = 5;
   std::vector<int> land_sea_map(nx * ny, 0);
@@ -105,7 +106,7 @@ TEST(WW4DomainTest, PartitionGlobalGridAllLand) {
   }
 }
 
-TEST(WW4DomainTest, PartitionGlobalGridInvalidInputs) {
+TEST(UQDomainsTest, PartitionGlobalGridInvalidInputs) {
   std::vector<int> ls_map(10, 1);
   EXPECT_TRUE(partitionGlobalGrid(-1, 5, ls_map, 2).empty());
   EXPECT_TRUE(partitionGlobalGrid(5, -1, ls_map, 2).empty());
@@ -114,7 +115,7 @@ TEST(WW4DomainTest, PartitionGlobalGridInvalidInputs) {
   EXPECT_TRUE(partitionGlobalGrid(5, 5, std::span<const int>{}, 2).empty());
 }
 
-TEST(WW4DomainTest, NetCDFIORoundTrip) {
+TEST(UQDomainsIOTest, NetCDFIORoundTrip) {
   int nx = 8;
   int ny = 6;
   int num_partitions = 3;
@@ -153,7 +154,7 @@ TEST(WW4DomainTest, NetCDFIORoundTrip) {
   std::remove(filename.c_str());
 }
 
-TEST(WW4DomainTest, NetCDFReadNonExistentFile) {
+TEST(UQDomainsIOTest, NetCDFReadNonExistentFile) {
   int nx = 0, ny = 0, num_partitions = 0;
   std::vector<int> pmap;
   EXPECT_FALSE(readPartitionMapNetCDF("non_existent_file.nc", nx, ny,

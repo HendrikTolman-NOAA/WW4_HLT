@@ -3,11 +3,11 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file ww4_domain.h
- * @brief Domain partitioning and NetCDF I/O routines for WAVEWATCH IV (WW4).
- * @details Provides functions to partition global UQ structured grids into
- * sub-domains based on active sea points (derived from WW3 ww3_gspl) and
- * routines to write and read partitioning maps in NetCDF format.
+ * @file UQ_domains_IO.h
+ * @brief NetCDF I/O routines for domain partitioning maps in WAVEWATCH IV
+ * (WW4).
+ * @details Provides functions to write and read UQ grid partitioning maps
+ * in NetCDF format (.nc).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -23,8 +23,8 @@
  * @date Last update : 2026-10-14
  */
 
-#ifndef WW4_DOMAIN_H
-#define WW4_DOMAIN_H
+#ifndef UQ_DOMAINS_IO_H
+#define UQ_DOMAINS_IO_H
 
 #include <span>
 #include <string>
@@ -32,36 +32,6 @@
 #include <vector>
 
 namespace ww4_utils {
-
-/**
- * @struct DomainPartition
- * @brief Structure representing a partitioned grid domain dataset.
- */
-struct DomainPartition {
-  int nx{0};
-  int ny{0};
-  int num_partitions{0};
-  std::vector<int> partition_map;
-  std::vector<int> land_sea_map;
-};
-
-/**
- * @brief Partitions a global UQ rectangular grid into sub-domains based on
- * active sea points.
- * @details Implements recursive bisection (derived from WW3 ww3_gspl) to
- * distribute sea points evenly across target partitions while forming spatially
- * contiguous sub-domain blocks.
- * @param nx Number of longitudinal grid columns (x-dimension).
- * @param ny Number of latitudinal grid rows (y-dimension).
- * @param land_sea_map 2D grid status mask (row-major, size nx * ny), where
- * values > 0 indicate sea points and <= 0 indicate land points.
- * @param num_partitions Total number of target partitions (must be >= 1).
- * @return Vector of size nx * ny containing partition IDs (1 to num_partitions
- * for sea points, 0 for land).
- */
-std::vector<int> partitionGlobalGrid(int nx, int ny,
-                                     std::span<const int> land_sea_map,
-                                     int num_partitions);
 
 /**
  * @brief Writes a grid partitioning map and optional land-sea map to a NetCDF
@@ -98,4 +68,4 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
 
 } // namespace ww4_utils
 
-#endif // WW4_DOMAIN_H
+#endif // UQ_DOMAINS_IO_H
