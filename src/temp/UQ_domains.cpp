@@ -31,6 +31,7 @@
 #include <vector>
 
 namespace ww4_utils {
+namespace UQ_utils {
 
 namespace {
 
@@ -151,4 +152,5 @@ std::vector<int> partitionGlobalGrid(int nx, int ny,
   return partition_map;
 }
 
+} // namespace UQ_utils
 } // namespace ww4_utils

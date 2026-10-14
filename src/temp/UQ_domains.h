@@ -23,13 +23,13 @@
  * @date Last update : 2026-10-14
  */
 
-#ifndef UQ_DOMAINS_H
-#define UQ_DOMAINS_H
+#pragma once
 
 #include <span>
 #include <vector>
 
 namespace ww4_utils {
+namespace UQ_utils {
 
 /**
  * @struct DomainPartition
@@ -61,6 +61,5 @@ std::vector<int> partitionGlobalGrid(int nx, int ny,
                                      std::span<const int> land_sea_map,
                                      int num_partitions);
 
+} // namespace UQ_utils
 } // namespace ww4_utils
-
-#endif // UQ_DOMAINS_H

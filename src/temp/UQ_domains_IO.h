@@ -23,8 +23,7 @@
  * @date Last update : 2026-10-14
  */
 
-#ifndef UQ_DOMAINS_IO_H
-#define UQ_DOMAINS_IO_H
+#pragma once
 
 #include <span>
 #include <string>
@@ -32,6 +31,7 @@
 #include <vector>
 
 namespace ww4_utils {
+namespace UQ_utils {
 
 /**
  * @brief Writes a grid partitioning map and optional land-sea map to a NetCDF
@@ -66,6 +66,5 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
                             int &num_partitions,
                             std::vector<int> &partition_map);
 
+} // namespace UQ_utils
 } // namespace ww4_utils
-
-#endif // UQ_DOMAINS_IO_H
