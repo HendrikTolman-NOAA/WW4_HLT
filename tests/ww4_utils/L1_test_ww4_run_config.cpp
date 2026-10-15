@@ -14,9 +14,10 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
+ *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10-15
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -214,8 +215,10 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
 
     const auto config = loadRunConfig(filename, std::cerr);
     ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->linearInput, LinearInputScheme::LN1);
     EXPECT_EQ(config->inputDissipation, InputDissipationScheme::ST1);
     EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::NL1);
+    EXPECT_EQ(config->bottomFriction, BottomFrictionScheme::BT1);
     std::remove(filename.c_str());
   }
 
@@ -279,7 +282,9 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
     file << "  solver: UQ\n";
+    file << "  linear_input: LN1\n";
     file << "  nonlinear_interactions: NL1\n";
+    file << "  bottom_friction: BT1\n";
     file << "forcing:\n";
     file << "  water_levels: none\n";
     file << "  currents: none\n";
