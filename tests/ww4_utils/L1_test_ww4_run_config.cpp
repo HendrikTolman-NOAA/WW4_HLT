@@ -274,6 +274,34 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     std::remove(filename.c_str());
   }
 
+  // Test all source terms parsing
+  {
+    const std::string filename = "test_all_source_terms.yaml";
+    std::ofstream file(filename);
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "physics:\n";
+    file << "  solver: UQ\n";
+    file << "  linear_input: LN1\n";
+    file << "  input_dissipation: ST1\n";
+    file << "  nonlinear_interactions: NL1\n";
+    file << "  bottom_friction: BT1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->linearInput, LinearInputScheme::LN1);
+    EXPECT_EQ(config->inputDissipation, InputDissipationScheme::ST1);
+    EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::NL1);
+    EXPECT_EQ(config->bottomFriction, BottomFrictionScheme::BT1);
+    std::remove(filename.c_str());
+  }
+
   // Test missing input_dissipation failure
   {
     const std::string filename = "test_missing_input_diss.yaml";
