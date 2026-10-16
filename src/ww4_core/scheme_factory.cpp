@@ -13,12 +13,13 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), EJ Rainville
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10/16
  */
 
-// Scheme Selection and Source-Term Computation
+// Scheme Selection and Source-Term Computation (Factory Pattern setup)
+
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/source_terms/compute_all_source_terms.h"
 
@@ -27,19 +28,26 @@
 #include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/solver_uq/solver_uq.h"
 
+// Source terms 
+// --- General Processing
+
 #include "ww4_core/source_terms/compute_all_source_terms.h"
 
+// --- Linear Input
 #include "ww4_core/source_terms/ww4_LN1/ww4_LN1.h"
-// Source terms
+
+// -- Inpuit and Disssipation
 #include "ww4_core/source_terms/ww4_ST1/ww4_ST1.h"
 #include "ww4_core/source_terms/ww4_ST2/ww4_ST2.h"
 #include "ww4_core/source_terms/ww4_ST4/ww4_ST4.h"
 #include "ww4_core/source_terms/ww4_ST6/ww4_ST6.h"
-// Nonlinear interactions
+
+// --- Nonlinear interactions
 #include "ww4_core/source_terms/ww4_NL1/ww4_NL1.h"
 #include "ww4_core/source_terms/ww4_NL2/ww4_NL2.h"
 #include "ww4_core/source_terms/ww4_NL3/ww4_NL3.h"
-// Bottom friction terms
+
+// --- Bottom friction terms
 #include "ww4_core/source_terms/ww4_BT1/ww4_BT1.h"
 #include "ww4_core/source_terms/ww4_BT4/ww4_BT4.h"
 #include <stdexcept>
