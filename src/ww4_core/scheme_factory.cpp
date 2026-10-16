@@ -18,7 +18,10 @@
  * @date Last update : 2026-09-29
  */
 
+// Scheme Selection and Source-Term Computation
 #include "ww4_core/scheme_factory.h"
+#include "ww4_core/source_terms/compute_all_source_terms.h"
+
 // Solver definitions
 #include "ww4_core/solver_smc/solver_smc.h"
 #include "ww4_core/solver_triangular/solver_triangular.h"
