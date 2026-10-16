@@ -27,7 +27,7 @@
 #include "ww4_core/source_terms/compute_all_source_terms.h"
 
 #include "ww4_core/source_terms/ww4_LN1/ww4_LN1.h"
-
+// Source terms
 #include "ww4_core/source_terms/ww4_ST1/ww4_ST1.h"
 #include "ww4_core/source_terms/ww4_ST2/ww4_ST2.h"
 #include "ww4_core/source_terms/ww4_ST4/ww4_ST4.h"
