@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_uq.cpp
+ * @file solver_UQ.cpp
  * @brief Implementation of the UQ solver.
  * @details Concrete implementation of the ISolver interface for regular grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -15,18 +15,18 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 
-#include "ww4_core/solver_uq/solver_uq.h"
+#include "ww4_core/solver_UQ/solver_UQ.h"
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
-// --- w4core_init_uq ---------------------------------------------------------
-void w4core_init_uq(std::ostream &os) {
+// --- w4core_init_UQ ---------------------------------------------------------
+void w4core_init_UQ(std::ostream &os) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
     os << "    Initializing UQ regular grid solver" << std::endl;
@@ -34,7 +34,7 @@ void w4core_init_uq(std::ostream &os) {
 }
 
 // --- init -------------------------------------------------------------------
-void SolverRectangularGrid::init() { w4core_init_uq(); }
+void SolverRectangularGrid::init() { w4core_init_UQ(); }
 
 // --- addSourceTerm ----------------------------------------------------------
 void SolverRectangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {

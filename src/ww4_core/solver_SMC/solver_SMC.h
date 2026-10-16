@@ -3,9 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_uq.h
- * @brief Header for the Ultimate Quickest (UQ) regular grid solver.
- * @details Concrete implementation of the ISolver interface using UQ dynamics.
+ * @file solver_SMC.h
+ * @brief Header for the SMC grid solver stub.
+ * @details Concrete implementation of the ISolver interface using the UK
+ * MetOffice SMC grid scheme.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -15,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 
 #pragma once
@@ -29,34 +30,34 @@
 
 namespace ww4_core {
 
-// --- w4core_init_uq ---------------------------------------------------------
+// --- w4core_init_SMC --------------------------------------------------------
 /**
- * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
+ * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
  * solver.
  * @param os Output stream for logging.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
-void w4core_init_uq(std::ostream &os = std::cout);
+void w4core_init_SMC(std::ostream &os = std::cout);
 
-// --- SolverRectangularGrid --------------------------------------------------
+// --- SolverSMCGrid ----------------------------------------------------------
 /**
- * @class SolverRectangularGrid
- * @brief Implementation of the UQ solver for regular grids.
+ * @class SolverSMCGrid
+ * @brief Implementation of the SMC grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
-class SolverRectangularGrid : public ISolver {
+class SolverSMCGrid : public ISolver {
 public:
-  SolverRectangularGrid() = default;
-  ~SolverRectangularGrid() override = default;
+  SolverSMCGrid() = default;
+  ~SolverSMCGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "UQ";
+    return "SMC";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;

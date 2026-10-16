@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_smc.cpp
+ * @file solver_SMC.cpp
  * @brief Implementation of the SMC grid solver stub.
  * @details Concrete implementation of the ISolver interface for SMC grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -15,18 +15,18 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 
-#include "ww4_core/solver_smc/solver_smc.h"
+#include "ww4_core/solver_SMC/solver_SMC.h"
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
-// --- w4core_init_smc --------------------------------------------------------
-void w4core_init_smc(std::ostream &os) {
+// --- w4core_init_SMC --------------------------------------------------------
+void w4core_init_SMC(std::ostream &os) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
     os << "    Initializing SMC grid solver" << std::endl;
@@ -34,7 +34,7 @@ void w4core_init_smc(std::ostream &os) {
 }
 
 // --- init -------------------------------------------------------------------
-void SolverSMCGrid::init() { w4core_init_smc(); }
+void SolverSMCGrid::init() { w4core_init_SMC(); }
 
 // --- addSourceTerm ----------------------------------------------------------
 void SolverSMCGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
