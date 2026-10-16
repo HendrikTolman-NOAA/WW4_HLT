@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file compute_all_source_terms.h
+ * @file ww4_ComputeAllSources.h
  * @brief Header for physical source term calculations in WW4 core.
  * @details Concrete implementation of ISourceTerm interface for computing all
  * source terms.
@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10-16
  */
 
 #pragma once

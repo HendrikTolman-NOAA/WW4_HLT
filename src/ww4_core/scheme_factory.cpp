@@ -21,7 +21,7 @@
 // Scheme Selection and Source-Term Computation (Factory Pattern setup)
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/source_terms/compute_all_source_terms.h"
+#include "ww4_core/source_terms/ww4_ComputeAllSources/ww4_ComputeAllSources.h"
 
 // Solver definitions
 #include "ww4_core/solver_smc/solver_smc.h"
@@ -85,37 +85,37 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
  */
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {
-  if (name == "ComputeAllSources" || name == "compute_all_sources") {
+  if (name == "ComputeAllSources") {
     return std::make_unique<ComputeAllSources>();
   }
-  if (name == "LN1" || name == "ln1") {
+  if (name == "LN1") {
     return std::make_unique<SourceTermLN1>();
   }
-  if (name == "ST1" || name == "st1") {
+  if (name == "ST1") {
     return std::make_unique<SourceTermST1>();
   }
-  if (name == "ST2" || name == "st2") {
+  if (name == "ST2") {
     return std::make_unique<SourceTermST2>();
   }
-  if (name == "ST4" || name == "st4") {
+  if (name == "ST4") {
     return std::make_unique<SourceTermST4>();
   }
-  if (name == "ST6" || name == "st6") {
+  if (name == "ST6") {
     return std::make_unique<SourceTermST6>();
   }
-  if (name == "NL1" || name == "nl1") {
+  if (name == "NL1") {
     return std::make_unique<SourceTermNL1>();
   }
-  if (name == "NL2" || name == "nl2") {
+  if (name == "NL2") {
     return std::make_unique<SourceTermNL2>();
   }
-  if (name == "NL3" || name == "nl3") {
+  if (name == "NL3") {
     return std::make_unique<SourceTermNL3>();
   }
-  if (name == "BT1" || name == "bt1") {
+  if (name == "BT1") {
     return std::make_unique<SourceTermBT1>();
   }
-  if (name == "BT4" || name == "bt4") {
+  if (name == "BT4") {
     return std::make_unique<SourceTermBT4>();
   }
   throw std::invalid_argument("Unknown source term scheme: " + name);
