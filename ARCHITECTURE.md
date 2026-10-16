@@ -112,14 +112,14 @@ classDiagram
     class ISolver {
         <<interface>>
         +getName() string_view
-        +addSourceTerm(unique_ptr~ISourceTerm~ source)*
-        +solve(span~double~ data)*
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)
+        +solve(span~double~ data)
     }
 
     class ISourceTerm {
         <<interface>>
         +getName() string_view
-        +calculate(span~double~ data)*
+        +calculate(span~double~ data)
     }
 
     class SolverUQ {
@@ -152,7 +152,6 @@ classDiagram
 
     namespace LinearInput {
         class SourceTermLN1 {
-            <<Linear Input>>
             +getName() string_view
             +calculate(span~double~ data)
         }
@@ -160,22 +159,18 @@ classDiagram
 
     namespace InputAndDissipation {
         class SourceTermST1 {
-            <<Input and Dissipation>>
             +getName() string_view
             +calculate(span~double~ data)
         }
         class SourceTermST2 {
-            <<Input and Dissipation>>
             +getName() string_view
             +calculate(span~double~ data)
         }
         class SourceTermST4 {
-            <<Input and Dissipation>>
             +getName() string_view
             +calculate(span~double~ data)
         }
         class SourceTermST6 {
-            <<Input and Dissipation>>
             +getName() string_view
             +calculate(span~double~ data)
         }
@@ -183,17 +178,14 @@ classDiagram
 
     namespace NonlinearInteractions {
         class SourceTermNL1 {
-            <<Nonlinear Interactions>>
             +getName() string_view
             +calculate(span~double~ data)
         }
         class SourceTermNL2 {
-            <<Nonlinear Interactions>>
             +getName() string_view
             +calculate(span~double~ data)
         }
         class SourceTermNL3 {
-            <<Nonlinear Interactions>>
             +getName() string_view
             +calculate(span~double~ data)
         }
@@ -201,12 +193,10 @@ classDiagram
 
     namespace BottomFriction {
         class SourceTermBT1 {
-            <<Bottom Friction>>
             +getName() string_view
             +calculate(span~double~ data)
         }
         class SourceTermBT4 {
-            <<Bottom Friction>>
             +getName() string_view
             +calculate(span~double~ data)
         }
