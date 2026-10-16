@@ -19,7 +19,7 @@
  */
 
 #include "ww4_core/scheme_factory.h"
-
+// Solver definitions
 #include "ww4_core/solver_smc/solver_smc.h"
 #include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/solver_uq/solver_uq.h"
