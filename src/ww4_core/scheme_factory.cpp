@@ -21,12 +21,12 @@
 // Scheme Selection and Source-Term Computation (Factory Pattern setup)
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/source_terms/ww4_ComputeAllSources/ww4_ComputeAllSources.h"
+#include "ww4_core/source_terms/ComputeAllSources/ComputeAllSources.h"
 
 // Solver definitions
-#include "ww4_core/solver_smc/solver_smc.h"
+#include "ww4_core/solver_SMC/solver_SMC.h"
+#include "ww4_core/solver_UQ/solver_UQ.h"
 #include "ww4_core/solver_triangular/solver_triangular.h"
-#include "ww4_core/solver_uq/solver_uq.h"
 
 // Source terms
 // --- Linear Input

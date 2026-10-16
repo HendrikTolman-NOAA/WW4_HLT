@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_uq.h
+ * @file solver_UQ.h
  * @brief Header for the Ultimate Quickest (UQ) regular grid solver.
  * @details Concrete implementation of the ISolver interface using UQ dynamics.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 
 #pragma once
@@ -29,7 +29,7 @@
 
 namespace ww4_core {
 
-// --- w4core_init_uq ---------------------------------------------------------
+// --- w4core_init_UQ ---------------------------------------------------------
 /**
  * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
  * solver.
@@ -37,9 +37,9 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
-void w4core_init_uq(std::ostream &os = std::cout);
+void w4core_init_UQ(std::ostream &os = std::cout);
 
 // --- SolverRectangularGrid --------------------------------------------------
 /**
@@ -48,7 +48,7 @@ void w4core_init_uq(std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 class SolverRectangularGrid : public ISolver {
 public:

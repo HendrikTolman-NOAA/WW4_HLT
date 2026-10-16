@@ -91,10 +91,10 @@ add_library(
     src/ww4_core/w4core_wave.cpp
     src/ww4_core/w4core_finalize.cpp
     src/ww4_core/scheme_factory.cpp
-    src/ww4_core/solver_uq/solver_uq.cpp
+    src/ww4_core/solver_UQ/solver_UQ.cpp
     src/ww4_core/solver_triangular/solver_triangular.cpp
-    src/ww4_core/solver_smc/solver_smc.cpp
-    src/ww4_core/source_terms/ww4_ComputeAllSources/ww4_ComputeAllSources.cpp
+    src/ww4_core/solver_SMC/solver_SMC.cpp
+    src/ww4_core/source_terms/ComputeAllSources/ComputeAllSources.cpp
     src/ww4_core/source_terms/ww4_ST1/ww4_ST1.cpp
     src/ww4_core/source_terms/ww4_ST2/ww4_ST2.cpp
     src/ww4_core/source_terms/ww4_ST4/ww4_ST4.cpp
@@ -174,15 +174,15 @@ if(WW4_ENABLE_TESTING)
 
     # Core tests
     ww4_add_test(test_scheme_factory tests/ww4_core/L1_test_scheme_factory.cpp ww4_core)
-    ww4_add_test(test_solver_uq tests/ww4_core/L1_test_solver_uq.cpp ww4_core)
+    ww4_add_test(test_solver_UQ tests/ww4_core/L1_test_solver_UQ.cpp ww4_core)
     ww4_add_test(test_solver_triangular tests/ww4_core/L1_test_solver_triangular.cpp ww4_core)
-    ww4_add_test(test_solver_smc tests/ww4_core/L1_test_solver_smc.cpp ww4_core)
+    ww4_add_test(test_solver_SMC tests/ww4_core/L1_test_solver_SMC.cpp ww4_core)
     ww4_add_test(test_ww4_standalone tests/ww4_core/L1_test_ww4_standalone.cpp ww4_core)
     target_compile_definitions(test_ww4_standalone PRIVATE STANDALONE_EXE_PATH="${CMAKE_SOURCE_DIR}/exe/ww4_standalone")
     ww4_add_test(test_w4core_init tests/ww4_core/L1_test_w4core_init.cpp ww4_core)
     ww4_add_test(test_w4core_wave tests/ww4_core/L1_test_w4core_wave.cpp ww4_core)
     ww4_add_test(test_w4core_finalize tests/ww4_core/L1_test_w4core_finalize.cpp ww4_core)
-    ww4_add_test(test_ww4_ComputeAllSources tests/ww4_core/L1_test_ww4_ComputeAllSources.cpp ww4_core)
+    ww4_add_test(test_ComputeAllSources tests/ww4_core/L1_test_ComputeAllSources.cpp ww4_core)
     ww4_add_test(test_st1 tests/ww4_core/L1_test_ww4_ST1.cpp ww4_core)
     ww4_add_test(test_st2 tests/ww4_core/L1_test_ww4_ST2.cpp ww4_core)
     ww4_add_test(test_st4 tests/ww4_core/L1_test_ww4_ST4.cpp ww4_core)

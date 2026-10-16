@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_smc.h
+ * @file solver_SMC.h
  * @brief Header for the SMC grid solver stub.
  * @details Concrete implementation of the ISolver interface using the UK
  * MetOffice SMC grid scheme.
@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 
 #pragma once
@@ -30,7 +30,7 @@
 
 namespace ww4_core {
 
-// --- w4core_init_smc --------------------------------------------------------
+// --- w4core_init_SMC --------------------------------------------------------
 /**
  * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
  * solver.
@@ -38,9 +38,9 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
-void w4core_init_smc(std::ostream &os = std::cout);
+void w4core_init_SMC(std::ostream &os = std::cout);
 
 // --- SolverSMCGrid ----------------------------------------------------------
 /**

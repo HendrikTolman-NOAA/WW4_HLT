@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_solver_smc.cpp
- * @brief Unit tests for the SMC grid solver module.
+ * @file L1_test_solver_UQ.cpp
+ * @brief Unit tests for the UQ solver module.
  * @details Verifies initialization, adding source terms, and solver execution
- * for SolverSMCGrid.
+ * for SolverRectangularGrid.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -18,29 +18,29 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-15
- * @date Last update : 2026-10-15
+ * @date Last update : 2026-10-16
  */
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_smc/solver_smc.h"
+#include "ww4_core/solver_UQ/solver_UQ.h"
 #include <gtest/gtest.h>
 
 namespace ww4_core {
 
-TEST(SolverSMCTest, BasicPropertiesAndInit) {
-  SolverSMCGrid solver;
-  EXPECT_EQ(solver.getName(), "SMC");
+TEST(SolverUQTest, BasicPropertiesAndInit) {
+  SolverRectangularGrid solver;
+  EXPECT_EQ(solver.getName(), "UQ");
 
   testing::internal::CaptureStdout();
-  w4core_init_smc();
+  w4core_init_UQ();
   std::string output = testing::internal::GetCapturedStdout();
   (void)output;
 
   EXPECT_NO_THROW(solver.init());
 }
 
-TEST(SolverSMCTest, SolveAndAddSourceTerm) {
-  SolverSMCGrid solver;
+TEST(SolverUQTest, SolveAndAddSourceTerm) {
+  SolverRectangularGrid solver;
   std::vector<double> data = {1.0, 2.0, 3.0};
 
   // Execution without prior addSourceTerm triggers auto-creation of

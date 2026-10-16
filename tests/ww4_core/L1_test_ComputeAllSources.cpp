@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_ww4_ComputeAllSources.cpp
+ * @file L1_test_ComputeAllSources.cpp
  * @brief Unit tests for physical source term calculations (ComputeAllSources).
  * @details Verifies the behavior and interface compliance of ComputeAllSources.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -20,7 +20,7 @@
  * @date Last update : 2026-10-16
  */
 
-#include "ww4_core/source_terms/ww4_ComputeAllSources/ww4_ComputeAllSources.h"
+#include "ww4_core/source_terms/ComputeAllSources/ComputeAllSources.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
 #include <gtest/gtest.h>

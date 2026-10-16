@@ -34,7 +34,7 @@
 
 namespace ww4_core {
 
-// --- w4core_wave_uq ---------------------------------------------------------
+// --- w4core_wave_UQ ---------------------------------------------------------
 /**
  * @brief Solver routine for Ultimate Quickest (UQ) scheme on a regular grid.
  * @param timeStep Time step in seconds.
@@ -42,9 +42,9 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
-void w4core_wave_uq(double timeStep, std::ostream &os) {
+void w4core_wave_UQ(double timeStep, std::ostream &os) {
   (void)timeStep;
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
@@ -72,7 +72,7 @@ void w4core_wave_triangular(double timeStep, std::ostream &os) {
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
-// --- w4core_wave_smc --------------------------------------------------------
+// --- w4core_wave_SMC --------------------------------------------------------
 /**
  * @brief Solver routine for Spherical Multiple-Cell (SMC) grid solver.
  * @param timeStep Time step in seconds.
@@ -80,9 +80,9 @@ void w4core_wave_triangular(double timeStep, std::ostream &os) {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
-void w4core_wave_smc(double timeStep, std::ostream &os) {
+void w4core_wave_SMC(double timeStep, std::ostream &os) {
   (void)timeStep;
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
@@ -214,13 +214,13 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
         // === Propagate solution ============================================
         switch (getRunConfig().solver) {
         case ww4_utils::SolverType::UQ:
-          w4core_wave_uq(actualTimeStep, os);
+          w4core_wave_UQ(actualTimeStep, os);
           break;
         case ww4_utils::SolverType::Triangular:
           w4core_wave_triangular(actualTimeStep, os);
           break;
         case ww4_utils::SolverType::SMC:
-          w4core_wave_smc(actualTimeStep, os);
+          w4core_wave_SMC(actualTimeStep, os);
           break;
         default:
           // Explanatory comment preceding __FILE__ and __LINE__

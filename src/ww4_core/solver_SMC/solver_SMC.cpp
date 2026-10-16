@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_uq.cpp
- * @brief Implementation of the UQ solver.
- * @details Concrete implementation of the ISolver interface for regular grids.
+ * @file solver_SMC.cpp
+ * @brief Implementation of the SMC grid solver stub.
+ * @details Concrete implementation of the ISolver interface for SMC grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -18,36 +18,36 @@
  * @date Last update : 2026-09-25
  */
 
-#include "ww4_core/solver_uq/solver_uq.h"
+#include "ww4_core/solver_SMC/solver_SMC.h"
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
-// --- w4core_init_uq ---------------------------------------------------------
-void w4core_init_uq(std::ostream &os) {
+// --- w4core_init_SMC --------------------------------------------------------
+void w4core_init_SMC(std::ostream &os) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Initializing UQ regular grid solver" << std::endl;
+    os << "    Initializing SMC grid solver" << std::endl;
   }
 }
 
 // --- init -------------------------------------------------------------------
-void SolverRectangularGrid::init() { w4core_init_uq(); }
+void SolverSMCGrid::init() { w4core_init_SMC(); }
 
 // --- addSourceTerm ----------------------------------------------------------
-void SolverRectangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+void SolverSMCGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {
     sourceTerms_.push_back(std::move(source));
   }
 }
 
 // --- solve ------------------------------------------------------------------
-void SolverRectangularGrid::solve(std::span<double> data) {
+void SolverSMCGrid::solve(std::span<double> data) {
   // === Perform numerical propagation =======================================
   std::for_each(data.begin(), data.end(), [](double &val) {
-    val *= 1.01; // Mock propagation effect
+    val *= 1.03; // Mock propagation effect
   });
 
   // === Call integrated source terms ==========================================
