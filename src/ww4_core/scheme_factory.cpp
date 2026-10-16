@@ -58,7 +58,7 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10-16
  */
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   if (name == "SolverUQ") {
@@ -81,7 +81,7 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10-16
  */
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {

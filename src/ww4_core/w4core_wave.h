@@ -62,7 +62,7 @@ void w4core_wave_SMC(double timeStep, std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os);

@@ -49,7 +49,7 @@ void w4core_init_SMC(std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-16
  */
 class SolverSMCGrid : public ISolver {
 public:
