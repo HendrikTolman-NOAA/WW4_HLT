@@ -32,7 +32,7 @@
 #include "ww4_core/source_terms/ww4_ST2/ww4_ST2.h"
 #include "ww4_core/source_terms/ww4_ST4/ww4_ST4.h"
 #include "ww4_core/source_terms/ww4_ST6/ww4_ST6.h"
-
+// Nonlinear interactions
 #include "ww4_core/source_terms/ww4_NL1/ww4_NL1.h"
 #include "ww4_core/source_terms/ww4_NL2/ww4_NL2.h"
 #include "ww4_core/source_terms/ww4_NL3/ww4_NL3.h"
