@@ -36,7 +36,7 @@
 #include "ww4_core/source_terms/ww4_NL1/ww4_NL1.h"
 #include "ww4_core/source_terms/ww4_NL2/ww4_NL2.h"
 #include "ww4_core/source_terms/ww4_NL3/ww4_NL3.h"
-
+// Bottom friction terms
 #include "ww4_core/source_terms/ww4_BT1/ww4_BT1.h"
 #include "ww4_core/source_terms/ww4_BT4/ww4_BT4.h"
 #include <stdexcept>
