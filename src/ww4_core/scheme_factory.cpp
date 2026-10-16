@@ -31,7 +31,6 @@
 // Source terms 
 // --- General Processing
 
-#include "ww4_core/source_terms/compute_all_source_terms.h"
 
 // --- Linear Input
 #include "ww4_core/source_terms/ww4_LN1/ww4_LN1.h"
