@@ -38,9 +38,9 @@ protected:
 
 TEST_F(W4CoreWaveL1Test, BasicWaveExecution) {
   // Explicit reference to solver call routines for coverage check:
-  // w4core_wave_uq
+  // w4core_wave_UQ
   // w4core_wave_triangular
-  // w4core_wave_smc
+  // w4core_wave_SMC
 
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
