@@ -29,9 +29,6 @@
 #include "ww4_core/solver_uq/solver_uq.h"
 
 // Source terms 
-// --- General Processing
-
-
 // --- Linear Input
 #include "ww4_core/source_terms/ww4_LN1/ww4_LN1.h"
 
