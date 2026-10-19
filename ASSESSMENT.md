@@ -46,7 +46,7 @@ A survey of NOAA-EMC, UFS (Unified Forecast System), and NCEPLIBS repositories i
 #### Background & Objectives
 `gridgen` is the official NOAA grid generation framework for WAVEWATCH. Historically, `gridgen` relied on proprietary MATLAB scripts to ingest global high-resolution bathymetry datasets (e.g., ETOPO, GEBCO), create regular/curvilinear/unstructured spatial masks, calculate sub-grid obstructions (cell-side and cell-area transparency factors for sub-grid land/ice features), and export grid definition files.
 
-The **`FT-WW4-Version-Without-Matlab`** branch (`https://github.com/HendrikTolman-NOAA/gridgen/tree/FT-WW4-Version-Without-Matlab`) modernizes `gridgen` for WW4 by completely removing the MATLAB runtime dependency. It re-architects all grid generation, masking, topobathy processing, and obstruction calculation algorithms in pure **Python 3**, leveraging the open-source scientific Python stack and outputting modern NetCDF/UGRID files directly consumable by WW4.
+The **`FT-WW4-Version-Without-Matlab`** branch (`https://github.com/HendrikTolman-NOAA/gridgen/tree/FT-WW4-Version-Without-Matlab`) modernizes `gridgen` for WW4 by completely removing the MATLAB runtime dependency. From a strategic repository design perspective, `gridgen` is maintained as an independent, separate repository (`HendrikTolman-NOAA/gridgen`) rather than embedded inside the WW4 repository (`tools/gridgen/`). It re-architects all grid generation, masking, topobathy processing, and obstruction calculation algorithms in pure **Python 3**, leveraging the open-source scientific Python stack and outputting modern NetCDF/UGRID files directly consumable by WW4.
 
 #### Key Features & Improvements in `gridgen` for WW4
 1. **Complete Removal of MATLAB:** Replaces MATLAB routines with Python 3 modules (`numpy`, `scipy`, `xarray`, `netCDF4`, `pyproj`, `shapely`).
@@ -244,7 +244,7 @@ sequenceDiagram
 
 ## 7. Summary & Next Steps Roadmap
 
-1. **Step 1:** Establish `gridgen` environment setup (`FT-WW4-Version-Without-Matlab`) and Python workflow integration in `tools/gridgen/` for automated WW4 spatial grid generation.
+1. **Step 1:** Establish `gridgen` environment setup from its dedicated standalone repository (`HendrikTolman-NOAA/gridgen`, branch `FT-WW4-Version-Without-Matlab`) for automated WW4 spatial grid generation (maintained separately from the WW4 repository).
 2. **Step 2:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (behind CMake flags, e.g. `WW4_ENABLE_NETCDF=ON`).
 3. **Step 3:** Implement `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors for unified topobathy elevation and coordinate topology.
 4. **Step 4:** Maintain integration with `SchemeFactory::createSolver` in `src/ww4_core/` (merged in PR #72) to bind grid ingestion data directly to instantiated `SolverRectangularGrid`, `SolverTriangularGrid`, and `SolverSMCGrid` solver implementations based on `RunConfig` options (`physics.solver`).
