@@ -1,7 +1,7 @@
 # Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Topobathy (Bathymetry / Orography) in WAVEWATCH IV (WW4)
 
 ## 1. Executive Summary
-This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and unified topobathy (bathymetry/orography elevation) fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Design** (`FT-Runtime-Scheme-Selection-Design` branch) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). Crucially, this assessment incorporates the pre-processing grid generation capabilities of **`gridgen` for WW4** from the `FT-WW4-Version-Without-Matlab` branch (`HendrikTolman-NOAA/gridgen`), which replaces legacy MATLAB grid generation with a pure Python 3 / NetCDF workflow.
+This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and unified topobathy (bathymetry/orography elevation) fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). Crucially, this assessment incorporates the pre-processing grid generation capabilities of **`gridgen` for WW4** from the `FT-WW4-Version-Without-Matlab` branch (`HendrikTolman-NOAA/gridgen`), which replaces legacy MATLAB grid generation with a pure Python 3 / NetCDF workflow.
 
 ---
 
@@ -128,7 +128,7 @@ flowchart TD
 
 ## 5. Integration with Runtime Scheme Selection Design & Factory Pattern
 
-The grid ingestion framework integrates directly with the runtime scheme selection architecture developed in the `FT-Runtime-Scheme-Selection-Design` branch. This design leverages the **Factory Pattern** (`SchemeFactory`) to instantiate numerical solvers and physical source terms based on runtime user configuration options in `ww4_run_config.yaml`.
+The grid ingestion framework integrates directly with the runtime scheme selection architecture (PR #72, merged into `develop`). This design leverages the **Factory Pattern** (`SchemeFactory`) to instantiate numerical solvers and physical source terms based on runtime user configuration options in `ww4_run_config.yaml`. Lowercase aliases for solvers and source terms have been removed in PR #170 to enforce exact string identifiers throughout configuration parsing and component creation.
 
 ### 5.1 User Configuration Options (`RunConfig`)
 User options are loaded from `ww4_run_config.yaml` into the `RunConfig` structure during model initialization (`w4core_init`). The mandatory `physics.solver` option determines the numerical propagation scheme and corresponding spatial grid type:
@@ -156,9 +156,12 @@ grid:
 `SchemeFactory::createSolver(solver_name)` validates user input and returns a `std::unique_ptr<ISolver>` polymorphically bound to the appropriate grid-specific solver implementation:
 
 * **Exact Scheme String Key Mapping:**
-  * `"SolverUQ"` / `'UQ'` $\rightarrow$ Instantiates **`SolverRectangularGrid`**
-  * `"SolverTriangular"` / `'triangular'` $\rightarrow$ Instantiates **`SolverTriangularGrid`**
-  * `"SolverSMC"` / `'SMC'` $\rightarrow$ Instantiates **`SolverSMCGrid`**
+  * In `RunConfig` (`ww4_run_config.yaml`), `physics.solver` accepts exact keys `'UQ'`, `'triangular'`, or `'SMC'`.
+  * `SchemeFactory::createSolver` accepts exact capitalized string identifiers:
+    * `"SolverUQ"` $\rightarrow$ Instantiates **`SolverRectangularGrid`**
+    * `"SolverTriangular"` $\rightarrow$ Instantiates **`SolverTriangularGrid`**
+    * `"SolverSMC"` $\rightarrow$ Instantiates **`SolverSMCGrid`**
+  * All lowercase aliases have been removed for strict, deterministic runtime component lookup.
 
 ### 5.3 The Three Concrete Spatial Grids
 The three concrete grid solvers derive from `ISolver` and encapsulate distinct grid topologies, coordinate systems, and spatial discretization schemes:
@@ -186,7 +189,7 @@ In alignment with WW4 architectural directives:
 
 ### 5.5 Source Term Integration Strategy Pattern (`ISourceTerm` & `ComputeAllSources`)
 `ISolver` instances orchestrate the integration of physical source terms during numerical propagation sub-stepping:
-1. `SchemeFactory::createSourceTerm` creates `ISourceTerm` concrete instances for configured physical sub-source terms (`LN1` linear input, `ST1`/`ST2`/`ST4`/`ST6` input/dissipation, `NL1`/`NL2`/`NL3` nonlinear interactions, `BT1`/`BT4` bottom friction).
+1. `SchemeFactory::createSourceTerm` creates `ISourceTerm` concrete instances for configured physical sub-source terms using exact capitalized identifiers (`"ComputeAllSources"`, `"LN1"`, `"ST1"`, `"ST2"`, `"ST4"`, `"ST6"`, `"NL1"`, `"NL2"`, `"NL3"`, `"BT1"`, `"BT4"`).
 2. `ISolver::addSourceTerm(std::unique_ptr<ISourceTerm>)` attaches sub-source terms to the solver instance.
 3. During numerical time-stepping (`w4core_wave`), concrete solvers execute physical source terms through the centralized **`ComputeAllSources`** engine, ensuring separation between spatial grid dynamics and spectral physics.
 
@@ -244,7 +247,7 @@ sequenceDiagram
 1. **Step 1:** Establish `gridgen` environment setup (`FT-WW4-Version-Without-Matlab`) and Python workflow integration in `tools/gridgen/` for automated WW4 spatial grid generation.
 2. **Step 2:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (behind CMake flags, e.g. `WW4_ENABLE_NETCDF=ON`).
 3. **Step 3:** Implement `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors for unified topobathy elevation and coordinate topology.
-4. **Step 4:** Extend `SchemeFactory::createSolver` in `src/ww4_core/` to instantiate `SolverRectangularGrid`, `SolverTriangularGrid`, and `SolverSMCGrid` based on `RunConfig` user options (`physics.solver`).
+4. **Step 4:** Maintain integration with `SchemeFactory::createSolver` in `src/ww4_core/` (merged in PR #72) to bind grid ingestion data directly to instantiated `SolverRectangularGrid`, `SolverTriangularGrid`, and `SolverSMCGrid` solver implementations based on `RunConfig` options (`physics.solver`).
 5. **Step 5:** Implement NetCDF / UGRID / NCZarr data loaders capable of reading `gridgen`-produced NetCDF grid files and populating `SpatialGrid` for rectangular, triangular mesh, and SMC grid structures.
 6. **Step 6:** Implement Python conversion tooling (`tools/`) and optional C++ adapter for Zarr V3 dataset support.
 7. **Step 7:** Add unit tests under `tests/ww4_utils/` and `tests/ww4_core/` using synthesized NetCDF/NCZarr grid test files generated via `gridgen`.
