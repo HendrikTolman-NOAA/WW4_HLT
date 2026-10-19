@@ -1,7 +1,7 @@
 # Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Topobathy (Bathymetry / Orography) in WAVEWATCH IV (WW4)
 
 ## 1. Executive Summary
-This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and unified topobathy (bathymetry/orography elevation) fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). Crucially, this assessment incorporates the pre-processing grid generation capabilities of **`gridgen` for WW4** from the `FT-WW4-Version-Without-Matlab` branch (`HendrikTolman-NOAA/gridgen`), which replaces legacy MATLAB grid generation with a pure Python 3 / NetCDF workflow.
+This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, and unified topobathy (bathymetry/orography elevation) fields into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). The assessment assumes that spatial grid definitions, topobathy elevation fields, land/sea masks, and sub-grid obstruction fields are provided in standardized NetCDF/UGRID/Zarr input files (e.g., generated externally by tools such as `gridgen`).
 
 ---
 
@@ -11,9 +11,9 @@ This assessment presents a strategic roadmap for bringing spatial grid definitio
 * **Core Model (In-Model Grid & Elevation Ingestion): Pure C++20**
   * **Zero Overhead & Operational HPC Readiness:** In high-performance operational environments (e.g., Cray/HPC clusters at NOAA NCEP like Cactus/Dogwood), running Python inside the core numerical iteration loop or during model startup introduces GIL lock risks, non-standard runtime dependencies, and potential multi-threading/MPI interaction issues.
   * **Memory Safety & Control:** Reading large spatial elevation arrays (bathymetry/orography) and connectivity meshes directly into C++ data structures via C/C++ APIs ensures zero-copy vectorization, strict RAII memory management, and `std::span` compatibility.
-* **Pre-Processing, Grid Generation, & Analysis: Python Tooling (`gridgen`)**
-  * Grid generation and pre-processing are handled out-of-model using `gridgen` (`HendrikTolman-NOAA/gridgen` branch `FT-WW4-Version-Without-Matlab`). By removing legacy MATLAB dependencies, `gridgen` now operates purely in Python 3 using `xarray`, `netCDF4`, `numpy`, `scipy`, `pyproj`, `shapely`, and `matplotlib`.
-  * External Python tooling in `gridgen` generates validated NetCDF/UGRID/Zarr spatial grid files, topobathy elevation arrays, land/water masks, and sub-grid obstruction fields, feeding directly into WW4's C++ ingestion engine (`IGridDataLoader`).
+* **Pre-Processing & External Tooling:**
+  * Spatial grid generation and pre-processing (such as producing land/water masks, topobathy elevation arrays, and sub-grid obstruction fields) are performed externally prior to model execution.
+  * External grid generation tools (e.g., `gridgen`) output standardized NetCDF, UGRID, or Zarr spatial grid files that feed directly into WW4's pure C++ ingestion engine (`IGridDataLoader`).
 
 ---
 
@@ -41,67 +41,6 @@ A survey of NOAA-EMC, UFS (Unified Forecast System), and NCEPLIBS repositories i
 
 ---
 
-### 3.1 `gridgen` Setup & Architecture (`FT-WW4-Version-Without-Matlab`)
-
-#### Background & Objectives
-`gridgen` is the official NOAA grid generation framework for WAVEWATCH. Historically, `gridgen` relied on proprietary MATLAB scripts to ingest global high-resolution bathymetry datasets (e.g., ETOPO, GEBCO), create regular/curvilinear/unstructured spatial masks, calculate sub-grid obstructions (cell-side and cell-area transparency factors for sub-grid land/ice features), and export grid definition files.
-
-The **`FT-WW4-Version-Without-Matlab`** branch (`https://github.com/HendrikTolman-NOAA/gridgen/tree/FT-WW4-Version-Without-Matlab`) modernizes `gridgen` for WW4 by completely removing the MATLAB runtime dependency. From a strategic repository design perspective, `gridgen` is maintained as an independent, separate repository (`HendrikTolman-NOAA/gridgen`) rather than embedded inside the WW4 repository (`tools/gridgen/`). It re-architects all grid generation, masking, topobathy processing, and obstruction calculation algorithms in pure **Python 3**, leveraging the open-source scientific Python stack and outputting modern NetCDF/UGRID files directly consumable by WW4.
-
-#### Key Features & Improvements in `gridgen` for WW4
-1. **Complete Removal of MATLAB:** Replaces MATLAB routines with Python 3 modules (`numpy`, `scipy`, `xarray`, `netCDF4`, `pyproj`, `shapely`).
-2. **Unified Topobathy Processing:** Combines ocean bathymetry and subaerial orography into a single contiguous grid array with user-defined datums and shoreline boundaries.
-3. **Automated Land-Sea Masking:** Generates land, water, boundary, and active/inactive cell masks for rectangular, curvilinear, triangular UGRID, and Spherical Multiple-Cell (SMC) grids.
-4. **Sub-Grid Obstruction Calculation:** Computes directional cell-side transmission coefficients ($SX$, $SY$) and cell-area blockage factors ($SX0$, $SY0$) to represent unresolved islands, reefs, and narrow channels.
-5. **Direct NetCDF4 / UGRID Export:** Outputs standard CF-compliant NetCDF4 files containing spatial coordinates, topobathy elevation arrays, land masks, and sub-grid obstruction fields that match WW4's C++ `IGridDataLoader` requirements.
-6. **Container & CI/CD Readiness:** Operates seamlessly within Docker/Apptainer containers and automated GitHub Actions CI/CD pipelines without commercial software licenses.
-
-#### Environment Setup & Installation Workflow
-
-To set up `gridgen` for WW4 from the `FT-WW4-Version-Without-Matlab` branch:
-
-```bash
-# 1. Clone the gridgen repository and switch to the FT-WW4-Version-Without-Matlab branch
-git clone https://github.com/HendrikTolman-NOAA/gridgen.git
-cd gridgen
-git checkout FT-WW4-Version-Without-Matlab
-
-# 2. Create and activate a Python 3 virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# 3. Upgrade pip and install core dependencies
-pip install --upgrade pip
-pip install numpy scipy xarray netCDF4 pyproj shapely matplotlib pyyaml
-
-# 4. (Optional) Install gridgen in editable mode
-pip install -e .
-```
-
-Alternatively, using `conda` / `mamba`:
-
-```bash
-conda create -n gridgen_ww4 python=3.11 numpy scipy xarray netcdf4 pyproj shapely matplotlib pyyaml -c conda-forge
-conda activate gridgen_ww4
-```
-
-#### Execution Workflow & Output Artifacts
-
-`gridgen` is executed via command-line interface (CLI) scripts or Python configuration functions:
-
-```bash
-# Run grid generation using a WW4 YAML specification file
-python -m gridgen.create_grid --config ww4_grid_config.yaml --output build/global_5m.nc
-```
-
-`gridgen` produces standard NetCDF4 files containing:
-* **Spatial Coordinates:** `longitude` / `latitude` 1D or 2D coordinate arrays (or `node_x` / `node_y` for UGRID triangular meshes).
-* **Unified Topobathy:** `topobathy` / `elevation` (2D or 1D node array in meters, positive depth / negative terrain).
-* **Land-Sea Mask:** `mask` (0 = land/excl, 1 = active water, 2 = boundary/forced).
-* **Sub-Grid Obstructions:** `obstruction_x`, `obstruction_y` (transparency factors $[0, 1]$ for wave flux across cell boundaries).
-
----
-
 ## 4. Performance Portability & Kokkos Evaluation
 
 ### Recommendation: **Not Yet for Grid I/O, but Design Data Layouts for Future Kokkos Integration**
@@ -114,13 +53,11 @@ python -m gridgen.create_grid --config ww4_grid_config.yaml --output build/globa
 
 ```mermaid
 flowchart TD
-    A[Raw Source Bathymetry / Orography] --> B[gridgen FT-WW4-Version-Without-Matlab<br/><i>Python 3 / xarray / netCDF4</i>]
-    B --> C[WW4 NetCDF / UGRID / Zarr Grid File<br/><i>Unified Topobathy, Masks & Obstructions</i>]
-    C --> D[C++ I/O Engine<br/><i>netcdf-c / NCZarr / IGridDataLoader</i>]
-    D --> E[Flat Host Buffer<br/><i>std::vector&lt;double&gt; + std::span&lt;const double&gt;</i>]
+    A[WW4 NetCDF / UGRID / Zarr Grid File<br/><i>Unified Topobathy, Masks & Obstructions</i>] --> B[C++ I/O Engine<br/><i>netcdf-c / NCZarr / IGridDataLoader</i>]
+    B --> C[Flat Host Buffer<br/><i>std::vector&lt;double&gt; + std::span&lt;const double&gt;</i>]
 
     subgraph Future_Compute_Engine [Phase 2: Compute Acceleration]
-        E -.-> F[Kokkos::View / Execution Spaces<br/><i>GPU Acceleration</i>]
+        C -.-> D[Kokkos::View / Execution Spaces<br/><i>GPU Acceleration</i>]
     end
 ```
 
@@ -197,12 +134,10 @@ In alignment with WW4 architectural directives:
 
 ## 6. Integrated Ingestion & Runtime Factory Architecture
 
-The complete runtime architecture—from offline grid generation with `gridgen` to configuration loading, factory instantiation, grid data ingestion, solver initialization, and spectral physics computation—is illustrated below:
+The complete runtime architecture—from NetCDF configuration loading, factory instantiation, grid data ingestion, solver initialization, and spectral physics computation—is illustrated below:
 
 ```mermaid
 sequenceDiagram
-    participant Source as Bathymetry & Orography Data
-    participant Gridgen as gridgen (FT-WW4-Version-Without-Matlab)
     participant Config as RunConfig (ww4_run_config.yaml)
     participant Init as w4core_init
     participant Factory as SchemeFactory
@@ -211,12 +146,7 @@ sequenceDiagram
     participant Solver as ISolver (Rectangular / Triangular / SMC)
     participant Sources as ComputeAllSources
 
-    Note over Source, Gridgen: Offline Pre-Processing (Python 3)
-    Source->>Gridgen: Process ETOPO/GEBCO Topobathy
-    Gridgen->>Gridgen: Generate Land Mask & Sub-grid Obstructions
-    Gridgen-->>Config: Export NetCDF/UGRID File (e.g. global_mesh.nc)
-
-    Note over Init, Sources: Model Execution (C++20 Core)
+    Note over Config, Loader: Model Execution (C++20 Core)
     Config->>Init: loadRunConfig() [solver = UQ / triangular / SMC]
     Init->>Factory: createSolver("SolverUQ" / "SolverTriangular" / "SolverSMC")
     Factory-->>Init: std::unique_ptr<ISolver> (SolverRectangularGrid / SolverTriangularGrid / SolverSMCGrid)
@@ -244,10 +174,10 @@ sequenceDiagram
 
 ## 7. Summary & Next Steps Roadmap
 
-1. **Step 1:** Establish `gridgen` environment setup from its dedicated standalone repository (`HendrikTolman-NOAA/gridgen`, branch `FT-WW4-Version-Without-Matlab`) for automated WW4 spatial grid generation (maintained separately from the WW4 repository).
+1. **Step 1:** Define C++ `SpatialGrid` memory layout and `IGridDataLoader` interface specification in `src/ww4_utils/` for NetCDF, UGRID, and Zarr grid input files.
 2. **Step 2:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (behind CMake flags, e.g. `WW4_ENABLE_NETCDF=ON`).
 3. **Step 3:** Implement `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors for unified topobathy elevation and coordinate topology.
 4. **Step 4:** Maintain integration with `SchemeFactory::createSolver` in `src/ww4_core/` (merged in PR #72) to bind grid ingestion data directly to instantiated `SolverRectangularGrid`, `SolverTriangularGrid`, and `SolverSMCGrid` solver implementations based on `RunConfig` options (`physics.solver`).
-5. **Step 5:** Implement NetCDF / UGRID / NCZarr data loaders capable of reading `gridgen`-produced NetCDF grid files and populating `SpatialGrid` for rectangular, triangular mesh, and SMC grid structures.
+5. **Step 5:** Implement NetCDF / UGRID / NCZarr data loaders capable of reading NetCDF grid files and populating `SpatialGrid` for rectangular, triangular mesh, and SMC grid structures.
 6. **Step 6:** Implement Python conversion tooling (`tools/`) and optional C++ adapter for Zarr V3 dataset support.
-7. **Step 7:** Add unit tests under `tests/ww4_utils/` and `tests/ww4_core/` using synthesized NetCDF/NCZarr grid test files generated via `gridgen`.
+7. **Step 7:** Add unit tests under `tests/ww4_utils/` and `tests/ww4_core/` using synthesized NetCDF/NCZarr grid test files.
