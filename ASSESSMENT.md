@@ -1,7 +1,7 @@
 # Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Topobathy (Bathymetry / Orography) in WAVEWATCH IV (WW4)
 
 ## 1. Executive Summary
-This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, unified topobathy (bathymetry/orography elevation) fields, and domain decomposition topologies into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). The assessment assumes that spatial grid definitions, topobathy elevation fields, land/sea masks, and sub-grid obstruction fields are provided in standardized NetCDF/UGRID/Zarr input files (e.g., generated externally by tools such as `gridgen`), while evaluating memory layouts and I/O pipelines for future MPI domain decomposition, dedicated I/O ranks for asynchronous I/O and AI/ML streaming, parallel chunked Zarr output streaming, and distributed restart checkpointing.
+This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, unified topobathy (bathymetry/orography elevation) fields, and domain decomposition topologies into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). The assessment assumes that spatial grid definitions, topobathy elevation fields, land/sea masks, and sub-grid obstruction fields are provided in standardized NetCDF/UGRID/Zarr input files (e.g., generated externally by tools such as `gridgen`), while evaluating memory layouts and I/O pipelines for future MPI domain decomposition, dedicated I/O and coupling server ranks for asynchronous I/O and AI/ML streaming, parallel chunked Zarr output streaming, and distributed restart checkpointing.
 
 ---
 
@@ -198,12 +198,12 @@ As WW4 evolves toward MPI domain decomposition (e.g., Cardigan/METIS grid partit
 
 > **Terminology Note:** In wave modeling nomenclature, a **Global Grid** specifically implies $360^\circ$ longitudinal closure (wrap-around periodic boundary conditions). A regional or nested grid without longitudinal closure is referred to as a **Full Grid** ($G_{\text{full}}$). Therefore, the full spatial domain representation across all ranks is designated as `FullGrid`.
 
-### 9.1 Decoupled Grid Data Abstractions (`FullGrid` vs. `LocalGridPartition`) & Dedicated I/O Ranks
+### 9.1 Decoupled Grid Data Abstractions (`FullGrid` vs. `LocalGridPartition`) & Coupling Server Ranks
 To ensure clean memory boundaries, zero allocation waste, and complete separation between full domain topology and local numerics:
 
 * **Compute ranks hold ONLY `LocalGridPartition` data.** Compute ranks never allocate memory for the `FullGrid` dynamic state array, eliminating memory waste.
-* **Internal Partition Map File Export (`writePartitionMapNetCDF`):** If no precomputed partition map file exists at model startup, the internal partitioner (`partitionGlobalGrid`) computes domain assignments and **immediately writes the mapping to file (`partition_map.nc`)** via `writePartitionMapNetCDF` for subsequent model runs.
-* **Dedicated I/O Ranks for Asynchronous I/O & AI Pipelines:** For large operational models and real-time AI/ML coupling (e.g., online neural network surrogates or data assimilation), one or more MPI ranks are reserved specifically as **Dedicated I/O Server Ranks**. These I/O ranks host the `FullGrid` topology and output buffers, receiving local field updates asynchronously via non-blocking MPI calls while compute ranks immediately proceed to the next numerical time step.
+* **Internal Partition Map File Export (`writePartitionMapNetCDF`):** If no precomputed partition map file exists at model startup, the internal partitioner (`partitionGlobalGrid`) computes domain assignments and **writes the mapping to file (`partition_map.nc`)** as a side output via `writePartitionMapNetCDF` for subsequent model runs.
+* **Dedicated I/O & Coupling Server Ranks:** For large operational models and real-time asynchronous coupling (e.g., online AI/ML surrogates, wave-surge-ocean coupling, or data assimilation), one or more MPI ranks are reserved specifically as **Dedicated I/O / Coupling Server Ranks**. These server ranks host the `FullGrid` topology and output buffers, receiving local field updates asynchronously via non-blocking MPI calls while compute ranks immediately proceed to the next numerical time step.
 
 ```mermaid
 graph TD
@@ -233,21 +233,21 @@ graph TD
         LPC --> SC
     end
 
-    subgraph IORanks ["Dedicated I/O & AI Ranks (Rank C ... Rank C+I-1)"]
-        IOR["Dedicated I/O / AI Server Ranks<br/><i>- Holds FullGrid Output Buffers</i><br/><i>- Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>- Online AI/ML Streaming Pipeline</i>"]
+    subgraph IORanks ["Dedicated I/O & Coupling Ranks (Rank C ... Rank C+I-1)"]
+        IOR["Dedicated I/O / Coupling Server Ranks<br/><i>- Holds FullGrid Output Buffers</i><br/><i>- Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>- Online Model & AI/ML Coupling Pipelines</i>"]
     end
 
     PM_READ --> LP0
     PM_READ --> LPC
-    PM_WRITE --> LP0
-    PM_WRITE --> LPC
+    PM_GEN --> LP0
+    PM_GEN --> LPC
 
     ComputeRanks -. Asynchronous MPI Non-Blocking Field Data .-> IOR
 ```
 
 1. **`FullGrid` (Full Model Domain Metadata):**
    * Contains full domain dimensions ($NX_{\text{full}}, NY_{\text{full}}$ or $N_{\text{nodes}}$), coordinate vectors, and full topobathy.
-   * **Memory Allocation:** Resides **strictly on Dedicated I/O Ranks** (or transiently on Rank 0 during startup partition generation). **Compute ranks NEVER allocate or save `FullGrid` state arrays.**
+   * **Memory Allocation:** Resides **strictly on Dedicated I/O / Coupling Server Ranks** (or transiently on Rank 0 during startup partition generation). **Compute ranks NEVER allocate or save `FullGrid` state arrays.**
 2. **`LocalGridPartition` (Sub-Domain Compute Grid):**
    * Encapsulates the local rank's sub-mesh ($nx_{\text{local}}, ny_{\text{local}}$ or $n_{\text{local}}$), including surrounding halo/ghost cells required for stencil flux calculations across sub-domain boundaries.
    * Contains local coordinate vectors, local topobathy contiguous buffers, halo exchange communication tables, and `local_to_global_map`.
@@ -261,21 +261,21 @@ The domain decomposition engine supports flexible runtime configuration via `ww4
   * Each rank reads its assigned partition ID, local cell indices, and halo topology, bypassing internal partitioning compute.
 * **Mode B: Internal Partition Generation & Export (`generate_internal` / `auto`):**
   * If no partition map file exists (or when explicitly requested), Rank 0 / startup initializer invokes the internal domain partitioner (`partitionGlobalGrid`, e.g. Cardigan/METIS/rectilinear band partitioning).
-  * Immediately after partition generation, the mapping is written to file (`partition_map.nc`) via `PartitionIO::writePartitionMapNetCDF` for subsequent model runs.
+  * Immediately after partition generation, the mapping is exported to file (`partition_map.nc`) via `PartitionIO::writePartitionMapNetCDF` for subsequent model runs.
   * Worker ranks receive their domain assignments, allocate local memory, and proceed with model execution.
 
 ### 9.3 Clean Memory Management & Full Gridded Output Reconstruction
 
-#### Recommended Architectural Preference: **Option A (Direct Chunked Parallel I/O via Zarr / NCZarr / Parallel NetCDF-4) with Dedicated I/O Ranks**
+#### Recommended Architectural Preference: **Option A (Direct Chunked Parallel I/O via Zarr / NCZarr / Parallel NetCDF-4) with Dedicated Coupling Server Ranks**
 
-Between the two output reconstruction strategies for multi-rank operational deployments, **Option A combined with Dedicated I/O Ranks is strongly preferred and recommended as the primary architectural choice** for WW4 high-performance scaling and online AI integration.
+Between the two output reconstruction strategies for multi-rank operational deployments, **Option A combined with Dedicated Coupling Server Ranks is strongly preferred and recommended as the primary architectural choice** for WW4 high-performance scaling, asynchronous multi-physics coupling, and online AI/ML integration.
 
-* **Primary Recommendation: Option A — Direct Chunked Parallel I/O (Zarr / NCZarr / Parallel NetCDF-4) & Dedicated I/O Ranks**
-  * **How it works:** Compute ranks stream local dynamic state updates ($A_{\text{local}}$) asynchronously via non-blocking MPI to Dedicated I/O Server Ranks (or directly to chunked storage hyperslabs in Zarr / Parallel NetCDF files using `local_to_global_map`).
+* **Primary Recommendation: Option A — Direct Chunked Parallel I/O (Zarr / NCZarr / Parallel NetCDF-4) & Dedicated Coupling Server Ranks**
+  * **How it works:** Compute ranks stream local dynamic state updates ($A_{\text{local}}$) asynchronously via non-blocking MPI to Dedicated Coupling Server Ranks (or directly to chunked storage hyperslabs in Zarr / Parallel NetCDF files using `local_to_global_map`).
   * **Why it is preferred:**
     1. **Strict $O(1)$ Compute Rank Memory Footprint:** Compute rank memory footprint remains constant regardless of total full domain mesh resolution. Compute ranks never hold or save the `FullGrid` state array.
     2. **Elimination of Rank 0 I/O Bottlenecks:** Asynchronous non-blocking transfers allow compute ranks to proceed to the next numerical time step without waiting for disk I/O.
-    3. **Enabling Asynchronous AI & Operational Coupling:** Reserving dedicated I/O ranks allows online AI/ML inference models, wave-surge coupling, and real-time visualization pipelines to access full gridded fields directly in memory without stalling the core wave numerical solver.
+    3. **Enabling Asynchronous AI & Model Coupling:** Reserving dedicated coupling server ranks allows online AI/ML inference models, wave-surge coupling, and real-time visualization pipelines to access full gridded fields directly in memory without stalling the core wave numerical solver.
 
 * **Optional Fallback: Option B — Distributed Gathering to I/O Manager (Gather-to-Rank-0 / I/O Server)**
   * **How it works:** During output intervals, compute ranks send local field slices to designated I/O ranks or Rank 0 via non-blocking `MPI_Gatherv` using `local_to_global_map`. Rank 0 assembles $G_{\text{full}}$ in temporary buffer memory and writes monolithic NetCDF-4 files.
@@ -291,5 +291,5 @@ Between the two output reconstruction strategies for multi-rank operational depl
 4. **Step 4:** Maintain integration with `SchemeFactory::createSolver` in `src/ww4_core/` (merged in PR #72) to bind grid ingestion data directly to instantiated `SolverRectangularGrid`, `SolverTriangularGrid`, and `SolverSMCGrid` solver implementations based on `RunConfig` options (`physics.solver`).
 5. **Step 5:** Implement NetCDF / UGRID / NCZarr data loaders capable of reading NetCDF grid files and populating `SpatialGrid` for rectangular, triangular mesh, and SMC grid structures.
 6. **Step 6:** Implement `PartitionManager` and `PartitionIO` for reading precomputed NetCDF partition map files or generating and exporting partition maps internally (`partition_map.nc`).
-7. **Step 7:** Implement dedicated I/O server rank architecture for asynchronous Zarr output, restart checkpointing, and online AI/ML coupling.
+7. **Step 7:** Implement dedicated coupling server rank architecture for asynchronous Zarr output, restart checkpointing, and online AI/ML model coupling.
 8. **Step 8:** Add unit tests under `tests/ww4_utils/` and `tests/ww4_core/` using synthesized NetCDF/NCZarr grid test files and partition map datasets.
