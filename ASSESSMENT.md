@@ -199,31 +199,22 @@ As WW4 evolves toward MPI domain decomposition (e.g., Cardigan/METIS grid partit
 ### 9.1 Decoupled Grid Data Abstractions (`GlobalGrid` vs. `LocalGridPartition`)
 To ensure clean memory boundaries, zero allocation waste, and complete separation between global topology and local numerics, the grid architecture cleanly separates global and local grid data:
 
-```
-                  +-----------------------------------+
-                  |      GlobalGrid (Full Domain)     |
-                  |  - NX_global, NY_global / N_nodes |
-                  |  - Full Topobathy & Coordinates   |
-                  +-----------------------------------+
-                                    |
-            +-----------------------+-----------------------+
-            |  Domain Partitioning (Read or Generate)       |
-            +-----------------------+-----------------------+
-                                    |
-         +--------------------------+--------------------------+
-         |                                                     |
-         v                                                     v
-+-----------------------------------+               +-----------------------------------+
-| LocalGridPartition (Rank 0)       |               | LocalGridPartition (Rank N-1)     |
-| - nx_local, ny_local + halo cells |               | - nx_local, ny_local + halo cells |
-| - Local Topobathy (std::span)     |               | - Local Topobathy (std::span)     |
-| - local_to_global_map [vector]    |               | - local_to_global_map [vector]    |
-| - Neighbor MPI communication table|               | - Neighbor MPI communication table|
-+-----------------------------------+               +-----------------------------------+
-         |                                                     |
-         v                                                     v
-  Solver instance (Rank 0)                            Solver instance (Rank N-1)
-  (e.g., SolverUQ / SolverTriangular)                 (e.g., SolverUQ / SolverTriangular)
+```mermaid
+graph TD
+    GG["GlobalGrid (Full Domain)<br/><i>- NX_global, NY_global / N_nodes</i><br/><i>- Full Topobathy & Coordinates</i>"]
+    DP["Domain Partitioning<br/><i>(Read partition_map.nc or Generate Internally)</i>"]
+
+    LP0["LocalGridPartition (Rank 0)<br/><i>- nx_local, ny_local + halo cells</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map [vector]</i><br/><i>- Neighbor MPI communication table</i>"]
+    LPN["LocalGridPartition (Rank N-1)<br/><i>- nx_local, ny_local + halo cells</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map [vector]</i><br/><i>- Neighbor MPI communication table</i>"]
+
+    S0["ISolver (Rank 0)<br/><i>(e.g., SolverUQ / SolverTriangular / SolverSMC)</i>"]
+    SN["ISolver (Rank N-1)<br/><i>(e.g., SolverUQ / SolverTriangular / SolverSMC)</i>"]
+
+    GG --> DP
+    DP --> LP0
+    DP --> LPN
+    LP0 --> S0
+    LPN --> SN
 ```
 
 1. **`GlobalGrid` (Full Domain Metadata):**
@@ -246,14 +237,21 @@ The domain decomposition engine supports flexible runtime configuration via `ww4
   * Worker ranks receive their domain assignments, allocate local memory, and proceed with model execution.
 
 ### 9.3 Clean Memory Management & Full Gridded Output Reconstruction
-To prevent memory inflation when generating full gridded outputs in an MPI environment, two clean options exist:
 
-1. **Option A: Direct Chunked Parallel I/O (Zarr / NCZarr / Parallel NetCDF-4) — Recommended:**
-   * Each MPI process writes its local state vector ($A_{\text{local}}$) directly into its assigned spatial hyperslab/chunk in the Zarr or parallel NetCDF output dataset using its `local_to_global_map`.
-   * **Advantage:** Zero memory aggregation overhead on Rank 0; scales linearly with thousands of MPI ranks.
-2. **Option B: Distributed Gathering to I/O Manager (Gather-to-Rank-0 / I/O Server):**
-   * During output intervals, compute ranks send local field slices to designated I/O ranks or Rank 0 via non-blocking `MPI_Gatherv` using `local_to_global_map`.
-   * Rank 0 constructs the full global grid $G_{\text{full}}$ array solely in temporary I/O buffer memory and writes standard monolithic NetCDF-4 files. Compute ranks immediately resume numerical time-stepping without waiting for file disk writes.
+#### Recommended Architectural Preference: **Option A (Direct Chunked Parallel I/O via Zarr / NCZarr / Parallel NetCDF-4)**
+
+Between the two output reconstruction strategies for multi-rank operational deployments, **Option A is strongly preferred and recommended as the primary architectural choice** for WW4 high-performance scaling.
+
+* **Primary Recommendation: Option A — Direct Chunked Parallel I/O (Zarr / NCZarr / Parallel NetCDF-4)**
+  * **How it works:** Each MPI process writes its local dynamic state vector ($A_{\text{local}}$) directly into its assigned spatial hyperslab or chunk in the target Zarr or parallel NetCDF dataset using its `local_to_global_map`.
+  * **Why it is preferred:**
+    1. **Strict $O(1)$ Rank-0 Memory Footprint:** Rank 0 memory footprint remains constant regardless of total global mesh resolution. On fine global grids (e.g., $0.1^\circ$ or sub-kilometer coastal meshes), gathering full-grid 4D/5D spectral state tensors onto Rank 0 requires tens of gigabytes of RAM on a single node, causing out-of-memory (OOM) crashes.
+    2. **Elimination of Rank 0 I/O Bottlenecks:** Compute ranks write their chunked slices in parallel directly to storage without blocking worker ranks during time-stepping.
+    3. **Native Cloud & Operational Alignment:** Directly outputs structured cloud-native Zarr stores ready for real-time operational streaming without needing post-processing aggregation passes.
+
+* **Optional Fallback: Option B — Distributed Gathering to I/O Manager (Gather-to-Rank-0 / I/O Server)**
+  * **How it works:** During output intervals, compute ranks send local field slices to designated I/O ranks or Rank 0 via non-blocking `MPI_Gatherv` using `local_to_global_map`. Rank 0 assembles $G_{\text{full}}$ in temporary buffer memory and writes monolithic NetCDF-4 files.
+  * **Role:** Retained strictly as an optional fallback layer for lightweight single-node execution, debugging runs, or legacy environments where parallel chunked writing is unavailable.
 
 ---
 
