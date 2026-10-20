@@ -207,7 +207,7 @@ To ensure clean memory boundaries, zero allocation waste, and complete separatio
 
 ```mermaid
 graph TD
-    FG["FullGrid&nbsp;(Full&nbsp;Domain&nbsp;Metadata)<br/>-&nbsp;NX_full,&nbsp;NY_full&nbsp;/&nbsp;N_nodes<br/>-&nbsp;Full&nbsp;Topobathy&nbsp;&&nbsp;Coordinates"]
+    FG["FullGrid&nbsp;(Full&nbsp;Domain&nbsp;Metadata)<br/>&#8209;&nbsp;NX_full,&nbsp;NY_full&nbsp;/&nbsp;N_nodes<br/>&#8209;&nbsp;Full&nbsp;Topobathy&nbsp;&&nbsp;Coordinates"]
 
     subgraph PartMap ["Partitioning Lifecycle"]
         PM_CHK{"partition_map.nc<br/>exists?"}
@@ -222,19 +222,19 @@ graph TD
 
     FG --> PM_CHK
 
-    subgraph ComputeRanks ["Compute Ranks (Rank 0 ... Rank C-1)"]
-        LP0["LocalGridPartition&nbsp;(Rank&nbsp;0)<br/><i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>-&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>"]
-        LPC["LocalGridPartition&nbsp;(Rank&nbsp;C-1)<br/><i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>-&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>"]
+    subgraph ComputeRanks ["Compute Ranks (Rank 0 ... Rank C&#8209;1)"]
+        LP0["LocalGridPartition&nbsp;(Rank&nbsp;0)<br/><i>&#8209;&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>&#8209;&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>&#8209;&nbsp;local_to_global_map</i>"]
+        LPC["LocalGridPartition&nbsp;(Rank&nbsp;C&#8209;1)<br/><i>&#8209;&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>&#8209;&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>&#8209;&nbsp;local_to_global_map</i>"]
 
         S0["ISolver (Rank 0)"]
-        SC["ISolver (Rank C-1)"]
+        SC["ISolver (Rank C&#8209;1)"]
 
         LP0 --> S0
         LPC --> SC
     end
 
-    subgraph IORanks ["Dedicated Coupling Server Ranks (Rank C ... Rank C+I-1)"]
-        IOR["Coupling Server Ranks<br/><i>- Holds FullGrid Output Buffers</i><br/><i>- Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>- Online Model & AI/ML Coupling Pipelines</i>"]
+    subgraph IORanks ["Dedicated Coupling Server Ranks (Rank C ... Rank C+I&#8209;1)"]
+        IOR["Coupling Server Ranks<br/><i>&#8209;&nbsp;Holds FullGrid Output Buffers</i><br/><i>&#8209;&nbsp;Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>&#8209;&nbsp;Online Model & AI/ML Coupling Pipelines</i>"]
     end
 
     PM_READ --> LP0
