@@ -224,7 +224,7 @@ graph TD
 
     subgraph ComputeRanks ["Compute Ranks (Rank 0 ... Rank C-1)"]
         LP0["LocalGridPartition&nbsp;(Rank&nbsp;0)<br/><i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>-&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>"]
-        LPC["LocalGridPartition&nbsp;(Rank&nbsp;C-1)"]
+        LPC["LocalGridPartition&nbsp;(Rank&nbsp;C-1)"<br/><i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>-&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>]
 
         S0["ISolver (Rank 0)"]
         SC["ISolver (Rank C-1)"]
