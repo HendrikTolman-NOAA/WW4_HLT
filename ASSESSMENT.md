@@ -223,7 +223,10 @@ graph TD
     FG --> PM_CHK
 
     subgraph ComputeRanks ["Compute Ranks (Rank 0 ... Rank C-1)"]
-        LP0["LocalGridPartition&nbsp;(Rank&nbsp;0)<br/><i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>-Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>"]
+        LP0["LocalGridPartition&nbsp;(Rank&nbsp;0)<br/>
+<i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/>
+<i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/>
+<i>-Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>"]
         LPC["LocalGridPartition&nbsp;(Rank&nbsp;C-1)"]
 
         S0["ISolver (Rank 0)"]
