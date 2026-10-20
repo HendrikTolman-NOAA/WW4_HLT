@@ -1,7 +1,7 @@
 # Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Topobathy (Bathymetry / Orography) in WAVEWATCH IV (WW4)
 
 ## 1. Executive Summary
-This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, unified topobathy (bathymetry/orography elevation) fields, and domain decomposition topologies into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). The assessment assumes that spatial grid definitions, topobathy elevation fields, land/sea masks, and sub-grid obstruction fields are provided in standardized NetCDF/UGRID/Zarr input files (e.g., generated externally by tools such as `gridgen`), while evaluating memory layouts and I/O pipelines for future MPI domain decomposition, dedicated I/O and coupling server ranks for asynchronous I/O and AI/ML streaming, parallel chunked Zarr output streaming, and distributed restart checkpointing.
+This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, unified topobathy (bathymetry/orography elevation) fields, and domain decomposition topologies into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). The assessment assumes that spatial grid definitions, topobathy elevation fields, land/sea masks, and sub-grid obstruction fields are provided in standardized NetCDF/UGRID/Zarr input files (e.g., generated externally by tools such as `gridgen`), while evaluating memory layouts and I/O pipelines for future MPI domain decomposition, dedicated coupling server ranks for asynchronous I/O and AI/ML streaming, parallel chunked Zarr output streaming, and distributed restart checkpointing.
 
 ---
 
@@ -203,28 +203,28 @@ To ensure clean memory boundaries, zero allocation waste, and complete separatio
 
 * **Compute ranks hold ONLY `LocalGridPartition` data.** Compute ranks never allocate memory for the `FullGrid` dynamic state array, eliminating memory waste.
 * **Internal Partition Map File Export (`writePartitionMapNetCDF`):** If no precomputed partition map file exists at model startup, the internal partitioner (`partitionGlobalGrid`) computes domain assignments and **writes the mapping to file (`partition_map.nc`)** as a side output via `writePartitionMapNetCDF` for subsequent model runs.
-* **Dedicated I/O & Coupling Server Ranks:** For large operational models and real-time asynchronous coupling (e.g., online AI/ML surrogates, wave-surge-ocean coupling, or data assimilation), one or more MPI ranks are reserved specifically as **Dedicated I/O / Coupling Server Ranks**. These server ranks host the `FullGrid` topology and output buffers, receiving local field updates asynchronously via non-blocking MPI calls while compute ranks immediately proceed to the next numerical time step.
+* **Dedicated Coupling Server Ranks:** For large operational models and real-time asynchronous coupling (e.g., online AI/ML surrogates, wave-surge-ocean coupling, or data assimilation), one or more MPI ranks are reserved specifically as **Dedicated Coupling Server Ranks**. These server ranks host the `FullGrid` topology and output buffers, receiving local field updates asynchronously via non-blocking MPI calls while compute ranks immediately proceed to the next numerical time step.
 
 ```mermaid
 graph TD
-    FG["FullGrid&nbsp;(Full&nbsp;Domain&nbsp;Metadata),<br/><i>&nbsp;NX_full,&nbsp;NY_full&nbsp;/&nbsp;N_nodes,&nbsp;Full&nbsp;Topobathy&nbsp;&&nbsp;Coordinates</i>"]
+    FG["FullGrid (Full Domain Metadata)<br/><i>- NX_full, NY_full / N_nodes</i><br/><i>- Full Topobathy & Coordinates</i>"]
 
     subgraph PartMap ["Partitioning Lifecycle"]
         PM_CHK{"partition_map.nc<br/>exists?"}
-        PM_READ["Read/&nbsp;Precomputed<br/>partition_map.nc"]
-        PM_GEN["Generate/&nbsp;Internal/&nbsp;Partition<br/><i>(e.g., METIS / Cardigan)</i>"]
-        PM_WRITE["Export/&nbsp;partition_map.nc<br/><i>(writePartitionMapNetCDF)</i>"]
+        PM_READ["Read Precomputed<br/>partition_map.nc"]
+        PM_GEN["Generate Internal Partition<br/><i>(e.g., METIS / Cardigan)</i>"]
+        PM_WRITE["Export partition_map.nc<br/><i>(writePartitionMapNetCDF)</i>"]
 
         PM_CHK -- Yes --> PM_READ
         PM_CHK -- No --> PM_GEN
-        PM_GEN --> PM_WRITE
+        PM_GEN -. Export File .-> PM_WRITE
     end
 
     FG --> PM_CHK
 
     subgraph ComputeRanks ["Compute Ranks (Rank 0 ... Rank C-1)"]
-        LP0["LocalGridPartition&nbsp;(Rank&nbsp;0)<br/><i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>-&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>"]
-        LPC["LocalGridPartition&nbsp;(Rank&nbsp;C-1)"<br/><i>-&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>-&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>-&nbsp;local_to_global_map</i>]
+        LP0["LocalGridPartition (Rank 0)<br/><i>- nx_local, ny_local + halo</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map</i>"]
+        LPC["LocalGridPartition (Rank C-1)<br/><i>- nx_local, ny_local + halo</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map</i>"]
 
         S0["ISolver (Rank 0)"]
         SC["ISolver (Rank C-1)"]
@@ -233,8 +233,8 @@ graph TD
         LPC --> SC
     end
 
-    subgraph IORanks ["Dedicated I/O & Coupling Ranks (Rank C ... Rank C+I-1)"]
-        IOR["Dedicated I/O / Coupling Server Ranks<br/><i>- Holds FullGrid Output Buffers</i><br/><i>- Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>- Online Model & AI/ML Coupling Pipelines</i>"]
+    subgraph IORanks ["Dedicated Coupling Server Ranks (Rank C ... Rank C+I-1)"]
+        IOR["Coupling Server Ranks<br/><i>- Holds FullGrid Output Buffers</i><br/><i>- Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>- Online Model & AI/ML Coupling Pipelines</i>"]
     end
 
     PM_READ --> LP0
@@ -242,12 +242,13 @@ graph TD
     PM_GEN --> LP0
     PM_GEN --> LPC
 
-    ComputeRanks -. Asynchronous MPI Non-Blocking Field Data .-> IOR
+    S0 -. Asynchronous Field Data .-> IOR
+    SC -. Asynchronous Field Data .-> IOR
 ```
 
 1. **`FullGrid` (Full Model Domain Metadata):**
    * Contains full domain dimensions ($NX_{\text{full}}, NY_{\text{full}}$ or $N_{\text{nodes}}$), coordinate vectors, and full topobathy.
-   * **Memory Allocation:** Resides **strictly on Dedicated I/O / Coupling Server Ranks** (or transiently on Rank 0 during startup partition generation). **Compute ranks NEVER allocate or save `FullGrid` state arrays.**
+   * **Memory Allocation:** Resides **strictly on Dedicated Coupling Server Ranks** (or transiently on Rank 0 during startup partition generation). **Compute ranks NEVER allocate or save `FullGrid` state arrays.**
 2. **`LocalGridPartition` (Sub-Domain Compute Grid):**
    * Encapsulates the local rank's sub-mesh ($nx_{\text{local}}, ny_{\text{local}}$ or $n_{\text{local}}$), including surrounding halo/ghost cells required for stencil flux calculations across sub-domain boundaries.
    * Contains local coordinate vectors, local topobathy contiguous buffers, halo exchange communication tables, and `local_to_global_map`.
