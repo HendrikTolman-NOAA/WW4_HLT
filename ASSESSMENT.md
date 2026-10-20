@@ -211,9 +211,9 @@ graph TD
 
     subgraph PartMap ["Partitioning Lifecycle"]
         PM_CHK{"partition_map.nc<br/>exists?"}
-        PM_READ["Read Precomputed<br/>partition_map.nc"]
-        PM_GEN["Generate Internal Partition<br/><i>(e.g., METIS / Cardigan)</i>"]
-        PM_WRITE["Export partition_map.nc<br/><i>(writePartitionMapNetCDF)</i>"]
+        PM_READ["Read/&nbsp;Precomputed<br/>partition_map.nc"]
+        PM_GEN["Generate/&nbsp;Internal/&nbsp;Partition<br/><i>(e.g., METIS / Cardigan)</i>"]
+        PM_WRITE["Export/&nbsp;partition_map.nc<br/><i>(writePartitionMapNetCDF)</i>"]
 
         PM_CHK -- Yes --> PM_READ
         PM_CHK -- No --> PM_GEN
