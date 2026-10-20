@@ -207,7 +207,7 @@ To ensure clean memory boundaries, zero allocation waste, and complete separatio
 
 ```mermaid
 graph TD
-    FG["FullGrid (Full Domain Metadata)<br/><i>- NX_full, NY_full / N_nodes</i><br/><i>- Full Topobathy & Coordinates</i>"]
+    FG["FullGrid&nbsp;(Full&nbsp;Domain&nbsp;Metadata)<br/>-&nbsp;NX_full,&nbsp;NY_full&nbsp;/&nbsp;N_nodes<br/>-&nbsp;Full&nbsp;Topobathy&nbsp;&&nbsp;Coordinates"]
 
     subgraph PartMap ["Partitioning Lifecycle"]
         PM_CHK{"partition_map.nc<br/>exists?"}
