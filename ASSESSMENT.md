@@ -212,7 +212,7 @@ graph TD
     subgraph PartMap ["Partitioning Lifecycle"]
         PM_CHK{"partition_map.nc<br/>exists?"}
         PM_READ["Read&nbsp;Precomputed<br/>partition_map.nc"]
-        PM_GEN["Generate&nbsp;Internal&nbsp;Partition<br/><i>(e.g., METIS / Cardigan)</i>"]
+        PM_GEN["Generate&nbsp;Internal&nbsp;Partition<br/><i>(solver&nbsp;specific)</i>"]
         PM_WRITE["Export partition_map.nc<br/><i>(writePartitionMapNetCDF)</i>"]
 
         PM_CHK -- Yes --> PM_READ
@@ -227,14 +227,14 @@ graph TD
         LPC["LocalGridPartition&nbsp;(Rank&nbsp;C&#8209;1)<br/><i>&#8209;&nbsp;nx_local,&nbsp;ny_local&nbsp;+&nbsp;halo</i><br/><i>&#8209;&nbsp;Local&nbsp;Topobathy&nbsp;(std::span)</i><br/><i>&#8209;&nbsp;local_to_global_map</i>"]
 
         S0["ISolver (Rank 0)"]
-        SC["ISolver (Rank C&#8209;1)"]
+        SC["ISolver&nbsp;(Rank&nbsp;C&#8209;1)"]
 
         LP0 --> S0
         LPC --> SC
     end
 
-    subgraph IORanks ["Dedicated Coupling Server Ranks (Rank C ... Rank C+I&#8209;1)"]
-        IOR["Coupling Server Ranks<br/><i>&#8209;&nbsp;Holds FullGrid Output Buffers</i><br/><i>&#8209;&nbsp;Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>&#8209;&nbsp;Online Model & AI/ML Coupling Pipelines</i>"]
+    subgraph IORanks ["Dedicated IO and coupling ranks (Rank C ... Rank C+I&#8209;1)"]
+        IOR["IO&nbsp;and&nbsp;coupling&nbsp;ranks<br/><i>&#8209;&nbsp;Holds&nbsp;FullGrid&nbsp;Output&nbsp;Buffers</i><br/><i>&#8209;&nbsp;Asynchronous&nbsp;Zarr&nbsp;/&nbsp;NetCDF&nbsp;Disk&nbsp;Writes</i>"]
     end
 
     PM_READ --> LP0
