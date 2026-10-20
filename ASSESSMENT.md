@@ -1,7 +1,7 @@
 # Architectural Assessment: Ingestion of NetCDF, UGRID, and Zarr Spatial Grids & Topobathy (Bathymetry / Orography) in WAVEWATCH IV (WW4)
 
 ## 1. Executive Summary
-This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, unified topobathy (bathymetry/orography elevation) fields, and domain decomposition topologies into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). The assessment assumes that spatial grid definitions, topobathy elevation fields, land/sea masks, and sub-grid obstruction fields are provided in standardized NetCDF/UGRID/Zarr input files (e.g., generated externally by tools such as `gridgen`), while evaluating memory layouts and I/O pipelines for future MPI domain decomposition, parallel chunked Zarr output streaming, and distributed restart checkpointing.
+This assessment presents a strategic roadmap for bringing spatial grid definitions, unstructured meshes (UGRID), cloud-native Zarr datasets, unified topobathy (bathymetry/orography elevation) fields, and domain decomposition topologies into WAVEWATCH IV (WW4). The proposal evaluates language runtime choices, existing library ecosystems across NOAA-EMC and the HPC ocean/atmospheric community, performance portability via Kokkos, single-domain full-grid abstraction layer designs, and integration with the **Runtime Scheme Selection Architecture** (PR #72, now merged into `develop`) leveraging the Factory Pattern (`SchemeFactory`) and Strategy Pattern (`ISolver`). The assessment assumes that spatial grid definitions, topobathy elevation fields, land/sea masks, and sub-grid obstruction fields are provided in standardized NetCDF/UGRID/Zarr input files (e.g., generated externally by tools such as `gridgen`), while evaluating memory layouts and I/O pipelines for future MPI domain decomposition, dedicated I/O ranks for asynchronous I/O and AI/ML streaming, parallel chunked Zarr output streaming, and distributed restart checkpointing.
 
 ---
 
@@ -177,7 +177,7 @@ sequenceDiagram
 ### 8.1 Static Grid Data Ingestion (NetCDF/UGRID Sufficiency)
 * **Data Volume & Access Pattern:**
   * Spatial grid definitions (latitude/longitude coordinates, node topologies, unified topobathy elevation, land/sea masks, and sub-grid obstruction fields) are **static, read-once inputs** loaded during model initialization (`w4core_init`).
-  * For typical global meshes (e.g., $0.25^\circ$ or $0.1^\circ$), static grid data sizes range from a few megabytes to tens of megabytes.
+  * For typical global or regional meshes (e.g., $0.25^\circ$ or $0.1^\circ$), static grid data sizes range from a few megabytes to tens of megabytes.
 * **Assessment:**
   * **Zarr is NOT required or advantageous for static grid reading.** Standard NetCDF-4 (`netcdf-c`) and UGRID NetCDF files provide robust, fast, and ubiquitous I/O at model startup on HPC systems. Introducing Zarr for static grid ingestion adds unnecessary dependency overhead without noticeable I/O performance gains.
 
@@ -187,43 +187,71 @@ sequenceDiagram
   * Restart files require complete high-precision dumps of the full spectral energy distribution across every active spatial grid cell.
 * **Advantages of Zarr/NCZarr for Output & Restarts:**
   * **Parallel Chunk-Aligned Writes:** In a multi-node MPI execution, Zarr's chunked layout enables each MPI domain to write its local sub-mesh directly to its designated spatial chunk without forcing all ranks to gather data to Rank 0 or block on monolithic file locks.
-  * **Cloud-Native Storage Readiness:** Allows operational pipelines and cloud HPC deployments (e.g., AWS S3, Google Cloud Storage, Blob Storage) to stream output fields directly to cloud object stores for real-time visualization and post-processing without intermediate POSIX filesystem staging.
+  * **Cloud-Native Storage Readiness:** Allows operational pipelines and cloud HPC deployments (e.g., AWS S3, Google Cloud Storage, Blob Storage) to stream output fields directly to cloud object stores for real-time visualization, AI/ML inference pipelines, and post-processing without intermediate POSIX filesystem staging.
   * **Distributed Restart Checkpointing:** Each MPI process can independently stream or read its assigned restart tensor chunk directly using structured Zarr keys, dramatically reducing initialization and checkpointing time for operational restart loops.
 
 ---
 
 ## 9. Domain Decomposition Architecture: Full vs. Partitioned Grid Data for MPI Setup
 
-As WW4 evolves toward MPI domain decomposition (e.g., Cardigan/METIS grid partitioning or rectilinear 2D decomposition), input grid files will describe the **Full Global Grid** ($G_{\text{full}}$), whereas individual MPI ranks will execute compute operations on **Local Partition Grids** ($G_{\text{local}}$) augmented with ghost/halo boundary cells.
+As WW4 evolves toward MPI domain decomposition (e.g., Cardigan/METIS grid partitioning or rectilinear 2D decomposition), input grid files will describe the **Full Grid** ($G_{\text{full}}$) covering the entire model domain (global or regional). Individual compute ranks will execute numerical operations on **Local Partition Grids** ($G_{\text{local}}$) augmented with ghost/halo boundary cells.
 
-### 9.1 Decoupled Grid Data Abstractions (`GlobalGrid` vs. `LocalGridPartition`)
-To ensure clean memory boundaries, zero allocation waste, and complete separation between global topology and local numerics, the grid architecture cleanly separates global and local grid data:
+> **Terminology Note:** In wave modeling nomenclature, a **Global Grid** specifically implies $360^\circ$ longitudinal closure (wrap-around periodic boundary conditions). A regional or nested grid without longitudinal closure is referred to as a **Full Grid** ($G_{\text{full}}$). Therefore, the full spatial domain representation across all ranks is designated as `FullGrid`.
+
+### 9.1 Decoupled Grid Data Abstractions (`FullGrid` vs. `LocalGridPartition`) & Dedicated I/O Ranks
+To ensure clean memory boundaries, zero allocation waste, and complete separation between full domain topology and local numerics:
+
+* **Compute ranks hold ONLY `LocalGridPartition` data.** Compute ranks never allocate memory for the `FullGrid` dynamic state array, eliminating memory waste.
+* **Internal Partition Map File Export (`writePartitionMapNetCDF`):** If no precomputed partition map file exists at model startup, the internal partitioner (`partitionGlobalGrid`) computes domain assignments and **immediately writes the mapping to file (`partition_map.nc`)** via `writePartitionMapNetCDF` for subsequent model runs.
+* **Dedicated I/O Ranks for Asynchronous I/O & AI Pipelines:** For large operational models and real-time AI/ML coupling (e.g., online neural network surrogates or data assimilation), one or more MPI ranks are reserved specifically as **Dedicated I/O Server Ranks**. These I/O ranks host the `FullGrid` topology and output buffers, receiving local field updates asynchronously via non-blocking MPI calls while compute ranks immediately proceed to the next numerical time step.
 
 ```mermaid
 graph TD
-    GG["GlobalGrid (Full Domain)<br/><i>- NX_global, NY_global / N_nodes</i><br/><i>- Full Topobathy & Coordinates</i>"]
-    DP["Domain Partitioning<br/><i>(Read partition_map.nc or Generate Internally)</i>"]
+    FG["FullGrid (Full Domain Metadata)<br/><i>- NX_full, NY_full / N_nodes</i><br/><i>- Full Topobathy & Coordinates</i>"]
 
-    LP0["LocalGridPartition (Rank 0)<br/><i>- nx_local, ny_local + halo cells</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map [vector]</i><br/><i>- Neighbor MPI communication table</i>"]
-    LPN["LocalGridPartition (Rank N-1)<br/><i>- nx_local, ny_local + halo cells</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map [vector]</i><br/><i>- Neighbor MPI communication table</i>"]
+    subgraph PartMap ["Partitioning Lifecycle"]
+        PM_CHK{"partition_map.nc<br/>exists?"}
+        PM_READ["Read Precomputed<br/>partition_map.nc"]
+        PM_GEN["Generate Internal Partition<br/><i>(e.g., METIS / Cardigan)</i>"]
+        PM_WRITE["Export partition_map.nc<br/><i>(writePartitionMapNetCDF)</i>"]
 
-    S0["ISolver (Rank 0)<br/><i>(e.g., SolverUQ / SolverTriangular / SolverSMC)</i>"]
-    SN["ISolver (Rank N-1)<br/><i>(e.g., SolverUQ / SolverTriangular / SolverSMC)</i>"]
+        PM_CHK -- Yes --> PM_READ
+        PM_CHK -- No --> PM_GEN
+        PM_GEN --> PM_WRITE
+    end
 
-    GG --> DP
-    DP --> LP0
-    DP --> LPN
-    LP0 --> S0
-    LPN --> SN
+    FG --> PM_CHK
+
+    subgraph ComputeRanks ["Compute Ranks (Rank 0 ... Rank C-1)"]
+        LP0["LocalGridPartition (Rank 0)<br/><i>- nx_local, ny_local + halo</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map</i>"]
+        LPC["LocalGridPartition (Rank C-1)<br/><i>- nx_local, ny_local + halo</i><br/><i>- Local Topobathy (std::span)</i><br/><i>- local_to_global_map</i>"]
+
+        S0["ISolver (Rank 0)"]
+        SC["ISolver (Rank C-1)"]
+
+        LP0 --> S0
+        LPC --> SC
+    end
+
+    subgraph IORanks ["Dedicated I/O & AI Ranks (Rank C ... Rank C+I-1)"]
+        IOR["Dedicated I/O / AI Server Ranks<br/><i>- Holds FullGrid Output Buffers</i><br/><i>- Asynchronous Zarr / NetCDF Disk Writes</i><br/><i>- Online AI/ML Streaming Pipeline</i>"]
+    end
+
+    PM_READ --> LP0
+    PM_READ --> LPC
+    PM_WRITE --> LP0
+    PM_WRITE --> LPC
+
+    ComputeRanks -. Asynchronous MPI Non-Blocking Field Data .-> IOR
 ```
 
-1. **`GlobalGrid` (Full Domain Metadata):**
-   * Contains global grid dimensions ($NX_{\text{global}}, NY_{\text{global}}$ or $N_{\text{nodes}}$), global coordinate arrays, and global topobathy.
-   * **Memory Lifecycle:** Exists in memory **only on Rank 0** or designated I/O manager nodes (or transiently discarded on compute ranks after local sub-domain slices are extracted during startup).
+1. **`FullGrid` (Full Model Domain Metadata):**
+   * Contains full domain dimensions ($NX_{\text{full}}, NY_{\text{full}}$ or $N_{\text{nodes}}$), coordinate vectors, and full topobathy.
+   * **Memory Allocation:** Resides **strictly on Dedicated I/O Ranks** (or transiently on Rank 0 during startup partition generation). **Compute ranks NEVER allocate or save `FullGrid` state arrays.**
 2. **`LocalGridPartition` (Sub-Domain Compute Grid):**
-   * Encapsulates the local rank's sub-mesh ($nx_{\text{local}}, ny_{\text{local}}$ or $n_{\text{local}}$), including surrounding halo/ghost cells required for finite-difference/finite-element flux stencils across sub-domain boundaries.
-   * Contains local coordinate vectors, local topobathy contiguous buffers, halo exchange communication tables (neighbor MPI rank IDs, boundary cell indices), and the mapping vector `local_to_global_map`.
-   * **Solver Independence:** `ISolver` implementations (`SolverRectangularGrid`, `SolverTriangularGrid`, `SolverSMCGrid`) and physical source terms (`ComputeAllSources`) receive and operate *strictly* on `LocalGridPartition` views (`std::span<const double>`). Numerical solvers are completely agnostic to whether the execution is single-process or multi-node MPI!
+   * Encapsulates the local rank's sub-mesh ($nx_{\text{local}}, ny_{\text{local}}$ or $n_{\text{local}}$), including surrounding halo/ghost cells required for stencil flux calculations across sub-domain boundaries.
+   * Contains local coordinate vectors, local topobathy contiguous buffers, halo exchange communication tables, and `local_to_global_map`.
+   * **Solver Independence:** `ISolver` implementations (`SolverRectangularGrid`, `SolverTriangularGrid`, `SolverSMCGrid`) and physical source terms (`ComputeAllSources`) operate *strictly* on `LocalGridPartition` views (`std::span<const double>`). Numerical solvers are completely agnostic to whether execution is single-process or multi-node MPI!
 
 ### 9.2 Flexible Partition Map Lifecycle (`PartitionManager` & File Workflow)
 The domain decomposition engine supports flexible runtime configuration via `ww4_run_config.yaml` (`grid.partition.mode`):
@@ -238,16 +266,16 @@ The domain decomposition engine supports flexible runtime configuration via `ww4
 
 ### 9.3 Clean Memory Management & Full Gridded Output Reconstruction
 
-#### Recommended Architectural Preference: **Option A (Direct Chunked Parallel I/O via Zarr / NCZarr / Parallel NetCDF-4)**
+#### Recommended Architectural Preference: **Option A (Direct Chunked Parallel I/O via Zarr / NCZarr / Parallel NetCDF-4) with Dedicated I/O Ranks**
 
-Between the two output reconstruction strategies for multi-rank operational deployments, **Option A is strongly preferred and recommended as the primary architectural choice** for WW4 high-performance scaling.
+Between the two output reconstruction strategies for multi-rank operational deployments, **Option A combined with Dedicated I/O Ranks is strongly preferred and recommended as the primary architectural choice** for WW4 high-performance scaling and online AI integration.
 
-* **Primary Recommendation: Option A — Direct Chunked Parallel I/O (Zarr / NCZarr / Parallel NetCDF-4)**
-  * **How it works:** Each MPI process writes its local dynamic state vector ($A_{\text{local}}$) directly into its assigned spatial hyperslab or chunk in the target Zarr or parallel NetCDF dataset using its `local_to_global_map`.
+* **Primary Recommendation: Option A — Direct Chunked Parallel I/O (Zarr / NCZarr / Parallel NetCDF-4) & Dedicated I/O Ranks**
+  * **How it works:** Compute ranks stream local dynamic state updates ($A_{\text{local}}$) asynchronously via non-blocking MPI to Dedicated I/O Server Ranks (or directly to chunked storage hyperslabs in Zarr / Parallel NetCDF files using `local_to_global_map`).
   * **Why it is preferred:**
-    1. **Strict $O(1)$ Rank-0 Memory Footprint:** Rank 0 memory footprint remains constant regardless of total global mesh resolution. On fine global grids (e.g., $0.1^\circ$ or sub-kilometer coastal meshes), gathering full-grid 4D/5D spectral state tensors onto Rank 0 requires tens of gigabytes of RAM on a single node, causing out-of-memory (OOM) crashes.
-    2. **Elimination of Rank 0 I/O Bottlenecks:** Compute ranks write their chunked slices in parallel directly to storage without blocking worker ranks during time-stepping.
-    3. **Native Cloud & Operational Alignment:** Directly outputs structured cloud-native Zarr stores ready for real-time operational streaming without needing post-processing aggregation passes.
+    1. **Strict $O(1)$ Compute Rank Memory Footprint:** Compute rank memory footprint remains constant regardless of total full domain mesh resolution. Compute ranks never hold or save the `FullGrid` state array.
+    2. **Elimination of Rank 0 I/O Bottlenecks:** Asynchronous non-blocking transfers allow compute ranks to proceed to the next numerical time step without waiting for disk I/O.
+    3. **Enabling Asynchronous AI & Operational Coupling:** Reserving dedicated I/O ranks allows online AI/ML inference models, wave-surge coupling, and real-time visualization pipelines to access full gridded fields directly in memory without stalling the core wave numerical solver.
 
 * **Optional Fallback: Option B — Distributed Gathering to I/O Manager (Gather-to-Rank-0 / I/O Server)**
   * **How it works:** During output intervals, compute ranks send local field slices to designated I/O ranks or Rank 0 via non-blocking `MPI_Gatherv` using `local_to_global_map`. Rank 0 assembles $G_{\text{full}}$ in temporary buffer memory and writes monolithic NetCDF-4 files.
@@ -257,11 +285,11 @@ Between the two output reconstruction strategies for multi-rank operational depl
 
 ## 10. Summary & Next Steps Roadmap
 
-1. **Step 1:** Define C++ `SpatialGrid`, `GlobalGrid`, and `LocalGridPartition` memory layouts and `IGridDataLoader` interface specification in `src/ww4_utils/` for NetCDF, UGRID, and Zarr grid input files.
+1. **Step 1:** Define C++ `SpatialGrid`, `FullGrid`, and `LocalGridPartition` memory layouts and `IGridDataLoader` interface specification in `src/ww4_utils/` for NetCDF, UGRID, and Zarr grid input files.
 2. **Step 2:** Integrate `netcdf-c` dependency into `CMakeLists.txt` (behind CMake flags, e.g. `WW4_ENABLE_NETCDF=ON`).
 3. **Step 3:** Implement `SpatialGrid` and `IGridDataLoader` structs in `src/ww4_utils/` with C++20 `std::span` memory accessors for unified topobathy elevation and coordinate topology.
 4. **Step 4:** Maintain integration with `SchemeFactory::createSolver` in `src/ww4_core/` (merged in PR #72) to bind grid ingestion data directly to instantiated `SolverRectangularGrid`, `SolverTriangularGrid`, and `SolverSMCGrid` solver implementations based on `RunConfig` options (`physics.solver`).
 5. **Step 5:** Implement NetCDF / UGRID / NCZarr data loaders capable of reading NetCDF grid files and populating `SpatialGrid` for rectangular, triangular mesh, and SMC grid structures.
 6. **Step 6:** Implement `PartitionManager` and `PartitionIO` for reading precomputed NetCDF partition map files or generating and exporting partition maps internally (`partition_map.nc`).
-7. **Step 7:** Implement Python conversion tooling (`tools/`) and optional C++ adapter for Zarr V3 dataset support.
+7. **Step 7:** Implement dedicated I/O server rank architecture for asynchronous Zarr output, restart checkpointing, and online AI/ML coupling.
 8. **Step 8:** Add unit tests under `tests/ww4_utils/` and `tests/ww4_core/` using synthesized NetCDF/NCZarr grid test files and partition map datasets.
