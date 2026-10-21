@@ -71,6 +71,7 @@ add_library(
     ww4_utils
     src/ww4_utils/time_management.cpp
     src/ww4_utils/memory_utils.cpp
+    src/ww4_utils/spatial_grid.cpp
     src/ww4_utils/ww4_std_out.cpp
     src/ww4_utils/ww4_logfile.cpp
     src/ww4_utils/ww4_standalone_config.cpp
@@ -163,6 +164,7 @@ if(WW4_ENABLE_TESTING)
     # Utils tests
     ww4_add_test(test_time_management tests/ww4_utils/L1_test_time_management.cpp ww4_utils)
     ww4_add_test(test_memory_utils tests/ww4_utils/L1_test_memory_utils.cpp ww4_utils)
+    ww4_add_test(test_spatial_grid tests/ww4_utils/L1_test_spatial_grid.cpp ww4_utils)
     ww4_add_test(test_ww4_std_out tests/ww4_utils/L1_test_ww4_std_out.cpp ww4_utils)
     ww4_add_test(test_ww4_logfile tests/ww4_utils/L1_test_ww4_logfile.cpp ww4_utils)
     ww4_add_test(test_ww4_standalone_config tests/ww4_utils/L1_test_ww4_standalone_config.cpp ww4_utils)
