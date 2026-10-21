@@ -189,9 +189,9 @@ struct RectangularGridData {
   void clear() noexcept;
 };
 
-// --- TriangularMeshGridData -------------------------------------------------
+// --- TriangularGridData -----------------------------------------------------
 /**
- * @struct TriangularMeshGridData
+ * @struct TriangularGridData
  * @brief Grid data structures specific to NetCDF-UGRID triangular mesh solvers.
  * @details Conforms to UGRID conventions (cf_role = "mesh_topology"),
  *          storing element face-node connectivity, edge connectivity,
@@ -201,7 +201,7 @@ struct RectangularGridData {
  * @date Initial, 2026-10-21
  * @date Last update : 2026-10-21
  */
-struct TriangularMeshGridData {
+struct TriangularGridData {
   std::string meshTopologyName;
   std::string nodeCoordinatesNames;
   std::string faceNodeConnectivityName;
@@ -350,7 +350,7 @@ struct SMCGridData {
  * @brief Type-safe variant container holding solver-specific grid data.
  */
 using SpecificGridData = std::variant<std::monostate, RectangularGridData,
-                                      TriangularMeshGridData, SMCGridData>;
+                                      TriangularGridData, SMCGridData>;
 
 // --- FullGrid ---------------------------------------------------------------
 /**
@@ -421,7 +421,7 @@ struct FullGrid {
     if (!faceNodeConnectivity.empty()) {
       return faceNodeConnectivity;
     }
-    if (const auto *tri = std::get_if<TriangularMeshGridData>(&specific)) {
+    if (const auto *tri = std::get_if<TriangularGridData>(&specific)) {
       return tri->getFaceNodeConnectivity();
     }
     return {};
@@ -442,7 +442,7 @@ struct FullGrid {
    * @return bool
    */
   [[nodiscard]] bool isTriangular() const noexcept {
-    return std::holds_alternative<TriangularMeshGridData>(specific) ||
+    return std::holds_alternative<TriangularGridData>(specific) ||
            gridType == GridType::Triangular ||
            shared.gridType == GridType::Triangular;
   }
@@ -466,11 +466,10 @@ struct FullGrid {
 
   /**
    * @brief Access pointer to triangular mesh specific data if active.
-   * @return const TriangularMeshGridData*
+   * @return const TriangularGridData*
    */
-  [[nodiscard]] const TriangularMeshGridData *
-  getTriangularData() const noexcept {
-    return std::get_if<TriangularMeshGridData>(&specific);
+  [[nodiscard]] const TriangularGridData *getTriangularData() const noexcept {
+    return std::get_if<TriangularGridData>(&specific);
   }
 
   /**
@@ -576,7 +575,7 @@ struct LocalGridPartition {
    * @return bool
    */
   [[nodiscard]] bool isTriangular() const noexcept {
-    return std::holds_alternative<TriangularMeshGridData>(specific) ||
+    return std::holds_alternative<TriangularGridData>(specific) ||
            gridType == GridType::Triangular ||
            shared.gridType == GridType::Triangular;
   }

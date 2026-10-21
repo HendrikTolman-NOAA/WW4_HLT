@@ -6,7 +6,7 @@
  * @file L1_test_spatial_grid.cpp
  * @brief Unit tests for NetCDF-UGRID spatial grid data structures.
  * @details Uses Google Test to verify SharedGridData, RectangularGridData,
- *          TriangularMeshGridData, SMCCell, SMCGridData, FullGrid, and
+ *          TriangularGridData, SMCCell, SMCGridData, FullGrid, and
  *          LocalGridPartition construction, accessors, spans, variants,
  *          and clear routines.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -109,10 +109,10 @@ TEST(SpatialGridTest, RectangularGridDataDefaultsAndClear) {
   EXPECT_TRUE(rect.getXGridSpacing().empty());
 }
 
-// --- TriangularMeshGridData tests -------------------------------------------
+// --- TriangularGridData tests -------------------------------------------
 
-TEST(SpatialGridTest, TriangularMeshGridDataDefaultsAndClear) {
-  TriangularMeshGridData tri;
+TEST(SpatialGridTest, TriangularGridDataDefaultsAndClear) {
+  TriangularGridData tri;
   EXPECT_TRUE(tri.meshTopologyName.empty());
   EXPECT_TRUE(tri.nodeCoordinatesNames.empty());
   EXPECT_TRUE(tri.faceNodeConnectivityName.empty());
@@ -256,7 +256,7 @@ TEST(SpatialGridTest, FullGridWithSpecificVariants) {
 
   // Switch to Triangular
   grid.shared.gridType = GridType::Triangular;
-  TriangularMeshGridData tdata;
+  TriangularGridData tdata;
   tdata.meshTopologyName = "mesh2d";
   tdata.faceNodeConnectivity = {0, 1, 2};
   grid.specific = tdata;

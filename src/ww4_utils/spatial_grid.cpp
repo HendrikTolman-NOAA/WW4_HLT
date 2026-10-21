@@ -6,7 +6,7 @@
  * @file spatial_grid.cpp
  * @brief Implementation of spatial grid utility methods in WAVEWATCH IV.
  * @details Implements memory reset routines for SharedGridData,
- *          RectangularGridData, TriangularMeshGridData, SMCGridData, FullGrid,
+ *          RectangularGridData, TriangularGridData, SMCGridData, FullGrid,
  *          and LocalGridPartition.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -56,9 +56,9 @@ void RectangularGridData::clear() noexcept {
   isGlobal = false;
 }
 
-// --- TriangularMeshGridData -------------------------------------------------
+// --- TriangularGridData -----------------------------------------------------
 
-void TriangularMeshGridData::clear() noexcept {
+void TriangularGridData::clear() noexcept {
   meshTopologyName.clear();
   nodeCoordinatesNames.clear();
   faceNodeConnectivityName.clear();
