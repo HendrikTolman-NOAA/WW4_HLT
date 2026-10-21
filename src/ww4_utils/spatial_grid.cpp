@@ -5,8 +5,9 @@
  *
  * @file spatial_grid.cpp
  * @brief Implementation of spatial grid utility methods in WAVEWATCH IV.
- * @details Implements memory reset routines for FullGrid and
- * LocalGridPartition.
+ * @details Implements memory reset routines for SharedGridData,
+ *          RectangularGridData, TriangularMeshGridData, SMCGridData, FullGrid,
+ *          and LocalGridPartition.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -23,9 +24,71 @@
 
 namespace ww4_utils {
 
+// --- SharedGridData ---------------------------------------------------------
+
+void SharedGridData::clear() noexcept {
+  gridType = GridType::Undefined;
+  name.clear();
+  spatialReferenceSystem.clear();
+  isSpherical = true;
+  numNodes = 0;
+  numElements = 0;
+  xCoordinates.clear();
+  yCoordinates.clear();
+  topobathy.clear();
+  landMask.clear();
+  obstructionX.clear();
+  obstructionY.clear();
+  mapsta.clear();
+}
+
+// --- RectangularGridData ----------------------------------------------------
+
+void RectangularGridData::clear() noexcept {
+  nx = 0;
+  ny = 0;
+  x0 = 0.0;
+  y0 = 0.0;
+  dx = 0.0;
+  dy = 0.0;
+  xGridSpacing.clear();
+  yGridSpacing.clear();
+  isGlobal = false;
+}
+
+// --- TriangularMeshGridData -------------------------------------------------
+
+void TriangularMeshGridData::clear() noexcept {
+  meshTopologyName.clear();
+  nodeCoordinatesNames.clear();
+  faceNodeConnectivityName.clear();
+  numEdges = 0;
+  faceNodeConnectivity.clear();
+  edgeNodeConnectivity.clear();
+  faceFaceConnectivity.clear();
+  faceEdgeConnectivity.clear();
+  elementAreas.clear();
+  edgeLengths.clear();
+}
+
+// --- SMCGridData ------------------------------------------------------------
+
+void SMCGridData::clear() noexcept {
+  baseNx = 0;
+  baseNy = 0;
+  numActiveCells = 0;
+  numIFaces = 0;
+  numJFaces = 0;
+  cells.clear();
+  iFaceLinkage.clear();
+  jFaceLinkage.clear();
+}
+
 // --- FullGrid ---------------------------------------------------------------
 
 void FullGrid::clear() noexcept {
+  shared.clear();
+  specific = std::monostate{};
   gridType = GridType::Undefined;
   name.clear();
   nx = 0;
@@ -42,6 +105,8 @@ void FullGrid::clear() noexcept {
 // --- LocalGridPartition -----------------------------------------------------
 
 void LocalGridPartition::clear() noexcept {
+  shared.clear();
+  specific = std::monostate{};
   gridType = GridType::Undefined;
   rankId = 0;
   localNx = 0;
