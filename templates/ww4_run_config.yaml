@@ -105,6 +105,10 @@ physics:
   # Options: "none", "BT1", "BT4"
   bottom_friction: "BT1"
 
+grid:
+  # Mandatory grid input file name (no default).
+  grid_file: "ww4_grid.nc"
+
 forcing:
   # Mandatory input field options.
   # Options: "none", "from_file", "from_coupling", "homogeneous", "from_grid"

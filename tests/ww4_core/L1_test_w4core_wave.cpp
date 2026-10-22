@@ -44,6 +44,8 @@ TEST_F(W4CoreWaveL1Test, BasicWaveExecution) {
 
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
+  runFile << "grid:\n";
+  runFile << "  grid_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
@@ -74,6 +76,8 @@ TEST_F(W4CoreWaveL1Test, WaveExecutionTriangularAndSMC) {
   // Test Triangular solver execution
   {
     std::ofstream runFile("ww4_run_config.yaml");
+    runFile << "grid:\n";
+    runFile << "  grid_file: test_grid.nc\n";
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";
@@ -99,6 +103,8 @@ TEST_F(W4CoreWaveL1Test, WaveExecutionTriangularAndSMC) {
   // Test SMC solver execution
   {
     std::ofstream runFile("ww4_run_config.yaml");
+    runFile << "grid:\n";
+    runFile << "  grid_file: test_grid.nc\n";
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";

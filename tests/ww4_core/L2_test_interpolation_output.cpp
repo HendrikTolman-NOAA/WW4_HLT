@@ -43,7 +43,7 @@ protected:
 
   void writeYaml(const std::string &content) {
     std::ofstream ofs("ww4_run_config.yaml");
-    ofs << content;
+    ofs << "grid:\n  grid_file: test_grid.nc\n" << content;
     ofs.close();
   }
 

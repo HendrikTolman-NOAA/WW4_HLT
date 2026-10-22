@@ -65,7 +65,9 @@ TEST_F(WW4StandaloneL1Test, MissingArgsFails) {
 TEST_F(WW4StandaloneL1Test, ValidArgsSucceeds) {
   // Create a valid ww4_run_config.yaml configuration
   std::ofstream runFile("ww4_run_config.yaml");
-  runFile << "general:\n"
+  runFile << "grid:\n"
+          << "  grid_file: \"test_grid.nc\"\n"
+          << "general:\n"
           << "  calendar_type: \"Standard\"\n"
           << "  produce_std_out: \"no\"\n"
           << "  produce_log_file: \"yes\"\n"
