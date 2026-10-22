@@ -53,7 +53,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
 
   const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
-  EXPECT_EQ(config->netcdfFile, "test_grid_nondefault.nc");
+  EXPECT_EQ(config->gridFile, "test_grid_nondefault.nc");
   EXPECT_DOUBLE_EQ(config->timeStep, 1800.0);
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
   EXPECT_FALSE(config->produceStdOut);

@@ -255,8 +255,8 @@ struct HomogeneousDataPoint {
  * @brief Propagation flag in theta-direction.
  * @var RunConfig::propagateK
  * @brief Propagation flag in k-direction.
- * @var RunConfig::netcdfFile
- * @brief Grid NetCDF file name.
+ * @var RunConfig::gridFile
+ * @brief Grid file name.
  * @var RunConfig::sourceTerms
  * @brief Source terms flag.
  * @var RunConfig::solver
@@ -310,7 +310,7 @@ struct RunConfig {
   bool propagateK = true;
   bool sourceTerms = true;
 
-  std::string netcdfFile;
+  std::string gridFile;
 
   SolverType solver = SolverType::Undefined;
   InputDissipationScheme inputDissipation = InputDissipationScheme::Undefined;

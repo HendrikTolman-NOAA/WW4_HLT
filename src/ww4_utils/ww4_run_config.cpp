@@ -290,7 +290,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     // === Grid section ========================================================
     if (const auto node = config_node["grid"]) {
       if (node["grid_file"]) {
-        config.netcdfFile = cleanValue(node["grid_file"].as<std::string>());
+        config.gridFile = cleanValue(node["grid_file"].as<std::string>());
       }
     }
 
@@ -527,7 +527,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // === Mandatory fields check ==============================================
-    if (config.netcdfFile.empty() || config.solver == SolverType::Undefined ||
+    if (config.gridFile.empty() || config.solver == SolverType::Undefined ||
         config.inputDissipation == InputDissipationScheme::Undefined ||
         config.nonlinearInteractions == NonlinearScheme::Undefined ||
         config.linearInput == LinearInputScheme::Undefined ||
@@ -541,7 +541,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
             "invalid "
             "in configuration."
          << std::endl;
-      if (config.netcdfFile.empty())
+      if (config.gridFile.empty())
         os << "   Missing/invalid: grid -> grid_file" << std::endl;
       if (config.solver == SolverType::Undefined)
         os << "   Missing/invalid: physics -> solver" << std::endl;
@@ -685,7 +685,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  Configuration settings :" << std::endl;
 
   os << "\n     Grid file name           : "
-     << (config.netcdfFile.empty() ? "none" : config.netcdfFile) << std::endl;
+     << (config.gridFile.empty() ? "none" : config.gridFile) << std::endl;
 
   std::string solverStr = "undefined";
   if (config.solver == SolverType::UQ) {
