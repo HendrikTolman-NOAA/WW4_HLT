@@ -31,7 +31,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
   const std::string filename = "test_run_nondefault.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: \"test_grid_nondefault.nc\"\n";
+  file << "  grid_file: \"test_grid_nondefault.nc\"\n";
   file << "general:\n";
   file << "  calendar_type: \"NoLeap\"\n";
   file << "  produce_std_out: \"no\"\n";
@@ -103,7 +103,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     const std::string filename = "test_solver_uq_cap.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -137,7 +137,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     const std::string filename = "test_solver_tri.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -172,7 +172,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     const std::string filename = "test_solver_smc.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -207,7 +207,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     const std::string filename = "test_solver_missing.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -234,7 +234,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     const std::string filename = "test_st1_nl1.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -264,7 +264,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     const std::string filename = "test_st4_nl3.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -292,7 +292,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     const std::string filename = "test_donotuse.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -320,7 +320,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     const std::string filename = "test_all_source_terms.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -350,7 +350,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     const std::string filename = "test_missing_input_diss.yaml";
     std::ofstream file(filename);
     file << "grid:\n";
-    file << "  netcdf_file: test_grid.nc\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -383,7 +383,7 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   const std::string filename = "test_run_homogeneous.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -443,7 +443,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   const std::string filename = "test_spectral_custom.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -492,7 +492,7 @@ TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   const std::string filename = "test_spectral_invalid.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -520,7 +520,7 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   const std::string filename = "test_run_screen_level.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "  screen_output_level: summary\n";
@@ -554,7 +554,7 @@ TEST(RunConfigTest, OutputConfigParsing) {
   const std::string filename = "test_output_parsing.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -607,7 +607,7 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   const std::string filename = "test_output_interval_failure.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -665,7 +665,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
   const std::string filename = "test_run_new_flags.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -732,7 +732,7 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "\n";
   file << "  # This is a comment\n";
   file << "grid:\n";
-  file << "  netcdf_file : \"test_grid_robust.nc\"\n";
+  file << "  grid_file : \"test_grid_robust.nc\"\n";
   file << "general:\n";
   file << "  calendar_type   :   \"NoLeap\"   # End of line comment\n";
   file << "  produce_std_out: yes\n";
@@ -818,7 +818,7 @@ TEST(RunConfigTest, ApiOutputConfig) {
   const std::string filename = "test_api_output.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -916,7 +916,7 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   const std::string filename = "test_run_360.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  calendar_type: \"ThreeSixtyDay\"\n";
   file << "  time_step: 3600.0\n";
@@ -949,7 +949,7 @@ TEST(RunConfigTest, PartialConfig) {
   const std::string filename = "test_run_partial.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  produce_std_out: \"no\"\n";
   file << "  time_step: 3600.0\n";
@@ -980,7 +980,7 @@ TEST(RunConfigTest, TimeStepFailure) {
   const std::string filename = "test_run_time_step_failure.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: -1.0\n";
   file << "physics:\n";
@@ -1022,7 +1022,7 @@ TEST(RunConfigTest, BottomDepthDefault) {
   const std::string filename = "test_run_bottom_depth_default.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1050,7 +1050,7 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   const std::string filename = "test_run_bottom_depth_none.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1078,7 +1078,7 @@ TEST(RunConfigTest, FromGridRejection) {
   const std::string filename = "test_run_from_grid_rejection.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1106,7 +1106,7 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   const std::string filename = "test_input_parsing.yaml";
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  netcdf_file: test_grid.nc\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";

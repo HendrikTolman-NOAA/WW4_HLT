@@ -14,10 +14,6 @@
 #          automatically ignored by Git. This allows for local testing without
 #          adding customized input files to the repository.
 
-grid:
-  # Mandatory NetCDF grid input file name (no default).
-  netcdf_file: "ww4_grid.nc"
-
 general:
   # Calendar type for the simulation.
   # Options: "Standard" (default), "NoLeap", "ThreeSixtyDay"
@@ -108,6 +104,10 @@ physics:
   # Mandatory bottom friction source term selection (no default).
   # Options: "none", "BT1", "BT4"
   bottom_friction: "BT1"
+
+grid:
+  # Mandatory grid input file name (no default).
+  grid_file: "ww4_grid.nc"
 
 forcing:
   # Mandatory input field options.

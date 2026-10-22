@@ -66,7 +66,7 @@ TEST_F(WW4StandaloneL1Test, ValidArgsSucceeds) {
   // Create a valid ww4_run_config.yaml configuration
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n"
-          << "  netcdf_file: \"test_grid.nc\"\n"
+          << "  grid_file: \"test_grid.nc\"\n"
           << "general:\n"
           << "  calendar_type: \"Standard\"\n"
           << "  produce_std_out: \"no\"\n"

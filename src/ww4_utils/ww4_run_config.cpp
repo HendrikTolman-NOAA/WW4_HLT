@@ -289,8 +289,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     // === Grid section ========================================================
     if (const auto node = config_node["grid"]) {
-      if (node["netcdf_file"]) {
-        config.netcdfFile = cleanValue(node["netcdf_file"].as<std::string>());
+      if (node["grid_file"]) {
+        config.netcdfFile = cleanValue(node["grid_file"].as<std::string>());
       }
     }
 
@@ -542,7 +542,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
             "in configuration."
          << std::endl;
       if (config.netcdfFile.empty())
-        os << "   Missing/invalid: grid -> netcdf_file" << std::endl;
+        os << "   Missing/invalid: grid -> grid_file" << std::endl;
       if (config.solver == SolverType::Undefined)
         os << "   Missing/invalid: physics -> solver" << std::endl;
       if (config.inputDissipation == InputDissipationScheme::Undefined)

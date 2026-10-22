@@ -48,7 +48,7 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   {
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "grid:\n";
-    runFile << "  netcdf_file: test_grid.nc\n";
+    runFile << "  grid_file: test_grid.nc\n";
     runFile << "general:\n";
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 3600.0\n";
@@ -85,7 +85,7 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
   {
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "grid:\n";
-    runFile << "  netcdf_file: test_grid.nc\n";
+    runFile << "  grid_file: test_grid.nc\n";
     runFile << "general:\n";
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 3600.0\n";
@@ -120,7 +120,7 @@ TEST_F(W4CoreWaveOutputTest, ReportsApiOutputStatus) {
 TEST_F(W4CoreWaveOutputTest, DoesNotReportBottomDepthFromGrid) {
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
-  runFile << "  netcdf_file: test_grid.nc\n";
+  runFile << "  grid_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";

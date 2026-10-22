@@ -38,7 +38,7 @@ TEST_F(W4CoreTimeTest, CallCoreRoutinesWithTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
-  runFile << "  netcdf_file: test_grid.nc\n";
+  runFile << "  grid_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
@@ -78,7 +78,7 @@ TEST_F(W4CoreTimeTest, WaveFailsIfEndTimeBeforeStartTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
-  runFile << "  netcdf_file: test_grid.nc\n";
+  runFile << "  grid_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
@@ -112,7 +112,7 @@ TEST_F(W4CoreTimeTest, WaveHandlesEqualStartAndEndTime) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
-  runFile << "  netcdf_file: test_grid.nc\n";
+  runFile << "  grid_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
@@ -152,7 +152,7 @@ TEST_F(W4CoreTimeTest, WaveFailsIfTimeMismatch) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
-  runFile << "  netcdf_file: test_grid.nc\n";
+  runFile << "  grid_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
