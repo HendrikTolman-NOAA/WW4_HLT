@@ -46,6 +46,8 @@ protected:
 
 TEST_F(W4CoreZeroStepTest, FailsWithTwoConsecutiveZeroSteps) {
   std::ofstream runFile("ww4_run_config.yaml");
+  runFile << "grid:\n";
+  runFile << "  netcdf_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 0.0\n";

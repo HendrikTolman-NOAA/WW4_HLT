@@ -41,6 +41,8 @@ protected:
 
   void createConfig(const std::string &screenLevel, bool outputRequested) {
     std::ofstream runFile("ww4_run_config.yaml");
+    runFile << "grid:\n";
+    runFile << "  netcdf_file: test_grid.nc\n";
     runFile << "general:\n";
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 1800.0\n";

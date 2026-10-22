@@ -77,6 +77,8 @@ TEST_F(W4CoreInitTest, MutableRunConfig) {
 TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
+  runFile << "grid:\n";
+  runFile << "  netcdf_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
@@ -145,6 +147,8 @@ TEST_F(W4CoreInitTest, SolverInitRoutines) {
 
 TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   std::ofstream runFile("ww4_run_config.yaml");
+  runFile << "grid:\n";
+  runFile << "  netcdf_file: test_grid.nc\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
@@ -171,6 +175,8 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   resetInternalState();
 
   std::ofstream runFile2("ww4_run_config.yaml");
+  runFile2 << "grid:\n";
+  runFile2 << "  netcdf_file: test_grid.nc\n";
   runFile2 << "general:\n";
   runFile2 << "  calendar_type: Standard\n";
   runFile2 << "  time_step: 3600.0\n";

@@ -42,6 +42,8 @@ protected:
                  const std::string &linInput = "none",
                  const std::string &botFric = "none", bool sourceTerms = true) {
     std::ofstream runFile("ww4_run_config.yaml");
+    runFile << "grid:\n";
+    runFile << "  netcdf_file: test_grid.nc\n";
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";

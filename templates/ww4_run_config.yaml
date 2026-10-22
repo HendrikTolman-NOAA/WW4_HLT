@@ -14,6 +14,10 @@
 #          automatically ignored by Git. This allows for local testing without
 #          adding customized input files to the repository.
 
+grid:
+  # Mandatory NetCDF grid input file name (no default).
+  netcdf_file: "ww4_grid.nc"
+
 general:
   # Calendar type for the simulation.
   # Options: "Standard" (default), "NoLeap", "ThreeSixtyDay"

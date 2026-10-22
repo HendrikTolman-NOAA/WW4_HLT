@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Last update : 2026-10-24
  */
 
 #pragma once
@@ -255,6 +255,8 @@ struct HomogeneousDataPoint {
  * @brief Propagation flag in theta-direction.
  * @var RunConfig::propagateK
  * @brief Propagation flag in k-direction.
+ * @var RunConfig::netcdfFile
+ * @brief Grid NetCDF file name.
  * @var RunConfig::sourceTerms
  * @brief Source terms flag.
  * @var RunConfig::solver
@@ -307,6 +309,8 @@ struct RunConfig {
   bool propagateTheta = true;
   bool propagateK = true;
   bool sourceTerms = true;
+
+  std::string netcdfFile;
 
   SolverType solver = SolverType::Undefined;
   InputDissipationScheme inputDissipation = InputDissipationScheme::Undefined;

@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-22
+ * @date Last update : 2026-10-24
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -287,6 +287,13 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     RunConfig config{};
 
+    // === Grid section ========================================================
+    if (const auto node = config_node["grid"]) {
+      if (node["netcdf_file"]) {
+        config.netcdfFile = cleanValue(node["netcdf_file"].as<std::string>());
+      }
+    }
+
     // === General section =====================================================
     if (const auto node = config_node["general"]) {
       if (node["calendar_type"]) {
@@ -520,7 +527,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // === Mandatory fields check ==============================================
-    if (config.solver == SolverType::Undefined ||
+    if (config.netcdfFile.empty() || config.solver == SolverType::Undefined ||
         config.inputDissipation == InputDissipationScheme::Undefined ||
         config.nonlinearInteractions == NonlinearScheme::Undefined ||
         config.linearInput == LinearInputScheme::Undefined ||
@@ -534,6 +541,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
             "invalid "
             "in configuration."
          << std::endl;
+      if (config.netcdfFile.empty())
+        os << "   Missing/invalid: grid -> netcdf_file" << std::endl;
       if (config.solver == SolverType::Undefined)
         os << "   Missing/invalid: physics -> solver" << std::endl;
       if (config.inputDissipation == InputDissipationScheme::Undefined)
@@ -675,6 +684,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Configuration settings :" << std::endl;
 
+  os << "\n     Grid file name           : "
+     << (config.netcdfFile.empty() ? "none" : config.netcdfFile) << std::endl;
+
   std::string solverStr = "undefined";
   if (config.solver == SolverType::UQ) {
     solverStr = "UQ (Ultimate Quickest)";
@@ -683,7 +695,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.solver == SolverType::SMC) {
     solverStr = "SMC (Spherical Multiple-Cell)";
   }
-  os << "\n     Solver scheme            : " << solverStr << std::endl;
+  os << "     Solver scheme            : " << solverStr << std::endl;
 
   std::string lnStr = "undefined";
   if (config.linearInput == LinearInputScheme::DoNotUse) {
