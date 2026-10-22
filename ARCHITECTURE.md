@@ -58,12 +58,13 @@ The following diagram illustrates the sequence of function calls when running th
 ```mermaid
 sequenceDiagram
     participant SA as ww4_standalone
+    participant PROGS as ww4_progs
     participant INIT as w4core_init
     participant WAVE as w4core_wave
     participant FINL as w4core_finalize
     participant UTILS as ww4_utils
 
-    SA->>UTILS: loadStandaloneConfig()
+    SA->>PROGS: parseStandaloneArgs()
     SA->>INIT: w4core_init(startTime)
     INIT->>UTILS: loadRunConfig()
     INIT->>UTILS: setCalendarType()
