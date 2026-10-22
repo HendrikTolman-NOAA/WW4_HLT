@@ -14,7 +14,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner
 #@date Initial : 2026-07-09
-#@date Last update : 2026-10-16
+#@date Last update : 2026-10-22
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -74,7 +74,6 @@ add_library(
     src/ww4_utils/spatial_grid.cpp
     src/ww4_utils/ww4_std_out.cpp
     src/ww4_utils/ww4_logfile.cpp
-    src/ww4_utils/ww4_standalone_config.cpp
     src/ww4_utils/ww4_run_config.cpp
     src/ww4_utils/ww4_input_utils.cpp
     src/ww4_utils/ww4_output_utils.cpp
@@ -114,7 +113,11 @@ target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
 # Executable: ww4_standalone
-add_executable(ww4_standalone src/ww4_progs/ww4_standalone.cpp)
+add_executable(
+    ww4_standalone
+    src/ww4_progs/ww4_standalone.cpp
+    src/ww4_progs/ww4_standalone_args.cpp
+)
 target_link_libraries(ww4_standalone PRIVATE ww4_core ww4_utils)
 target_compile_options(ww4_standalone PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_standalone PRIVATE ${WW4_COMMON_LINK_OPTIONS})
@@ -167,7 +170,6 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_spatial_grid tests/ww4_utils/L1_test_spatial_grid.cpp ww4_utils)
     ww4_add_test(test_ww4_std_out tests/ww4_utils/L1_test_ww4_std_out.cpp ww4_utils)
     ww4_add_test(test_ww4_logfile tests/ww4_utils/L1_test_ww4_logfile.cpp ww4_utils)
-    ww4_add_test(test_ww4_standalone_config tests/ww4_utils/L1_test_ww4_standalone_config.cpp ww4_utils)
     ww4_add_test(test_ww4_run_config tests/ww4_utils/L1_test_ww4_run_config.cpp ww4_utils)
     ww4_add_test(test_ww4_input_utils tests/ww4_utils/L1_test_ww4_input_utils.cpp ww4_utils)
     ww4_add_test(test_ww4_output_utils tests/ww4_utils/L1_test_ww4_output_utils.cpp ww4_utils)
@@ -179,6 +181,8 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_solver_UQ tests/ww4_core/L1_test_solver_UQ.cpp ww4_core)
     ww4_add_test(test_solver_triangular tests/ww4_core/L1_test_solver_triangular.cpp ww4_core)
     ww4_add_test(test_solver_SMC tests/ww4_core/L1_test_solver_SMC.cpp ww4_core)
+    ww4_add_test(test_ww4_standalone_args tests/ww4_core/L1_test_ww4_standalone_args.cpp ww4_utils)
+    target_sources(test_ww4_standalone_args PRIVATE src/ww4_progs/ww4_standalone_args.cpp)
     ww4_add_test(test_ww4_standalone tests/ww4_core/L1_test_ww4_standalone.cpp ww4_core)
     target_compile_definitions(test_ww4_standalone PRIVATE STANDALONE_EXE_PATH="${CMAKE_SOURCE_DIR}/exe/ww4_standalone")
     ww4_add_test(test_w4core_init tests/ww4_core/L1_test_w4core_init.cpp ww4_core)

@@ -17,11 +17,10 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-01
+ * @date Last update : 2026-10-22
  */
 
 #include "ww4_utils/ww4_run_config.h"
-#include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_std_out.h"
 #include <algorithm>
 #include <charconv>

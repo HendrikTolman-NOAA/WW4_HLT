@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-07-13
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10-22
  */
 
 #include <cstdlib>
@@ -32,22 +32,21 @@ namespace ww4_core {
 class WW4StandaloneL1Test : public ::testing::Test {
 protected:
   void SetUp() override {
-    std::remove("ww4_standalone.yaml");
     std::remove("ww4_run_config.yaml");
     std::remove("ww4_log.txt");
     std::remove("standalone_test.log");
   }
 
   void TearDown() override {
-    std::remove("ww4_standalone.yaml");
     std::remove("ww4_run_config.yaml");
     std::remove("ww4_log.txt");
     std::remove("standalone_test.log");
   }
 
-  int runStandalone() {
-    std::string command =
-        std::string(STANDALONE_EXE_PATH) + " > standalone_test.log 2>&1";
+  int runStandalone(const std::string &args = "") {
+    std::string command = std::string(STANDALONE_EXE_PATH) +
+                          (args.empty() ? "" : " " + args) +
+                          " > standalone_test.log 2>&1";
     int result = std::system(command.c_str());
 #ifdef _WIN32
     return result;
@@ -57,20 +56,13 @@ protected:
   }
 };
 
-TEST_F(WW4StandaloneL1Test, MissingConfigFails) {
-  // Executing ww4_standalone main without configuration files should fail.
+TEST_F(WW4StandaloneL1Test, MissingArgsFails) {
+  // Executing ww4_standalone main without command line arguments should fail.
   int exit_code = runStandalone();
   EXPECT_NE(exit_code, 0);
 }
 
-TEST_F(WW4StandaloneL1Test, ValidConfigSucceeds) {
-  // Create a valid ww4_standalone.yaml configuration
-  std::ofstream standaloneFile("ww4_standalone.yaml");
-  standaloneFile << "simulation:\n"
-                 << "  start_time: \"20260101 000000\"\n"
-                 << "  end_time: \"20260101 020000\"\n";
-  standaloneFile.close();
-
+TEST_F(WW4StandaloneL1Test, ValidArgsSucceeds) {
   // Create a valid ww4_run_config.yaml configuration
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "general:\n"
@@ -94,8 +86,8 @@ TEST_F(WW4StandaloneL1Test, ValidConfigSucceeds) {
           << "  ice_concentrations: \"none\"\n";
   runFile.close();
 
-  // Executing ww4_standalone main with valid configuration should succeed.
-  int exit_code = runStandalone();
+  // Executing ww4_standalone main with valid start/end times should succeed.
+  int exit_code = runStandalone("\"20260101 000000\" \"20260101 020000\"");
   EXPECT_EQ(exit_code, 0);
 }
 
