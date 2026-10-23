@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-10-22
+ * @date Last update : 2026-10-23
  */
 
 #include "ww4_core/solver_SMC/solver_SMC.h"
