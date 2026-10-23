@@ -16,23 +16,16 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-23
  */
 
 #include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/scheme_factory.h"
+#include "ww4_core/solver_triangular/w4core_init_triangular.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
-
-// --- w4core_init_triangular -------------------------------------------------
-void w4core_init_triangular(std::ostream &os) {
-  if (getRunConfig().produceStdOut &&
-      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Initializing Triangular unstructured grid solver" << std::endl;
-  }
-}
 
 // --- init -------------------------------------------------------------------
 void SolverTriangularGrid::init() { w4core_init_triangular(); }

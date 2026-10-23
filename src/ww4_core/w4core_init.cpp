@@ -15,16 +15,16 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-23
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
 #include "ww4_core/w4core_init.h"
-#include "ww4_core/solver_SMC/solver_SMC.h"
-#include "ww4_core/solver_UQ/solver_UQ.h"
-#include "ww4_core/solver_triangular/solver_triangular.h"
+#include "ww4_core/solver_SMC/w4core_init_SMC.h"
+#include "ww4_core/solver_UQ/w4core_init_UQ.h"
+#include "ww4_core/solver_triangular/w4core_init_triangular.h"
 #include "ww4_utils/time_management.h"
 #include "ww4_utils/ww4_input_utils.h"
 #include "ww4_utils/ww4_logfile.h"
@@ -55,7 +55,7 @@ ww4_utils::waveTimeData waveTimeData;
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-22
  */
 void w4core_init(const ww4_utils::DateTime &startTime,
                  std::string_view programName, std::ostream &os) {

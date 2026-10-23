@@ -16,12 +16,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-23
  */
 
 #pragma once
 
 #include "ww4_core/solver.h"
+#include "ww4_core/solver_SMC/w4core_init_SMC.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
@@ -30,18 +31,6 @@
 
 namespace ww4_core {
 
-// --- w4core_init_SMC --------------------------------------------------------
-/**
- * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
- * solver.
- * @param os Output stream for logging.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-10-16
- */
-void w4core_init_SMC(std::ostream &os = std::cout);
-
 // --- SolverSMCGrid ----------------------------------------------------------
 /**
  * @class SolverSMCGrid
@@ -49,7 +38,7 @@ void w4core_init_SMC(std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-22
  */
 class SolverSMCGrid : public ISolver {
 public:

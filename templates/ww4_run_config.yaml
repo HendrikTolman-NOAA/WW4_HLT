@@ -107,7 +107,7 @@ physics:
 
 grid:
   # Mandatory grid input file name (no default).
-  grid_file: "ww4_grid.nc"
+  grid_file: "ww4_grid_ugrid.nc"
 
 forcing:
   # Mandatory input field options.
