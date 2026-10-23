@@ -16,12 +16,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-22
  */
 
 #pragma once
 
 #include "ww4_core/solver.h"
+#include "ww4_core/solver_triangular/w4core_init_triangular.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
@@ -30,17 +31,6 @@
 
 namespace ww4_core {
 
-// --- w4core_init_triangular -------------------------------------------------
-/**
- * @brief Initialization routine for the triangular unstructured grid solver.
- * @param os Output stream for logging.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
- */
-void w4core_init_triangular(std::ostream &os = std::cout);
-
 // --- SolverTriangularGrid ---------------------------------------------------
 /**
  * @class SolverTriangularGrid
@@ -48,7 +38,7 @@ void w4core_init_triangular(std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-22
  */
 class SolverTriangularGrid : public ISolver {
 public:

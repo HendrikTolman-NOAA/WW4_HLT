@@ -18,11 +18,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-15
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-22
  */
 
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/solver_SMC/solver_SMC.h"
+#include "ww4_core/solver_SMC/w4core_init_SMC.h"
 #include <gtest/gtest.h>
 
 namespace ww4_core {

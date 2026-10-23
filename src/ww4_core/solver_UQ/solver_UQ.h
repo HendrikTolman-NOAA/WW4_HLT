@@ -15,12 +15,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-22
  */
 
 #pragma once
 
 #include "ww4_core/solver.h"
+#include "ww4_core/solver_UQ/w4core_init_UQ.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
@@ -29,18 +30,6 @@
 
 namespace ww4_core {
 
-// --- w4core_init_UQ ---------------------------------------------------------
-/**
- * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
- * solver.
- * @param os Output stream for logging.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-10-16
- */
-void w4core_init_UQ(std::ostream &os = std::cout);
-
 // --- SolverRectangularGrid --------------------------------------------------
 /**
  * @class SolverRectangularGrid
@@ -48,7 +37,7 @@ void w4core_init_UQ(std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-22
  */
 class SolverRectangularGrid : public ISolver {
 public:

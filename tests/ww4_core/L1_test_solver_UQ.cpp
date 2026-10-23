@@ -18,11 +18,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-15
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-22
  */
 
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/solver_UQ/solver_UQ.h"
+#include "ww4_core/solver_UQ/w4core_init_UQ.h"
 #include <gtest/gtest.h>
 
 namespace ww4_core {

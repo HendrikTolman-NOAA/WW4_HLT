@@ -15,23 +15,16 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-22
  */
 
 #include "ww4_core/solver_UQ/solver_UQ.h"
 #include "ww4_core/scheme_factory.h"
+#include "ww4_core/solver_UQ/w4core_init_UQ.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
-
-// --- w4core_init_UQ ---------------------------------------------------------
-void w4core_init_UQ(std::ostream &os) {
-  if (getRunConfig().produceStdOut &&
-      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Initializing UQ regular grid solver" << std::endl;
-  }
-}
 
 // --- init -------------------------------------------------------------------
 void SolverRectangularGrid::init() { w4core_init_UQ(); }
