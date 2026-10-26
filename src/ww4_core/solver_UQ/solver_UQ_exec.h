@@ -3,10 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_SMC.h
- * @brief Header for the SMC grid solver stub.
- * @details Concrete implementation of the ISolver interface using the UK
- * MetOffice SMC grid scheme.
+ * @file solver_UQ_exec.h
+ * @brief Header for the Ultimate Quickest (UQ) regular grid solver.
+ * @details Concrete implementation of the ISolver interface using UQ dynamics.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -16,13 +15,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #pragma once
 
 #include "ww4_core/solver.h"
-#include "ww4_core/solver_SMC/w4core_init_SMC.h"
+#include "ww4_core/solver_UQ/solver_UQ_init.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
@@ -31,22 +30,22 @@
 
 namespace ww4_core {
 
-// --- SolverSMCGrid ----------------------------------------------------------
+// --- SolverRectangularGrid --------------------------------------------------
 /**
- * @class SolverSMCGrid
- * @brief Implementation of the SMC grid solver stub.
+ * @class SolverRectangularGrid
+ * @brief Implementation of the UQ solver for regular grids.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
  * @date Last update : 2026-10-22
  */
-class SolverSMCGrid : public ISolver {
+class SolverRectangularGrid : public ISolver {
 public:
-  SolverSMCGrid() = default;
-  ~SolverSMCGrid() override = default;
+  SolverRectangularGrid() = default;
+  ~SolverRectangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "SMC";
+    return "UQ";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;

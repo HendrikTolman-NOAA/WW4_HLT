@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_init_triangular.h
+ * @file solver_triangular_init.h
  * @brief Header for the triangular unstructured grid solver initialization.
  * @details Defines the initialization routine for the triangular unstructured
  * grid solver.
@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #pragma once
@@ -25,15 +25,15 @@
 
 namespace ww4_core {
 
-// --- w4core_init_triangular -------------------------------------------------
+// --- solver_triangular_init -------------------------------------------------
 /**
  * @brief Initialization routine for the triangular unstructured grid solver.
  * @param os Output stream for logging.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-22
- * @date Last update : 2026-10-22
+ * @date Last update : 2026-10-26
  */
-void w4core_init_triangular(std::ostream &os = std::cout);
+void solver_triangular_init(std::ostream &os = std::cout);
 
 } // namespace ww4_core

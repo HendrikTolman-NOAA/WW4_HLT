@@ -3,8 +3,8 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_SMC.cpp
- * @brief Implementation of the SMC grid solver stub.
+ * @file solver_SMC_exec.cpp
+ * @brief Implementation of the SMC grid solver execution stub.
  * @details Concrete implementation of the ISolver interface for SMC grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -15,19 +15,19 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
-#include "ww4_core/solver_SMC/solver_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_exec.h"
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_SMC/w4core_init_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
 // --- init -------------------------------------------------------------------
-void SolverSMCGrid::init() { w4core_init_SMC(); }
+void SolverSMCGrid::init() { solver_SMC_init(); }
 
 // --- addSourceTerm ----------------------------------------------------------
 void SolverSMCGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {

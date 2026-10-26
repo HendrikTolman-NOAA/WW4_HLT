@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/w4core_init.h"
@@ -38,9 +38,9 @@ protected:
 
 TEST_F(W4CoreWaveL1Test, BasicWaveExecution) {
   // Explicit reference to solver call routines for coverage check:
-  // w4core_wave_UQ
-  // w4core_wave_triangular
-  // w4core_wave_SMC
+  // solver_UQ_exec
+  // solver_triangular_exec
+  // solver_SMC_exec
 
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");

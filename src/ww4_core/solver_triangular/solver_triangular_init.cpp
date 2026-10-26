@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_init_triangular.cpp
+ * @file solver_triangular_init.cpp
  * @brief Implementation of the triangular grid solver initialization routine.
  * @details Placeholders and documentation for triangular unstructured mesh
  * reading (UGRID convention), topobathy elevation ingestion, and domain
@@ -20,15 +20,15 @@
  * @date Last update : 2026-10-26
  */
 
-#include "ww4_core/solver_triangular/w4core_init_triangular.h"
+#include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/ww4_run_config.h"
 #include <iostream>
 
 namespace ww4_core {
 
-// --- w4core_init_triangular -------------------------------------------------
-void w4core_init_triangular(std::ostream &os) {
+// --- solver_triangular_init -------------------------------------------------
+void solver_triangular_init(std::ostream &os) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
     os << "    Initializing Triangular unstructured grid solver" << std::endl;

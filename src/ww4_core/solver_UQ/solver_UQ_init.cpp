@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_init_UQ.cpp
+ * @file solver_UQ_init.cpp
  * @brief Implementation of the UQ regular grid solver initialization routine.
  * @details Placeholders and documentation for UQ regular grid reading,
  * topobathy elevation ingestion, and domain decomposition partition data
@@ -20,15 +20,15 @@
  * @date Last update : 2026-10-26
  */
 
-#include "ww4_core/solver_UQ/w4core_init_UQ.h"
+#include "ww4_core/solver_UQ/solver_UQ_init.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/ww4_run_config.h"
 #include <iostream>
 
 namespace ww4_core {
 
-// --- w4core_init_UQ ---------------------------------------------------------
-void w4core_init_UQ(std::ostream &os) {
+// --- solver_UQ_init ---------------------------------------------------------
+void solver_UQ_init(std::ostream &os) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
     os << "    Initializing UQ regular grid solver" << std::endl;

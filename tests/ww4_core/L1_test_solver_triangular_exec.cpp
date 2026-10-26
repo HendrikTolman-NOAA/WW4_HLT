@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_solver_triangular.cpp
+ * @file L1_test_solver_triangular_exec.cpp
  * @brief Unit tests for the Triangular grid solver module.
  * @details Verifies initialization, adding source terms, and solver execution
  * for SolverTriangularGrid.
@@ -18,12 +18,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-15
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_triangular/solver_triangular.h"
-#include "ww4_core/solver_triangular/w4core_init_triangular.h"
+#include "ww4_core/solver_triangular/solver_triangular_exec.h"
+#include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include <gtest/gtest.h>
 
 namespace ww4_core {
@@ -33,7 +33,7 @@ TEST(SolverTriangularTest, BasicPropertiesAndInit) {
   EXPECT_EQ(solver.getName(), "Triangular");
 
   testing::internal::CaptureStdout();
-  w4core_init_triangular();
+  solver_triangular_init();
   std::string output = testing::internal::GetCapturedStdout();
   (void)output;
 

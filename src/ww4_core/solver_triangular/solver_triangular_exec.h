@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_triangular.h
+ * @file solver_triangular_exec.h
  * @brief Header for the triangular unstructured grid solver stub.
  * @details Concrete implementation of the ISolver interface using triangular
  * grid approach.
@@ -16,13 +16,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #pragma once
 
 #include "ww4_core/solver.h"
-#include "ww4_core/solver_triangular/w4core_init_triangular.h"
+#include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
