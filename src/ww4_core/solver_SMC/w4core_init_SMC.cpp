@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/solver_SMC/w4core_init_SMC.h"
@@ -35,7 +35,7 @@ void w4core_init_SMC(std::ostream &os) {
     os << "    Initializing SMC grid solver" << std::endl;
   }
 
-  // === 1. Spatial Grid Ingestion (Spherical Multiple-Cell Grid / SMC) ======
+  // === Spatial grid ingestion ===============================================
   // Placeholder for reading Spherical Multiple-Cell (SMC) grid geometry and
   // topology:
   // - Open SMC grid file specified in RunConfig (grid.file_path, e.g. NetCDF /
@@ -51,7 +51,7 @@ void w4core_init_SMC(std::ostream &os) {
   // - Read land/sea/ice cell masks and polar boundary cell descriptor lists.
   // - Construct SMCGridData / SharedGridData and expose via std::span views.
 
-  // === 2. Domain Decomposition & Partition Data Lifecycle ===================
+  // === Domain decomposition and partition data lifecycle ===================
   // Placeholder for SMC grid domain decomposition and parallel sub-domain
   // setup:
   // - Check runtime partition mode configuration (grid.partition.mode).
@@ -68,6 +68,15 @@ void w4core_init_SMC(std::ostream &os) {
   // - Populate LocalGridPartition for current rank, initializing local SMC cell
   //   topobathy buffers, ghost/halo boundary cell linkage maps, and
   //   local_to_global_map.
+
+  // === Halo communication setup =============================================
+  // Placeholder for initializing halo communication structures:
+  // - Map multi-resolution cell face boundary linkages across sub-domain
+  //   partition boundaries.
+  // - Construct hierarchical halo mapping tables for multi-level cell exchanges
+  //   across refinement boundaries and polar closures.
+  // - Pre-allocate asynchronous MPI buffers and handles for multi-resolution
+  //   flux and wave action density exchanges.
 }
 
 } // namespace ww4_core
