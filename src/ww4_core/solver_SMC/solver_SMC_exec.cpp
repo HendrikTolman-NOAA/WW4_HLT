@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_UQ.cpp
- * @brief Implementation of the UQ solver.
- * @details Concrete implementation of the ISolver interface for regular grids.
+ * @file solver_SMC_exec.cpp
+ * @brief Implementation of the SMC grid solver execution stub.
+ * @details Concrete implementation of the ISolver interface for SMC grids.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -15,32 +15,32 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
-#include "ww4_core/solver_UQ/solver_UQ.h"
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_UQ/w4core_init_UQ.h"
+#include "ww4_core/solver_SMC/solver_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
 // --- init -------------------------------------------------------------------
-void SolverRectangularGrid::init() { w4core_init_UQ(); }
+void SolverSMCGrid::init() { solver_SMC_init(); }
 
 // --- addSourceTerm ----------------------------------------------------------
-void SolverRectangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
+void SolverSMCGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
   if (source) {
     sourceTerms_.push_back(std::move(source));
   }
 }
 
 // --- solve ------------------------------------------------------------------
-void SolverRectangularGrid::solve(std::span<double> data) {
+void SolverSMCGrid::solve(std::span<double> data) {
   // === Perform numerical propagation =======================================
   std::for_each(data.begin(), data.end(), [](double &val) {
-    val *= 1.01; // Mock propagation effect
+    val *= 1.03; // Mock propagation effect
   });
 
   // === Call integrated source terms ==========================================

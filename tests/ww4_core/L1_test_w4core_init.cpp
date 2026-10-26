@@ -15,15 +15,15 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/solver_SMC/solver_SMC.h"
-#include "ww4_core/solver_SMC/w4core_init_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/solver_UQ/solver_UQ.h"
-#include "ww4_core/solver_UQ/w4core_init_UQ.h"
+#include "ww4_core/solver_UQ/solver_UQ_init.h"
 #include "ww4_core/solver_triangular/solver_triangular.h"
-#include "ww4_core/solver_triangular/w4core_init_triangular.h"
+#include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
 #include <gtest/gtest.h>
@@ -125,17 +125,17 @@ TEST_F(W4CoreInitTest, SolverInitRoutines) {
   getMutableRunConfig().produceStdOut = true;
   getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
 
-  w4core_init_UQ(ss);
+  solver_UQ_init(ss);
   EXPECT_NE(ss.str().find("Initializing UQ regular grid solver"),
             std::string::npos);
 
   ss.str("");
-  w4core_init_triangular(ss);
+  solver_triangular_init(ss);
   EXPECT_NE(ss.str().find("Initializing Triangular unstructured grid solver"),
             std::string::npos);
 
   ss.str("");
-  w4core_init_SMC(ss);
+  solver_SMC_init(ss);
   EXPECT_NE(ss.str().find("Initializing SMC grid solver"), std::string::npos);
 
   SolverRectangularGrid uq;

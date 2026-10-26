@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_init_UQ.h
+ * @file solver_UQ_init.h
  * @brief Header for the Ultimate Quickest (UQ) regular grid solver
  * initialization.
  * @details Defines the initialization routine for the UQ regular grid solver.
@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #pragma once
@@ -25,7 +25,7 @@
 
 namespace ww4_core {
 
-// --- w4core_init_UQ ---------------------------------------------------------
+// --- solver_UQ_init ---------------------------------------------------------
 /**
  * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
  * solver.
@@ -33,8 +33,8 @@ namespace ww4_core {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-22
- * @date Last update : 2026-10-22
+ * @date Last update : 2026-10-26
  */
-void w4core_init_UQ(std::ostream &os = std::cout);
+void solver_UQ_init(std::ostream &os = std::cout);
 
 } // namespace ww4_core

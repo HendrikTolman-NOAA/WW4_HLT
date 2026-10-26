@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file w4core_init_SMC.cpp
+ * @file solver_SMC_init.cpp
  * @brief Implementation of the SMC grid solver initialization routine.
  * @details Placeholders and documentation for Spherical Multiple-Cell (SMC)
  * grid reading, cell descriptor topology ingestion, topobathy elevation
@@ -21,15 +21,15 @@
  * @date Last update : 2026-10-26
  */
 
-#include "ww4_core/solver_SMC/w4core_init_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/ww4_run_config.h"
 #include <iostream>
 
 namespace ww4_core {
 
-// --- w4core_init_SMC --------------------------------------------------------
-void w4core_init_SMC(std::ostream &os) {
+// --- solver_SMC_init --------------------------------------------------------
+void solver_SMC_init(std::ostream &os) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
     os << "    Initializing SMC grid solver" << std::endl;

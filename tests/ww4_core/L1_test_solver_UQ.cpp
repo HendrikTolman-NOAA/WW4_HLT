@@ -18,12 +18,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-15
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/solver_UQ/solver_UQ.h"
-#include "ww4_core/solver_UQ/w4core_init_UQ.h"
+#include "ww4_core/solver_UQ/solver_UQ_init.h"
 #include <gtest/gtest.h>
 
 namespace ww4_core {
@@ -33,7 +33,7 @@ TEST(SolverUQTest, BasicPropertiesAndInit) {
   EXPECT_EQ(solver.getName(), "UQ");
 
   testing::internal::CaptureStdout();
-  w4core_init_UQ();
+  solver_UQ_init();
   std::string output = testing::internal::GetCapturedStdout();
   (void)output;
 

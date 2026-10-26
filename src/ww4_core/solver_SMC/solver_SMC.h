@@ -16,13 +16,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #pragma once
 
 #include "ww4_core/solver.h"
-#include "ww4_core/solver_SMC/w4core_init_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>

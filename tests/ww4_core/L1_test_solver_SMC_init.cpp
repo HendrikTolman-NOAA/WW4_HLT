@@ -3,9 +3,9 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_w4core_init_SMC.cpp
+ * @file L1_test_solver_SMC_init.cpp
  * @brief Unit tests for the SMC grid solver initialization module.
- * @details Verifies w4core_init_SMC execution.
+ * @details Verifies solver_SMC_init execution.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -17,18 +17,18 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
-#include "ww4_core/solver_SMC/w4core_init_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include <gtest/gtest.h>
 #include <sstream>
 
 namespace ww4_core {
 
-TEST(W4CoreInitSMCTest, BasicExecution) {
+TEST(SolverSMCInitTest, BasicExecution) {
   std::ostringstream ss;
-  EXPECT_NO_THROW(w4core_init_SMC(ss));
+  EXPECT_NO_THROW(solver_SMC_init(ss));
 }
 
 } // namespace ww4_core
