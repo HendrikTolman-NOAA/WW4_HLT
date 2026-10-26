@@ -24,13 +24,22 @@
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/solver_UQ/solver_UQ_exec.h"
 #include "ww4_core/solver_UQ/solver_UQ_init.h"
+#include "ww4_core/w4core_init.h"
+#include <fstream>
 #include <gtest/gtest.h>
 
 namespace ww4_core {
 
 TEST(SolverUQTest, BasicPropertiesAndInit) {
+  resetInternalState();
   SolverRectangularGrid solver;
   EXPECT_EQ(solver.getName(), "UQ");
+
+  getMutableRunConfig().gridFile = "ww4_grid_ugrid.nc";
+  {
+    std::ofstream g1("ww4_grid_ugrid.nc");
+    g1 << "grid_name: ww4_grid_ugrid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
+  }
 
   testing::internal::CaptureStdout();
   solver_UQ_init();
@@ -38,6 +47,8 @@ TEST(SolverUQTest, BasicPropertiesAndInit) {
   (void)output;
 
   EXPECT_NO_THROW(solver.init());
+  std::remove("ww4_grid_ugrid.nc");
+  resetInternalState();
 }
 
 TEST(SolverUQTest, SolveAndAddSourceTerm) {

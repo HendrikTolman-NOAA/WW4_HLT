@@ -33,12 +33,17 @@ namespace ww4_core {
 
 class W4CoreInitTest : public ::testing::Test {
 protected:
-  void SetUp() override { resetInternalState(); }
+  void SetUp() override {
+    resetInternalState();
+    std::ofstream g("test_grid.nc");
+    g << "grid_name: test_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
+  }
 
   void TearDown() override {
     resetInternalState();
     std::remove("ww4_run_config.yaml");
     std::remove("ww4_log.txt");
+    std::remove("test_grid.nc");
   }
 };
 
@@ -123,6 +128,7 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
 TEST_F(W4CoreInitTest, SolverInitRoutines) {
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
+  getMutableRunConfig().gridFile = "test_grid.nc";
   getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
 
   solver_UQ_init(ss);

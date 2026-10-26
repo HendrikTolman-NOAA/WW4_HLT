@@ -31,12 +31,15 @@ protected:
   void SetUp() override {
     startTime = {19680606, 0.0};
     endTime = {19680606, 20000.0}; // 2 hours (HHMMSS)
+    std::ofstream g("test_grid.nc");
+    g << "grid_name: test_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
   }
 
   void TearDown() override {
     ww4_core::resetInternalState();
     std::remove("ww4_run_config.yaml");
     std::remove("ww4_log.txt");
+    std::remove("test_grid.nc");
   }
 
   void createConfig(const std::string &screenLevel, bool outputRequested) {

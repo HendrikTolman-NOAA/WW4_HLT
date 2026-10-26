@@ -5,9 +5,9 @@
  *
  * @file solver_UQ_init.cpp
  * @brief Implementation of the UQ regular grid solver initialization routine.
- * @details Placeholders and documentation for UQ regular grid reading,
- * topobathy elevation ingestion, and domain decomposition partition data
- * handling according to the grid assessment.
+ * @details Reads UQ regular spatial grid geometry and metadata using
+ * utils_UQ_IO, captures grid header metadata, writes metadata reports to stdout
+ * and log file, and prepares domain decomposition partition structures.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -21,7 +21,9 @@
  */
 
 #include "ww4_core/solver_UQ/solver_UQ_init.h"
+#include "ww4_core/solver_UQ/utils_UQ_IO.h"
 #include "ww4_core/w4core_init.h"
+#include "ww4_utils/spatial_grid.h"
 #include "ww4_utils/ww4_run_config.h"
 #include <iostream>
 
@@ -40,20 +42,8 @@ void solver_UQ_init(std::ostream &os) {
   }
 
   // === Spatial grid ingestion ===============================================
-
-  // Placeholder for reading 2D regular spatial grid geometry and metadata:
-  // - Open grid file specified in RunConfig (grid.file_path, e.g. NetCDF /
-  // NCZarr).
-  // - Extract 1D coordinate vectors: longitude (X) and latitude (Y) arrays.
-  // - Read 2D unified topobathy elevation grid (bathymetry / orography) into
-  // flat
-  //   contiguous host memory buffer (std::vector<double>) with 64-byte
-  //   alignment.
-  // - Read land/sea mask (e.g., 0 for land, 1 for active sea cells).
-  // - Read sub-grid obstruction fields (transmissivities in X and Y directions)
-  //   for sub-grid obstacle parameterization.
-  // - Construct RectangularGridData / SharedGridData and expose via std::span
-  // views.
+  ww4_utils::FullGrid fullGrid;
+  solver_UQ_utils::readGridFileUQ(getRunConfig().gridFile, fullGrid, os);
 
   // === Domain decomposition and partition data lifecycle ===================
   // Placeholder for grid partitioning and parallel sub-domain setup:
