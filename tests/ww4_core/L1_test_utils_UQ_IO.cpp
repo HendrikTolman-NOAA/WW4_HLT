@@ -53,6 +53,34 @@ TEST(UtilsUQIOTest, ReadGridHeaderSuccess) {
   std::remove(filename.c_str());
 }
 
+TEST(UtilsUQIOTest, GridgenSpaceDelimitedMeta) {
+  const std::string filename = "gridgen_test.meta";
+  {
+    std::ofstream file(filename);
+    file << "% WW3 / WW4 Gridgen Metadata File\n"
+         << "NAME    gridgen_grid\n"
+         << "NX      1440\n"
+         << "NY      601\n"
+         << "X0      -180.0\n"
+         << "Y0      -75.0\n"
+         << "SX      0.25\n"
+         << "SY      0.25\n";
+  }
+
+  UQGridHeader header;
+  std::ostringstream os;
+  readGridHeaderUQ(filename, header, os);
+  EXPECT_EQ(header.gridName, "gridgen_grid");
+  EXPECT_EQ(header.nx, 1440u);
+  EXPECT_EQ(header.ny, 601u);
+  EXPECT_DOUBLE_EQ(header.lonStart, -180.0);
+  EXPECT_DOUBLE_EQ(header.latStart, -75.0);
+  EXPECT_DOUBLE_EQ(header.sx, 0.25);
+  EXPECT_DOUBLE_EQ(header.sy, 0.25);
+
+  std::remove(filename.c_str());
+}
+
 TEST(UtilsUQIOTest, CompanionMetaFallback) {
   const std::string ncName = "ww4_grid_ugrid.nc";
   const std::string metaName = "ww4_grid.meta";

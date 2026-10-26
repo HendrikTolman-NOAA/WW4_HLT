@@ -63,14 +63,33 @@ void reportUQGridMetadata(const UQGridHeader &header, std::ostream &os) {
 static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
   std::string line;
   while (std::getline(is, line)) {
-    // Strip comments (# or //)
-    auto commentPos = line.find_first_of("#;");
+    // Strip comments starting with %, $, #, ;, !, or //
+    auto commentPos = line.find_first_of("%$#;!");
+    if (commentPos == std::string::npos) {
+      commentPos = line.find("//");
+    }
     if (commentPos != std::string::npos) {
       line.erase(commentPos);
     }
+
+    // Trim line
+    auto trim = [](std::string &s) {
+      const char *whitespace = " \t\r\n\"'";
+      s.erase(0, s.find_first_not_of(whitespace));
+      s.erase(s.find_last_not_of(whitespace) + 1);
+    };
+    trim(line);
+
+    if (line.empty()) {
+      continue;
+    }
+
+    // Find key-value delimiter: ':' or '=' or whitespace (spaces/tabs)
+    std::string key, value;
     auto colonPos = line.find(':');
     auto eqPos = line.find('=');
     std::size_t delimPos = std::string::npos;
+
     if (colonPos != std::string::npos && eqPos != std::string::npos) {
       delimPos = std::min(colonPos, eqPos);
     } else if (colonPos != std::string::npos) {
@@ -79,19 +98,20 @@ static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
       delimPos = eqPos;
     }
 
-    if (delimPos == std::string::npos) {
-      continue;
+    if (delimPos != std::string::npos) {
+      key = line.substr(0, delimPos);
+      value = line.substr(delimPos + 1);
+    } else {
+      // Split on first whitespace sequence (spaces or tabs)
+      auto spacePos = line.find_first_of(" \t");
+      if (spacePos != std::string::npos) {
+        key = line.substr(0, spacePos);
+        value = line.substr(spacePos + 1);
+      } else {
+        continue;
+      }
     }
 
-    std::string key = line.substr(0, delimPos);
-    std::string value = line.substr(delimPos + 1);
-
-    // Trim key and value
-    auto trim = [](std::string &s) {
-      const char *whitespace = " \t\r\n\"'";
-      s.erase(0, s.find_first_not_of(whitespace));
-      s.erase(s.find_last_not_of(whitespace) + 1);
-    };
     trim(key);
     trim(value);
 
@@ -99,33 +119,57 @@ static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
       continue;
     }
 
+    // Convert key and value to lowercase for case-insensitive matching
+    std::string keyLower = key;
+    std::transform(keyLower.begin(), keyLower.end(), keyLower.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    std::string valLower = value;
+    std::transform(valLower.begin(), valLower.end(), valLower.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
     try {
-      if (key == "grid_name") {
+      if (keyLower == "grid_name" || keyLower == "name" ||
+          keyLower == "gridname" || keyLower == "title" ||
+          keyLower == "grid_title") {
         header.gridName = value;
-      } else if (key == "grid_type") {
+      } else if (keyLower == "grid_type" || keyLower == "type" ||
+                 keyLower == "gridtype") {
         header.gridType = value;
-      } else if (key == "nx") {
+      } else if (keyLower == "nx" || keyLower == "nlon" ||
+                 keyLower == "num_lon") {
         header.nx = static_cast<std::size_t>(std::stoul(value));
-      } else if (key == "ny") {
+      } else if (keyLower == "ny" || keyLower == "nlat" ||
+                 keyLower == "num_lat") {
         header.ny = static_cast<std::size_t>(std::stoul(value));
-      } else if (key == "lon_start") {
+      } else if (keyLower == "lon_start" || keyLower == "lat_start_lon" ||
+                 keyLower == "x0" || keyLower == "xfirst" ||
+                 keyLower == "sw_lon" || keyLower == "lon_min") {
         header.lonStart = std::stod(value);
-      } else if (key == "lat_start") {
+      } else if (keyLower == "lat_start" || keyLower == "y0" ||
+                 keyLower == "yfirst" || keyLower == "sw_lat" ||
+                 keyLower == "lat_min") {
         header.latStart = std::stod(value);
-      } else if (key == "lon_end") {
+      } else if (keyLower == "lon_end" || keyLower == "xlast" ||
+                 keyLower == "lon_max") {
         header.lonEnd = std::stod(value);
-      } else if (key == "lat_end") {
+      } else if (keyLower == "lat_end" || keyLower == "ylast" ||
+                 keyLower == "lat_max") {
         header.latEnd = std::stod(value);
-      } else if (key == "sx") {
+      } else if (keyLower == "sx" || keyLower == "dx" || keyLower == "dlon" ||
+                 keyLower == "lon_inc") {
         header.sx = std::stod(value);
-      } else if (key == "sy") {
+      } else if (keyLower == "sy" || keyLower == "dy" || keyLower == "dlat" ||
+                 keyLower == "lat_inc") {
         header.sy = std::stod(value);
-      } else if (key == "pole_lon") {
+      } else if (keyLower == "pole_lon" || keyLower == "polon") {
         header.poleLon = std::stod(value);
-      } else if (key == "pole_lat") {
+      } else if (keyLower == "pole_lat" || keyLower == "polat") {
         header.poleLat = std::stod(value);
-      } else if (key == "is_global") {
-        header.isGlobal = (value == "true");
+      } else if (keyLower == "is_global" || keyLower == "global" ||
+                 keyLower == "closure" || keyLower == "global_grid") {
+        header.isGlobal = (valLower == "true" || valLower == "1" ||
+                           valLower == "yes" || valLower == "closed");
       }
     } catch (...) {
       return false;
@@ -175,7 +219,7 @@ static bool tryParseHeaderFile(const std::string &fname, UQGridHeader &header) {
 std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
                              std::ostream &os) {
   if (ww4_core::getRunConfig().produceStdOut) {
-    os << "     - Opening grid file: " << filename << std::endl;
+    os << "     - Starting opening grid file: " << filename << std::endl;
   }
 
   std::vector<std::string> candidates = {filename};
@@ -206,12 +250,13 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
         __FILE__, __LINE__);
   }
 
-  if (activeFile != filename && ww4_core::getRunConfig().produceStdOut) {
-    os << "     - Loaded companion metadata file: " << activeFile << std::endl;
-  }
-
   if (ww4_core::getRunConfig().produceStdOut) {
-    os << "     - Parsing grid header metadata ... [SUCCESS]" << std::endl;
+    os << "     - Completed opening grid file: " << activeFile
+       << " ... [SUCCESS]" << std::endl;
+    os << "     - Starting parsing grid header metadata from file: "
+       << activeFile << std::endl;
+    os << "     - Completed parsing grid header metadata ... [SUCCESS]"
+       << std::endl;
   }
 
   return activeFile;
@@ -222,6 +267,11 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
                     std::ostream &os) {
   UQGridHeader header;
   std::string activeFile = readGridHeaderUQ(filename, header, os);
+
+  if (ww4_core::getRunConfig().produceStdOut) {
+    os << "     - Starting constructing spatial coordinates (NX=" << header.nx
+       << ", NY=" << header.ny << ") ..." << std::endl;
+  }
 
   grid.clear();
   grid.gridType = ww4_utils::GridType::Rectangular;
@@ -260,8 +310,10 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
   grid.specific = rectData;
 
   if (ww4_core::getRunConfig().produceStdOut) {
-    os << "     - Constructing spatial coordinates (NX=" << header.nx
-       << ", NY=" << header.ny << ") ... [SUCCESS]" << std::endl;
+    os << "     - Completed constructing spatial coordinates ... [SUCCESS]"
+       << std::endl;
+    os << "     - Starting ingesting topobathy elevation field ..."
+       << std::endl;
   }
 
   // Check for depth / elevation and mask arrays in active header file
@@ -276,7 +328,10 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
 
     while (std::getline(file, line)) {
       if (line.find("elevation:") != std::string::npos ||
-          line.find("[elevation]") != std::string::npos) {
+          line.find("depth:") != std::string::npos ||
+          line.find("bathymetry:") != std::string::npos ||
+          line.find("[elevation]") != std::string::npos ||
+          line.find("[depth]") != std::string::npos) {
         readingElevation = true;
         readingMask = false;
         continue;
@@ -323,6 +378,12 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
       grid.shared.topobathy = grid.topobathy;
     }
 
+    if (ww4_core::getRunConfig().produceStdOut) {
+      os << "     - Completed ingesting topobathy elevation field ... [SUCCESS]"
+         << std::endl;
+      os << "     - Starting ingesting land/sea mask field ..." << std::endl;
+    }
+
     if (!maskData.empty()) {
       if (maskData.size() != grid.numNodes) {
         // Explanatory comment preceding first use of __FILE__ and __LINE__
@@ -344,8 +405,7 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
   }
 
   if (ww4_core::getRunConfig().produceStdOut) {
-    os << "     - Ingesting topobathy elevation field ... [SUCCESS]\n"
-       << "     - Ingesting land/sea mask field ... [SUCCESS]\n"
+    os << "     - Completed ingesting land/sea mask field ... [SUCCESS]\n"
        << "     - Grid reading completed successfully." << std::endl;
   }
 
