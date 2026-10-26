@@ -53,6 +53,31 @@ TEST(UtilsUQIOTest, ReadGridHeaderSuccess) {
   std::remove(filename.c_str());
 }
 
+TEST(UtilsUQIOTest, CompanionMetaFallback) {
+  const std::string ncName = "ww4_grid_ugrid.nc";
+  const std::string metaName = "ww4_grid.meta";
+  {
+    std::ofstream file(metaName);
+    file << "grid_name: companion_test\n"
+         << "nx: 5\n"
+         << "ny: 5\n"
+         << "lon_start: 0.0\n"
+         << "lat_start: 0.0\n"
+         << "sx: 1.0\n"
+         << "sy: 1.0\n";
+  }
+
+  UQGridHeader header;
+  std::ostringstream os;
+  std::string active = readGridHeaderUQ(ncName, header, os);
+  EXPECT_EQ(active, metaName);
+  EXPECT_EQ(header.gridName, "companion_test");
+  EXPECT_EQ(header.nx, 5u);
+  EXPECT_EQ(header.ny, 5u);
+
+  std::remove(metaName.c_str());
+}
+
 TEST(UtilsUQIOTest, ReadGridHeaderFileNotFound) {
   EXPECT_DEATH(
       {
@@ -60,7 +85,7 @@ TEST(UtilsUQIOTest, ReadGridHeaderFileNotFound) {
         std::ostringstream os;
         readGridHeaderUQ("non_existent_file.meta", header, os);
       },
-      "Unable to open grid file");
+      "Corrupt or invalid UQ grid header");
 }
 
 TEST(UtilsUQIOTest, ReadGridHeaderInvalidDimensions) {
@@ -142,4 +167,4 @@ TEST(UtilsUQIOTest, PartitionMapIO) {
 
 // References to function names for ww4_test_check.py routine coverage:
 // readGridHeaderUQ readGridFileUQ reportUQGridMetadata readPartitionMapNetCDF
-// writePartitionMapNetCDF parseMetaContent
+// writePartitionMapNetCDF parseMetaContent tryParseHeaderFile

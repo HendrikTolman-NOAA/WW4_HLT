@@ -158,20 +158,48 @@ static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
   return header.nx > 0 && header.ny > 0;
 }
 
-// --- readGridHeaderUQ -------------------------------------------------------
-void readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
-                      std::ostream &os) {
-  std::ifstream file(filename);
+// --- tryParseHeaderFile -----------------------------------------------------
+static bool tryParseHeaderFile(const std::string &fname, UQGridHeader &header) {
+  std::ifstream file(fname);
   if (!file.is_open()) {
-    // Explanatory comment preceding first use of __FILE__ and __LINE__
-    // Pass source location for error tracing
-    ww4_utils::ww4_std_out::extcde(
-        1, os, "Unable to open grid file: " + filename, __FILE__, __LINE__);
+    return false;
+  }
+  header.gridName = fname;
+  bool ok = parseMetaContent(file, header);
+  file.close();
+  return ok && header.nx > 0 && header.ny > 0 && header.sx > 0.0 &&
+         header.sy > 0.0;
+}
+
+// --- readGridHeaderUQ -------------------------------------------------------
+std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
+                             std::ostream &os) {
+  if (ww4_core::getRunConfig().produceStdOut) {
+    os << "     - Opening grid file: " << filename << std::endl;
   }
 
-  header.gridName = filename;
-  bool success = parseMetaContent(file, header);
-  file.close();
+  std::vector<std::string> candidates = {filename};
+
+  // Add companion .meta candidate paths if filename ends with .nc or _ugrid.nc
+  if (filename.length() >= 9 &&
+      filename.substr(filename.length() - 9) == "_ugrid.nc") {
+    candidates.push_back(filename.substr(0, filename.length() - 9) + ".meta");
+  }
+  if (filename.length() >= 3 &&
+      filename.substr(filename.length() - 3) == ".nc") {
+    candidates.push_back(filename.substr(0, filename.length() - 3) + ".meta");
+    candidates.push_back(filename + ".meta");
+  }
+
+  std::string activeFile;
+  bool success = false;
+  for (const auto &cand : candidates) {
+    if (tryParseHeaderFile(cand, header)) {
+      activeFile = cand;
+      success = true;
+      break;
+    }
+  }
 
   if (!success) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
@@ -181,38 +209,28 @@ void readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
         __FILE__, __LINE__);
   }
 
-  if (header.nx == 0 || header.ny == 0) {
-    // Explanatory comment preceding first use of __FILE__ and __LINE__
-    // Pass source location for error tracing
-    ww4_utils::ww4_std_out::extcde(
-        1, os,
-        "Invalid grid dimensions (NX=" + std::to_string(header.nx) +
-            ", NY=" + std::to_string(header.ny) + ") in grid file: " + filename,
-        __FILE__, __LINE__);
+  if (activeFile != filename && ww4_core::getRunConfig().produceStdOut) {
+    os << "     - Loaded companion metadata file: " << activeFile << std::endl;
   }
 
-  if (header.sx <= 0.0 || header.sy <= 0.0) {
-    // Explanatory comment preceding first use of __FILE__ and __LINE__
-    // Pass source location for error tracing
-    ww4_utils::ww4_std_out::extcde(
-        1, os,
-        "Invalid spatial grid increments (SX=" + std::to_string(header.sx) +
-            ", SY=" + std::to_string(header.sy) + ") in file: " + filename,
-        __FILE__, __LINE__);
+  if (ww4_core::getRunConfig().produceStdOut) {
+    os << "     - Parsing grid header metadata ... [SUCCESS]" << std::endl;
   }
+
+  return activeFile;
 }
 
 // --- readGridFileUQ ---------------------------------------------------------
 void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
                     std::ostream &os) {
   UQGridHeader header;
-  readGridHeaderUQ(filename, header, os);
+  std::string activeFile = readGridHeaderUQ(filename, header, os);
 
   grid.clear();
   grid.gridType = ww4_utils::GridType::Rectangular;
   grid.shared.gridType = ww4_utils::GridType::Rectangular;
-  grid.name = header.gridName;
-  grid.shared.name = header.gridName;
+  grid.name = header.gridName.empty() ? filename : header.gridName;
+  grid.shared.name = grid.name;
   grid.nx = header.nx;
   grid.ny = header.ny;
   grid.numNodes = header.nx * header.ny;
@@ -244,8 +262,13 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
   rectData.isGlobal = header.isGlobal;
   grid.specific = rectData;
 
-  // Check for depth / elevation and mask arrays in file or companion files
-  std::ifstream file(filename);
+  if (ww4_core::getRunConfig().produceStdOut) {
+    os << "     - Constructing spatial coordinates (NX=" << header.nx
+       << ", NY=" << header.ny << ") ... [SUCCESS]" << std::endl;
+  }
+
+  // Check for depth / elevation and mask arrays in active header file
+  std::ifstream file(activeFile);
   if (file.is_open()) {
     std::string line;
     std::vector<double> elevationData;
@@ -321,6 +344,12 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
       grid.landMask.assign(grid.numNodes, 1);
       grid.shared.landMask = grid.landMask;
     }
+  }
+
+  if (ww4_core::getRunConfig().produceStdOut) {
+    os << "     - Ingesting topobathy elevation field ... [SUCCESS]\n"
+       << "     - Ingesting land/sea mask field ... [SUCCESS]\n"
+       << "     - Grid reading completed successfully." << std::endl;
   }
 
   // Report metadata

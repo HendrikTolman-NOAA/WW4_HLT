@@ -1,0 +1,11 @@
+grid_name: test_full_grid
+nx: 2
+ny: 2
+lon_start: 0.0
+lat_start: 0.0
+sx: 1.0
+sy: 1.0
+[elevation]
+10.0 20.0 30.0 40.0
+[mask]
+1 1 1 0

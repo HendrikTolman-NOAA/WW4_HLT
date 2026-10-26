@@ -70,8 +70,8 @@ struct UQGridHeader {
  * @date Initial, 2026-10-26
  * @date Last update : 2026-10-26
  */
-void readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
-                      std::ostream &os = std::cout);
+std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
+                             std::ostream &os = std::cout);
 
 // --- readGridFileUQ ---------------------------------------------------------
 /**
