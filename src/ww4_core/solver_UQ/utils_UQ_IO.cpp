@@ -125,7 +125,7 @@ static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
       } else if (key == "pole_lat") {
         header.poleLat = std::stod(value);
       } else if (key == "is_global") {
-        header.isGlobal = (value == "true" || value == "1");
+        header.isGlobal = (value == "true");
       }
     } catch (...) {
       return false;
