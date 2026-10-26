@@ -66,7 +66,7 @@ static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
     // Strip comments (# or //)
     auto commentPos = line.find_first_of("#;");
     if (commentPos != std::string::npos) {
-      line = line.substr(0, commentPos);
+      line.erase(commentPos);
     }
     auto colonPos = line.find(':');
     auto eqPos = line.find('=');
