@@ -35,6 +35,15 @@ void solver_UQ_init(std::ostream &os) {
   }
 
   // === Spatial grid ingestion ===============================================
+  if (getRunConfig().produceStdOut) {
+    os << "    Grid file name to be used   : " << getRunConfig().gridFile
+       << std::endl;
+  }
+  if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+    getLogFileStream() << "    Grid file name to be used   : "
+                       << getRunConfig().gridFile << std::endl;
+  }
+
   // Placeholder for reading 2D regular spatial grid geometry and metadata:
   // - Open grid file specified in RunConfig (grid.file_path, e.g. NetCDF /
   // NCZarr).

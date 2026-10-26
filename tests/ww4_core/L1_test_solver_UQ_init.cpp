@@ -21,14 +21,28 @@
  */
 
 #include "ww4_core/solver_UQ/solver_UQ_init.h"
+#include "ww4_core/w4core_init.h"
+#include <fstream>
 #include <gtest/gtest.h>
 #include <sstream>
 
 namespace ww4_core {
 
-TEST(SolverUQInitTest, BasicExecution) {
+TEST(SolverUQInitTest, BasicExecutionAndOutput) {
+  resetInternalState();
   std::ostringstream ss;
+  getMutableRunConfig().produceStdOut = true;
+  getMutableRunConfig().gridFile = "my_uq_grid.nc";
+  getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
+
   EXPECT_NO_THROW(solver_UQ_init(ss));
+  std::string output = ss.str();
+  EXPECT_NE(output.find("Initializing UQ regular grid solver"),
+            std::string::npos);
+  EXPECT_NE(output.find("Grid file name to be used   : my_uq_grid.nc"),
+            std::string::npos);
+
+  resetInternalState();
 }
 
 } // namespace ww4_core

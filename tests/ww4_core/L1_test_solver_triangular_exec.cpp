@@ -32,12 +32,9 @@ TEST(SolverTriangularTest, BasicPropertiesAndInit) {
   SolverTriangularGrid solver;
   EXPECT_EQ(solver.getName(), "Triangular");
 
-  testing::internal::CaptureStdout();
-  solver_triangular_init();
-  std::string output = testing::internal::GetCapturedStdout();
-  (void)output;
-
-  EXPECT_NO_THROW(solver.init());
+  EXPECT_EXIT(solver.init(), ::testing::ExitedWithCode(1),
+              "WW4 ERROR: Triangular unstructured grid reader not yet "
+              "implemented when reading bottom grid.");
 }
 
 TEST(SolverTriangularTest, SolveAndAddSourceTerm) {

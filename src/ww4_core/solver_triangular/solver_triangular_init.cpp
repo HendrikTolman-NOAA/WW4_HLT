@@ -23,6 +23,7 @@
 #include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/ww4_run_config.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <iostream>
 
 namespace ww4_core {
@@ -35,6 +36,14 @@ void solver_triangular_init(std::ostream &os) {
   }
 
   // === Spatial grid ingestion ===============================================
+  // Explanatory comment preceding __FILE__ and __LINE__
+  // Code abort when reaching the point of reading the bottom grid for
+  // triangular mesh solver
+  ww4_utils::ww4_std_out::extcde(
+      1, os,
+      "Triangular unstructured grid reader not yet implemented when reading "
+      "bottom grid.",
+      __FILE__, __LINE__);
   // Placeholder for reading triangular unstructured mesh geometry and metadata:
   // - Open UGRID NetCDF / NCZarr mesh file specified in RunConfig
   // (grid.file_path).
