@@ -77,7 +77,7 @@ TEST(UtilsUQIOTest, ReadGridFileSuccessAndMetadata) {
   const std::string filename = "test_uq_grid.meta";
   {
     std::ofstream file(filename);
-    file << "name: test_full_grid\n"
+    file << "grid_name: test_full_grid\n"
          << "nx: 2\n"
          << "ny: 2\n"
          << "lon_start: 0.0\n"

@@ -100,33 +100,32 @@ static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
     }
 
     try {
-      if (key == "name" || key == "grid_name" || key == "NAME") {
+      if (key == "grid_name") {
         header.gridName = value;
-      } else if (key == "grid_type" || key == "GRID_TYPE" || key == "type") {
+      } else if (key == "grid_type") {
         header.gridType = value;
-      } else if (key == "nx" || key == "NX") {
+      } else if (key == "nx") {
         header.nx = static_cast<std::size_t>(std::stoul(value));
-      } else if (key == "ny" || key == "NY") {
+      } else if (key == "ny") {
         header.ny = static_cast<std::size_t>(std::stoul(value));
-      } else if (key == "lon_start" || key == "LON_START" || key == "x0") {
+      } else if (key == "lon_start") {
         header.lonStart = std::stod(value);
-      } else if (key == "lat_start" || key == "LAT_START" || key == "y0") {
+      } else if (key == "lat_start") {
         header.latStart = std::stod(value);
-      } else if (key == "lon_end" || key == "LON_END") {
+      } else if (key == "lon_end") {
         header.lonEnd = std::stod(value);
-      } else if (key == "lat_end" || key == "LAT_END") {
+      } else if (key == "lat_end") {
         header.latEnd = std::stod(value);
-      } else if (key == "sx" || key == "SX" || key == "dx") {
+      } else if (key == "sx") {
         header.sx = std::stod(value);
-      } else if (key == "sy" || key == "SY" || key == "dy") {
+      } else if (key == "sy") {
         header.sy = std::stod(value);
-      } else if (key == "pole_lon" || key == "POLE_LON") {
+      } else if (key == "pole_lon") {
         header.poleLon = std::stod(value);
-      } else if (key == "pole_lat" || key == "POLE_LAT") {
+      } else if (key == "pole_lat") {
         header.poleLat = std::stod(value);
-      } else if (key == "is_global" || key == "IS_GLOBAL" || key == "global") {
-        header.isGlobal = (value == "true" || value == "1" || value == "YES" ||
-                           value == "yes");
+      } else if (key == "is_global") {
+        header.isGlobal = (value == "true" || value == "1");
       }
     } catch (...) {
       return false;
@@ -265,14 +264,12 @@ bool readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
 
     while (std::getline(file, line)) {
       if (line.find("elevation:") != std::string::npos ||
-          line.find("topobathy:") != std::string::npos ||
           line.find("[elevation]") != std::string::npos) {
         readingElevation = true;
         readingMask = false;
         continue;
       }
       if (line.find("mask:") != std::string::npos ||
-          line.find("land_mask:") != std::string::npos ||
           line.find("[mask]") != std::string::npos) {
         readingElevation = false;
         readingMask = true;
