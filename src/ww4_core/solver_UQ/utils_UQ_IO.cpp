@@ -191,15 +191,12 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
     candidates.push_back(filename + ".meta");
   }
 
-  std::string activeFile;
-  bool success = false;
-  for (const auto &cand : candidates) {
-    if (tryParseHeaderFile(cand, header)) {
-      activeFile = cand;
-      success = true;
-      break;
-    }
-  }
+  auto it = std::find_if(candidates.begin(), candidates.end(),
+                         [&header](const std::string &cand) {
+                           return tryParseHeaderFile(cand, header);
+                         });
+  bool success = (it != candidates.end());
+  std::string activeFile = success ? *it : "";
 
   if (!success) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
