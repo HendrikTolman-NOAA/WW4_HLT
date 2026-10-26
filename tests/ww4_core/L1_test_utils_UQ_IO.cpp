@@ -41,7 +41,7 @@ TEST(UtilsUQIOTest, ReadGridHeaderSuccess) {
 
   UQGridHeader header;
   std::ostringstream os;
-  EXPECT_TRUE(readGridHeaderUQ(filename, header, os));
+  readGridHeaderUQ(filename, header, os);
   EXPECT_EQ(header.gridName, "test_grid");
   EXPECT_EQ(header.nx, 10u);
   EXPECT_EQ(header.ny, 20u);
@@ -54,10 +54,13 @@ TEST(UtilsUQIOTest, ReadGridHeaderSuccess) {
 }
 
 TEST(UtilsUQIOTest, ReadGridHeaderFileNotFound) {
-  UQGridHeader header;
-  std::ostringstream os;
-  EXPECT_FALSE(readGridHeaderUQ("non_existent_file.meta", header, os));
-  EXPECT_NE(os.str().find("Unable to open grid file"), std::string::npos);
+  EXPECT_DEATH(
+      {
+        UQGridHeader header;
+        std::ostringstream os;
+        readGridHeaderUQ("non_existent_file.meta", header, os);
+      },
+      "Unable to open grid file");
 }
 
 TEST(UtilsUQIOTest, ReadGridHeaderInvalidDimensions) {
@@ -67,9 +70,14 @@ TEST(UtilsUQIOTest, ReadGridHeaderInvalidDimensions) {
     file << "nx: 0\nny: 0\nsx: 1.0\nsy: 1.0\n";
   }
 
-  UQGridHeader header;
-  std::ostringstream os;
-  EXPECT_FALSE(readGridHeaderUQ(filename, header, os));
+  EXPECT_DEATH(
+      {
+        UQGridHeader header;
+        std::ostringstream os;
+        readGridHeaderUQ(filename, header, os);
+      },
+      "Corrupt or invalid UQ grid header");
+
   std::remove(filename.c_str());
 }
 
@@ -92,7 +100,7 @@ TEST(UtilsUQIOTest, ReadGridFileSuccessAndMetadata) {
 
   ww4_utils::FullGrid grid;
   std::ostringstream os;
-  EXPECT_TRUE(readGridFileUQ(filename, grid, os));
+  readGridFileUQ(filename, grid, os);
   EXPECT_EQ(grid.gridType, ww4_utils::GridType::Rectangular);
   EXPECT_EQ(grid.nx, 2u);
   EXPECT_EQ(grid.ny, 2u);
@@ -106,7 +114,7 @@ TEST(UtilsUQIOTest, ReadGridFileSuccessAndMetadata) {
       UQGridHeader{
           .gridName = "report_test", .nx = 2, .ny = 2, .sx = 1.0, .sy = 1.0},
       os);
-  EXPECT_NE(os.str().find("Dimensions (NX x NY)"), std::string::npos);
+  EXPECT_NE(os.str().find("Dimensions"), std::string::npos);
 
   std::remove(filename.c_str());
 }
@@ -120,10 +128,10 @@ TEST(UtilsUQIOTest, PartitionMapIO) {
   writePartition.localNumNodes = 25;
 
   std::ostringstream os;
-  EXPECT_TRUE(writePartitionMapNetCDF(filename, writePartition, os));
+  writePartitionMapNetCDF(filename, writePartition, os);
 
   ww4_utils::LocalGridPartition readPartition;
-  EXPECT_TRUE(readPartitionMapNetCDF(filename, readPartition, os));
+  readPartitionMapNetCDF(filename, readPartition, os);
   EXPECT_EQ(readPartition.rankId, 2);
   EXPECT_EQ(readPartition.localNx, 5u);
   EXPECT_EQ(readPartition.localNy, 5u);

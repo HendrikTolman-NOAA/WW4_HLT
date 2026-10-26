@@ -30,12 +30,15 @@ protected:
   void SetUp() override {
     ww4_core::resetInternalState();
     ww4_utils::TimeManagement::reset();
+    std::ofstream g("test_grid.nc");
+    g << "grid_name: test_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
   }
 
   void TearDown() override {
     ww4_core::resetInternalState();
     ww4_utils::TimeManagement::reset();
     std::remove("ww4_run_config.yaml");
+    std::remove("test_grid.nc");
   }
 
   void writeYaml(const std::string &content) {

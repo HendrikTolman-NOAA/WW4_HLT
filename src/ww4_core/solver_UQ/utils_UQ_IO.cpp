@@ -37,12 +37,12 @@ void reportUQGridMetadata(const UQGridHeader &header, std::ostream &os) {
   auto writeReport = [&](std::ostream &stream) {
     stream << "     Grid Name                : " << header.gridName << "\n"
            << "     Grid Type                : " << header.gridType << "\n"
-           << "     Dimensions (NX x NY)     : " << header.nx << " x "
+           << "     Dimensions (nx, ny)      : " << header.nx << " x "
            << header.ny << " (" << (header.nx * header.ny) << " points)\n"
            << "     Longitude Range          : " << header.lonStart << " to "
-           << header.lonEnd << " deg (SX: " << header.sx << " deg)\n"
+           << header.lonEnd << " deg (sx: " << header.sx << " deg)\n"
            << "     Latitude Range           : " << header.latStart << " to "
-           << header.latEnd << " deg (SY: " << header.sy << " deg)\n"
+           << header.latEnd << " deg (sy: " << header.sy << " deg)\n"
            << "     Rotated Pole (Lon, Lat)  : " << header.poleLon << ", "
            << header.poleLat << " deg\n"
            << "     Global Closure           : "
@@ -159,15 +159,14 @@ static bool parseMetaContent(std::istream &is, UQGridHeader &header) {
 }
 
 // --- readGridHeaderUQ -------------------------------------------------------
-bool readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
+void readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
                       std::ostream &os) {
   std::ifstream file(filename);
   if (!file.is_open()) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    ww4_utils::ww4_std_out::writeWarningOutput(
-        os, "Unable to open grid file: " + filename, __FILE__, __LINE__);
-    return false;
+    ww4_utils::ww4_std_out::extcde(
+        1, os, "Unable to open grid file: " + filename, __FILE__, __LINE__);
   }
 
   header.gridName = filename;
@@ -177,44 +176,37 @@ bool readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
   if (!success) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    ww4_utils::ww4_std_out::writeWarningOutput(
-        os, "Corrupt or invalid UQ grid header in file: " + filename, __FILE__,
-        __LINE__);
-    return false;
+    ww4_utils::ww4_std_out::extcde(
+        1, os, "Corrupt or invalid UQ grid header in file: " + filename,
+        __FILE__, __LINE__);
   }
 
   if (header.nx == 0 || header.ny == 0) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    ww4_utils::ww4_std_out::writeWarningOutput(
-        os,
+    ww4_utils::ww4_std_out::extcde(
+        1, os,
         "Invalid grid dimensions (NX=" + std::to_string(header.nx) +
             ", NY=" + std::to_string(header.ny) + ") in grid file: " + filename,
         __FILE__, __LINE__);
-    return false;
   }
 
   if (header.sx <= 0.0 || header.sy <= 0.0) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    ww4_utils::ww4_std_out::writeWarningOutput(
-        os,
+    ww4_utils::ww4_std_out::extcde(
+        1, os,
         "Invalid spatial grid increments (SX=" + std::to_string(header.sx) +
             ", SY=" + std::to_string(header.sy) + ") in file: " + filename,
         __FILE__, __LINE__);
-    return false;
   }
-
-  return true;
 }
 
 // --- readGridFileUQ ---------------------------------------------------------
-bool readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
+void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
                     std::ostream &os) {
   UQGridHeader header;
-  if (!readGridHeaderUQ(filename, header, os)) {
-    return false;
-  }
+  readGridHeaderUQ(filename, header, os);
 
   grid.clear();
   grid.gridType = ww4_utils::GridType::Rectangular;
@@ -296,13 +288,12 @@ bool readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
       if (elevationData.size() != grid.numNodes) {
         // Explanatory comment preceding first use of __FILE__ and __LINE__
         // Pass source location for error tracing
-        ww4_utils::ww4_std_out::writeWarningOutput(
-            os,
+        ww4_utils::ww4_std_out::extcde(
+            1, os,
             "Topobathy array size mismatch (" +
                 std::to_string(elevationData.size()) + " vs expected " +
                 std::to_string(grid.numNodes) + ") in file: " + filename,
             __FILE__, __LINE__);
-        return false;
       }
       grid.topobathy = std::move(elevationData);
       grid.shared.topobathy = grid.topobathy;
@@ -316,13 +307,12 @@ bool readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
       if (maskData.size() != grid.numNodes) {
         // Explanatory comment preceding first use of __FILE__ and __LINE__
         // Pass source location for error tracing
-        ww4_utils::ww4_std_out::writeWarningOutput(
-            os,
+        ww4_utils::ww4_std_out::extcde(
+            1, os,
             "Land mask array size mismatch (" +
                 std::to_string(maskData.size()) + " vs expected " +
                 std::to_string(grid.numNodes) + ") in file: " + filename,
             __FILE__, __LINE__);
-        return false;
       }
       grid.landMask = std::move(maskData);
       grid.shared.landMask = grid.landMask;
@@ -335,22 +325,19 @@ bool readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
 
   // Report metadata
   reportUQGridMetadata(header, os);
-
-  return true;
 }
 
 // --- readPartitionMapNetCDF -------------------------------------------------
-bool readPartitionMapNetCDF(const std::string &filename,
+void readPartitionMapNetCDF(const std::string &filename,
                             ww4_utils::LocalGridPartition &partition,
                             std::ostream &os) {
   std::ifstream file(filename);
   if (!file.is_open()) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    ww4_utils::ww4_std_out::writeWarningOutput(
-        os, "Unable to open partition map file: " + filename, __FILE__,
+    ww4_utils::ww4_std_out::extcde(
+        1, os, "Unable to open partition map file: " + filename, __FILE__,
         __LINE__);
-    return false;
   }
 
   partition.clear();
@@ -373,21 +360,19 @@ bool readPartitionMapNetCDF(const std::string &filename,
   file.close();
 
   partition.localNumNodes = partition.localNx * partition.localNy;
-  return true;
 }
 
 // --- writePartitionMapNetCDF ------------------------------------------------
-bool writePartitionMapNetCDF(const std::string &filename,
+void writePartitionMapNetCDF(const std::string &filename,
                              const ww4_utils::LocalGridPartition &partition,
                              std::ostream &os) {
   std::ofstream file(filename);
   if (!file.is_open()) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    ww4_utils::ww4_std_out::writeWarningOutput(
-        os, "Unable to write partition map file: " + filename, __FILE__,
+    ww4_utils::ww4_std_out::extcde(
+        1, os, "Unable to write partition map file: " + filename, __FILE__,
         __LINE__);
-    return false;
   }
 
   file << "# WW4 Partition Map File\n"
@@ -396,8 +381,6 @@ bool writePartitionMapNetCDF(const std::string &filename,
        << "local_ny: " << partition.localNy << "\n"
        << "local_nodes: " << partition.localNumNodes << std::endl;
   file.close();
-
-  return true;
 }
 
 } // namespace ww4_core::solver_UQ_utils

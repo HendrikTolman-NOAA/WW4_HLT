@@ -35,11 +35,17 @@ TEST(SolverUQInitTest, BasicExecutionAndOutput) {
   getMutableRunConfig().gridFile = "my_uq_grid.nc";
   getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
 
+  {
+    std::ofstream g("my_uq_grid.nc");
+    g << "grid_name: my_uq_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
+  }
+
   EXPECT_NO_THROW(solver_UQ_init(ss));
   std::string output = ss.str();
   EXPECT_NE(output.find("Processing the grid:"), std::string::npos);
   EXPECT_NE(output.find("     Grid file: my_uq_grid.nc"), std::string::npos);
 
+  std::remove("my_uq_grid.nc");
   resetInternalState();
 }
 

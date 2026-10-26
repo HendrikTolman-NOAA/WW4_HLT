@@ -28,7 +28,11 @@ protected:
   void SetUp() override {
     startTime = {19680606, 60000.0};
     endTime = {19680606, 180000.0};
+    std::ofstream g("test_grid.nc");
+    g << "grid_name: test_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
   }
+
+  void TearDown() override { std::remove("test_grid.nc"); }
 
   ww4_utils::DateTime startTime;
   ww4_utils::DateTime endTime;

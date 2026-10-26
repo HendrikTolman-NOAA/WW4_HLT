@@ -70,7 +70,7 @@ struct UQGridHeader {
  * @date Initial, 2026-10-26
  * @date Last update : 2026-10-26
  */
-bool readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
+void readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
                       std::ostream &os = std::cout);
 
 // --- readGridFileUQ ---------------------------------------------------------
@@ -81,13 +81,12 @@ bool readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
  * @param[out] grid Output FullGrid structure populated with grid geometry and
  * fields.
  * @param[in,out] os Output stream for logging and error reporting.
- * @return True if grid file was successfully read, false otherwise.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-26
  * @date Last update : 2026-10-26
  */
-bool readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
+void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
                     std::ostream &os = std::cout);
 
 // --- reportUQGridMetadata ---------------------------------------------------
@@ -109,13 +108,12 @@ void reportUQGridMetadata(const UQGridHeader &header,
  * @param[in] filename Path to the partition map NetCDF file.
  * @param[out] partition Map or partition data structure to populate.
  * @param[in,out] os Output stream for error reporting.
- * @return True if partition map was successfully read, false otherwise.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-26
  * @date Last update : 2026-10-26
  */
-bool readPartitionMapNetCDF(const std::string &filename,
+void readPartitionMapNetCDF(const std::string &filename,
                             ww4_utils::LocalGridPartition &partition,
                             std::ostream &os = std::cout);
 
@@ -125,13 +123,12 @@ bool readPartitionMapNetCDF(const std::string &filename,
  * @param[in] filename Path to the target partition map NetCDF file.
  * @param[in] partition Local grid partition structure to export.
  * @param[in,out] os Output stream for error reporting.
- * @return True if partition map was successfully written, false otherwise.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-26
  * @date Last update : 2026-10-26
  */
-bool writePartitionMapNetCDF(const std::string &filename,
+void writePartitionMapNetCDF(const std::string &filename,
                              const ww4_utils::LocalGridPartition &partition,
                              std::ostream &os = std::cout);
 
