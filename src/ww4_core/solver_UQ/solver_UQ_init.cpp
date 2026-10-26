@@ -31,11 +31,12 @@ namespace ww4_core {
 void solver_UQ_init(std::ostream &os) {
   if (getRunConfig().produceStdOut) {
     os << "  Processing the grid:\n"
-       << "     " << getRunConfig().gridFile << std::endl;
+       << "     Grid file: " << getRunConfig().gridFile << std::endl;
   }
   if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
     getLogFileStream() << "  Processing the grid:\n"
-                       << "     " << getRunConfig().gridFile << std::endl;
+                       << "     Grid file: " << getRunConfig().gridFile
+                       << std::endl;
   }
 
   // === Spatial grid ingestion ===============================================
