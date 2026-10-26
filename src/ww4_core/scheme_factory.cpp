@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), EJ Rainville
  * @date Initial, 2026-06-24
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-26
  */
 
 // Scheme Selection and Source-Term Computation (Factory Pattern setup)
@@ -24,9 +24,9 @@
 #include "ww4_core/source_terms/ComputeAllSources/ComputeAllSources.h"
 
 // Solver definitions
-#include "ww4_core/solver_SMC/solver_SMC.h"
-#include "ww4_core/solver_UQ/solver_UQ.h"
-#include "ww4_core/solver_triangular/solver_triangular.h"
+#include "ww4_core/solver_SMC/solver_SMC_exec.h"
+#include "ww4_core/solver_UQ/solver_UQ_exec.h"
+#include "ww4_core/solver_triangular/solver_triangular_exec.h"
 
 // Source terms
 // --- Linear Input

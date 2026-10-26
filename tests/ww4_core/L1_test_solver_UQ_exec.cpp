@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_solver_UQ.cpp
+ * @file L1_test_solver_UQ_exec.cpp
  * @brief Unit tests for the UQ solver module.
  * @details Verifies initialization, adding source terms, and solver execution
  * for SolverRectangularGrid.
@@ -22,7 +22,7 @@
  */
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_UQ/solver_UQ.h"
+#include "ww4_core/solver_UQ/solver_UQ_exec.h"
 #include "ww4_core/solver_UQ/solver_UQ_init.h"
 #include <gtest/gtest.h>
 

@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_solver_SMC.cpp
+ * @file L1_test_solver_SMC_exec.cpp
  * @brief Unit tests for the SMC grid solver module.
  * @details Verifies initialization, adding source terms, and solver execution
  * for SolverSMCGrid.
@@ -22,7 +22,7 @@
  */
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_SMC/solver_SMC.h"
+#include "ww4_core/solver_SMC/solver_SMC_exec.h"
 #include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include <gtest/gtest.h>
 

@@ -181,9 +181,9 @@ if(WW4_ENABLE_TESTING)
 
     # Core tests
     ww4_add_test(test_scheme_factory tests/ww4_core/L1_test_scheme_factory.cpp ww4_core)
-    ww4_add_test(test_solver_UQ tests/ww4_core/L1_test_solver_UQ.cpp ww4_core)
-    ww4_add_test(test_solver_triangular tests/ww4_core/L1_test_solver_triangular.cpp ww4_core)
-    ww4_add_test(test_solver_SMC tests/ww4_core/L1_test_solver_SMC.cpp ww4_core)
+    ww4_add_test(test_solver_UQ_exec tests/ww4_core/L1_test_solver_UQ_exec.cpp ww4_core)
+    ww4_add_test(test_solver_triangular_exec tests/ww4_core/L1_test_solver_triangular_exec.cpp ww4_core)
+    ww4_add_test(test_solver_SMC_exec tests/ww4_core/L1_test_solver_SMC_exec.cpp ww4_core)
     ww4_add_test(test_solver_UQ_init tests/ww4_core/L1_test_solver_UQ_init.cpp ww4_core)
     ww4_add_test(test_solver_triangular_init tests/ww4_core/L1_test_solver_triangular_init.cpp ww4_core)
     ww4_add_test(test_solver_SMC_init tests/ww4_core/L1_test_solver_SMC_init.cpp ww4_core)

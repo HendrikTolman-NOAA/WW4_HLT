@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_SMC.h
+ * @file solver_SMC_exec.h
  * @brief Header for the SMC grid solver stub.
  * @details Concrete implementation of the ISolver interface using the UK
  * MetOffice SMC grid scheme.

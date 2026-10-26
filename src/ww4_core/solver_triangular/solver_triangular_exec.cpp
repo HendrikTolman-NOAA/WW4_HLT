@@ -19,8 +19,8 @@
  * @date Last update : 2026-10-26
  */
 
+#include "ww4_core/solver_triangular/solver_triangular_exec.h"
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_triangular/solver_triangular.h"
 #include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>

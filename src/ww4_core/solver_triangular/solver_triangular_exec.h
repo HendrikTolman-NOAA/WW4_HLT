@@ -3,9 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_UQ.h
- * @brief Header for the Ultimate Quickest (UQ) regular grid solver.
- * @details Concrete implementation of the ISolver interface using UQ dynamics.
+ * @file solver_triangular_exec.h
+ * @brief Header for the triangular unstructured grid solver stub.
+ * @details Concrete implementation of the ISolver interface using triangular
+ * grid approach.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -21,7 +22,7 @@
 #pragma once
 
 #include "ww4_core/solver.h"
-#include "ww4_core/solver_UQ/solver_UQ_init.h"
+#include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
@@ -30,22 +31,22 @@
 
 namespace ww4_core {
 
-// --- SolverRectangularGrid --------------------------------------------------
+// --- SolverTriangularGrid ---------------------------------------------------
 /**
- * @class SolverRectangularGrid
- * @brief Implementation of the UQ solver for regular grids.
+ * @class SolverTriangularGrid
+ * @brief Implementation of the Triangular grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
  * @date Last update : 2026-10-22
  */
-class SolverRectangularGrid : public ISolver {
+class SolverTriangularGrid : public ISolver {
 public:
-  SolverRectangularGrid() = default;
-  ~SolverRectangularGrid() override = default;
+  SolverTriangularGrid() = default;
+  ~SolverTriangularGrid() override = default;
 
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "UQ";
+    return "Triangular";
   }
 
   void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;

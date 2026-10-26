@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_solver_triangular.cpp
+ * @file L1_test_solver_triangular_exec.cpp
  * @brief Unit tests for the Triangular grid solver module.
  * @details Verifies initialization, adding source terms, and solver execution
  * for SolverTriangularGrid.
@@ -22,7 +22,7 @@
  */
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_triangular/solver_triangular.h"
+#include "ww4_core/solver_triangular/solver_triangular_exec.h"
 #include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include <gtest/gtest.h>
 
