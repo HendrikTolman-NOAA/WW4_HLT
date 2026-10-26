@@ -94,9 +94,10 @@ TEST_F(W4CoreWaveL1Test, WaveExecutionTriangularAndSMC) {
     runFile.close();
 
     ww4_utils::DateTime startTime = {20260101, 0.0};
-    w4core_init(startTime, "test_wave_tri", std::cout);
-    ww4_utils::DateTime endTime = {20260101, 10000.0};
-    EXPECT_NO_THROW(w4core_wave(startTime, endTime, std::cout));
+    EXPECT_EXIT(w4core_init(startTime, "test_wave_tri", std::cerr),
+                ::testing::ExitedWithCode(1),
+                "WW4 ERROR: Triangular unstructured grid reader not yet "
+                "implemented when reading bottom grid.");
     resetInternalState();
   }
 
@@ -121,9 +122,10 @@ TEST_F(W4CoreWaveL1Test, WaveExecutionTriangularAndSMC) {
     runFile.close();
 
     ww4_utils::DateTime startTime = {20260101, 0.0};
-    w4core_init(startTime, "test_wave_smc", std::cout);
-    ww4_utils::DateTime endTime = {20260101, 10000.0};
-    EXPECT_NO_THROW(w4core_wave(startTime, endTime, std::cout));
+    EXPECT_EXIT(w4core_init(startTime, "test_wave_smc", std::cerr),
+                ::testing::ExitedWithCode(1),
+                "WW4 ERROR: SMC grid reader not yet implemented when reading "
+                "bottom grid.");
   }
 }
 

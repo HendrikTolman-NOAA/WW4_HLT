@@ -126,26 +126,30 @@ TEST_F(W4CoreInitTest, SolverInitRoutines) {
   getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
 
   solver_UQ_init(ss);
-  EXPECT_NE(ss.str().find("Initializing UQ regular grid solver"),
-            std::string::npos);
+  EXPECT_NE(ss.str().find("Processing the grid:"), std::string::npos);
 
-  ss.str("");
-  solver_triangular_init(ss);
-  EXPECT_NE(ss.str().find("Initializing Triangular unstructured grid solver"),
-            std::string::npos);
+  EXPECT_EXIT(solver_triangular_init(std::cerr), ::testing::ExitedWithCode(1),
+              "WW4 ERROR: Triangular unstructured grid reader not yet "
+              "implemented when reading bottom grid.");
 
-  ss.str("");
-  solver_SMC_init(ss);
-  EXPECT_NE(ss.str().find("Initializing SMC grid solver"), std::string::npos);
+  EXPECT_EXIT(
+      solver_SMC_init(std::cerr), ::testing::ExitedWithCode(1),
+      "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
+      "grid.");
 
   SolverRectangularGrid uq;
   uq.init();
 
   SolverTriangularGrid triangular;
-  triangular.init();
+  EXPECT_EXIT(triangular.init(), ::testing::ExitedWithCode(1),
+              "WW4 ERROR: Triangular unstructured grid reader not yet "
+              "implemented when reading bottom grid.");
 
   SolverSMCGrid smc;
-  smc.init();
+  EXPECT_EXIT(
+      smc.init(), ::testing::ExitedWithCode(1),
+      "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
+      "grid.");
 }
 
 TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
@@ -170,10 +174,10 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   runFile.close();
 
   ww4_utils::DateTime startTime = {20260101, 0.0};
-  std::ostringstream ss;
-  w4core_init(startTime, "test_init", ss);
-
-  EXPECT_EQ(getProgramName(), "test_init");
+  EXPECT_EXIT(w4core_init(startTime, "test_init", std::cerr),
+              ::testing::ExitedWithCode(1),
+              "WW4 ERROR: Triangular unstructured grid reader not yet "
+              "implemented when reading bottom grid.");
 
   resetInternalState();
 
@@ -197,8 +201,10 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   runFile2 << "  bottom_depth: none\n";
   runFile2.close();
 
-  w4core_init(startTime, "test_init_smc", ss);
-  EXPECT_EQ(getProgramName(), "test_init_smc");
+  EXPECT_EXIT(w4core_init(startTime, "test_init_smc", std::cerr),
+              ::testing::ExitedWithCode(1),
+              "WW4 ERROR: SMC grid reader not yet implemented when reading "
+              "bottom grid.");
 }
 
 } // namespace ww4_core

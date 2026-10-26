@@ -32,12 +32,10 @@ TEST(SolverSMCTest, BasicPropertiesAndInit) {
   SolverSMCGrid solver;
   EXPECT_EQ(solver.getName(), "SMC");
 
-  testing::internal::CaptureStdout();
-  solver_SMC_init();
-  std::string output = testing::internal::GetCapturedStdout();
-  (void)output;
-
-  EXPECT_NO_THROW(solver.init());
+  EXPECT_EXIT(
+      solver.init(), ::testing::ExitedWithCode(1),
+      "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
+      "grid.");
 }
 
 TEST(SolverSMCTest, SolveAndAddSourceTerm) {

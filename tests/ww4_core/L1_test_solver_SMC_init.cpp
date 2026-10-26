@@ -26,9 +26,11 @@
 
 namespace ww4_core {
 
-TEST(SolverSMCInitTest, BasicExecution) {
-  std::ostringstream ss;
-  EXPECT_NO_THROW(solver_SMC_init(ss));
+TEST(SolverSMCInitTest, AbortsOnBottomGrid) {
+  EXPECT_EXIT(
+      solver_SMC_init(std::cerr), ::testing::ExitedWithCode(1),
+      "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
+      "grid.");
 }
 
 } // namespace ww4_core

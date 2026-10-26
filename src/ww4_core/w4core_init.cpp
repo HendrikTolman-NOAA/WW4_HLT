@@ -112,7 +112,6 @@ void w4core_init(const ww4_utils::DateTime &startTime,
               << std::endl;
 
       ww4_utils::reportRunConfig(globalRunConfig, logFile);
-      ww4_utils::ww4_logfile::writeLogTableHeader(logFile);
     }
 
   } catch (const std::exception &e) {
@@ -149,6 +148,11 @@ void w4core_init(const ww4_utils::DateTime &startTime,
   // === Data initialization ==================================================
   waveTimeData.modelTime = startTime;
   waveTimeData.timeStep = globalRunConfig.timeStep;
+
+  // === Write log table header after all initializations are completed ======
+  if (globalRunConfig.produceLogFile && logFile.is_open()) {
+    ww4_utils::ww4_logfile::writeLogTableHeader(logFile);
+  }
 }
 
 // --- Accessors --------------------------------------------------------------

@@ -26,9 +26,10 @@
 
 namespace ww4_core {
 
-TEST(SolverTriangularInitTest, BasicExecution) {
-  std::ostringstream ss;
-  EXPECT_NO_THROW(solver_triangular_init(ss));
+TEST(SolverTriangularInitTest, AbortsOnBottomGrid) {
+  EXPECT_EXIT(solver_triangular_init(std::cerr), ::testing::ExitedWithCode(1),
+              "WW4 ERROR: Triangular unstructured grid reader not yet "
+              "implemented when reading bottom grid.");
 }
 
 } // namespace ww4_core

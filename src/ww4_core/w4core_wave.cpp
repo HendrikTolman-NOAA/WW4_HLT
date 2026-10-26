@@ -110,7 +110,7 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
   try {
     // === General initialization =============================================
     if (getRunConfig().produceStdOut) {
-      os << "  Time stepping (w4core_wave) from: "
+      os << "\n  Time stepping (w4core_wave) from: "
          << ww4_utils::TimeManagement::toFormattedString(startTime)
          << " to: " << ww4_utils::TimeManagement::toFormattedString(endTime)
          << "\n"

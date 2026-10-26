@@ -24,18 +24,27 @@
 #include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/ww4_run_config.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <iostream>
 
 namespace ww4_core {
 
 // --- solver_SMC_init --------------------------------------------------------
 void solver_SMC_init(std::ostream &os) {
-  if (getRunConfig().produceStdOut &&
-      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Initializing SMC grid solver" << std::endl;
+  if (getRunConfig().produceStdOut) {
+    os << "  Processing the grid:" << std::endl;
+  }
+  if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+    getLogFileStream() << "  Processing the grid:" << std::endl;
   }
 
   // === Spatial grid ingestion ===============================================
+  // Explanatory comment preceding __FILE__ and __LINE__
+  // Code abort when reaching the point of reading the bottom grid for SMC grid
+  // solver
+  ww4_utils::ww4_std_out::extcde(
+      1, os, "SMC grid reader not yet implemented when reading bottom grid.",
+      __FILE__, __LINE__);
   // Placeholder for reading Spherical Multiple-Cell (SMC) grid geometry and
   // topology:
   // - Open SMC grid file specified in RunConfig (grid.file_path, e.g. NetCDF /
