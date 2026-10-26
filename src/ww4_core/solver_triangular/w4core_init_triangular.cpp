@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/solver_triangular/w4core_init_triangular.h"
@@ -34,7 +34,7 @@ void w4core_init_triangular(std::ostream &os) {
     os << "    Initializing Triangular unstructured grid solver" << std::endl;
   }
 
-  // === 1. Spatial Grid Ingestion (Unstructured Triangular Mesh / UGRID) ====
+  // === Spatial grid ingestion ===============================================
   // Placeholder for reading triangular unstructured mesh geometry and metadata:
   // - Open UGRID NetCDF / NCZarr mesh file specified in RunConfig
   // (grid.file_path).
@@ -50,7 +50,7 @@ void w4core_init_triangular(std::ostream &os) {
   // - Construct TriangularGridData / SharedGridData and expose via std::span
   // views.
 
-  // === 2. Domain Decomposition & Partition Data Lifecycle ===================
+  // === Domain decomposition and partition data lifecycle ===================
   // Placeholder for mesh domain decomposition and parallel sub-domain setup:
   // - Check runtime partition mode configuration (grid.partition.mode).
   // - If precomputed partition file exists (e.g., partition_map.nc):
@@ -65,6 +65,14 @@ void w4core_init_triangular(std::ostream &os) {
   // - Populate LocalGridPartition for current rank, initializing local
   // node/face
   //   topobathy views, halo exchange tables, and local_to_global_map.
+
+  // === Halo communication setup =============================================
+  // Placeholder for initializing halo communication structures:
+  // - Build halo node and element index maps for shared boundary faces.
+  // - Construct point-to-point MPI communication tables for neighboring rank
+  //   sub-mesh boundaries.
+  // - Allocate non-blocking MPI send and receive buffers for unstructured
+  //   gather/scatter halo exchanges during numerical solving.
 }
 
 } // namespace ww4_core

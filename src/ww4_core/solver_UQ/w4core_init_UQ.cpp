@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-10-23
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/solver_UQ/w4core_init_UQ.h"
@@ -34,7 +34,7 @@ void w4core_init_UQ(std::ostream &os) {
     os << "    Initializing UQ regular grid solver" << std::endl;
   }
 
-  // === 1. Spatial Grid Ingestion (Rectangular 2D Grid) =====================
+  // === Spatial grid ingestion ===============================================
   // Placeholder for reading 2D regular spatial grid geometry and metadata:
   // - Open grid file specified in RunConfig (grid.file_path, e.g. NetCDF /
   // NCZarr).
@@ -49,7 +49,7 @@ void w4core_init_UQ(std::ostream &os) {
   // - Construct RectangularGridData / SharedGridData and expose via std::span
   // views.
 
-  // === 2. Domain Decomposition & Partition Data Lifecycle ===================
+  // === Domain decomposition and partition data lifecycle ===================
   // Placeholder for grid partitioning and parallel sub-domain setup:
   // - Check runtime partition mode configuration (grid.partition.mode).
   // - If precomputed partition file exists (e.g., partition_map.nc):
@@ -66,6 +66,15 @@ void w4core_init_UQ(std::ostream &os) {
   // contiguous
   //   topobathy buffers, ghost/halo boundary cell mappings, and
   //   local_to_global_map.
+
+  // === Halo communication setup =============================================
+  // Placeholder for initializing halo communication structures:
+  // - Identify neighbor MPI ranks for sub-domain boundaries in X and Y
+  // directions.
+  // - Allocate ghost/halo cell send and receive buffers for boundary grid rows
+  //   and columns.
+  // - Pre-register non-blocking MPI communication handles and data types for
+  //   efficient halo exchange during wave action propagation steps.
 }
 
 } // namespace ww4_core
