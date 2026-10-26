@@ -126,8 +126,7 @@ TEST_F(W4CoreInitTest, SolverInitRoutines) {
   getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
 
   solver_UQ_init(ss);
-  EXPECT_NE(ss.str().find("Initializing UQ regular grid solver"),
-            std::string::npos);
+  EXPECT_NE(ss.str().find("Processing the grid:"), std::string::npos);
 
   EXPECT_EXIT(solver_triangular_init(std::cerr), ::testing::ExitedWithCode(1),
               "WW4 ERROR: Triangular unstructured grid reader not yet "

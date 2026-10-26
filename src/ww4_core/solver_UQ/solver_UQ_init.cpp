@@ -29,20 +29,16 @@ namespace ww4_core {
 
 // --- solver_UQ_init ---------------------------------------------------------
 void solver_UQ_init(std::ostream &os) {
-  if (getRunConfig().produceStdOut &&
-      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Initializing UQ regular grid solver" << std::endl;
+  if (getRunConfig().produceStdOut) {
+    os << "  Processing the grid:\n"
+       << "     " << getRunConfig().gridFile << std::endl;
+  }
+  if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+    getLogFileStream() << "  Processing the grid:\n"
+                       << "     " << getRunConfig().gridFile << std::endl;
   }
 
   // === Spatial grid ingestion ===============================================
-  if (getRunConfig().produceStdOut) {
-    os << "    Grid file name to be used   : " << getRunConfig().gridFile
-       << std::endl;
-  }
-  if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
-    getLogFileStream() << "    Grid file name to be used   : "
-                       << getRunConfig().gridFile << std::endl;
-  }
 
   // Placeholder for reading 2D regular spatial grid geometry and metadata:
   // - Open grid file specified in RunConfig (grid.file_path, e.g. NetCDF /

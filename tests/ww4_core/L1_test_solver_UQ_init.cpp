@@ -37,10 +37,8 @@ TEST(SolverUQInitTest, BasicExecutionAndOutput) {
 
   EXPECT_NO_THROW(solver_UQ_init(ss));
   std::string output = ss.str();
-  EXPECT_NE(output.find("Initializing UQ regular grid solver"),
-            std::string::npos);
-  EXPECT_NE(output.find("Grid file name to be used   : my_uq_grid.nc"),
-            std::string::npos);
+  EXPECT_NE(output.find("Processing the grid:"), std::string::npos);
+  EXPECT_NE(output.find("     my_uq_grid.nc"), std::string::npos);
 
   resetInternalState();
 }

@@ -30,9 +30,11 @@ namespace ww4_core {
 
 // --- solver_triangular_init -------------------------------------------------
 void solver_triangular_init(std::ostream &os) {
-  if (getRunConfig().produceStdOut &&
-      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Initializing Triangular unstructured grid solver" << std::endl;
+  if (getRunConfig().produceStdOut) {
+    os << "  Processing the grid:" << std::endl;
+  }
+  if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
+    getLogFileStream() << "  Processing the grid:" << std::endl;
   }
 
   // === Spatial grid ingestion ===============================================
