@@ -88,8 +88,8 @@ static std::string readGlobalAttributeNC(int ncid, const char *attname) {
 }
 
 /**
- * @brief Reads data from a NetCDF variable into a std::vector with type
- * conversion.
+ * @brief Reads data from a NetCDF variable into a std::vector with dynamic
+ * buffer sizing and type conversion.
  */
 template <typename T>
 static bool readVariableNC(int ncid, const char *varname, std::vector<T> &vec) {
@@ -97,6 +97,27 @@ static bool readVariableNC(int ncid, const char *varname, std::vector<T> &vec) {
   if (nc_inq_varid(ncid, varname, &varid) != NC_NOERR) {
     return false;
   }
+  int ndims = 0;
+  if (nc_inq_varndims(ncid, varid, &ndims) != NC_NOERR || ndims < 0) {
+    return false;
+  }
+  std::vector<int> dimids(static_cast<std::size_t>(ndims));
+  if (nc_inq_vardimid(ncid, varid, dimids.data()) != NC_NOERR) {
+    return false;
+  }
+  std::size_t totalLen = 1;
+  for (int i = 0; i < ndims; ++i) {
+    std::size_t dlen = 0;
+    if (nc_inq_dimlen(ncid, dimids[i], &dlen) != NC_NOERR) {
+      return false;
+    }
+    totalLen *= dlen;
+  }
+  if (totalLen == 0) {
+    return false;
+  }
+  vec.resize(totalLen);
+
   nc_type xtype = NC_NAT;
   if (nc_inq_vartype(ncid, varid, &xtype) != NC_NOERR) {
     return false;
@@ -104,11 +125,11 @@ static bool readVariableNC(int ncid, const char *varname, std::vector<T> &vec) {
 
   if constexpr (std::is_same_v<T, double>) {
     if (xtype == NC_FLOAT) {
-      std::vector<float> tmp(vec.size());
+      std::vector<float> tmp(totalLen);
       if (nc_get_var_float(ncid, varid, tmp.data()) != NC_NOERR) {
         return false;
       }
-      for (std::size_t i = 0; i < vec.size(); ++i) {
+      for (std::size_t i = 0; i < totalLen; ++i) {
         vec[i] = static_cast<double>(tmp[i]);
       }
       return true;
@@ -116,11 +137,11 @@ static bool readVariableNC(int ncid, const char *varname, std::vector<T> &vec) {
     return nc_get_var_double(ncid, varid, vec.data()) == NC_NOERR;
   } else if constexpr (std::is_same_v<T, float>) {
     if (xtype == NC_DOUBLE) {
-      std::vector<double> tmp(vec.size());
+      std::vector<double> tmp(totalLen);
       if (nc_get_var_double(ncid, varid, tmp.data()) != NC_NOERR) {
         return false;
       }
-      for (std::size_t i = 0; i < vec.size(); ++i) {
+      for (std::size_t i = 0; i < totalLen; ++i) {
         vec[i] = static_cast<float>(tmp[i]);
       }
       return true;
@@ -128,11 +149,11 @@ static bool readVariableNC(int ncid, const char *varname, std::vector<T> &vec) {
     return nc_get_var_float(ncid, varid, vec.data()) == NC_NOERR;
   } else if constexpr (std::is_same_v<T, int>) {
     if (xtype == NC_INT64) {
-      std::vector<long long> tmp64(vec.size());
+      std::vector<long long> tmp64(totalLen);
       if (nc_get_var_longlong(ncid, varid, tmp64.data()) != NC_NOERR) {
         return false;
       }
-      for (std::size_t i = 0; i < vec.size(); ++i) {
+      for (std::size_t i = 0; i < totalLen; ++i) {
         vec[i] = static_cast<int>(tmp64[i]);
       }
       return true;
@@ -203,20 +224,20 @@ static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
   header.gridName = title.empty() ? fname : title;
 
   std::size_t numPoints = nx * ny;
-  std::vector<double> lon(numPoints, 0.0);
-  std::vector<double> lat(numPoints, 0.0);
+  std::vector<double> lon;
+  std::vector<double> lat;
 
   bool hasGridLon = readVariableNC(ncid, "grid_lon", lon) ||
                     readVariableNC(ncid, "face_lon", lon) ||
-                    readVariableNC(ncid, "longitude", lon);
+                    readVariableNC(ncid, "longitude", lon) ||
+                    readVariableNC(ncid, "lon", lon);
   bool hasGridLat = readVariableNC(ncid, "grid_lat", lat) ||
                     readVariableNC(ncid, "face_lat", lat) ||
-                    readVariableNC(ncid, "latitude", lat);
+                    readVariableNC(ncid, "latitude", lat) ||
+                    readVariableNC(ncid, "lat", lat);
 
-  if (hasGridLon && hasGridLat) {
+  if (hasGridLon && !lon.empty()) {
     header.lonStart = lon[0];
-    header.latStart = lat[0];
-
     if (lon.size() == nx) {
       header.lonEnd = lon[nx - 1];
     } else if (lon.size() >= numPoints) {
@@ -224,7 +245,17 @@ static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
     } else {
       header.lonEnd = lon.back();
     }
+    if (nx > 1) {
+      header.sx =
+          (header.lonEnd - header.lonStart) / static_cast<double>(nx - 1);
+      if (header.sx < 0.0) {
+        header.sx = std::abs(header.sx);
+      }
+    }
+  }
 
+  if (hasGridLat && !lat.empty()) {
+    header.latStart = lat[0];
     if (lat.size() == ny) {
       header.latEnd = lat[ny - 1];
     } else if (lat.size() >= numPoints) {
@@ -232,27 +263,37 @@ static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
     } else {
       header.latEnd = lat.back();
     }
-
-    if (nx > 1) {
-      header.sx =
-          (header.lonEnd - header.lonStart) / static_cast<double>(nx - 1);
-    }
     if (ny > 1) {
       header.sy =
           (header.latEnd - header.latStart) / static_cast<double>(ny - 1);
+      if (header.sy < 0.0) {
+        header.sy = std::abs(header.sy);
+      }
     }
   }
 
-  topobathy.resize(numPoints, 100.0);
-  readVariableNC(ncid, "grid_depth", topobathy) ||
-      readVariableNC(ncid, "depth", topobathy) ||
-      readVariableNC(ncid, "elevation", topobathy);
+  topobathy.clear();
+  bool hasDepth = readVariableNC(ncid, "grid_depth", topobathy) ||
+                  readVariableNC(ncid, "depth", topobathy) ||
+                  readVariableNC(ncid, "elevation", topobathy);
+  if (!hasDepth || topobathy.empty()) {
+    topobathy.assign(numPoints, 100.0);
+  } else if (topobathy.size() < numPoints) {
+    topobathy.resize(numPoints, 100.0);
+  }
 
-  mask.resize(numPoints, 1);
-  readVariableNC(ncid, "grid_mask", mask) || readVariableNC(ncid, "mask", mask);
+  mask.clear();
+  bool hasMask = readVariableNC(ncid, "grid_mask", mask) ||
+                 readVariableNC(ncid, "mask", mask);
+  if (!hasMask || mask.empty()) {
+    mask.assign(numPoints, 1);
+  } else if (mask.size() < numPoints) {
+    mask.resize(numPoints, 1);
+  }
 
-  if (std::abs((header.lonEnd - header.lonStart) - 360.0) < 1e-3 ||
-      std::abs((header.nx * header.sx) - 360.0) < 1e-3) {
+  if (header.sx > 0.0 &&
+      (std::abs((header.lonEnd - header.lonStart) - 360.0) < 1e-3 ||
+       std::abs((header.nx * header.sx) - 360.0) < 1e-3)) {
     header.isGlobal = true;
   }
 
@@ -592,9 +633,8 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
     if (nc_open(activeFile.c_str(), NC_NOWRITE, &raw_ncid) == NC_NOERR) {
       NcHandle handle(raw_ncid);
       int ncid = handle.get();
-      std::size_t numPoints = header.nx * header.ny;
-      std::vector<double> obsX(numPoints, 0.0);
-      std::vector<double> obsY(numPoints, 0.0);
+      std::vector<double> obsX;
+      std::vector<double> obsY;
       if (readVariableNC(ncid, "grid_ObsX", obsX) ||
           readVariableNC(ncid, "ObsX", obsX)) {
         grid.shared.obstructionX = std::move(obsX);
