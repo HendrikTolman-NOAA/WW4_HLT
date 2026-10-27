@@ -66,6 +66,28 @@ else()
     message(FATAL_ERROR "yaml-cpp submodule not found in externals/yaml-cpp. Please run: git submodule update --init --recursive")
 endif()
 
+# netcdf-c for NetCDF / UGRID file reading
+if(EXISTS "${CMAKE_SOURCE_DIR}/externals/netcdf-c/CMakeLists.txt")
+    set(NETCDF_ENABLE_HDF5 OFF CACHE BOOL "" FORCE)
+    set(NETCDF_ENABLE_NETCDF_4 OFF CACHE BOOL "" FORCE)
+    set(NETCDF_ENABLE_DAP OFF CACHE BOOL "" FORCE)
+    set(NETCDF_ENABLE_NCZARR OFF CACHE BOOL "" FORCE)
+    set(NETCDF_ENABLE_UTILITIES OFF CACHE BOOL "" FORCE)
+    set(NETCDF_ENABLE_TESTS OFF CACHE BOOL "" FORCE)
+    set(NETCDF_ENABLE_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    unset(ENABLE_DAP CACHE)
+    unset(ENABLE_EXAMPLES CACHE)
+    unset(ENABLE_HDF5 CACHE)
+    unset(ENABLE_NCZARR CACHE)
+    unset(ENABLE_NETCDF_4 CACHE)
+    unset(ENABLE_TESTS CACHE)
+    add_subdirectory(externals/netcdf-c EXCLUDE_FROM_ALL SYSTEM)
+else()
+    message(FATAL_ERROR "netcdf-c submodule not found in externals/netcdf-c. Please run: git submodule update --init --recursive")
+endif()
+
 # Library: ww4_utils
 add_library(
     ww4_utils
@@ -112,7 +134,7 @@ add_library(
     src/ww4_core/wave_model_solver.cpp
 )
 target_include_directories(ww4_core PUBLIC src)
-target_link_libraries(ww4_core PUBLIC ww4_utils)
+target_link_libraries(ww4_core PUBLIC ww4_utils PUBLIC netcdf)
 target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 

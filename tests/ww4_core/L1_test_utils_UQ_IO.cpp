@@ -6,7 +6,8 @@
  * @file L1_test_utils_UQ_IO.cpp
  * @brief Level 1 unit tests for UQ grid reading and partition I/O utilities.
  * @details Tests UQ grid header reading, metadata reporting, full grid reading,
- *          error capturing, and partition I/O.
+ *          NetCDF-UGRID binary reading via netcdf-c, error capturing, and
+ *          partition I/O.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the
  * National Weather Service. NWS often uses Generative AI (GenAI) for code
@@ -15,13 +16,14 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-26
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-10-27
  */
 
 #include "ww4_core/solver_UQ/utils_UQ_IO.h"
 #include "ww4_utils/spatial_grid.h"
 #include <fstream>
 #include <gtest/gtest.h>
+#include <netcdf.h>
 #include <sstream>
 
 using namespace ww4_core::solver_UQ_utils;
@@ -104,6 +106,61 @@ TEST(UtilsUQIOTest, CompanionMetaFallback) {
   EXPECT_EQ(header.ny, 5u);
 
   std::remove(metaName.c_str());
+}
+
+TEST(UtilsUQIOTest, ReadNetCDFGridFileSuccess) {
+  const std::string filename = "test_ugrid_binary.nc";
+  int ncid = -1;
+  ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
+
+  int dim_nx = -1, dim_ny = -1;
+  ASSERT_EQ(nc_def_dim(ncid, "nx", 2, &dim_nx), NC_NOERR);
+  ASSERT_EQ(nc_def_dim(ncid, "ny", 2, &dim_ny), NC_NOERR);
+
+  const std::string title = "netcdf_test_grid";
+  ASSERT_EQ(
+      nc_put_att_text(ncid, NC_GLOBAL, "title", title.size(), title.c_str()),
+      NC_NOERR);
+
+  int dims[2] = {dim_ny, dim_nx};
+  int var_lon = -1, var_lat = -1, var_depth = -1, var_mask = -1;
+  ASSERT_EQ(nc_def_var(ncid, "grid_lon", NC_DOUBLE, 2, dims, &var_lon),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_lat", NC_DOUBLE, 2, dims, &var_lat),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_depth", NC_DOUBLE, 2, dims, &var_depth),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_mask", NC_INT, 2, dims, &var_mask),
+            NC_NOERR);
+
+  ASSERT_EQ(nc_enddef(ncid), NC_NOERR);
+
+  double lons[4] = {-100.0, -99.0, -100.0, -99.0};
+  double lats[4] = {10.0, 10.0, 11.0, 11.0};
+  double depths[4] = {15.0, 25.0, 35.0, 45.0};
+  int masks[4] = {1, 1, 1, 0};
+
+  ASSERT_EQ(nc_put_var_double(ncid, var_lon, lons), NC_NOERR);
+  ASSERT_EQ(nc_put_var_double(ncid, var_lat, lats), NC_NOERR);
+  ASSERT_EQ(nc_put_var_double(ncid, var_depth, depths), NC_NOERR);
+  ASSERT_EQ(nc_put_var_int(ncid, var_mask, masks), NC_NOERR);
+
+  ASSERT_EQ(nc_close(ncid), NC_NOERR);
+
+  ww4_utils::FullGrid grid;
+  std::ostringstream os;
+  readGridFileUQ(filename, grid, os);
+
+  EXPECT_EQ(grid.gridType, ww4_utils::GridType::Rectangular);
+  EXPECT_EQ(grid.nx, 2u);
+  EXPECT_EQ(grid.ny, 2u);
+  EXPECT_EQ(grid.numNodes, 4u);
+  EXPECT_EQ(grid.getTopobathy().size(), 4u);
+  EXPECT_DOUBLE_EQ(grid.getTopobathy()[0], 15.0);
+  EXPECT_DOUBLE_EQ(grid.getTopobathy()[3], 45.0);
+  EXPECT_EQ(grid.getLandMask()[3], 0);
+
+  std::remove(filename.c_str());
 }
 
 TEST(UtilsUQIOTest, ReadGridHeaderFileNotFound) {
@@ -196,3 +253,5 @@ TEST(UtilsUQIOTest, PartitionMapIO) {
 // References to function names for ww4_test_check.py routine coverage:
 // readGridHeaderUQ readGridFileUQ reportUQGridMetadata readPartitionMapNetCDF
 // writePartitionMapNetCDF parseMetaContent tryParseHeaderFile
+// readGlobalAttributeNC readVariableDoubleNC readVariableIntNC
+// tryParseNetCDFGrid get ncid_

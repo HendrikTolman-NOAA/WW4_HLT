@@ -5,9 +5,10 @@
  *
  * @file utils_UQ_IO.cpp
  * @brief Implementation of UQ regular grid reading and partition I/O utilities.
- * @details Implements routines to read UQ regular grid files, validate header
- *          and field parameters with comprehensive error capturing, format and
- *          report metadata to stdout and log file, and manage partition I/O.
+ * @details Implements routines to read UQ regular grid files using netcdf-c and
+ *          ASCII metadata, validate header and field parameters with error
+ *          capturing, format and report metadata to stdout and log file, and
+ *          manage partition I/O.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the
  * National Weather Service. NWS often uses Generative AI (GenAI) for code
@@ -16,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-26
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-10-27
  */
 
 #include "ww4_core/solver_UQ/utils_UQ_IO.h"
@@ -24,13 +25,212 @@
 #include "ww4_utils/ww4_logfile.h"
 #include "ww4_utils/ww4_run_config.h"
 #include "ww4_utils/ww4_std_out.h"
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <netcdf.h>
 #include <sstream>
 
 namespace ww4_core::solver_UQ_utils {
+
+namespace {
+
+/**
+ * @class NcHandle
+ * @brief RAII wrapper for NetCDF handle (ncid).
+ */
+class NcHandle {
+public:
+  explicit NcHandle(int id) noexcept : ncid_(id) {}
+  ~NcHandle() {
+    if (ncid_ >= 0) {
+      nc_close(ncid_);
+    }
+  }
+  NcHandle(const NcHandle &) = delete;
+  NcHandle &operator=(const NcHandle &) = delete;
+  NcHandle(NcHandle &&other) noexcept : ncid_(other.ncid_) { other.ncid_ = -1; }
+  NcHandle &operator=(NcHandle &&other) noexcept {
+    if (this != &other) {
+      if (ncid_ >= 0) {
+        nc_close(ncid_);
+      }
+      ncid_ = other.ncid_;
+      other.ncid_ = -1;
+    }
+    return *this;
+  }
+  [[nodiscard]] int get() const noexcept { return ncid_; }
+
+private:
+  int ncid_{-1};
+};
+
+/**
+ * @brief Utility function to read a global string attribute.
+ */
+static std::string readGlobalAttributeNC(int ncid, const char *attname) {
+  std::size_t len = 0;
+  if (nc_inq_attlen(ncid, NC_GLOBAL, attname, &len) == NC_NOERR) {
+    std::string val(len, '\0');
+    if (nc_get_att_text(ncid, NC_GLOBAL, attname, val.data()) == NC_NOERR) {
+      while (!val.empty() && (val.back() == '\0' || val.back() == ' ')) {
+        val.pop_back();
+      }
+      return val;
+    }
+  }
+  return "";
+}
+
+/**
+ * @brief Utility function to read double or float NetCDF variable into
+ * std::vector<double>.
+ */
+static bool readVariableDoubleNC(int ncid, const char *varname,
+                                 std::vector<double> &vec) {
+  int varid = -1;
+  if (nc_inq_varid(ncid, varname, &varid) != NC_NOERR) {
+    return false;
+  }
+  nc_type xtype = NC_NAT;
+  if (nc_inq_vartype(ncid, varid, &xtype) != NC_NOERR) {
+    return false;
+  }
+  if (xtype == NC_FLOAT) {
+    std::vector<float> tmp(vec.size());
+    if (nc_get_var_float(ncid, varid, tmp.data()) != NC_NOERR) {
+      return false;
+    }
+    for (std::size_t i = 0; i < vec.size(); ++i) {
+      vec[i] = static_cast<double>(tmp[i]);
+    }
+    return true;
+  } else if (xtype == NC_DOUBLE) {
+    return nc_get_var_double(ncid, varid, vec.data()) == NC_NOERR;
+  }
+  return false;
+}
+
+/**
+ * @brief Utility function to read int or int64 NetCDF variable into
+ * std::vector<int>.
+ */
+static bool readVariableIntNC(int ncid, const char *varname,
+                              std::vector<int> &vec) {
+  int varid = -1;
+  if (nc_inq_varid(ncid, varname, &varid) != NC_NOERR) {
+    return false;
+  }
+  nc_type xtype = NC_NAT;
+  if (nc_inq_vartype(ncid, varid, &xtype) != NC_NOERR) {
+    return false;
+  }
+  if (xtype == NC_INT64) {
+    std::vector<long long> tmp64(vec.size());
+    if (nc_get_var_longlong(ncid, varid, tmp64.data()) != NC_NOERR) {
+      return false;
+    }
+    for (std::size_t i = 0; i < vec.size(); ++i) {
+      vec[i] = static_cast<int>(tmp64[i]);
+    }
+    return true;
+  } else {
+    return nc_get_var_int(ncid, varid, vec.data()) == NC_NOERR;
+  }
+}
+
+/**
+ * @brief Attempts to read UQ regular grid header and fields directly from
+ * NetCDF file using netcdf-c library.
+ */
+static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
+                               std::vector<double> &topobathy,
+                               std::vector<int> &mask) {
+  int raw_ncid = -1;
+  if (nc_open(fname.c_str(), NC_NOWRITE, &raw_ncid) != NC_NOERR) {
+    return false;
+  }
+  NcHandle handle(raw_ncid);
+  int ncid = handle.get();
+
+  auto getDimLen = [ncid](const char *dimname) -> std::size_t {
+    int dimid = -1;
+    if (nc_inq_dimid(ncid, dimname, &dimid) != NC_NOERR) {
+      return 0;
+    }
+    std::size_t len = 0;
+    if (nc_inq_dimlen(ncid, dimid, &len) != NC_NOERR) {
+      return 0;
+    }
+    return len;
+  };
+
+  std::size_t nx = getDimLen("nx");
+  if (nx == 0) {
+    nx = getDimLen("nlon");
+  }
+  std::size_t ny = getDimLen("ny");
+  if (ny == 0) {
+    ny = getDimLen("nlat");
+  }
+
+  if (nx == 0 || ny == 0) {
+    return false;
+  }
+
+  header.nx = nx;
+  header.ny = ny;
+
+  std::string title = readGlobalAttributeNC(ncid, "title");
+  header.gridName = title.empty() ? fname : title;
+
+  std::size_t numPoints = nx * ny;
+  std::vector<double> lon(numPoints, 0.0);
+  std::vector<double> lat(numPoints, 0.0);
+
+  bool hasGridLon = readVariableDoubleNC(ncid, "grid_lon", lon) ||
+                    readVariableDoubleNC(ncid, "face_lon", lon) ||
+                    readVariableDoubleNC(ncid, "longitude", lon);
+  bool hasGridLat = readVariableDoubleNC(ncid, "grid_lat", lat) ||
+                    readVariableDoubleNC(ncid, "face_lat", lat) ||
+                    readVariableDoubleNC(ncid, "latitude", lat);
+
+  if (hasGridLon && hasGridLat) {
+    header.lonStart = lon.front();
+    header.latStart = lat.front();
+    header.lonEnd = lon.back();
+    header.latEnd = lat.back();
+    if (nx > 1) {
+      header.sx =
+          (header.lonEnd - header.lonStart) / static_cast<double>(nx - 1);
+    }
+    if (ny > 1) {
+      header.sy =
+          (header.latEnd - header.latStart) / static_cast<double>(ny - 1);
+    }
+  }
+
+  topobathy.resize(numPoints, 100.0);
+  readVariableDoubleNC(ncid, "grid_depth", topobathy) ||
+      readVariableDoubleNC(ncid, "depth", topobathy) ||
+      readVariableDoubleNC(ncid, "elevation", topobathy);
+
+  mask.resize(numPoints, 1);
+  readVariableIntNC(ncid, "grid_mask", mask) ||
+      readVariableIntNC(ncid, "mask", mask);
+
+  if (std::abs((header.lonEnd - header.lonStart) - 360.0) < 1e-3 ||
+      std::abs((header.nx * header.sx) - 360.0) < 1e-3) {
+    header.isGlobal = true;
+  }
+
+  return true;
+}
+
+} // namespace
 
 // --- reportUQGridMetadata ---------------------------------------------------
 void reportUQGridMetadata(const UQGridHeader &header, std::ostream &os) {
@@ -222,6 +422,20 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
     os << "     - Starting opening grid file: " << filename << std::endl;
   }
 
+  std::vector<double> dummyElev;
+  std::vector<int> dummyMask;
+  if (tryParseNetCDFGrid(filename, header, dummyElev, dummyMask)) {
+    if (ww4_core::getRunConfig().produceStdOut) {
+      os << "     - Completed opening grid file: " << filename
+         << " ... [SUCCESS]" << std::endl;
+      os << "     - Starting parsing grid header metadata from file: "
+         << filename << std::endl;
+      os << "     - Completed parsing grid header metadata ... [SUCCESS]"
+         << std::endl;
+    }
+    return filename;
+  }
+
   std::vector<std::string> candidates = {filename};
 
   // Add companion candidate paths if filename ends with .nc or _ugrid.nc
@@ -267,9 +481,22 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
 void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
                     std::ostream &os) {
   UQGridHeader header;
-  std::string activeFile = readGridHeaderUQ(filename, header, os);
+  std::vector<double> ncTopobathy;
+  std::vector<int> ncMask;
+  bool isNetCDF = tryParseNetCDFGrid(filename, header, ncTopobathy, ncMask);
+
+  std::string activeFile =
+      isNetCDF ? filename : readGridHeaderUQ(filename, header, os);
 
   if (ww4_core::getRunConfig().produceStdOut) {
+    if (isNetCDF) {
+      os << "     - Completed opening grid file: " << filename
+         << " ... [SUCCESS]\n"
+         << "     - Starting parsing grid header metadata from file: "
+         << filename << "\n"
+         << "     - Completed parsing grid header metadata ... [SUCCESS]"
+         << std::endl;
+    }
     os << "     - Starting constructing spatial coordinates (NX=" << header.nx
        << ", NY=" << header.ny << ") ..." << std::endl;
   }
@@ -317,131 +544,144 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
        << std::endl;
   }
 
-  // Check for depth / elevation and mask arrays in active header file
-  std::ifstream file(activeFile);
-  if (file.is_open()) {
-    std::string line;
-    std::vector<double> elevationData;
-    std::vector<int> maskData;
+  if (isNetCDF && !ncTopobathy.empty()) {
+    grid.topobathy = std::move(ncTopobathy);
+    grid.shared.topobathy = grid.topobathy;
+  } else {
+    // Check for depth / elevation and mask arrays in active header file
+    std::ifstream file(activeFile);
+    if (file.is_open()) {
+      std::string line;
+      std::vector<double> elevationData;
+      std::vector<int> maskData;
 
-    bool readingElevation = false;
-    bool readingMask = false;
+      bool readingElevation = false;
+      bool readingMask = false;
 
-    while (std::getline(file, line)) {
-      // Strip comments starting with %, $, #, ;, !, or //
-      auto commentPos = line.find_first_of("%$#;!");
-      if (commentPos == std::string::npos) {
-        commentPos = line.find("//");
-      }
-      if (commentPos != std::string::npos) {
-        line.erase(commentPos);
-      }
-
-      std::string lineLower = line;
-      std::transform(lineLower.begin(), lineLower.end(), lineLower.begin(),
-                     [](unsigned char c) { return std::tolower(c); });
-
-      if (lineLower.find("[elevation]") != std::string::npos ||
-          lineLower.find("[depth]") != std::string::npos ||
-          lineLower.find("[bathymetry]") != std::string::npos ||
-          lineLower.find("[grid_depth]") != std::string::npos) {
-        readingElevation = true;
-        readingMask = false;
-        continue;
-      }
-      if (lineLower.find("[mask]") != std::string::npos ||
-          lineLower.find("[grid_mask]") != std::string::npos) {
-        readingElevation = false;
-        readingMask = true;
-        continue;
-      }
-
-      auto posElev = lineLower.find("elevation:");
-      if (posElev == std::string::npos) {
-        posElev = lineLower.find("depth:");
-      }
-      if (posElev == std::string::npos) {
-        posElev = lineLower.find("bathymetry:");
-      }
-      if (posElev == std::string::npos) {
-        posElev = lineLower.find("grid_depth:");
-      }
-
-      if (posElev != std::string::npos) {
-        readingElevation = true;
-        readingMask = false;
-        line = line.substr(posElev + lineLower.substr(posElev).find(':') + 1);
-      } else {
-        auto posMask = lineLower.find("mask:");
-        if (posMask == std::string::npos) {
-          posMask = lineLower.find("grid_mask:");
+      while (std::getline(file, line)) {
+        // Strip comments starting with %, $, #, ;, !, or //
+        auto commentPos = line.find_first_of("%$#;!");
+        if (commentPos == std::string::npos) {
+          commentPos = line.find("//");
         }
-        if (posMask != std::string::npos) {
+        if (commentPos != std::string::npos) {
+          line.erase(commentPos);
+        }
+
+        std::string lineLower = line;
+        std::transform(lineLower.begin(), lineLower.end(), lineLower.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+
+        if (lineLower.find("[elevation]") != std::string::npos ||
+            lineLower.find("[depth]") != std::string::npos ||
+            lineLower.find("[bathymetry]") != std::string::npos ||
+            lineLower.find("[grid_depth]") != std::string::npos) {
+          readingElevation = true;
+          readingMask = false;
+          continue;
+        }
+        if (lineLower.find("[mask]") != std::string::npos ||
+            lineLower.find("[grid_mask]") != std::string::npos) {
           readingElevation = false;
           readingMask = true;
-          line = line.substr(posMask + lineLower.substr(posMask).find(':') + 1);
+          continue;
+        }
+
+        auto posElev = lineLower.find("elevation:");
+        if (posElev == std::string::npos) {
+          posElev = lineLower.find("depth:");
+        }
+        if (posElev == std::string::npos) {
+          posElev = lineLower.find("bathymetry:");
+        }
+        if (posElev == std::string::npos) {
+          posElev = lineLower.find("grid_depth:");
+        }
+
+        if (posElev != std::string::npos) {
+          readingElevation = true;
+          readingMask = false;
+          line = line.substr(posElev + lineLower.substr(posElev).find(':') + 1);
+        } else {
+          auto posMask = lineLower.find("mask:");
+          if (posMask == std::string::npos) {
+            posMask = lineLower.find("grid_mask:");
+          }
+          if (posMask != std::string::npos) {
+            readingElevation = false;
+            readingMask = true;
+            line =
+                line.substr(posMask + lineLower.substr(posMask).find(':') + 1);
+          }
+        }
+
+        if (readingElevation) {
+          std::istringstream ss(line);
+          double val = 0.0;
+          while (ss >> val) {
+            elevationData.push_back(val);
+          }
+        } else if (readingMask) {
+          std::istringstream ss(line);
+          int val = 0;
+          while (ss >> val) {
+            maskData.push_back(val);
+          }
         }
       }
+      file.close();
 
-      if (readingElevation) {
-        std::istringstream ss(line);
-        double val = 0.0;
-        while (ss >> val) {
-          elevationData.push_back(val);
+      if (!elevationData.empty()) {
+        if (elevationData.size() != grid.numNodes) {
+          // Explanatory comment preceding first use of __FILE__ and __LINE__
+          // Pass source location for error tracing
+          ww4_utils::ww4_std_out::extcde(
+              1, os,
+              "Topobathy array size mismatch (" +
+                  std::to_string(elevationData.size()) + " vs expected " +
+                  std::to_string(grid.numNodes) + ") in file: " + filename,
+              __FILE__, __LINE__);
         }
-      } else if (readingMask) {
-        std::istringstream ss(line);
-        int val = 0;
-        while (ss >> val) {
-          maskData.push_back(val);
-        }
+        grid.topobathy = std::move(elevationData);
+        grid.shared.topobathy = grid.topobathy;
+      } else {
+        // Default topobathy if not specified in text stream
+        grid.topobathy.assign(grid.numNodes, 100.0);
+        grid.shared.topobathy = grid.topobathy;
+      }
+
+      if (!maskData.empty()) {
+        ncMask = std::move(maskData);
       }
     }
-    file.close();
+  }
 
-    if (!elevationData.empty()) {
-      if (elevationData.size() != grid.numNodes) {
-        // Explanatory comment preceding first use of __FILE__ and __LINE__
-        // Pass source location for error tracing
-        ww4_utils::ww4_std_out::extcde(
-            1, os,
-            "Topobathy array size mismatch (" +
-                std::to_string(elevationData.size()) + " vs expected " +
-                std::to_string(grid.numNodes) + ") in file: " + filename,
-            __FILE__, __LINE__);
-      }
-      grid.topobathy = std::move(elevationData);
-      grid.shared.topobathy = grid.topobathy;
-    } else {
-      // Default topobathy if not specified in text stream
-      grid.topobathy.assign(grid.numNodes, 100.0);
-      grid.shared.topobathy = grid.topobathy;
-    }
+  if (ww4_core::getRunConfig().produceStdOut) {
+    os << "     - Completed ingesting topobathy elevation field ... [SUCCESS]"
+       << std::endl;
+    os << "     - Starting ingesting land/sea mask field ..." << std::endl;
+  }
 
-    if (ww4_core::getRunConfig().produceStdOut) {
-      os << "     - Completed ingesting topobathy elevation field ... [SUCCESS]"
-         << std::endl;
-      os << "     - Starting ingesting land/sea mask field ..." << std::endl;
+  if (isNetCDF && !ncMask.empty()) {
+    grid.landMask = std::move(ncMask);
+    grid.shared.landMask = grid.landMask;
+  } else if (!ncMask.empty()) {
+    if (ncMask.size() != grid.numNodes) {
+      // Explanatory comment preceding first use of __FILE__ and __LINE__
+      // Pass source location for error tracing
+      ww4_utils::ww4_std_out::extcde(
+          1, os,
+          "Land mask array size mismatch (" + std::to_string(ncMask.size()) +
+              " vs expected " + std::to_string(grid.numNodes) +
+              ") in file: " + filename,
+          __FILE__, __LINE__);
     }
-
-    if (!maskData.empty()) {
-      if (maskData.size() != grid.numNodes) {
-        // Explanatory comment preceding first use of __FILE__ and __LINE__
-        // Pass source location for error tracing
-        ww4_utils::ww4_std_out::extcde(
-            1, os,
-            "Land mask array size mismatch (" +
-                std::to_string(maskData.size()) + " vs expected " +
-                std::to_string(grid.numNodes) + ") in file: " + filename,
-            __FILE__, __LINE__);
-      }
-      grid.landMask = std::move(maskData);
-      grid.shared.landMask = grid.landMask;
-    } else {
-      // Default land mask (1 for active sea cells)
-      grid.landMask.assign(grid.numNodes, 1);
-      grid.shared.landMask = grid.landMask;
-    }
+    grid.landMask = std::move(ncMask);
+    grid.shared.landMask = grid.landMask;
+  } else {
+    // Default land mask (1 for active sea cells)
+    grid.landMask.assign(grid.numNodes, 1);
+    grid.shared.landMask = grid.landMask;
   }
 
   if (ww4_core::getRunConfig().produceStdOut) {
