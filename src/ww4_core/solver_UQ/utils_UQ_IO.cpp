@@ -33,6 +33,7 @@
 #include <iostream>
 #include <netcdf.h>
 #include <sstream>
+#include <type_traits>
 
 namespace ww4_core::solver_UQ_utils {
 
@@ -87,11 +88,11 @@ static std::string readGlobalAttributeNC(int ncid, const char *attname) {
 }
 
 /**
- * @brief Utility function to read double or float NetCDF variable into
- * std::vector<double>.
+ * @brief Reads data from a NetCDF variable into a std::vector with type
+ * conversion.
  */
-static bool readVariableDoubleNC(int ncid, const char *varname,
-                                 std::vector<double> &vec) {
+template <typename T>
+static bool readVariableNC(int ncid, const char *varname, std::vector<T> &vec) {
   int varid = -1;
   if (nc_inq_varid(ncid, varname, &varid) != NC_NOERR) {
     return false;
@@ -100,47 +101,46 @@ static bool readVariableDoubleNC(int ncid, const char *varname,
   if (nc_inq_vartype(ncid, varid, &xtype) != NC_NOERR) {
     return false;
   }
-  if (xtype == NC_FLOAT) {
-    std::vector<float> tmp(vec.size());
-    if (nc_get_var_float(ncid, varid, tmp.data()) != NC_NOERR) {
-      return false;
-    }
-    for (std::size_t i = 0; i < vec.size(); ++i) {
-      vec[i] = static_cast<double>(tmp[i]);
-    }
-    return true;
-  } else if (xtype == NC_DOUBLE) {
-    return nc_get_var_double(ncid, varid, vec.data()) == NC_NOERR;
-  }
-  return false;
-}
 
-/**
- * @brief Utility function to read int or int64 NetCDF variable into
- * std::vector<int>.
- */
-static bool readVariableIntNC(int ncid, const char *varname,
-                              std::vector<int> &vec) {
-  int varid = -1;
-  if (nc_inq_varid(ncid, varname, &varid) != NC_NOERR) {
-    return false;
-  }
-  nc_type xtype = NC_NAT;
-  if (nc_inq_vartype(ncid, varid, &xtype) != NC_NOERR) {
-    return false;
-  }
-  if (xtype == NC_INT64) {
-    std::vector<long long> tmp64(vec.size());
-    if (nc_get_var_longlong(ncid, varid, tmp64.data()) != NC_NOERR) {
-      return false;
+  if constexpr (std::is_same_v<T, double>) {
+    if (xtype == NC_FLOAT) {
+      std::vector<float> tmp(vec.size());
+      if (nc_get_var_float(ncid, varid, tmp.data()) != NC_NOERR) {
+        return false;
+      }
+      for (std::size_t i = 0; i < vec.size(); ++i) {
+        vec[i] = static_cast<double>(tmp[i]);
+      }
+      return true;
     }
-    for (std::size_t i = 0; i < vec.size(); ++i) {
-      vec[i] = static_cast<int>(tmp64[i]);
+    return nc_get_var_double(ncid, varid, vec.data()) == NC_NOERR;
+  } else if constexpr (std::is_same_v<T, float>) {
+    if (xtype == NC_DOUBLE) {
+      std::vector<double> tmp(vec.size());
+      if (nc_get_var_double(ncid, varid, tmp.data()) != NC_NOERR) {
+        return false;
+      }
+      for (std::size_t i = 0; i < vec.size(); ++i) {
+        vec[i] = static_cast<float>(tmp[i]);
+      }
+      return true;
     }
-    return true;
-  } else {
+    return nc_get_var_float(ncid, varid, vec.data()) == NC_NOERR;
+  } else if constexpr (std::is_same_v<T, int>) {
+    if (xtype == NC_INT64) {
+      std::vector<long long> tmp64(vec.size());
+      if (nc_get_var_longlong(ncid, varid, tmp64.data()) != NC_NOERR) {
+        return false;
+      }
+      for (std::size_t i = 0; i < vec.size(); ++i) {
+        vec[i] = static_cast<int>(tmp64[i]);
+      }
+      return true;
+    }
     return nc_get_var_int(ncid, varid, vec.data()) == NC_NOERR;
   }
+
+  return false;
 }
 
 /**
@@ -159,7 +159,7 @@ static void reportErrorAndExit(int exitCode, std::ostream &os,
 
 /**
  * @brief Attempts to read UQ regular grid header and fields directly from
- * NetCDF file using netcdf-c library.
+ * NetCDF file using netcdf-c library following gridgen UGRID reader logic.
  */
 static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
                                std::vector<double> &topobathy,
@@ -183,13 +183,13 @@ static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
     return len;
   };
 
-  std::size_t nx = getDimLen("nx");
-  if (nx == 0) {
-    nx = getDimLen("nlon");
-  }
   std::size_t ny = getDimLen("ny");
   if (ny == 0) {
     ny = getDimLen("nlat");
+  }
+  std::size_t nx = getDimLen("nx");
+  if (nx == 0) {
+    nx = getDimLen("nlon");
   }
 
   if (nx == 0 || ny == 0) {
@@ -206,18 +206,33 @@ static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
   std::vector<double> lon(numPoints, 0.0);
   std::vector<double> lat(numPoints, 0.0);
 
-  bool hasGridLon = readVariableDoubleNC(ncid, "grid_lon", lon) ||
-                    readVariableDoubleNC(ncid, "face_lon", lon) ||
-                    readVariableDoubleNC(ncid, "longitude", lon);
-  bool hasGridLat = readVariableDoubleNC(ncid, "grid_lat", lat) ||
-                    readVariableDoubleNC(ncid, "face_lat", lat) ||
-                    readVariableDoubleNC(ncid, "latitude", lat);
+  bool hasGridLon = readVariableNC(ncid, "grid_lon", lon) ||
+                    readVariableNC(ncid, "face_lon", lon) ||
+                    readVariableNC(ncid, "longitude", lon);
+  bool hasGridLat = readVariableNC(ncid, "grid_lat", lat) ||
+                    readVariableNC(ncid, "face_lat", lat) ||
+                    readVariableNC(ncid, "latitude", lat);
 
   if (hasGridLon && hasGridLat) {
-    header.lonStart = lon.front();
-    header.latStart = lat.front();
-    header.lonEnd = lon.back();
-    header.latEnd = lat.back();
+    header.lonStart = lon[0];
+    header.latStart = lat[0];
+
+    if (lon.size() == nx) {
+      header.lonEnd = lon[nx - 1];
+    } else if (lon.size() >= numPoints) {
+      header.lonEnd = lon[nx - 1];
+    } else {
+      header.lonEnd = lon.back();
+    }
+
+    if (lat.size() == ny) {
+      header.latEnd = lat[ny - 1];
+    } else if (lat.size() >= numPoints) {
+      header.latEnd = lat[(ny - 1) * nx];
+    } else {
+      header.latEnd = lat.back();
+    }
+
     if (nx > 1) {
       header.sx =
           (header.lonEnd - header.lonStart) / static_cast<double>(nx - 1);
@@ -229,20 +244,19 @@ static bool tryParseNetCDFGrid(const std::string &fname, UQGridHeader &header,
   }
 
   topobathy.resize(numPoints, 100.0);
-  readVariableDoubleNC(ncid, "grid_depth", topobathy) ||
-      readVariableDoubleNC(ncid, "depth", topobathy) ||
-      readVariableDoubleNC(ncid, "elevation", topobathy);
+  readVariableNC(ncid, "grid_depth", topobathy) ||
+      readVariableNC(ncid, "depth", topobathy) ||
+      readVariableNC(ncid, "elevation", topobathy);
 
   mask.resize(numPoints, 1);
-  readVariableIntNC(ncid, "grid_mask", mask) ||
-      readVariableIntNC(ncid, "mask", mask);
+  readVariableNC(ncid, "grid_mask", mask) || readVariableNC(ncid, "mask", mask);
 
   if (std::abs((header.lonEnd - header.lonStart) - 360.0) < 1e-3 ||
       std::abs((header.nx * header.sx) - 360.0) < 1e-3) {
     header.isGlobal = true;
   }
 
-  return true;
+  return header.nx > 0 && header.ny > 0;
 }
 
 } // namespace
@@ -571,6 +585,25 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
        << std::endl;
     os << "     - Starting ingesting topobathy elevation field ..."
        << std::endl;
+  }
+
+  if (isNetCDF) {
+    int raw_ncid = -1;
+    if (nc_open(activeFile.c_str(), NC_NOWRITE, &raw_ncid) == NC_NOERR) {
+      NcHandle handle(raw_ncid);
+      int ncid = handle.get();
+      std::size_t numPoints = header.nx * header.ny;
+      std::vector<double> obsX(numPoints, 0.0);
+      std::vector<double> obsY(numPoints, 0.0);
+      if (readVariableNC(ncid, "grid_ObsX", obsX) ||
+          readVariableNC(ncid, "ObsX", obsX)) {
+        grid.shared.obstructionX = std::move(obsX);
+      }
+      if (readVariableNC(ncid, "grid_ObsY", obsY) ||
+          readVariableNC(ncid, "ObsY", obsY)) {
+        grid.shared.obstructionY = std::move(obsY);
+      }
+    }
   }
 
   if (isNetCDF && !ncTopobathy.empty()) {
