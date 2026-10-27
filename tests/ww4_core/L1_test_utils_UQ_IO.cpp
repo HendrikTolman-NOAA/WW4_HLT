@@ -170,7 +170,17 @@ TEST(UtilsUQIOTest, ReadGridHeaderFileNotFound) {
         std::ostringstream os;
         readGridHeaderUQ("non_existent_file.meta", header, os);
       },
-      "Corrupt or invalid UQ grid header");
+      "Grid file does not exist");
+}
+
+TEST(UtilsUQIOTest, ReadGridFileNotFound) {
+  EXPECT_DEATH(
+      {
+        ww4_utils::FullGrid grid;
+        std::ostringstream os;
+        readGridFileUQ("non_existent_file.nc", grid, os);
+      },
+      "Grid file does not exist");
 }
 
 TEST(UtilsUQIOTest, ReadGridHeaderInvalidDimensions) {
