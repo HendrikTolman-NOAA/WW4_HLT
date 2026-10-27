@@ -149,13 +149,12 @@ static bool readVariableIntNC(int ncid, const char *varname,
 static void reportErrorAndExit(int exitCode, std::ostream &os,
                                const std::string &msg, const char *file,
                                int line) {
-  (void)os;
   if (ww4_core::getRunConfig().produceLogFile &&
       ww4_core::getLogFileStream().is_open()) {
     ww4_utils::ww4_std_out::writeExtcdeOutput(ww4_core::getLogFileStream(), msg,
                                               file, line);
   }
-  ww4_utils::ww4_std_out::extcde(exitCode, std::cerr, msg, file, line);
+  ww4_utils::ww4_std_out::extcde(exitCode, os, msg, file, line);
 }
 
 /**
