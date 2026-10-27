@@ -118,8 +118,10 @@ void writeWarningOutput(std::ostream &os, std::string_view msg,
                          std::optional<std::string_view> msg,
                          std::optional<std::string_view> file,
                          std::optional<int> line) {
-  writeExtcdeOutput(os, msg, file, line);
-  if (&os != &std::cerr) {
+  if (&os == &std::cout || &os == &std::cerr) {
+    writeExtcdeOutput(std::cerr, msg, file, line);
+  } else {
+    writeExtcdeOutput(os, msg, file, line);
     writeExtcdeOutput(std::cerr, msg, file, line);
   }
   std::exit(exitCode);
