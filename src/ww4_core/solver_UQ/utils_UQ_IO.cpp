@@ -224,10 +224,11 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
 
   std::vector<std::string> candidates = {filename};
 
-  // Add companion .meta candidate paths if filename ends with .nc or _ugrid.nc
+  // Add companion candidate paths if filename ends with .nc or _ugrid.nc
   if (filename.length() >= 9 &&
       filename.substr(filename.length() - 9) == "_ugrid.nc") {
     candidates.push_back(filename.substr(0, filename.length() - 9) + ".meta");
+    candidates.push_back(filename.substr(0, filename.length() - 3) + ".meta");
   }
   if (filename.length() >= 3 &&
       filename.substr(filename.length() - 3) == ".nc") {
@@ -327,20 +328,59 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
     bool readingMask = false;
 
     while (std::getline(file, line)) {
-      if (line.find("elevation:") != std::string::npos ||
-          line.find("depth:") != std::string::npos ||
-          line.find("bathymetry:") != std::string::npos ||
-          line.find("[elevation]") != std::string::npos ||
-          line.find("[depth]") != std::string::npos) {
+      // Strip comments starting with %, $, #, ;, !, or //
+      auto commentPos = line.find_first_of("%$#;!");
+      if (commentPos == std::string::npos) {
+        commentPos = line.find("//");
+      }
+      if (commentPos != std::string::npos) {
+        line.erase(commentPos);
+      }
+
+      std::string lineLower = line;
+      std::transform(lineLower.begin(), lineLower.end(), lineLower.begin(),
+                     [](unsigned char c) { return std::tolower(c); });
+
+      if (lineLower.find("[elevation]") != std::string::npos ||
+          lineLower.find("[depth]") != std::string::npos ||
+          lineLower.find("[bathymetry]") != std::string::npos ||
+          lineLower.find("[grid_depth]") != std::string::npos) {
         readingElevation = true;
         readingMask = false;
         continue;
       }
-      if (line.find("mask:") != std::string::npos ||
-          line.find("[mask]") != std::string::npos) {
+      if (lineLower.find("[mask]") != std::string::npos ||
+          lineLower.find("[grid_mask]") != std::string::npos) {
         readingElevation = false;
         readingMask = true;
         continue;
+      }
+
+      auto posElev = lineLower.find("elevation:");
+      if (posElev == std::string::npos) {
+        posElev = lineLower.find("depth:");
+      }
+      if (posElev == std::string::npos) {
+        posElev = lineLower.find("bathymetry:");
+      }
+      if (posElev == std::string::npos) {
+        posElev = lineLower.find("grid_depth:");
+      }
+
+      if (posElev != std::string::npos) {
+        readingElevation = true;
+        readingMask = false;
+        line = line.substr(posElev + lineLower.substr(posElev).find(':') + 1);
+      } else {
+        auto posMask = lineLower.find("mask:");
+        if (posMask == std::string::npos) {
+          posMask = lineLower.find("grid_mask:");
+        }
+        if (posMask != std::string::npos) {
+          readingElevation = false;
+          readingMask = true;
+          line = line.substr(posMask + lineLower.substr(posMask).find(':') + 1);
+        }
       }
 
       if (readingElevation) {
