@@ -264,4 +264,4 @@ TEST(UtilsUQIOTest, PartitionMapIO) {
 // readGridHeaderUQ readGridFileUQ reportUQGridMetadata readPartitionMapNetCDF
 // writePartitionMapNetCDF parseMetaContent tryParseHeaderFile
 // readGlobalAttributeNC readVariableDoubleNC readVariableIntNC
-// tryParseNetCDFGrid get ncid_
+// tryParseNetCDFGrid reportErrorAndExit get ncid_

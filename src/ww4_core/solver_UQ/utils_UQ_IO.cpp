@@ -144,6 +144,21 @@ static bool readVariableIntNC(int ncid, const char *varname,
 }
 
 /**
+ * @brief Reports an error to screen and log file before calling extcde.
+ */
+static void reportErrorAndExit(int exitCode, std::ostream &os,
+                               const std::string &msg, const char *file,
+                               int line) {
+  (void)os;
+  if (ww4_core::getRunConfig().produceLogFile &&
+      ww4_core::getLogFileStream().is_open()) {
+    ww4_utils::ww4_std_out::writeExtcdeOutput(ww4_core::getLogFileStream(), msg,
+                                              file, line);
+  }
+  ww4_utils::ww4_std_out::extcde(exitCode, std::cerr, msg, file, line);
+}
+
+/**
  * @brief Attempts to read UQ regular grid header and fields directly from
  * NetCDF file using netcdf-c library.
  */
@@ -437,8 +452,8 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
     if (!anyExists) {
       // Explanatory comment preceding first use of __FILE__ and __LINE__
       // Pass source location for error tracing
-      ww4_utils::ww4_std_out::extcde(
-          1, os, "Grid file does not exist: " + filename, __FILE__, __LINE__);
+      reportErrorAndExit(1, os, "Grid file does not exist: " + filename,
+                         __FILE__, __LINE__);
     }
   }
 
@@ -484,9 +499,9 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
   if (!success) {
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    ww4_utils::ww4_std_out::extcde(
-        1, os, "Corrupt or invalid UQ grid header in file: " + filename,
-        __FILE__, __LINE__);
+    reportErrorAndExit(1, os,
+                       "Corrupt or invalid UQ grid header in file: " + filename,
+                       __FILE__, __LINE__);
   }
 
   if (ww4_core::getRunConfig().produceStdOut) {
@@ -650,7 +665,7 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
         if (elevationData.size() != grid.numNodes) {
           // Explanatory comment preceding first use of __FILE__ and __LINE__
           // Pass source location for error tracing
-          ww4_utils::ww4_std_out::extcde(
+          reportErrorAndExit(
               1, os,
               "Topobathy array size mismatch (" +
                   std::to_string(elevationData.size()) + " vs expected " +
@@ -684,12 +699,12 @@ void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
     if (ncMask.size() != grid.numNodes) {
       // Explanatory comment preceding first use of __FILE__ and __LINE__
       // Pass source location for error tracing
-      ww4_utils::ww4_std_out::extcde(
-          1, os,
-          "Land mask array size mismatch (" + std::to_string(ncMask.size()) +
-              " vs expected " + std::to_string(grid.numNodes) +
-              ") in file: " + filename,
-          __FILE__, __LINE__);
+      reportErrorAndExit(1, os,
+                         "Land mask array size mismatch (" +
+                             std::to_string(ncMask.size()) + " vs expected " +
+                             std::to_string(grid.numNodes) +
+                             ") in file: " + filename,
+                         __FILE__, __LINE__);
     }
     grid.landMask = std::move(ncMask);
     grid.shared.landMask = grid.landMask;
