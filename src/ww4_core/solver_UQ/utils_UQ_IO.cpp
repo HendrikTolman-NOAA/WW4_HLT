@@ -504,46 +504,14 @@ std::string readGridHeaderUQ(const std::string &filename, UQGridHeader &header,
 // --- readGridFileUQ ---------------------------------------------------------
 void readGridFileUQ(const std::string &filename, ww4_utils::FullGrid &grid,
                     std::ostream &os) {
-  if (!std::filesystem::exists(filename)) {
-    std::vector<std::string> candidates;
-    if (filename.length() >= 9 &&
-        filename.substr(filename.length() - 9) == "_ugrid.nc") {
-      candidates.push_back(filename.substr(0, filename.length() - 9) + ".meta");
-      candidates.push_back(filename.substr(0, filename.length() - 3) + ".meta");
-    }
-    if (filename.length() >= 3 &&
-        filename.substr(filename.length() - 3) == ".nc") {
-      candidates.push_back(filename.substr(0, filename.length() - 3) + ".meta");
-      candidates.push_back(filename + ".meta");
-    }
-    bool anyExists = std::any_of(
-        candidates.begin(), candidates.end(),
-        [](const std::string &cand) { return std::filesystem::exists(cand); });
-    if (!anyExists) {
-      // Explanatory comment preceding first use of __FILE__ and __LINE__
-      // Pass source location for error tracing
-      ww4_utils::ww4_std_out::extcde(
-          1, os, "Grid file does not exist: " + filename, __FILE__, __LINE__);
-    }
-  }
-
   UQGridHeader header;
+  std::string activeFile = readGridHeaderUQ(filename, header, os);
+
   std::vector<double> ncTopobathy;
   std::vector<int> ncMask;
-  bool isNetCDF = tryParseNetCDFGrid(filename, header, ncTopobathy, ncMask);
-
-  std::string activeFile =
-      isNetCDF ? filename : readGridHeaderUQ(filename, header, os);
+  bool isNetCDF = tryParseNetCDFGrid(activeFile, header, ncTopobathy, ncMask);
 
   if (ww4_core::getRunConfig().produceStdOut) {
-    if (isNetCDF) {
-      os << "     - Completed opening grid file: " << filename
-         << " ... [SUCCESS]\n"
-         << "     - Starting parsing grid header metadata from file: "
-         << filename << "\n"
-         << "     - Completed parsing grid header metadata ... [SUCCESS]"
-         << std::endl;
-    }
     os << "     - Starting constructing spatial coordinates (NX=" << header.nx
        << ", NY=" << header.ny << ") ..." << std::endl;
   }
