@@ -14,7 +14,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner
 #@date Initial : 2026-07-09
-#@date Last update : 2026-10-26
+#@date Last update : 2026-10-27
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -68,8 +68,19 @@ endif()
 
 # netcdf-c for NetCDF / UGRID file reading
 if(EXISTS "${CMAKE_SOURCE_DIR}/externals/netcdf-c/CMakeLists.txt")
-    set(NETCDF_ENABLE_HDF5 OFF CACHE BOOL "" FORCE)
-    set(NETCDF_ENABLE_NETCDF_4 OFF CACHE BOOL "" FORCE)
+    find_package(HDF5 QUIET COMPONENTS C)
+    find_package(ZLIB QUIET)
+
+    if(HDF5_FOUND AND ZLIB_FOUND)
+        message(STATUS "NetCDF-4 dependencies found (HDF5 ${HDF5_VERSION}, ZLIB). Enabling NetCDF-4 support.")
+        set(NETCDF_ENABLE_HDF5 ON CACHE BOOL "" FORCE)
+        set(NETCDF_ENABLE_NETCDF_4 ON CACHE BOOL "" FORCE)
+    else()
+        message(STATUS "HDF5/ZLIB not found in local environment. Enabling NetCDF-3 classic support.")
+        set(NETCDF_ENABLE_HDF5 OFF CACHE BOOL "" FORCE)
+        set(NETCDF_ENABLE_NETCDF_4 OFF CACHE BOOL "" FORCE)
+    endif()
+
     set(NETCDF_ENABLE_DAP OFF CACHE BOOL "" FORCE)
     set(NETCDF_ENABLE_NCZARR OFF CACHE BOOL "" FORCE)
     set(NETCDF_ENABLE_UTILITIES OFF CACHE BOOL "" FORCE)
