@@ -163,6 +163,74 @@ TEST(UtilsUQIOTest, ReadNetCDFGridFileSuccess) {
   std::remove(filename.c_str());
 }
 
+TEST(UtilsUQIOTest, ReadGridgenNetCDFUGridFormat) {
+  const std::string filename = "test_gridgen_ugrid.nc";
+  int ncid = -1;
+  ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
+
+  int dim_nx = -1, dim_ny = -1;
+  ASSERT_EQ(nc_def_dim(ncid, "nx", 2, &dim_nx), NC_NOERR);
+  ASSERT_EQ(nc_def_dim(ncid, "ny", 2, &dim_ny), NC_NOERR);
+
+  const std::string title = "gridgen_ugrid_test_grid";
+  ASSERT_EQ(
+      nc_put_att_text(ncid, NC_GLOBAL, "title", title.size(), title.c_str()),
+      NC_NOERR);
+
+  int dims[2] = {dim_ny, dim_nx};
+  int var_lon = -1, var_lat = -1, var_depth = -1, var_mask = -1;
+  int var_obsx = -1, var_obsy = -1;
+  ASSERT_EQ(nc_def_var(ncid, "grid_lon", NC_DOUBLE, 2, dims, &var_lon),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_lat", NC_DOUBLE, 2, dims, &var_lat),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_depth", NC_FLOAT, 2, dims, &var_depth),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_mask", NC_INT, 2, dims, &var_mask),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_ObsX", NC_FLOAT, 2, dims, &var_obsx),
+            NC_NOERR);
+  ASSERT_EQ(nc_def_var(ncid, "grid_ObsY", NC_FLOAT, 2, dims, &var_obsy),
+            NC_NOERR);
+
+  ASSERT_EQ(nc_enddef(ncid), NC_NOERR);
+
+  double lons[4] = {0.0, 1.0, 0.0, 1.0};
+  double lats[4] = {0.0, 0.0, 1.0, 1.0};
+  float depths[4] = {10.0f, 20.0f, 30.0f, 40.0f};
+  int masks[4] = {1, 1, 0, 1};
+  float obsx[4] = {0.1f, 0.2f, 0.3f, 0.4f};
+  float obsy[4] = {0.5f, 0.6f, 0.7f, 0.8f};
+
+  ASSERT_EQ(nc_put_var_double(ncid, var_lon, lons), NC_NOERR);
+  ASSERT_EQ(nc_put_var_double(ncid, var_lat, lats), NC_NOERR);
+  ASSERT_EQ(nc_put_var_float(ncid, var_depth, depths), NC_NOERR);
+  ASSERT_EQ(nc_put_var_int(ncid, var_mask, masks), NC_NOERR);
+  ASSERT_EQ(nc_put_var_float(ncid, var_obsx, obsx), NC_NOERR);
+  ASSERT_EQ(nc_put_var_float(ncid, var_obsy, obsy), NC_NOERR);
+
+  ASSERT_EQ(nc_close(ncid), NC_NOERR);
+
+  ww4_utils::FullGrid grid;
+  std::ostringstream os;
+  readGridFileUQ(filename, grid, os);
+
+  EXPECT_EQ(grid.gridType, ww4_utils::GridType::Rectangular);
+  EXPECT_EQ(grid.nx, 2u);
+  EXPECT_EQ(grid.ny, 2u);
+  EXPECT_EQ(grid.numNodes, 4u);
+  EXPECT_EQ(grid.getTopobathy().size(), 4u);
+  EXPECT_FLOAT_EQ(static_cast<float>(grid.getTopobathy()[0]), 10.0f);
+  EXPECT_FLOAT_EQ(static_cast<float>(grid.getTopobathy()[3]), 40.0f);
+  EXPECT_EQ(grid.getLandMask()[2], 0);
+
+  EXPECT_EQ(grid.shared.getObstructionX().size(), 4u);
+  EXPECT_FLOAT_EQ(static_cast<float>(grid.shared.getObstructionX()[0]), 0.1f);
+  EXPECT_FLOAT_EQ(static_cast<float>(grid.shared.getObstructionY()[3]), 0.8f);
+
+  std::remove(filename.c_str());
+}
+
 TEST(UtilsUQIOTest, ReadGridHeaderFileNotFound) {
   EXPECT_DEATH(
       {
@@ -263,5 +331,5 @@ TEST(UtilsUQIOTest, PartitionMapIO) {
 // References to function names for ww4_test_check.py routine coverage:
 // readGridHeaderUQ readGridFileUQ reportUQGridMetadata readPartitionMapNetCDF
 // writePartitionMapNetCDF parseMetaContent tryParseHeaderFile
-// readGlobalAttributeNC readVariableDoubleNC readVariableIntNC
-// tryParseNetCDFGrid reportErrorAndExit get ncid_
+// readGlobalAttributeNC readVariableNC reportErrorAndExit
+// tryParseNetCDFGrid get ncid_ constexpr
