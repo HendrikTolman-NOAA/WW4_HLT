@@ -330,12 +330,11 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (node["num_ranks"]) {
         config.numRanks = node["num_ranks"].as<int>();
       }
+      if (node["num_ranks_compute"]) {
+        config.numRanksCompute = node["num_ranks_compute"].as<int>();
+      }
       if (node["actual_rank"]) {
         config.actualRank = node["actual_rank"].as<int>();
-      }
-      if (node["reserve_io_coupling"]) {
-        config.reserveIoCoupling =
-            (node["reserve_io_coupling"].as<std::string>() == "yes");
       }
     }
 
@@ -591,12 +590,16 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // === Rank configuration validation =======================================
-    if (config.numRanks <= 0 || config.actualRank < 0 ||
+    if (config.numRanks <= 0 || config.numRanksCompute <= 0 ||
+        config.numRanksCompute > config.numRanks || config.actualRank < 0 ||
         config.actualRank >= config.numRanks) {
       os << "WW4 ERROR: Invalid rank configuration in general settings."
          << std::endl;
       if (config.numRanks <= 0)
         os << "   Missing/invalid: general -> num_ranks" << std::endl;
+      if (config.numRanksCompute <= 0 ||
+          config.numRanksCompute > config.numRanks)
+        os << "   Missing/invalid: general -> num_ranks_compute" << std::endl;
       if (config.actualRank < 0 || config.actualRank >= config.numRanks)
         os << "   Missing/invalid: general -> actual_rank" << std::endl;
 
@@ -770,9 +773,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n     Time step                : " << config.timeStep << " s"
      << std::endl;
   os << "     Number of ranks          : " << config.numRanks << std::endl;
+  os << "     Number of compute ranks  : " << config.numRanksCompute
+     << std::endl;
   os << "     Actual rank              : " << config.actualRank << std::endl;
-  os << "     Reserve I/O coupling     : "
-     << (config.reserveIoCoupling ? "yes" : "no") << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
   os << "\n     Number of directions     : "

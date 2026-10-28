@@ -38,8 +38,8 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "  produce_log_file: \"no\"\n";
   file << "  time_step: 1800.0\n";
   file << "  num_ranks: 12\n";
+  file << "  num_ranks_compute: 10\n";
   file << "  actual_rank: 3\n";
-  file << "  reserve_io_coupling: \"no\"\n";
   file << "physics:\n";
   file << "  solver: \"UQ\"\n";
   file << "  linear_input: \"LN1\"\n";
@@ -62,8 +62,8 @@ TEST(RunConfigTest, NonDefaultConfig) {
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_FALSE(config->produceLogFile);
   EXPECT_EQ(config->numRanks, 12);
+  EXPECT_EQ(config->numRanksCompute, 10);
   EXPECT_EQ(config->actualRank, 3);
-  EXPECT_FALSE(config->reserveIoCoupling);
   EXPECT_EQ(config->linearInput, LinearInputScheme::LN1);
   EXPECT_EQ(config->inputDissipation, InputDissipationScheme::ST1);
   EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::NL3);
@@ -979,8 +979,8 @@ TEST(RunConfigTest, PartialConfig) {
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_TRUE(config->produceLogFile);
   EXPECT_EQ(config->numRanks, 6);
+  EXPECT_EQ(config->numRanksCompute, 5);
   EXPECT_EQ(config->actualRank, 0);
-  EXPECT_TRUE(config->reserveIoCoupling);
 
   std::remove(filename.c_str());
 }
@@ -1022,7 +1022,37 @@ TEST(RunConfigTest, RankConfigurationValidationFailure) {
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "  num_ranks: 4\n";
+    file << "  num_ranks_compute: 3\n";
     file << "  actual_rank: 4\n";
+    file << "physics:\n";
+    file << "  solver: UQ\n";
+    file << "  linear_input: LN1\n";
+    file << "  input_dissipation: ST4\n";
+    file << "  nonlinear_interactions: NL1\n";
+    file << "  bottom_friction: BT1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+                 "Missing or invalid rank configuration.");
+    std::remove(filename.c_str());
+  }
+
+  // Case 3: num_ranks_compute > num_ranks
+  {
+    const std::string filename = "test_invalid_num_ranks_compute.yaml";
+    std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "  num_ranks: 4\n";
+    file << "  num_ranks_compute: 5\n";
+    file << "  actual_rank: 0\n";
     file << "physics:\n";
     file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";

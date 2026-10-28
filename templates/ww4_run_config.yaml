@@ -39,12 +39,11 @@ general:
   # Total number of ranks (default: 6).
   num_ranks: 6
 
+  # Number of compute ranks (must be less than or equal to num_ranks, default: 5).
+  num_ranks_compute: 5
+
   # Actual rank ID for current process (default: 0).
   actual_rank: 0
-
-  # Flag for reserving nodes for I/O and coupling.
-  # Options: "yes" (default), "no"
-  reserve_io_coupling: "yes"
 
   # Temporary mandatory model time step in seconds.
   # This parameter must be positive and non-zero.

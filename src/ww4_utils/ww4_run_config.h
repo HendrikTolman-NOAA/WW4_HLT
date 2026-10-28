@@ -291,11 +291,10 @@ struct HomogeneousDataPoint {
  * @brief Model time step in seconds.
  * @var RunConfig::numRanks
  * @brief Total number of ranks for MPI simulation setup (default: 6).
+ * @var RunConfig::numRanksCompute
+ * @brief Number of compute ranks for MPI simulation setup (default: 5).
  * @var RunConfig::actualRank
  * @brief Actual rank ID for current process (default: 0).
- * @var RunConfig::reserveIoCoupling
- * @brief Flag indicating if nodes are reserved for I/O and coupling (default:
- * true).
  * @var RunConfig::outputApi
  * @brief API output configuration.
  * @var RunConfig::outputFields
@@ -346,8 +345,8 @@ struct RunConfig {
   double timeStep = -1.0;
 
   int numRanks = 6;
+  int numRanksCompute = 5;
   int actualRank = 0;
-  bool reserveIoCoupling = true;
 
   OutputConfig outputApi;
 
