@@ -683,10 +683,6 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     screenStr = "summary";
   }
   os << "     Screen output level      : " << screenStr << std::endl;
-  os << "     Number of ranks          : " << config.numRanks << std::endl;
-  os << "     Actual rank              : " << config.actualRank << std::endl;
-  os << "     Reserve I/O coupling     : "
-     << (config.reserveIoCoupling ? "yes" : "no") << std::endl;
 
   const bool isConventional = !config.dryRun && config.propagateX &&
                               config.propagateY && config.propagateTheta &&
@@ -773,6 +769,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n     Time step                : " << config.timeStep << " s"
      << std::endl;
+  os << "     Number of ranks          : " << config.numRanks << std::endl;
+  os << "     Actual rank              : " << config.actualRank << std::endl;
+  os << "     Reserve I/O coupling     : "
+     << (config.reserveIoCoupling ? "yes" : "no") << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
   os << "\n     Number of directions     : "
