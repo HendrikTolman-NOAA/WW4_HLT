@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-24
+ * @date Last update : 2026-10-28
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -327,6 +327,15 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (node["time_step"]) {
         config.timeStep = node["time_step"].as<double>();
       }
+      if (node["num_ranks"]) {
+        config.numRanks = node["num_ranks"].as<int>();
+      }
+      if (node["num_ranks_compute"]) {
+        config.numRanksCompute = node["num_ranks_compute"].as<int>();
+      }
+      if (node["actual_rank"]) {
+        config.actualRank = node["actual_rank"].as<int>();
+      }
     }
 
     // === Physics section =====================================================
@@ -580,6 +589,26 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
+    // === Rank configuration validation =======================================
+    if (config.numRanks <= 0 || config.numRanksCompute <= 0 ||
+        config.numRanksCompute > config.numRanks || config.actualRank < 0 ||
+        config.actualRank >= config.numRanks) {
+      os << "WW4 ERROR: Invalid rank configuration in general settings."
+         << std::endl;
+      if (config.numRanks <= 0)
+        os << "   Missing/invalid: general -> num_ranks" << std::endl;
+      if (config.numRanksCompute <= 0 ||
+          config.numRanksCompute > config.numRanks)
+        os << "   Missing/invalid: general -> num_ranks_compute" << std::endl;
+      if (config.actualRank < 0 || config.actualRank >= config.numRanks)
+        os << "   Missing/invalid: general -> actual_rank" << std::endl;
+
+      // An explanatory comment line must precede the first use of '__FILE__'
+      // and '__LINE__' Output error and terminate execution
+      ww4_std_out::extcde(1, os, "Missing or invalid rank configuration.",
+                          __FILE__, __LINE__);
+    }
+
     // === Output validation ===================================================
     bool outputValid = true;
     auto validateOutput = [&](const OutputConfig &oc,
@@ -743,6 +772,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n     Time step                : " << config.timeStep << " s"
      << std::endl;
+  os << "     Number of ranks          : " << config.numRanks << std::endl;
+  os << "     Number of compute ranks  : " << config.numRanksCompute
+     << std::endl;
+  os << "     Actual rank              : " << config.actualRank << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
   os << "\n     Number of directions     : "

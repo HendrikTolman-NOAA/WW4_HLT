@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-24
+ * @date Last update : 2026-10-28
  */
 
 #pragma once
@@ -289,6 +289,12 @@ struct HomogeneousDataPoint {
  * @brief Parameters defining the spectral space.
  * @var RunConfig::timeStep
  * @brief Model time step in seconds.
+ * @var RunConfig::numRanks
+ * @brief Total number of ranks for MPI simulation setup (default: 6).
+ * @var RunConfig::numRanksCompute
+ * @brief Number of compute ranks for MPI simulation setup (default: 5).
+ * @var RunConfig::actualRank
+ * @brief Actual rank ID for current process (default: 0).
  * @var RunConfig::outputApi
  * @brief API output configuration.
  * @var RunConfig::outputFields
@@ -337,6 +343,10 @@ struct RunConfig {
   SpectralConfig spectralSpace;
 
   double timeStep = -1.0;
+
+  int numRanks = 6;
+  int numRanksCompute = 5;
+  int actualRank = 0;
 
   OutputConfig outputApi;
 
