@@ -327,6 +327,16 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (node["time_step"]) {
         config.timeStep = node["time_step"].as<double>();
       }
+      if (node["num_ranks"]) {
+        config.numRanks = node["num_ranks"].as<int>();
+      }
+      if (node["actual_rank"]) {
+        config.actualRank = node["actual_rank"].as<int>();
+      }
+      if (node["reserve_io_coupling"]) {
+        config.reserveIoCoupling =
+            (node["reserve_io_coupling"].as<std::string>() == "yes");
+      }
     }
 
     // === Physics section =====================================================
@@ -580,6 +590,22 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                           __FILE__, __LINE__);
     }
 
+    // === Rank configuration validation =======================================
+    if (config.numRanks <= 0 || config.actualRank < 0 ||
+        config.actualRank >= config.numRanks) {
+      os << "WW4 ERROR: Invalid rank configuration in general settings."
+         << std::endl;
+      if (config.numRanks <= 0)
+        os << "   Missing/invalid: general -> num_ranks" << std::endl;
+      if (config.actualRank < 0 || config.actualRank >= config.numRanks)
+        os << "   Missing/invalid: general -> actual_rank" << std::endl;
+
+      // An explanatory comment line must precede the first use of '__FILE__'
+      // and '__LINE__' Output error and terminate execution
+      ww4_std_out::extcde(1, os, "Missing or invalid rank configuration.",
+                          __FILE__, __LINE__);
+    }
+
     // === Output validation ===================================================
     bool outputValid = true;
     auto validateOutput = [&](const OutputConfig &oc,
@@ -657,6 +683,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
     screenStr = "summary";
   }
   os << "     Screen output level      : " << screenStr << std::endl;
+  os << "     Number of ranks          : " << config.numRanks << std::endl;
+  os << "     Actual rank              : " << config.actualRank << std::endl;
+  os << "     Reserve I/O coupling     : "
+     << (config.reserveIoCoupling ? "yes" : "no") << std::endl;
 
   const bool isConventional = !config.dryRun && config.propagateX &&
                               config.propagateY && config.propagateTheta &&

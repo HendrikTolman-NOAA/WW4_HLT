@@ -289,6 +289,13 @@ struct HomogeneousDataPoint {
  * @brief Parameters defining the spectral space.
  * @var RunConfig::timeStep
  * @brief Model time step in seconds.
+ * @var RunConfig::numRanks
+ * @brief Total number of ranks for MPI simulation setup (default: 6).
+ * @var RunConfig::actualRank
+ * @brief Actual rank ID for current process (default: 0).
+ * @var RunConfig::reserveIoCoupling
+ * @brief Flag indicating if nodes are reserved for I/O and coupling (default:
+ * true).
  * @var RunConfig::outputApi
  * @brief API output configuration.
  * @var RunConfig::outputFields
@@ -337,6 +344,10 @@ struct RunConfig {
   SpectralConfig spectralSpace;
 
   double timeStep = -1.0;
+
+  int numRanks = 6;
+  int actualRank = 0;
+  bool reserveIoCoupling = true;
 
   OutputConfig outputApi;
 
