@@ -20,7 +20,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-14
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-29
  */
 
 #pragma once
@@ -48,21 +48,25 @@ struct DomainPartition {
 /**
  * @brief Partitions a full UQ rectangular grid into sub-domains based on
  * active sea points.
- * @details Implements recursive bisection (derived from WW3 ww3_gspl) as a
- * pure subroutine where all inputs and outputs pass strictly through the
- * function interface. Distributes sea points evenly across target partitions
- * while forming spatially contiguous sub-domain blocks.
+ * @details Implements recursive bisection followed by iterative boundary
+ * refinement (derived from WW3 ww3_gspl) as a pure subroutine where all inputs
+ * and outputs pass strictly through the function interface. Distributes sea
+ * points evenly across target partitions while forming spatially contiguous
+ * sub-domain blocks.
  * @param nx Number of longitudinal grid columns (x-dimension).
  * @param ny Number of latitudinal grid rows (y-dimension).
  * @param land_sea_map 2D grid status mask (row-major, size nx * ny), where
  * values > 0 indicate sea points and <= 0 indicate land points.
  * @param num_partitions Total number of target partitions (must be >= 1).
+ * @param max_iterations Maximum number of iterative refinement passes (default:
+ * 100).
  * @return Vector of size nx * ny containing partition IDs (1 to num_partitions
  * for sea points, 0 for land).
  */
 std::vector<int> partitionGlobalGrid(int nx, int ny,
                                      std::span<const int> land_sea_map,
-                                     int num_partitions);
+                                     int num_partitions,
+                                     int max_iterations = 100);
 
 } // namespace UQ_utils
 } // namespace ww4_utils

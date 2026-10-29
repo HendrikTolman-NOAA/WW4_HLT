@@ -20,7 +20,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-14
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-10-29
  */
 
 #include "temp/UQ_domains.h"
@@ -156,13 +156,110 @@ void recursiveBisectDomain(int x_min, int x_max, int y_min, int y_max, int nx,
   }
 }
 
+// --- refinePartitionsIteratively --------------------------------------------
+/**
+ * @brief Iteratively refines partition assignments at domain boundaries to
+ * balance active sea point counts across partitions.
+ * @details Examines boundary sea points between overloaded and underloaded
+ * adjacent partitions and reassigns points to improve overall load balance
+ * until convergence or max_iterations is reached.
+ * @param nx Number of longitudinal grid columns.
+ * @param ny Number of latitudinal grid rows.
+ * @param land_sea_map 2D land-sea mask span.
+ * @param num_partitions Total number of target partitions.
+ * @param max_iterations Maximum number of boundary swap passes.
+ * @param[in,out] partition_map Partition IDs vector to refine in place.
+ */
+void refinePartitionsIteratively(int nx, int ny,
+                                 std::span<const int> land_sea_map,
+                                 int num_partitions, int max_iterations,
+                                 std::vector<int> &partition_map) {
+  if (num_partitions <= 1 || max_iterations <= 0) {
+    return;
+  }
+
+  std::vector<int> partition_counts(num_partitions + 1, 0);
+  int total_sea = 0;
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    int pid = partition_map[i];
+    if (land_sea_map[i] > 0 && pid >= 1 && pid <= num_partitions) {
+      partition_counts[pid]++;
+      total_sea++;
+    }
+  }
+
+  if (total_sea == 0) {
+    return;
+  }
+
+  double target_per_partition = static_cast<double>(total_sea) / num_partitions;
+
+  const int dx[] = {0, 0, -1, 1};
+  const int dy[] = {-1, 1, 0, 0};
+
+  for (int iter = 0; iter < max_iterations; ++iter) {
+    int swaps_made = 0;
+
+    for (int y = 0; y < ny; ++y) {
+      for (int x = 0; x < nx; ++x) {
+        int idx = y * nx + x;
+        if (land_sea_map[idx] <= 0) {
+          continue;
+        }
+
+        int p1 = partition_map[idx];
+        if (p1 < 1 || p1 > num_partitions) {
+          continue;
+        }
+
+        if (partition_counts[p1] <=
+            static_cast<int>(std::floor(target_per_partition))) {
+          continue;
+        }
+
+        for (int k = 0; k < 4; ++k) {
+          int nx_nbr = x + dx[k];
+          int ny_nbr = y + dy[k];
+
+          if (nx_nbr < 0 || nx_nbr >= nx || ny_nbr < 0 || ny_nbr >= ny) {
+            continue;
+          }
+
+          int nbr_idx = ny_nbr * nx + nx_nbr;
+          if (land_sea_map[nbr_idx] <= 0) {
+            continue;
+          }
+
+          int p2 = partition_map[nbr_idx];
+          if (p2 < 1 || p2 > num_partitions || p2 == p1) {
+            continue;
+          }
+
+          if (partition_counts[p2] <
+              static_cast<int>(std::ceil(target_per_partition))) {
+            partition_map[idx] = p2;
+            partition_counts[p1]--;
+            partition_counts[p2]++;
+            swaps_made++;
+            break;
+          }
+        }
+      }
+    }
+
+    if (swaps_made == 0) {
+      break;
+    }
+  }
+}
+
 } // namespace
 
 // --- partitionGlobalGrid ----------------------------------------------------
 
 std::vector<int> partitionGlobalGrid(int nx, int ny,
                                      std::span<const int> land_sea_map,
-                                     int num_partitions) {
+                                     int num_partitions, int max_iterations) {
   if (nx <= 0 || ny <= 0 || num_partitions <= 0 ||
       land_sea_map.size() != static_cast<size_t>(nx * ny)) {
     return {};
@@ -172,6 +269,11 @@ std::vector<int> partitionGlobalGrid(int nx, int ny,
 
   recursiveBisectDomain(0, nx - 1, 0, ny - 1, nx, land_sea_map, num_partitions,
                         1, partition_map);
+
+  if (num_partitions > 1 && max_iterations > 0) {
+    refinePartitionsIteratively(nx, ny, land_sea_map, num_partitions,
+                                max_iterations, partition_map);
+  }
 
   return partition_map;
 }
