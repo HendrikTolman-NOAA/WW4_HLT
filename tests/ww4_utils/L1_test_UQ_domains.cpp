@@ -17,11 +17,11 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-14
- * @date Last update : 2026-10-14
+ * @date Last update : 2026-10-29
  */
 
 // Routine coverage references for anonymous namespace helper functions:
-// countSeaPointsInRect recursiveBisectDomain
+// countSeaPointsInRect recursiveBisectDomain refinePartitionsIteratively
 // toBigEndian32 fromBigEndian32 writeU32 writeNcString readU32 readNcString
 // writeNcCharAttribute writeNcIntAttribute
 
@@ -114,6 +114,70 @@ TEST(UQDomainsTest, PartitionGlobalGridInvalidInputs) {
   EXPECT_TRUE(partitionGlobalGrid(5, 5, ls_map, 0).empty());
   EXPECT_TRUE(partitionGlobalGrid(5, 5, ls_map, -2).empty());
   EXPECT_TRUE(partitionGlobalGrid(5, 5, std::span<const int>{}, 2).empty());
+}
+
+TEST(UQDomainsTest, PartitionGlobalGridIterativeRefinement) {
+  int nx = 8;
+  int ny = 8;
+  std::vector<int> land_sea_map(nx * ny, 1);
+
+  // Set irregular land mask to produce unbalanced initial bisection
+  for (int y = 0; y < 4; ++y) {
+    for (int x = 0; x < 3; ++x) {
+      land_sea_map[y * nx + x] = 0;
+    }
+  }
+
+  int num_partitions = 3;
+  int max_iterations = 50;
+  int actual_iterations = -1;
+  std::vector<int> partition_map = partitionGlobalGrid(
+      nx, ny, land_sea_map, num_partitions, max_iterations, &actual_iterations);
+
+  EXPECT_GE(actual_iterations, 1);
+  EXPECT_LE(actual_iterations, max_iterations);
+  ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
+
+  std::vector<int> partition_counts(num_partitions + 1, 0);
+  int total_sea = 0;
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    if (land_sea_map[i] > 0) {
+      EXPECT_GE(partition_map[i], 1);
+      EXPECT_LE(partition_map[i], num_partitions);
+      partition_counts[partition_map[i]]++;
+      total_sea++;
+    } else {
+      EXPECT_EQ(partition_map[i], 0);
+    }
+  }
+
+  int sum_counts = 0;
+  for (int p = 1; p <= num_partitions; ++p) {
+    EXPECT_GT(partition_counts[p], 0);
+    sum_counts += partition_counts[p];
+  }
+  EXPECT_EQ(sum_counts, total_sea);
+}
+
+TEST(UQDomainsTest, PartitionGlobalGridZeroIterations) {
+  int nx = 6;
+  int ny = 6;
+  std::vector<int> land_sea_map(nx * ny, 1);
+  int num_partitions = 2;
+  int actual_iterations = -1;
+
+  std::vector<int> partition_map = partitionGlobalGrid(
+      nx, ny, land_sea_map, num_partitions, 0, &actual_iterations);
+
+  EXPECT_EQ(actual_iterations, 0);
+  ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
+  std::set<int> unique_partitions;
+  for (int p : partition_map) {
+    if (p > 0) {
+      unique_partitions.insert(p);
+    }
+  }
+  EXPECT_EQ(unique_partitions.size(), static_cast<size_t>(num_partitions));
 }
 
 TEST(UQDomainsIOTest, NetCDFIORoundTrip) {
