@@ -181,6 +181,60 @@ TEST(UQOneDomainTest, ExtractOneDomainHaloClamping) {
   EXPECT_EQ(red.ny_local, ny);
 }
 
+TEST(UQOneDomainTest, ExtractOneDomainGlobalClosedWrapping) {
+  int nx = 10;
+  int ny = 4;
+  FullGrid full;
+  full.nx = nx;
+  full.ny = ny;
+  full.is_global = true;
+  full.land_sea_map.assign(nx * ny, 1);
+
+  // Define a partition map where Partition 1 occupies x = 0, 1 and x = 8, 9
+  std::vector<int> partition_map(nx * ny, 2);
+  for (int y = 0; y < ny; ++y) {
+    partition_map[y * nx + 0] = 1;
+    partition_map[y * nx + 1] = 1;
+    partition_map[y * nx + 8] = 1;
+    partition_map[y * nx + 9] = 1;
+  }
+
+  // 1D longitude array
+  full.longitude.resize(nx);
+  for (int x = 0; x < nx; ++x) {
+    full.longitude[x] = x * 36.0;
+  }
+
+  // Extract Partition 1 with halo = 1 across closure line
+  ReducedGrid red = extractOneDomain(full, partition_map, 1, 1, true);
+
+  // Occupied span is {8, 9, 0, 1} (4 cols). Halo = 1 expands to {7, 8, 9, 0, 1,
+  // 2} (6 cols)
+  EXPECT_EQ(red.nx_local, 6);
+  EXPECT_EQ(red.ny_local, ny);
+  EXPECT_EQ(red.global_x_min, 7);
+  EXPECT_EQ(red.global_x_max, 2);
+
+  // Check 1D longitudes for wrapped local grid
+  ASSERT_EQ(red.longitude.size(), 6u);
+  EXPECT_DOUBLE_EQ(red.longitude[0], full.longitude[7]);
+  EXPECT_DOUBLE_EQ(red.longitude[1], full.longitude[8]);
+  EXPECT_DOUBLE_EQ(red.longitude[2], full.longitude[9]);
+  EXPECT_DOUBLE_EQ(red.longitude[3], full.longitude[0]);
+  EXPECT_DOUBLE_EQ(red.longitude[4], full.longitude[1]);
+  EXPECT_DOUBLE_EQ(red.longitude[5], full.longitude[2]);
+
+  // Check partition_map slicing for wrapped local grid
+  for (int y_loc = 0; y_loc < red.ny_local; ++y_loc) {
+    for (int x_loc = 0; x_loc < red.nx_local; ++x_loc) {
+      int gx = (red.global_x_min + x_loc) % nx;
+      int g_idx = y_loc * nx + gx;
+      int l_idx = y_loc * red.nx_local + x_loc;
+      EXPECT_EQ(red.partition_map[l_idx], partition_map[g_idx]);
+    }
+  }
+}
+
 TEST(UQOneDomainTest, ExtractOneDomainInvalidPartitionOrGrid) {
   FullGrid full;
   full.nx = 5;

@@ -37,13 +37,15 @@ namespace UQ_utils {
 
 ReducedGrid extractOneDomain(const FullGrid &full_grid,
                              std::span<const int> partition_map,
-                             int target_partition, int halo_width) {
+                             int target_partition, int halo_width,
+                             bool is_global) {
   ReducedGrid reduced;
   reduced.target_partition = target_partition;
   reduced.halo_width = std::max(0, halo_width);
 
   const int nx = full_grid.nx;
   const int ny = full_grid.ny;
+  const bool use_global = (is_global || full_grid.is_global);
 
   // Validate grid dimensions, partition map size, and target partition ID
   if (nx <= 0 || ny <= 0 || target_partition <= 0 ||
@@ -51,33 +53,86 @@ ReducedGrid extractOneDomain(const FullGrid &full_grid,
     return reduced;
   }
 
-  // === Section: Bounding Box Search =========================================
-  // Locate minimum and maximum global x and y coordinates for cells assigned
-  // to target_partition.
-  int x_min = nx, x_max = -1, y_min = ny, y_max = -1;
+  // === Section: Bounding Box & Occupied Columns Search ====================
+  std::vector<int> present_x_vec;
+  int y_min = ny, y_max = -1;
 
   for (int y = 0; y < ny; ++y) {
     for (int x = 0; x < nx; ++x) {
       int idx = y * nx + x;
       if (partition_map[idx] == target_partition) {
-        x_min = std::min(x_min, x);
-        x_max = std::max(x_max, x);
+        present_x_vec.push_back(x);
         y_min = std::min(y_min, y);
         y_max = std::max(y_max, y);
       }
     }
   }
 
-  // Return empty reduced grid if target partition ID was not found
-  if (x_max < x_min || y_max < y_min) {
+  if (present_x_vec.empty() || y_max < y_min) {
     return reduced;
   }
 
-  // === Section: Halo Expansion & Boundary Clamping ==========================
-  // Expand bounding box by halo_width, clamping to global grid boundaries [0,
-  // nx-1] and [0, ny-1].
-  int x_start = std::max(0, x_min - reduced.halo_width);
-  int x_end = std::min(nx - 1, x_max + reduced.halo_width);
+  std::sort(present_x_vec.begin(), present_x_vec.end());
+  present_x_vec.erase(std::unique(present_x_vec.begin(), present_x_vec.end()),
+                      present_x_vec.end());
+
+  int x_start = 0;
+  int x_end = 0;
+  int nx_loc = 0;
+
+  if (use_global && nx > 1) {
+    size_t m = present_x_vec.size();
+    int max_gap = -1;
+    size_t max_gap_idx = 0;
+
+    for (size_t i = 0; i < m - 1; ++i) {
+      int gap = present_x_vec[i + 1] - present_x_vec[i] - 1;
+      if (gap > max_gap) {
+        max_gap = gap;
+        max_gap_idx = i;
+      }
+    }
+    int wrap_gap = (present_x_vec[0] + nx) - present_x_vec[m - 1] - 1;
+    if (wrap_gap > max_gap) {
+      max_gap_idx = m - 1;
+    }
+
+    if (max_gap_idx == m - 1) {
+      int x_min_occ = present_x_vec[0];
+      int x_max_occ = present_x_vec[m - 1];
+      int x_start_raw = x_min_occ - reduced.halo_width;
+      int x_end_raw = x_max_occ + reduced.halo_width;
+      nx_loc = x_end_raw - x_start_raw + 1;
+      if (nx_loc >= nx) {
+        nx_loc = nx;
+        x_start = 0;
+        x_end = nx - 1;
+      } else {
+        x_start = (x_start_raw % nx + nx) % nx;
+        x_end = (x_end_raw % nx + nx) % nx;
+      }
+    } else {
+      int x_start_occ = present_x_vec[max_gap_idx + 1];
+      int x_end_occ = present_x_vec[max_gap_idx];
+      int occ_span = (x_end_occ + nx) - x_start_occ + 1;
+      nx_loc = occ_span + 2 * reduced.halo_width;
+      if (nx_loc >= nx) {
+        nx_loc = nx;
+        x_start = 0;
+        x_end = nx - 1;
+      } else {
+        x_start = ((x_start_occ - reduced.halo_width) % nx + nx) % nx;
+        x_end = ((x_end_occ + reduced.halo_width) % nx + nx) % nx;
+      }
+    }
+  } else {
+    int x_min_occ = present_x_vec[0];
+    int x_max_occ = present_x_vec.back();
+    x_start = std::max(0, x_min_occ - reduced.halo_width);
+    x_end = std::min(nx - 1, x_max_occ + reduced.halo_width);
+    nx_loc = x_end - x_start + 1;
+  }
+
   int y_start = std::max(0, y_min - reduced.halo_width);
   int y_end = std::min(ny - 1, y_max + reduced.halo_width);
 
@@ -86,15 +141,14 @@ ReducedGrid extractOneDomain(const FullGrid &full_grid,
   reduced.global_x_max = x_end;
   reduced.global_y_max = y_end;
 
-  reduced.nx_local = x_end - x_start + 1;
+  reduced.nx_local = nx_loc;
   reduced.ny_local = y_end - y_start + 1;
 
-  const int nx_loc = reduced.nx_local;
+  const int nx_loc_sz = reduced.nx_local;
   const int ny_loc = reduced.ny_local;
-  const size_t total_local_cells = static_cast<size_t>(nx_loc * ny_loc);
+  const size_t total_local_cells = static_cast<size_t>(nx_loc_sz * ny_loc);
 
   // === Section: 2D Field Slicing ============================================
-  // Slices land-sea mask and partition map
   reduced.land_sea_map.resize(total_local_cells, 0);
   reduced.partition_map.resize(total_local_cells, 0);
 
@@ -103,10 +157,10 @@ ReducedGrid extractOneDomain(const FullGrid &full_grid,
 
   for (int y_loc = 0; y_loc < ny_loc; ++y_loc) {
     int gy = y_start + y_loc;
-    for (int x_loc = 0; x_loc < nx_loc; ++x_loc) {
-      int gx = x_start + x_loc;
+    for (int x_loc = 0; x_loc < nx_loc_sz; ++x_loc) {
+      int gx = (x_start + x_loc) % nx;
       int g_idx = gy * nx + gx;
-      int l_idx = y_loc * nx_loc + x_loc;
+      int l_idx = y_loc * nx_loc_sz + x_loc;
 
       reduced.partition_map[l_idx] = partition_map[g_idx];
       if (has_ls) {
@@ -120,9 +174,9 @@ ReducedGrid extractOneDomain(const FullGrid &full_grid,
     reduced.topobathy.resize(total_local_cells, 0.0);
     for (int y_loc = 0; y_loc < ny_loc; ++y_loc) {
       int gy = y_start + y_loc;
-      for (int x_loc = 0; x_loc < nx_loc; ++x_loc) {
-        int gx = x_start + x_loc;
-        reduced.topobathy[y_loc * nx_loc + x_loc] =
+      for (int x_loc = 0; x_loc < nx_loc_sz; ++x_loc) {
+        int gx = (x_start + x_loc) % nx;
+        reduced.topobathy[y_loc * nx_loc_sz + x_loc] =
             full_grid.topobathy[gy * nx + gx];
       }
     }
@@ -133,9 +187,9 @@ ReducedGrid extractOneDomain(const FullGrid &full_grid,
     reduced.subgrid_obs_x.resize(total_local_cells, 0.0);
     for (int y_loc = 0; y_loc < ny_loc; ++y_loc) {
       int gy = y_start + y_loc;
-      for (int x_loc = 0; x_loc < nx_loc; ++x_loc) {
-        int gx = x_start + x_loc;
-        reduced.subgrid_obs_x[y_loc * nx_loc + x_loc] =
+      for (int x_loc = 0; x_loc < nx_loc_sz; ++x_loc) {
+        int gx = (x_start + x_loc) % nx;
+        reduced.subgrid_obs_x[y_loc * nx_loc_sz + x_loc] =
             full_grid.subgrid_obs_x[gy * nx + gx];
       }
     }
@@ -145,34 +199,33 @@ ReducedGrid extractOneDomain(const FullGrid &full_grid,
     reduced.subgrid_obs_y.resize(total_local_cells, 0.0);
     for (int y_loc = 0; y_loc < ny_loc; ++y_loc) {
       int gy = y_start + y_loc;
-      for (int x_loc = 0; x_loc < nx_loc; ++x_loc) {
-        int gx = x_start + x_loc;
-        reduced.subgrid_obs_y[y_loc * nx_loc + x_loc] =
+      for (int x_loc = 0; x_loc < nx_loc_sz; ++x_loc) {
+        int gx = (x_start + x_loc) % nx;
+        reduced.subgrid_obs_y[y_loc * nx_loc_sz + x_loc] =
             full_grid.subgrid_obs_y[gy * nx + gx];
       }
     }
   }
 
   // === Section: Spatial Coordinate Slicing ==================================
-  // Slice longitude (1D vector of size nx or 2D matrix of size nx * ny)
   if (full_grid.longitude.size() == static_cast<size_t>(nx)) {
-    reduced.longitude.resize(nx_loc);
-    for (int x_loc = 0; x_loc < nx_loc; ++x_loc) {
-      reduced.longitude[x_loc] = full_grid.longitude[x_start + x_loc];
+    reduced.longitude.resize(nx_loc_sz);
+    for (int x_loc = 0; x_loc < nx_loc_sz; ++x_loc) {
+      int gx = (x_start + x_loc) % nx;
+      reduced.longitude[x_loc] = full_grid.longitude[gx];
     }
   } else if (full_grid.longitude.size() == static_cast<size_t>(nx * ny)) {
     reduced.longitude.resize(total_local_cells);
     for (int y_loc = 0; y_loc < ny_loc; ++y_loc) {
       int gy = y_start + y_loc;
-      for (int x_loc = 0; x_loc < nx_loc; ++x_loc) {
-        int gx = x_start + x_loc;
-        reduced.longitude[y_loc * nx_loc + x_loc] =
+      for (int x_loc = 0; x_loc < nx_loc_sz; ++x_loc) {
+        int gx = (x_start + x_loc) % nx;
+        reduced.longitude[y_loc * nx_loc_sz + x_loc] =
             full_grid.longitude[gy * nx + gx];
       }
     }
   }
 
-  // Slice latitude (1D vector of size ny or 2D matrix of size nx * ny)
   if (full_grid.latitude.size() == static_cast<size_t>(ny)) {
     reduced.latitude.resize(ny_loc);
     for (int y_loc = 0; y_loc < ny_loc; ++y_loc) {
@@ -182,9 +235,9 @@ ReducedGrid extractOneDomain(const FullGrid &full_grid,
     reduced.latitude.resize(total_local_cells);
     for (int y_loc = 0; y_loc < ny_loc; ++y_loc) {
       int gy = y_start + y_loc;
-      for (int x_loc = 0; x_loc < nx_loc; ++x_loc) {
-        int gx = x_start + x_loc;
-        reduced.latitude[y_loc * nx_loc + x_loc] =
+      for (int x_loc = 0; x_loc < nx_loc_sz; ++x_loc) {
+        int gx = (x_start + x_loc) % nx;
+        reduced.latitude[y_loc * nx_loc_sz + x_loc] =
             full_grid.latitude[gy * nx + gx];
       }
     }

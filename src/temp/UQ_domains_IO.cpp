@@ -142,7 +142,8 @@ bool readNcString(std::istream &is, std::string &str) {
 bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
                              std::span<const int> partition_map,
                              int num_partitions,
-                             std::span<const int> land_sea_map) {
+                             std::span<const int> land_sea_map,
+                             bool is_global) {
   if (nx <= 0 || ny <= 0 || num_partitions <= 0 ||
       partition_map.size() != static_cast<size_t>(nx * ny)) {
     return false;
@@ -167,12 +168,14 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
 
   // === Global attributes section ============================================
   writeU32(os, NC_ATTRIBUTE_TAG);
-  writeU32(os, 2);
+  writeU32(os, 3);
 
   writeNcCharAttribute(os, "title", "WW4 Grid Partitioning Map File");
   const int npart_val = num_partitions;
   writeNcIntAttribute(os, "num_partitions",
                       std::span<const int>(&npart_val, 1));
+  const int global_val = is_global ? 1 : 0;
+  writeNcIntAttribute(os, "is_global", std::span<const int>(&global_val, 1));
 
   // === Variables metadata section ===========================================
   bool has_ls_map = (!land_sea_map.empty() &&
@@ -249,7 +252,11 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
 
 bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
                             int &num_partitions,
-                            std::vector<int> &partition_map) {
+                            std::vector<int> &partition_map, bool *is_global) {
+  if (is_global) {
+    *is_global = false;
+  }
+
   std::ifstream is(std::string(filename), std::ios::binary);
   if (!is.is_open()) {
     return false;
@@ -336,6 +343,8 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
           readU32(is, ival);
           if (aname == "num_partitions" && k == 0) {
             num_partitions = static_cast<int>(ival);
+          } else if (aname == "is_global" && k == 0 && is_global) {
+            *is_global = (ival != 0);
           }
         }
       }
