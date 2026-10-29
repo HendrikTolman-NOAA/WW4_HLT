@@ -6,8 +6,8 @@
  * @file UQ_domains_IO.cpp
  * @brief NetCDF I/O routines for domain partitioning maps in WAVEWATCH IV
  * (WW4).
- * @details Provides functions to write and read UQ grid partitioning maps
- * in NetCDF format (.nc).
+ * @details Provides pure subroutines to write and read UQ grid partitioning
+ * maps in NetCDF format (.nc).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -20,7 +20,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-14
- * @date Last update : 2026-10-14
+ * @date Last update : 2026-10-16
  */
 
 #include "temp/UQ_domains_IO.h"
@@ -39,12 +39,14 @@ namespace UQ_utils {
 
 namespace {
 
-// NetCDF constants
+// NetCDF binary constants
 constexpr uint32_t NC_DIMENSION_TAG = 0x0000000A;
 constexpr uint32_t NC_VARIABLE_TAG = 0x0000000B;
 constexpr uint32_t NC_ATTRIBUTE_TAG = 0x0000000C;
 constexpr uint32_t NC_INT_TYPE = 4;
 constexpr uint32_t NC_CHAR_TYPE = 2;
+
+// --- Endian conversion helpers ----------------------------------------------
 
 inline uint32_t toBigEndian32(uint32_t val) {
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
@@ -56,6 +58,8 @@ inline uint32_t toBigEndian32(uint32_t val) {
 }
 
 inline uint32_t fromBigEndian32(uint32_t val) { return toBigEndian32(val); }
+
+// --- NetCDF binary write helpers --------------------------------------------
 
 void writeU32(std::ostream &os, uint32_t val) {
   uint32_t be = toBigEndian32(val);
@@ -102,6 +106,8 @@ void writeNcIntAttribute(std::ostream &os, std::string_view name,
   }
 }
 
+// --- NetCDF binary read helpers ---------------------------------------------
+
 bool readU32(std::istream &is, uint32_t &val) {
   uint32_t be = 0;
   if (!is.read(reinterpret_cast<char *>(&be), sizeof(be))) {
@@ -131,7 +137,7 @@ bool readNcString(std::istream &is, std::string &str) {
 
 } // namespace
 
-// --- writePartitionMapNetCDF ---------------------------------------------
+// --- writePartitionMapNetCDF ------------------------------------------------
 
 bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
                              std::span<const int> partition_map,
@@ -147,13 +153,11 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
     return false;
   }
 
-  // 1. Magic
+  // === NetCDF header section ================================================
   os.write("CDF\x01", 4);
-
-  // 2. numrecs
   writeU32(os, 0);
 
-  // 3. dim_list
+  // === Dimensions section ===================================================
   writeU32(os, NC_DIMENSION_TAG);
   writeU32(os, 2);
   writeNcString(os, "y");
@@ -161,7 +165,7 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
   writeNcString(os, "x");
   writeU32(os, static_cast<uint32_t>(nx));
 
-  // 4. att_list (Global attributes)
+  // === Global attributes section ============================================
   writeU32(os, NC_ATTRIBUTE_TAG);
   writeU32(os, 2);
 
@@ -170,7 +174,7 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
   writeNcIntAttribute(os, "num_partitions",
                       std::span<const int>(&npart_val, 1));
 
-  // 5. var_list
+  // === Variables metadata section ===========================================
   bool has_ls_map = (!land_sea_map.empty() &&
                      land_sea_map.size() == static_cast<size_t>(nx * ny));
   uint32_t var_count = has_ls_map ? 2 : 1;
@@ -218,7 +222,6 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
     var0_offset += static_cast<uint32_t>(var1_meta.size()) + 4;
   }
 
-  // Write var 0 metadata and offset
   os.write(var0_meta.data(), var0_meta.size());
   writeU32(os, var0_offset);
 
@@ -228,7 +231,7 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
     writeU32(os, var1_offset);
   }
 
-  // 6. Data Section
+  // === Data section =========================================================
   for (int val : partition_map) {
     writeU32(os, static_cast<uint32_t>(val));
   }
@@ -242,7 +245,7 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
   return os.good();
 }
 
-// --- readPartitionMapNetCDF ----------------------------------------------
+// --- readPartitionMapNetCDF -------------------------------------------------
 
 bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
                             int &num_partitions,
@@ -267,7 +270,7 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
     return false;
   }
 
-  // Read dimensions
+  // === Read dimensions ======================================================
   uint32_t dim_tag = 0;
   if (!readU32(is, dim_tag)) {
     return false;
@@ -298,7 +301,7 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
     readU32(is, dummy);
   }
 
-  // Read attributes
+  // === Read attributes ======================================================
   uint32_t att_tag = 0;
   if (!readU32(is, att_tag)) {
     return false;
@@ -342,7 +345,7 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
     readU32(is, dummy);
   }
 
-  // Read variables
+  // === Read variables =======================================================
   uint32_t var_tag = 0;
   if (!readU32(is, var_tag)) {
     return false;
@@ -411,6 +414,7 @@ bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
     return false;
   }
 
+  // === Extract dataset array ================================================
   is.seekg(pm_offset);
   partition_map.resize(nx * ny);
 
