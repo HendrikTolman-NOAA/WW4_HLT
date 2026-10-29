@@ -277,6 +277,80 @@ TEST(UQDomainsTest, PreventCreationOfNewIsolatedPartitionOnMerge) {
   }
 }
 
+TEST(UQDomainsTest, PartitionGlobalGridGlobalClosed) {
+  // Setup a 360-degree global grid with 12 columns, 6 rows
+  int nx = 12;
+  int ny = 6;
+  std::vector<int> land_sea_map(nx * ny, 1);
+
+  // Set land barrier in middle columns (x=5 and x=6) to encourage partitions
+  // to connect across closure line (x=0 and x=11)
+  for (int y = 0; y < ny; ++y) {
+    land_sea_map[y * nx + 5] = 0;
+    land_sea_map[y * nx + 6] = 0;
+  }
+
+  int num_partitions = 2;
+  bool is_global = true;
+  std::vector<int> partition_map = partitionGlobalGrid(
+      nx, ny, land_sea_map, num_partitions, 50, nullptr, is_global);
+
+  ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
+
+  std::set<int> unique_partitions;
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    if (land_sea_map[i] > 0) {
+      EXPECT_GE(partition_map[i], 1);
+      EXPECT_LE(partition_map[i], num_partitions);
+      unique_partitions.insert(partition_map[i]);
+    } else {
+      EXPECT_EQ(partition_map[i], 0);
+    }
+  }
+
+  EXPECT_EQ(unique_partitions.size(), static_cast<size_t>(num_partitions));
+}
+
+TEST(UQDomainsIOTest, NetCDFIORoundTripGlobalClosed) {
+  int nx = 10;
+  int ny = 6;
+  int num_partitions = 2;
+  bool is_global = true;
+
+  std::vector<int> land_sea_map(nx * ny, 1);
+  std::vector<int> partition_map = partitionGlobalGrid(
+      nx, ny, land_sea_map, num_partitions, 50, nullptr, is_global);
+
+  std::string filename = "test_partition_map_global.nc";
+
+  bool write_ok = writePartitionMapNetCDF(
+      filename, nx, ny, partition_map, num_partitions, land_sea_map, is_global);
+  ASSERT_TRUE(write_ok);
+
+  int read_nx = 0;
+  int read_ny = 0;
+  int read_num_partitions = 0;
+  bool read_is_global = false;
+  std::vector<int> read_partition_map;
+
+  bool read_ok =
+      readPartitionMapNetCDF(filename, read_nx, read_ny, read_num_partitions,
+                             read_partition_map, &read_is_global);
+  ASSERT_TRUE(read_ok);
+
+  EXPECT_EQ(read_nx, nx);
+  EXPECT_EQ(read_ny, ny);
+  EXPECT_EQ(read_num_partitions, num_partitions);
+  EXPECT_TRUE(read_is_global);
+  ASSERT_EQ(read_partition_map.size(), partition_map.size());
+
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    EXPECT_EQ(read_partition_map[i], partition_map[i]);
+  }
+
+  std::remove(filename.c_str());
+}
+
 TEST(UQDomainsIOTest, NetCDFIORoundTrip) {
   int nx = 8;
   int ny = 6;

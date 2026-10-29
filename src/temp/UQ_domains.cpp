@@ -197,7 +197,8 @@ void recursiveBisectDomain(int x_min, int x_max, int y_min, int y_max, int nx,
 int refinePartitionsIteratively(int nx, int ny,
                                 std::span<const int> land_sea_map,
                                 int num_partitions, int max_iterations,
-                                std::vector<int> &partition_map) {
+                                std::vector<int> &partition_map,
+                                bool is_global = false) {
   // Return early if single partition or non-positive max_iterations specified
   if (num_partitions <= 1 || max_iterations <= 0) {
     return 0;
@@ -267,8 +268,14 @@ int refinePartitionsIteratively(int nx, int ny,
           int nx_nbr = x + dx[k];
           int ny_nbr = y + dy[k];
 
-          if (nx_nbr < 0 || nx_nbr >= nx || ny_nbr < 0 || ny_nbr >= ny) {
-            continue; // Out of grid bounds
+          if (ny_nbr < 0 || ny_nbr >= ny) {
+            continue; // Out of latitudinal grid bounds
+          }
+
+          if (is_global) {
+            nx_nbr = (nx_nbr + nx) % nx;
+          } else if (nx_nbr < 0 || nx_nbr >= nx) {
+            continue; // Out of longitudinal grid bounds
           }
 
           int nbr_idx = ny_nbr * nx + nx_nbr;
@@ -352,7 +359,8 @@ int refinePartitionsIteratively(int nx, int ny,
 int reassignDisconnectedPieces(int nx, int ny,
                                std::span<const int> land_sea_map,
                                int num_partitions,
-                               std::vector<int> &partition_map) {
+                               std::vector<int> &partition_map,
+                               bool is_global = false) {
   if (num_partitions <= 1 || nx <= 0 || ny <= 0) {
     return 0;
   }
@@ -413,7 +421,12 @@ int reassignDisconnectedPieces(int nx, int ny,
             for (int k = 0; k < 4; ++k) {
               int nbr_x = cx + dx[k];
               int nbr_y = cy + dy[k];
-              if (nbr_x < 0 || nbr_x >= nx || nbr_y < 0 || nbr_y >= ny) {
+              if (nbr_y < 0 || nbr_y >= ny) {
+                continue;
+              }
+              if (is_global) {
+                nbr_x = (nbr_x + nx) % nx;
+              } else if (nbr_x < 0 || nbr_x >= nx) {
                 continue;
               }
               int nbr_idx = nbr_y * nx + nbr_x;
@@ -461,7 +474,12 @@ int reassignDisconnectedPieces(int nx, int ny,
           for (int k = 0; k < 4; ++k) {
             int nbr_x = cx + dx[k];
             int nbr_y = cy + dy[k];
-            if (nbr_x < 0 || nbr_x >= nx || nbr_y < 0 || nbr_y >= ny) {
+            if (nbr_y < 0 || nbr_y >= ny) {
+              continue;
+            }
+            if (is_global) {
+              nbr_x = (nbr_x + nx) % nx;
+            } else if (nbr_x < 0 || nbr_x >= nx) {
               continue;
             }
             int nbr_idx = nbr_y * nx + nbr_x;
@@ -553,7 +571,8 @@ int reassignDisconnectedPieces(int nx, int ny,
  */
 bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
                              int num_partitions,
-                             std::vector<int> &partition_map) {
+                             std::vector<int> &partition_map,
+                             bool is_global = false) {
   if (num_partitions <= 1 || nx <= 0 || ny <= 0) {
     return false;
   }
@@ -596,7 +615,12 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
       for (int k = 0; k < 4; ++k) {
         int nbr_x = x + dx[k];
         int nbr_y = y + dy[k];
-        if (nbr_x < 0 || nbr_x >= nx || nbr_y < 0 || nbr_y >= ny) {
+        if (nbr_y < 0 || nbr_y >= ny) {
+          continue;
+        }
+        if (is_global) {
+          nbr_x = (nbr_x + nx) % nx;
+        } else if (nbr_x < 0 || nbr_x >= nx) {
           continue;
         }
         int nbr_idx = nbr_y * nx + nbr_x;
@@ -773,7 +797,7 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
 std::vector<int> partitionGlobalGrid(int nx, int ny,
                                      std::span<const int> land_sea_map,
                                      int num_partitions, int max_iterations,
-                                     int *actual_iterations) {
+                                     int *actual_iterations, bool is_global) {
   if (actual_iterations) {
     *actual_iterations = 0;
   }
@@ -790,28 +814,29 @@ std::vector<int> partitionGlobalGrid(int nx, int ny,
 
   if (num_partitions > 1) {
     if (max_iterations > 0) {
-      int iters_run = refinePartitionsIteratively(
-          nx, ny, land_sea_map, num_partitions, max_iterations, partition_map);
+      int iters_run =
+          refinePartitionsIteratively(nx, ny, land_sea_map, num_partitions,
+                                      max_iterations, partition_map, is_global);
       if (actual_iterations) {
         *actual_iterations = iters_run;
       }
     }
 
     reassignDisconnectedPieces(nx, ny, land_sea_map, num_partitions,
-                               partition_map);
+                               partition_map, is_global);
 
     for (int split_pass = 0; split_pass < num_partitions; ++split_pass) {
-      bool split_done = splitIsolatedPartitions(nx, ny, land_sea_map,
-                                                num_partitions, partition_map);
+      bool split_done = splitIsolatedPartitions(
+          nx, ny, land_sea_map, num_partitions, partition_map, is_global);
       if (!split_done) {
         break;
       }
       if (max_iterations > 0) {
         refinePartitionsIteratively(nx, ny, land_sea_map, num_partitions,
-                                    max_iterations, partition_map);
+                                    max_iterations, partition_map, is_global);
       }
       reassignDisconnectedPieces(nx, ny, land_sea_map, num_partitions,
-                                 partition_map);
+                                 partition_map, is_global);
     }
   }
 

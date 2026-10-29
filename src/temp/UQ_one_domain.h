@@ -41,6 +41,8 @@ namespace UQ_utils {
 struct FullGrid {
   int nx{0};
   int ny{0};
+  bool is_global{false}; ///< Flag indicating whether grid has longitudinal
+                         ///< closure (360-degree wrapping)
   std::vector<int>
       land_sea_map; ///< 2D land-sea mask (size nx * ny, >0 sea, <=0 land)
   std::vector<double>
@@ -129,7 +131,8 @@ struct ReducedGrid {
  */
 ReducedGrid extractOneDomain(const FullGrid &full_grid,
                              std::span<const int> partition_map,
-                             int target_partition, int halo_width = 1);
+                             int target_partition, int halo_width = 1,
+                             bool is_global = false);
 
 } // namespace UQ_utils
 } // namespace ww4_utils

@@ -40,6 +40,7 @@ struct DomainPartition {
   int nx{0};
   int ny{0};
   int num_partitions{0};
+  bool is_global{false};
   std::vector<int> partition_map;
   std::vector<int> land_sea_map;
 };
@@ -93,14 +94,15 @@ struct DomainPartition {
  * @param[out] actual_iterations Optional pointer to store actual number of
  * refinement passes completed (returns 0 if refinement was bypassed or
  * unnecessary).
+ * @param is_global Flag indicating whether grid has longitudinal closure
+ * (360-degree wrapping across x = 0 and x = nx - 1) (default: false).
  * @return Vector of size nx * ny containing partition IDs (1 to num_partitions
  * for sea points, 0 for land).
  */
-std::vector<int> partitionGlobalGrid(int nx, int ny,
-                                     std::span<const int> land_sea_map,
-                                     int num_partitions,
-                                     int max_iterations = 100,
-                                     int *actual_iterations = nullptr);
+std::vector<int>
+partitionGlobalGrid(int nx, int ny, std::span<const int> land_sea_map,
+                    int num_partitions, int max_iterations = 100,
+                    int *actual_iterations = nullptr, bool is_global = false);
 
 } // namespace UQ_utils
 } // namespace ww4_utils

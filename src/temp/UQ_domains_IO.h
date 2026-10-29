@@ -51,24 +51,28 @@ namespace UQ_utils {
 bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
                              std::span<const int> partition_map,
                              int num_partitions,
-                             std::span<const int> land_sea_map = {});
+                             std::span<const int> land_sea_map = {},
+                             bool is_global = false);
 
 // --- readPartitionMapNetCDF -------------------------------------------------
 /**
  * @brief Reads a grid partitioning map from a NetCDF file (.nc).
  * @details Parses NetCDF binary file structure to extract grid dimensions (nx,
- * ny), number of partitions, and the 2D partition map array as a pure
- * subroutine.
+ * ny), number of partitions, option for global grid closure, and the 2D
+ * partition map array as a pure subroutine.
  * @param filename Input NetCDF file path.
  * @param[out] nx Extracted number of longitudinal grid columns.
  * @param[out] ny Extracted number of latitudinal grid rows.
  * @param[out] num_partitions Extracted number of partitions.
  * @param[out] partition_map Extracted partition map vector (size nx * ny).
+ * @param[out] is_global Optional pointer to store extracted global closure
+ * flag.
  * @return True if file was successfully read and parsed, false otherwise.
  */
 bool readPartitionMapNetCDF(std::string_view filename, int &nx, int &ny,
                             int &num_partitions,
-                            std::vector<int> &partition_map);
+                            std::vector<int> &partition_map,
+                            bool *is_global = nullptr);
 
 } // namespace UQ_utils
 } // namespace ww4_utils
