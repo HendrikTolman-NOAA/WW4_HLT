@@ -249,6 +249,34 @@ TEST(UQDomainsTest, SplitIsolatedOverloadedPartition) {
   }
 }
 
+TEST(UQDomainsTest, PreventCreationOfNewIsolatedPartitionOnMerge) {
+  // Setup a grid with three separate sea basins isolated from each other
+  int nx = 15;
+  int ny = 5;
+  std::vector<int> land_sea_map(nx * ny, 1);
+
+  // Land barriers at columns 4 and 9 creating 3 isolated basins
+  for (int y = 0; y < ny; ++y) {
+    land_sea_map[y * nx + 4] = 0;
+    land_sea_map[y * nx + 9] = 0;
+  }
+
+  int num_partitions = 4;
+  std::vector<int> partition_map =
+      partitionGlobalGrid(nx, ny, land_sea_map, num_partitions);
+
+  ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
+
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    if (land_sea_map[i] > 0) {
+      EXPECT_GE(partition_map[i], 1);
+      EXPECT_LE(partition_map[i], num_partitions);
+    } else {
+      EXPECT_EQ(partition_map[i], 0);
+    }
+  }
+}
+
 TEST(UQDomainsIOTest, NetCDFIORoundTrip) {
   int nx = 8;
   int ny = 6;

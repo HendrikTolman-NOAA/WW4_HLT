@@ -574,6 +574,29 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
         continue;
       }
 
+      // Ensure merging q1 and q2 does not create a new isolated partition.
+      // The merged partition must share a boundary with at least one external
+      // neighbor partition other than q1, q2, and isolated_p.
+      bool has_external_neighbor = false;
+      for (int nbr : partition_neighbors[q1]) {
+        if (nbr != q1 && nbr != q2 && nbr != isolated_p) {
+          has_external_neighbor = true;
+          break;
+        }
+      }
+      if (!has_external_neighbor) {
+        for (int nbr : partition_neighbors[q2]) {
+          if (nbr != q1 && nbr != q2 && nbr != isolated_p) {
+            has_external_neighbor = true;
+            break;
+          }
+        }
+      }
+
+      if (!has_external_neighbor) {
+        continue;
+      }
+
       int pair_sum = partition_counts[q1] + partition_counts[q2];
       if (min_pair_sum == -1 || pair_sum < min_pair_sum) {
         min_pair_sum = pair_sum;
