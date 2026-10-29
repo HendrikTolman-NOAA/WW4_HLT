@@ -130,9 +130,12 @@ TEST(UQDomainsTest, PartitionGlobalGridIterativeRefinement) {
 
   int num_partitions = 3;
   int max_iterations = 50;
-  std::vector<int> partition_map =
-      partitionGlobalGrid(nx, ny, land_sea_map, num_partitions, max_iterations);
+  int actual_iterations = -1;
+  std::vector<int> partition_map = partitionGlobalGrid(
+      nx, ny, land_sea_map, num_partitions, max_iterations, &actual_iterations);
 
+  EXPECT_GE(actual_iterations, 1);
+  EXPECT_LE(actual_iterations, max_iterations);
   ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
 
   std::vector<int> partition_counts(num_partitions + 1, 0);
@@ -161,10 +164,12 @@ TEST(UQDomainsTest, PartitionGlobalGridZeroIterations) {
   int ny = 6;
   std::vector<int> land_sea_map(nx * ny, 1);
   int num_partitions = 2;
+  int actual_iterations = -1;
 
-  std::vector<int> partition_map =
-      partitionGlobalGrid(nx, ny, land_sea_map, num_partitions, 0);
+  std::vector<int> partition_map = partitionGlobalGrid(
+      nx, ny, land_sea_map, num_partitions, 0, &actual_iterations);
 
+  EXPECT_EQ(actual_iterations, 0);
   ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
   std::set<int> unique_partitions;
   for (int p : partition_map) {

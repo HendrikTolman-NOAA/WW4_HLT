@@ -60,13 +60,16 @@ struct DomainPartition {
  * @param num_partitions Total number of target partitions (must be >= 1).
  * @param max_iterations Maximum number of iterative refinement passes (default:
  * 100).
+ * @param[out] actual_iterations Optional pointer to store actual number of
+ * refinement passes completed.
  * @return Vector of size nx * ny containing partition IDs (1 to num_partitions
  * for sea points, 0 for land).
  */
 std::vector<int> partitionGlobalGrid(int nx, int ny,
                                      std::span<const int> land_sea_map,
                                      int num_partitions,
-                                     int max_iterations = 100);
+                                     int max_iterations = 100,
+                                     int *actual_iterations = nullptr);
 
 } // namespace UQ_utils
 } // namespace ww4_utils

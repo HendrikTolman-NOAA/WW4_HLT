@@ -169,13 +169,14 @@ void recursiveBisectDomain(int x_min, int x_max, int y_min, int y_max, int nx,
  * @param num_partitions Total number of target partitions.
  * @param max_iterations Maximum number of boundary swap passes.
  * @param[in,out] partition_map Partition IDs vector to refine in place.
+ * @return Number of actual iteration passes executed.
  */
-void refinePartitionsIteratively(int nx, int ny,
-                                 std::span<const int> land_sea_map,
-                                 int num_partitions, int max_iterations,
-                                 std::vector<int> &partition_map) {
+int refinePartitionsIteratively(int nx, int ny,
+                                std::span<const int> land_sea_map,
+                                int num_partitions, int max_iterations,
+                                std::vector<int> &partition_map) {
   if (num_partitions <= 1 || max_iterations <= 0) {
-    return;
+    return 0;
   }
 
   std::vector<int> partition_counts(num_partitions + 1, 0);
@@ -189,7 +190,7 @@ void refinePartitionsIteratively(int nx, int ny,
   }
 
   if (total_sea == 0) {
-    return;
+    return 0;
   }
 
   double target_per_partition = static_cast<double>(total_sea) / num_partitions;
@@ -197,7 +198,9 @@ void refinePartitionsIteratively(int nx, int ny,
   const int dx[] = {0, 0, -1, 1};
   const int dy[] = {-1, 1, 0, 0};
 
+  int actual_iters = 0;
   for (int iter = 0; iter < max_iterations; ++iter) {
+    actual_iters++;
     int swaps_made = 0;
 
     for (int y = 0; y < ny; ++y) {
@@ -251,6 +254,8 @@ void refinePartitionsIteratively(int nx, int ny,
       break;
     }
   }
+
+  return actual_iters;
 }
 
 } // namespace
@@ -259,7 +264,12 @@ void refinePartitionsIteratively(int nx, int ny,
 
 std::vector<int> partitionGlobalGrid(int nx, int ny,
                                      std::span<const int> land_sea_map,
-                                     int num_partitions, int max_iterations) {
+                                     int num_partitions, int max_iterations,
+                                     int *actual_iterations) {
+  if (actual_iterations) {
+    *actual_iterations = 0;
+  }
+
   if (nx <= 0 || ny <= 0 || num_partitions <= 0 ||
       land_sea_map.size() != static_cast<size_t>(nx * ny)) {
     return {};
@@ -271,8 +281,11 @@ std::vector<int> partitionGlobalGrid(int nx, int ny,
                         1, partition_map);
 
   if (num_partitions > 1 && max_iterations > 0) {
-    refinePartitionsIteratively(nx, ny, land_sea_map, num_partitions,
-                                max_iterations, partition_map);
+    int iters_run = refinePartitionsIteratively(
+        nx, ny, land_sea_map, num_partitions, max_iterations, partition_map);
+    if (actual_iterations) {
+      *actual_iterations = iters_run;
+    }
   }
 
   return partition_map;
