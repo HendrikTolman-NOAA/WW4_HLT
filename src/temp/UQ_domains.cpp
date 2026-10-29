@@ -163,13 +163,35 @@ void recursiveBisectDomain(int x_min, int x_max, int y_min, int y_max, int nx,
  * @details Examines boundary sea points between overloaded and underloaded
  * adjacent partitions and reassigns points to improve overall load balance
  * until convergence or max_iterations is reached.
+ *
+ * Algorithm and Convergence Determination:
+ * Target Sea Point Calculation:
+ *   Ideal target count per partition is defined as target = total_sea /
+ * num_partitions. Overloaded partitions have counts > floor(target).
+ *   Underloaded partitions have counts < ceil(target).
+ *
+ * Boundary Scan and Point Reassignment:
+ *   For each sea grid point assigned to an overloaded partition p1, the routine
+ *   inspects its 4-connected spatial neighbors (north, south, west, east).
+ *   If a neighbor belongs to an underloaded adjacent partition p2, the grid
+ * point is reassigned from p1 to p2. Partition sea counts are updated
+ * dynamically (count[p1] decreases by 1, count[p2] increases by 1).
+ *
+ * Convergence Criteria:
+ *   An iteration pass consists of a complete sweep across all grid cells (y,
+ * x). The routine tracks swaps_made during each pass. Convergence is defined as
+ *   a complete pass where swaps_made == 0, meaning no further boundary point
+ *   swaps between adjacent overloaded and underloaded partitions are possible.
+ *   Iterative processing terminates immediately upon convergence or when
+ *   max_iterations is reached.
+ *
  * @param nx Number of longitudinal grid columns.
  * @param ny Number of latitudinal grid rows.
  * @param land_sea_map 2D land-sea mask span.
  * @param num_partitions Total number of target partitions.
  * @param max_iterations Maximum number of boundary swap passes.
  * @param[in,out] partition_map Partition IDs vector to refine in place.
- * @return Number of actual iteration passes executed.
+ * @return Number of actual iteration passes executed until convergence or cap.
  */
 int refinePartitionsIteratively(int nx, int ny,
                                 std::span<const int> land_sea_map,
@@ -179,6 +201,8 @@ int refinePartitionsIteratively(int nx, int ny,
     return 0;
   }
 
+  // Count initial active sea points assigned to each partition (1-based
+  // partition IDs)
   std::vector<int> partition_counts(num_partitions + 1, 0);
   int total_sea = 0;
   for (size_t i = 0; i < partition_map.size(); ++i) {
@@ -193,8 +217,10 @@ int refinePartitionsIteratively(int nx, int ny,
     return 0;
   }
 
+  // Ideal target sea point distribution across target partitions
   double target_per_partition = static_cast<double>(total_sea) / num_partitions;
 
+  // 4-connected spatial neighbor offsets (south, north, west, east)
   const int dx[] = {0, 0, -1, 1};
   const int dy[] = {-1, 1, 0, 0};
 
@@ -203,11 +229,12 @@ int refinePartitionsIteratively(int nx, int ny,
     actual_iters++;
     int swaps_made = 0;
 
+    // Perform a full grid sweep to identify and shift boundary sea points
     for (int y = 0; y < ny; ++y) {
       for (int x = 0; x < nx; ++x) {
         int idx = y * nx + x;
         if (land_sea_map[idx] <= 0) {
-          continue;
+          continue; // Skip land points
         }
 
         int p1 = partition_map[idx];
@@ -215,41 +242,48 @@ int refinePartitionsIteratively(int nx, int ny,
           continue;
         }
 
+        // Only move points away from partition p1 if p1 is currently overloaded
         if (partition_counts[p1] <=
             static_cast<int>(std::floor(target_per_partition))) {
           continue;
         }
 
+        // Inspect 4-connected spatial neighbors for underloaded adjacent
+        // partitions
         for (int k = 0; k < 4; ++k) {
           int nx_nbr = x + dx[k];
           int ny_nbr = y + dy[k];
 
           if (nx_nbr < 0 || nx_nbr >= nx || ny_nbr < 0 || ny_nbr >= ny) {
-            continue;
+            continue; // Out of bounds
           }
 
           int nbr_idx = ny_nbr * nx + nx_nbr;
           if (land_sea_map[nbr_idx] <= 0) {
-            continue;
+            continue; // Land neighbor
           }
 
           int p2 = partition_map[nbr_idx];
           if (p2 < 1 || p2 > num_partitions || p2 == p1) {
-            continue;
+            continue; // Same partition or invalid ID
           }
 
+          // Reassign boundary point if adjacent partition p2 is underloaded
           if (partition_counts[p2] <
               static_cast<int>(std::ceil(target_per_partition))) {
             partition_map[idx] = p2;
             partition_counts[p1]--;
             partition_counts[p2]++;
             swaps_made++;
-            break;
+            break; // Move to next grid point after successful swap
           }
         }
       }
     }
 
+    // Convergence check: if no boundary points were reassigned during the full
+    // pass, optimal load balance across adjacent partition boundaries has
+    // converged.
     if (swaps_made == 0) {
       break;
     }
