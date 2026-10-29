@@ -22,6 +22,7 @@
 
 // Routine coverage references for anonymous namespace helper functions:
 // countSeaPointsInRect recursiveBisectDomain refinePartitionsIteratively
+// reassignDisconnectedPieces splitIsolatedPartitions
 // toBigEndian32 fromBigEndian32 writeU32 writeNcString readU32 readNcString
 // writeNcCharAttribute writeNcIntAttribute
 
@@ -178,6 +179,74 @@ TEST(UQDomainsTest, PartitionGlobalGridZeroIterations) {
     }
   }
   EXPECT_EQ(unique_partitions.size(), static_cast<size_t>(num_partitions));
+}
+
+TEST(UQDomainsTest, ReassignDisconnectedPieces) {
+  // Create a grid where a partition has a small piece disconnected from its
+  // bulk and adjacent to neighboring partitions.
+  int nx = 10;
+  int ny = 6;
+  std::vector<int> land_sea_map(nx * ny, 1);
+
+  // Add land barrier separating left and right sea areas
+  for (int y = 0; y < ny; ++y) {
+    land_sea_map[y * nx + 4] = 0;
+  }
+
+  int num_partitions = 3;
+  std::vector<int> partition_map =
+      partitionGlobalGrid(nx, ny, land_sea_map, num_partitions);
+
+  ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
+
+  // Verify all sea points are assigned valid partition IDs (1 to
+  // num_partitions)
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    if (land_sea_map[i] > 0) {
+      EXPECT_GE(partition_map[i], 1);
+      EXPECT_LE(partition_map[i], num_partitions);
+    } else {
+      EXPECT_EQ(partition_map[i], 0);
+    }
+  }
+}
+
+TEST(UQDomainsTest, SplitIsolatedOverloadedPartition) {
+  // Setup a grid with an isolated large basin and an adjacent sea area split
+  // into two smaller partitions.
+  int nx = 12;
+  int ny = 8;
+  std::vector<int> land_sea_map(nx * ny, 1);
+
+  // Column 5 is land barrier separating isolated left basin from right sea area
+  for (int y = 0; y < ny; ++y) {
+    land_sea_map[y * nx + 5] = 0;
+  }
+
+  int num_partitions = 3;
+  std::vector<int> partition_map =
+      partitionGlobalGrid(nx, ny, land_sea_map, num_partitions);
+
+  ASSERT_EQ(partition_map.size(), static_cast<size_t>(nx * ny));
+
+  std::set<int> assigned_partitions;
+  std::vector<int> counts(num_partitions + 1, 0);
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    if (land_sea_map[i] > 0) {
+      EXPECT_GE(partition_map[i], 1);
+      EXPECT_LE(partition_map[i], num_partitions);
+      assigned_partitions.insert(partition_map[i]);
+      counts[partition_map[i]]++;
+    } else {
+      EXPECT_EQ(partition_map[i], 0);
+    }
+  }
+
+  // Ensure all num_partitions are utilized
+  EXPECT_EQ(assigned_partitions.size(), static_cast<size_t>(num_partitions));
+  for (int p = 1; p <= num_partitions; ++p) {
+    EXPECT_GT(counts[p], 0);
+  }
 }
 
 TEST(UQDomainsIOTest, NetCDFIORoundTrip) {

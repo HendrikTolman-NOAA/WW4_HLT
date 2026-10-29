@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <set>
 #include <span>
 #include <vector>
 
@@ -307,6 +308,378 @@ int refinePartitionsIteratively(int nx, int ny,
   return actual_iters;
 }
 
+// --- reassignDisconnectedPieces ---------------------------------------------
+/**
+ * @brief Reassigns small disconnected partition pieces to their smallest
+ * neighboring partition.
+ * @details Identifies connected components for each partition using
+ * 4-connectivity. For partitions with multiple components, the largest
+ * component is designated as the bulk. Small disconnected pieces with
+ * adjacent neighboring partitions are reassigned to the neighboring partition
+ * with the smallest total active sea point count.
+ *
+ * @param nx Number of longitudinal grid columns.
+ * @param ny Number of latitudinal grid rows.
+ * @param land_sea_map 2D land-sea mask span.
+ * @param num_partitions Total number of partitions.
+ * @param[in,out] partition_map Partition IDs vector to update in place.
+ * @return Total number of disconnected piece reassignments executed.
+ */
+int reassignDisconnectedPieces(int nx, int ny,
+                               std::span<const int> land_sea_map,
+                               int num_partitions,
+                               std::vector<int> &partition_map) {
+  if (num_partitions <= 1 || nx <= 0 || ny <= 0) {
+    return 0;
+  }
+
+  const int dx[] = {0, 0, -1, 1};
+  const int dy[] = {-1, 1, 0, 0};
+
+  int total_reassignments = 0;
+  const int max_passes = 50;
+
+  for (int pass = 0; pass < max_passes; ++pass) {
+    int reassignments_in_pass = 0;
+
+    std::vector<int> partition_counts(num_partitions + 1, 0);
+    for (size_t i = 0; i < partition_map.size(); ++i) {
+      int p = partition_map[i];
+      if (land_sea_map[i] > 0 && p >= 1 && p <= num_partitions) {
+        partition_counts[p]++;
+      }
+    }
+
+    for (int p = 1; p <= num_partitions; ++p) {
+      if (partition_counts[p] == 0) {
+        continue;
+      }
+
+      std::vector<bool> visited(nx * ny, false);
+      std::vector<std::vector<int>> components;
+
+      for (int y = 0; y < ny; ++y) {
+        for (int x = 0; x < nx; ++x) {
+          int idx = y * nx + x;
+          if (land_sea_map[idx] <= 0 || partition_map[idx] != p ||
+              visited[idx]) {
+            continue;
+          }
+
+          std::vector<int> comp;
+          std::vector<int> queue;
+          queue.push_back(idx);
+          visited[idx] = true;
+
+          size_t head = 0;
+          while (head < queue.size()) {
+            int curr = queue[head++];
+            comp.push_back(curr);
+            int cx = curr % nx;
+            int cy = curr / nx;
+
+            for (int k = 0; k < 4; ++k) {
+              int nbr_x = cx + dx[k];
+              int nbr_y = cy + dy[k];
+              if (nbr_x < 0 || nbr_x >= nx || nbr_y < 0 || nbr_y >= ny) {
+                continue;
+              }
+              int nbr_idx = nbr_y * nx + nbr_x;
+              if (land_sea_map[nbr_idx] > 0 && partition_map[nbr_idx] == p &&
+                  !visited[nbr_idx]) {
+                visited[nbr_idx] = true;
+                queue.push_back(nbr_idx);
+              }
+            }
+          }
+          components.push_back(comp);
+        }
+      }
+
+      if (components.size() <= 1) {
+        continue;
+      }
+
+      size_t bulk_idx = 0;
+      size_t max_size = 0;
+      for (size_t i = 0; i < components.size(); ++i) {
+        if (components[i].size() > max_size) {
+          max_size = components[i].size();
+          bulk_idx = i;
+        }
+      }
+
+      for (size_t i = 0; i < components.size(); ++i) {
+        if (i == bulk_idx) {
+          continue;
+        }
+
+        const auto &small_piece = components[i];
+
+        std::set<int> neighbor_partitions;
+        for (int cell_idx : small_piece) {
+          int cx = cell_idx % nx;
+          int cy = cell_idx / nx;
+
+          for (int k = 0; k < 4; ++k) {
+            int nbr_x = cx + dx[k];
+            int nbr_y = cy + dy[k];
+            if (nbr_x < 0 || nbr_x >= nx || nbr_y < 0 || nbr_y >= ny) {
+              continue;
+            }
+            int nbr_idx = nbr_y * nx + nbr_x;
+            if (land_sea_map[nbr_idx] > 0) {
+              int nbr_p = partition_map[nbr_idx];
+              if (nbr_p >= 1 && nbr_p <= num_partitions && nbr_p != p) {
+                neighbor_partitions.insert(nbr_p);
+              }
+            }
+          }
+        }
+
+        if (!neighbor_partitions.empty()) {
+          int smallest_nbr = -1;
+          int min_count = -1;
+
+          for (int nbr_p : neighbor_partitions) {
+            int count = partition_counts[nbr_p];
+            if (smallest_nbr == -1 || count < min_count ||
+                (count == min_count && nbr_p < smallest_nbr)) {
+              min_count = count;
+              smallest_nbr = nbr_p;
+            }
+          }
+
+          if (smallest_nbr != -1) {
+            for (int cell_idx : small_piece) {
+              partition_map[cell_idx] = smallest_nbr;
+            }
+            int piece_size = static_cast<int>(small_piece.size());
+            partition_counts[p] -= piece_size;
+            partition_counts[smallest_nbr] += piece_size;
+            reassignments_in_pass++;
+            total_reassignments++;
+          }
+        }
+      }
+    }
+
+    if (reassignments_in_pass == 0) {
+      break;
+    }
+  }
+
+  return total_reassignments;
+}
+
+// --- splitIsolatedPartitions ------------------------------------------------
+/**
+ * @brief Splits isolated overloaded partitions by merging the smallest pair of
+ * neighboring partitions and using the released partition number.
+ * @details Checks if an isolated partition (having no neighboring sea cells) is
+ * overloaded (holds strictly more sea points than target load). If found, the
+ * routine locates the smallest pair of adjacent neighboring partitions, merges
+ * them to release a partition ID, and bisects the isolated partition into two
+ * sub-partitions.
+ *
+ * @param nx Number of longitudinal grid columns.
+ * @param ny Number of latitudinal grid rows.
+ * @param land_sea_map 2D land-sea mask span.
+ * @param num_partitions Total number of partitions.
+ * @param[in,out] partition_map Partition IDs vector to update in place.
+ * @return True if an isolated partition was split; false otherwise.
+ */
+bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
+                             int num_partitions,
+                             std::vector<int> &partition_map) {
+  if (num_partitions <= 1 || nx <= 0 || ny <= 0) {
+    return false;
+  }
+
+  const int dx[] = {0, 0, -1, 1};
+  const int dy[] = {-1, 1, 0, 0};
+
+  std::vector<int> partition_counts(num_partitions + 1, 0);
+  int total_sea = 0;
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    int p = partition_map[i];
+    if (land_sea_map[i] > 0 && p >= 1 && p <= num_partitions) {
+      partition_counts[p]++;
+      total_sea++;
+    }
+  }
+
+  if (total_sea == 0) {
+    return false;
+  }
+
+  double target_per_partition = static_cast<double>(total_sea) / num_partitions;
+  int target_ceil = static_cast<int>(std::ceil(target_per_partition));
+
+  std::vector<std::set<int>> partition_neighbors(num_partitions + 1);
+  for (int y = 0; y < ny; ++y) {
+    for (int x = 0; x < nx; ++x) {
+      int idx = y * nx + x;
+      if (land_sea_map[idx] <= 0) {
+        continue;
+      }
+      int p1 = partition_map[idx];
+      if (p1 < 1 || p1 > num_partitions) {
+        continue;
+      }
+
+      for (int k = 0; k < 4; ++k) {
+        int nbr_x = x + dx[k];
+        int nbr_y = y + dy[k];
+        if (nbr_x < 0 || nbr_x >= nx || nbr_y < 0 || nbr_y >= ny) {
+          continue;
+        }
+        int nbr_idx = nbr_y * nx + nbr_x;
+        if (land_sea_map[nbr_idx] > 0) {
+          int p2 = partition_map[nbr_idx];
+          if (p2 >= 1 && p2 <= num_partitions && p2 != p1) {
+            partition_neighbors[p1].insert(p2);
+          }
+        }
+      }
+    }
+  }
+
+  int isolated_p = -1;
+  int max_isolated_count = -1;
+
+  for (int p = 1; p <= num_partitions; ++p) {
+    if (partition_counts[p] > target_ceil && partition_neighbors[p].empty()) {
+      if (partition_counts[p] > max_isolated_count) {
+        max_isolated_count = partition_counts[p];
+        isolated_p = p;
+      }
+    }
+  }
+
+  if (isolated_p == -1) {
+    return false;
+  }
+
+  int best_q1 = -1;
+  int best_q2 = -1;
+  int min_pair_sum = -1;
+
+  for (int q1 = 1; q1 <= num_partitions; ++q1) {
+    if (q1 == isolated_p || partition_counts[q1] == 0) {
+      continue;
+    }
+    for (int q2 : partition_neighbors[q1]) {
+      if (q2 <= q1 || q2 == isolated_p || partition_counts[q2] == 0) {
+        continue;
+      }
+
+      int pair_sum = partition_counts[q1] + partition_counts[q2];
+      if (min_pair_sum == -1 || pair_sum < min_pair_sum) {
+        min_pair_sum = pair_sum;
+        best_q1 = q1;
+        best_q2 = q2;
+      }
+    }
+  }
+
+  if (best_q1 == -1 || best_q2 == -1) {
+    return false;
+  }
+
+  int q_keep = best_q1;
+  int q_released = best_q2;
+
+  for (size_t i = 0; i < partition_map.size(); ++i) {
+    if (land_sea_map[i] > 0 && partition_map[i] == q_released) {
+      partition_map[i] = q_keep;
+    }
+  }
+
+  partition_counts[q_keep] += partition_counts[q_released];
+  partition_counts[q_released] = 0;
+
+  int x_min = nx, x_max = -1, y_min = ny, y_max = -1;
+  for (int y = 0; y < ny; ++y) {
+    for (int x = 0; x < nx; ++x) {
+      int idx = y * nx + x;
+      if (land_sea_map[idx] > 0 && partition_map[idx] == isolated_p) {
+        x_min = std::min(x_min, x);
+        x_max = std::max(x_max, x);
+        y_min = std::min(y_min, y);
+        y_max = std::max(y_max, y);
+      }
+    }
+  }
+
+  int isolated_sea = partition_counts[isolated_p];
+  int target_half = isolated_sea / 2;
+
+  bool split_x = (x_max - x_min >= y_max - y_min);
+
+  if (split_x && x_max > x_min) {
+    int current_sea = 0;
+    int best_x = x_min;
+    int best_diff = isolated_sea + 1;
+
+    for (int x = x_min; x < x_max; ++x) {
+      int sea_in_col = 0;
+      for (int y = y_min; y <= y_max; ++y) {
+        int idx = y * nx + x;
+        if (land_sea_map[idx] > 0 && partition_map[idx] == isolated_p) {
+          sea_in_col++;
+        }
+      }
+      current_sea += sea_in_col;
+      int diff = std::abs(current_sea - target_half);
+      if (diff < best_diff) {
+        best_diff = diff;
+        best_x = x;
+      }
+    }
+
+    for (int y = y_min; y <= y_max; ++y) {
+      for (int x = best_x + 1; x <= x_max; ++x) {
+        int idx = y * nx + x;
+        if (land_sea_map[idx] > 0 && partition_map[idx] == isolated_p) {
+          partition_map[idx] = q_released;
+        }
+      }
+    }
+  } else if (y_max > y_min) {
+    int current_sea = 0;
+    int best_y = y_min;
+    int best_diff = isolated_sea + 1;
+
+    for (int y = y_min; y < y_max; ++y) {
+      int sea_in_row = 0;
+      for (int x = x_min; x <= x_max; ++x) {
+        int idx = y * nx + x;
+        if (land_sea_map[idx] > 0 && partition_map[idx] == isolated_p) {
+          sea_in_row++;
+        }
+      }
+      current_sea += sea_in_row;
+      int diff = std::abs(current_sea - target_half);
+      if (diff < best_diff) {
+        best_diff = diff;
+        best_y = y;
+      }
+    }
+
+    for (int y = best_y + 1; y <= y_max; ++y) {
+      for (int x = x_min; x <= x_max; ++x) {
+        int idx = y * nx + x;
+        if (land_sea_map[idx] > 0 && partition_map[idx] == isolated_p) {
+          partition_map[idx] = q_released;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
 } // namespace
 
 // --- partitionGlobalGrid ----------------------------------------------------
@@ -329,11 +702,30 @@ std::vector<int> partitionGlobalGrid(int nx, int ny,
   recursiveBisectDomain(0, nx - 1, 0, ny - 1, nx, land_sea_map, num_partitions,
                         1, partition_map);
 
-  if (num_partitions > 1 && max_iterations > 0) {
-    int iters_run = refinePartitionsIteratively(
-        nx, ny, land_sea_map, num_partitions, max_iterations, partition_map);
-    if (actual_iterations) {
-      *actual_iterations = iters_run;
+  if (num_partitions > 1) {
+    if (max_iterations > 0) {
+      int iters_run = refinePartitionsIteratively(
+          nx, ny, land_sea_map, num_partitions, max_iterations, partition_map);
+      if (actual_iterations) {
+        *actual_iterations = iters_run;
+      }
+    }
+
+    reassignDisconnectedPieces(nx, ny, land_sea_map, num_partitions,
+                               partition_map);
+
+    for (int split_pass = 0; split_pass < num_partitions; ++split_pass) {
+      bool split_done = splitIsolatedPartitions(nx, ny, land_sea_map,
+                                                num_partitions, partition_map);
+      if (!split_done) {
+        break;
+      }
+      if (max_iterations > 0) {
+        refinePartitionsIteratively(nx, ny, land_sea_map, num_partitions,
+                                    max_iterations, partition_map);
+      }
+      reassignDisconnectedPieces(nx, ny, land_sea_map, num_partitions,
+                                 partition_map);
     }
   }
 
