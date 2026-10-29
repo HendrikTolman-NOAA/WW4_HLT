@@ -313,10 +313,34 @@ int refinePartitionsIteratively(int nx, int ny,
  * @brief Reassigns small disconnected partition pieces to their smallest
  * neighboring partition.
  * @details Identifies connected components for each partition using
- * 4-connectivity. For partitions with multiple components, the largest
- * component is designated as the bulk. Small disconnected pieces with
- * adjacent neighboring partitions are reassigned to the neighboring partition
- * with the smallest total active sea point count.
+ * 4-connectivity (north, south, west, east). For partitions with multiple
+ * spatial components, the largest component is designated as the primary bulk
+ * of the partition. Small disconnected pieces that share spatial boundaries
+ * with neighboring partitions are reassigned to the neighboring partition with
+ * the smallest total active sea point count.
+ *
+ * Algorithm and Connected Component Analysis:
+ * Connected Component Identification:
+ *   For each partition ID (1 to num_partitions), a 4-connected breadth-first
+ *   search (BFS) identifies all spatially contiguous components of active sea
+ *   cells assigned to that partition.
+ *
+ * Bulk Determination and Small Piece Isolation:
+ *   If a partition consists of multiple disconnected components, the component
+ *   with the largest sea cell count is designated as the partition bulk. All
+ *   other components are treated as disconnected small pieces.
+ *
+ * Neighbor Partition Evaluation and Reassignment:
+ *   For each small disconnected piece, the routine scans 4-connected spatial
+ *   neighbors of all cells in the piece to identify adjacent partitions.
+ *   If adjacent neighboring partitions exist, the small piece is reassigned to
+ *   the neighbor with the minimum active sea point count. Partition counts are
+ *   updated dynamically after each reassignment.
+ *
+ * Sweep Convergence:
+ *   Processing iterates across all partitions until a complete pass results in
+ *   zero disconnected piece reassignments or an iteration safety cap is
+ *   reached.
  *
  * @param nx Number of longitudinal grid columns.
  * @param ny Number of latitudinal grid rows.
@@ -333,15 +357,21 @@ int reassignDisconnectedPieces(int nx, int ny,
     return 0;
   }
 
+  // === Section: Spatial Connectivity Direction Vectors ======================
+  // Define 4-connected spatial neighbor direction vectors (south, north, west,
+  // east)
   const int dx[] = {0, 0, -1, 1};
   const int dy[] = {-1, 1, 0, 0};
 
   int total_reassignments = 0;
   const int max_passes = 50;
 
+  // === Section: Component Analysis and Reassignment Loop ====================
   for (int pass = 0; pass < max_passes; ++pass) {
     int reassignments_in_pass = 0;
 
+    // --- Partition Sea Point Inventory --------------------------------------
+    // Count current active sea points assigned to each partition ID
     std::vector<int> partition_counts(num_partitions + 1, 0);
     for (size_t i = 0; i < partition_map.size(); ++i) {
       int p = partition_map[i];
@@ -350,11 +380,13 @@ int reassignDisconnectedPieces(int nx, int ny,
       }
     }
 
+    // --- Partition Component Inspection Sweep -------------------------------
     for (int p = 1; p <= num_partitions; ++p) {
       if (partition_counts[p] == 0) {
         continue;
       }
 
+      // Execute BFS to identify all 4-connected components for partition p
       std::vector<bool> visited(nx * ny, false);
       std::vector<std::vector<int>> components;
 
@@ -396,10 +428,13 @@ int reassignDisconnectedPieces(int nx, int ny,
         }
       }
 
+      // Single component partitions are fully connected; skip reassignment
       if (components.size() <= 1) {
         continue;
       }
 
+      // --- Bulk Identification and Small Piece Resolution -------------------
+      // Locate the largest component to designate as the partition bulk
       size_t bulk_idx = 0;
       size_t max_size = 0;
       for (size_t i = 0; i < components.size(); ++i) {
@@ -409,6 +444,7 @@ int reassignDisconnectedPieces(int nx, int ny,
         }
       }
 
+      // Reassign disconnected small components (all components except bulk)
       for (size_t i = 0; i < components.size(); ++i) {
         if (i == bulk_idx) {
           continue;
@@ -416,6 +452,7 @@ int reassignDisconnectedPieces(int nx, int ny,
 
         const auto &small_piece = components[i];
 
+        // Gather all external 4-connected neighbor partition IDs
         std::set<int> neighbor_partitions;
         for (int cell_idx : small_piece) {
           int cx = cell_idx % nx;
@@ -437,6 +474,7 @@ int reassignDisconnectedPieces(int nx, int ny,
           }
         }
 
+        // Reassign cells in small piece to the smallest adjacent neighbor
         if (!neighbor_partitions.empty()) {
           int smallest_nbr = -1;
           int min_count = -1;
@@ -464,6 +502,7 @@ int reassignDisconnectedPieces(int nx, int ny,
       }
     }
 
+    // --- Pass Termination Check --------------------------------------------
     if (reassignments_in_pass == 0) {
       break;
     }
@@ -476,11 +515,34 @@ int reassignDisconnectedPieces(int nx, int ny,
 /**
  * @brief Splits isolated overloaded partitions by merging the smallest pair of
  * neighboring partitions and using the released partition number.
- * @details Checks if an isolated partition (having no neighboring sea cells) is
- * overloaded (holds strictly more sea points than target load). If found, the
- * routine locates the smallest pair of adjacent neighboring partitions, merges
- * them to release a partition ID, and bisects the isolated partition into two
- * sub-partitions.
+ * @details Checks if an isolated partition (having no 4-connected sea cells
+ * belonging to other partitions) is overloaded (holds strictly more sea points
+ * than target load). If found, the routine locates the smallest pair of
+ * adjacent neighboring partitions whose merger will not produce a new
+ * isolated partition, merges them to release a partition ID, and bisects the
+ * isolated partition into two sub-partitions using the released partition
+ * number.
+ *
+ * Algorithm and Bisection Protocol:
+ * Isolated Overloaded Partition Detection:
+ *   Partition sea point counts are evaluated against the target ceiling
+ *   target_ceil = ceil(total_sea / num_partitions). An isolated partition p has
+ *   no 4-connected sea neighbors belonging to other partitions. If p has
+ *   count[p] > target_ceil, it cannot be reduced via boundary refinement and
+ *   is selected for bisection.
+ *
+ * Candidate Merge Pair Selection:
+ *   Searches for adjacent neighboring partition pairs (q1, q2) that share a
+ *   4-connected sea boundary. Candidate pairs are checked to verify that
+ *   merging q1 and q2 will not result in a new isolated partition (i.e. the
+ *   merged partition shares a boundary with at least one external neighbor
+ *   partition other than q1, q2, and isolated_p). Among valid pairs, the pair
+ *   minimizing count[q1] + count[q2] is selected.
+ *
+ * Partition Merger and Bisection Split:
+ *   Partition q2 is merged into q1, releasing partition ID q2. The bounding
+ *   box of isolated partition p is computed, and p's sea cells are bisected
+ *   along its major axis into two sub-partitions using IDs p and q2.
  *
  * @param nx Number of longitudinal grid columns.
  * @param ny Number of latitudinal grid rows.
@@ -496,6 +558,7 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
     return false;
   }
 
+  // === Section: Spatial Connectivity & Partition Inventory Setup ===========
   const int dx[] = {0, 0, -1, 1};
   const int dy[] = {-1, 1, 0, 0};
 
@@ -516,6 +579,8 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
   double target_per_partition = static_cast<double>(total_sea) / num_partitions;
   int target_ceil = static_cast<int>(std::ceil(target_per_partition));
 
+  // === Section: Spatial Neighborhood Mapping ================================
+  // Build neighborhood map recording adjacent partition IDs for each partition
   std::vector<std::set<int>> partition_neighbors(num_partitions + 1);
   for (int y = 0; y < ny; ++y) {
     for (int x = 0; x < nx; ++x) {
@@ -545,6 +610,7 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
     }
   }
 
+  // === Section: Isolated Overloaded Partition Identification ===============
   int isolated_p = -1;
   int max_isolated_count = -1;
 
@@ -561,6 +627,7 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
     return false;
   }
 
+  // === Section: Candidate Pair Selection and Validation =====================
   int best_q1 = -1;
   int best_q2 = -1;
   int min_pair_sum = -1;
@@ -604,6 +671,7 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
     return false;
   }
 
+  // === Section: Partition Merger and ID Release =============================
   int q_keep = best_q1;
   int q_released = best_q2;
 
@@ -616,6 +684,7 @@ bool splitIsolatedPartitions(int nx, int ny, std::span<const int> land_sea_map,
   partition_counts[q_keep] += partition_counts[q_released];
   partition_counts[q_released] = 0;
 
+  // === Section: Isolated Partition Bisection ================================
   int x_min = nx, x_max = -1, y_min = ny, y_max = -1;
   for (int y = 0; y < ny; ++y) {
     for (int x = 0; x < nx; ++x) {
