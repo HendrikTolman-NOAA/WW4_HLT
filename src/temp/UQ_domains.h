@@ -63,6 +63,17 @@ struct DomainPartition {
  *   After initial bisection, an iterative refinement phase adjusts partition
  *   boundaries to balance the sea point count across partitions.
  *
+ * Disconnected Piece Refinement Stage:
+ *   Identifies connected components for each partition using 4-connectivity.
+ *   If a small piece of a partition is disconnected from the bulk of the
+ *   partition, and this small piece has neighboring partitions, the small
+ *   piece is reassigned to the smallest of its neighbors.
+ *
+ * Isolated Partition Split Stage:
+ *   If a partition is too big and has no neighbors, the smallest two
+ * neighboring partitions are merged, releasing a partition number that is then
+ * used to split the isolated partition into two sub-partitions.
+ *
  * Convergence Criteria:
  *   Iterative refinement runs for up to max_iterations passes. An iteration
  *   sweep evaluates every boundary sea point separating an overloaded partition
