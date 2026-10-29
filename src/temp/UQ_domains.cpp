@@ -197,12 +197,14 @@ int refinePartitionsIteratively(int nx, int ny,
                                 std::span<const int> land_sea_map,
                                 int num_partitions, int max_iterations,
                                 std::vector<int> &partition_map) {
+  // Return early if single partition or non-positive max_iterations specified
   if (num_partitions <= 1 || max_iterations <= 0) {
     return 0;
   }
 
-  // Count initial active sea points assigned to each partition (1-based
-  // partition IDs)
+  // === Section: Partition Sea Point Inventory ===============================
+  // Count initial active sea points (where land_sea_map > 0) assigned to each
+  // partition ID (1 to num_partitions).
   std::vector<int> partition_counts(num_partitions + 1, 0);
   int total_sea = 0;
   for (size_t i = 0; i < partition_map.size(); ++i) {
@@ -213,23 +215,31 @@ int refinePartitionsIteratively(int nx, int ny,
     }
   }
 
+  // If grid contains no active sea points, return 0 iterations executed
   if (total_sea == 0) {
     return 0;
   }
 
-  // Ideal target sea point distribution across target partitions
+  // === Section: Target Load Calculation & Spatial Connectivity Setup ========
+  // Calculate ideal target sea point distribution across all partitions.
+  // Overloaded partitions exceed floor(target); underloaded partitions fall
+  // below ceil(target).
   double target_per_partition = static_cast<double>(total_sea) / num_partitions;
 
-  // 4-connected spatial neighbor offsets (south, north, west, east)
+  // Define 4-connected spatial neighbor direction vectors (south, north, west,
+  // east)
   const int dx[] = {0, 0, -1, 1};
   const int dy[] = {-1, 1, 0, 0};
 
+  // === Section: Iterative Refinement Loop ===================================
+  // Perform boundary refinement sweeps up to the user-specified iteration
+  // limit.
   int actual_iters = 0;
   for (int iter = 0; iter < max_iterations; ++iter) {
     actual_iters++;
     int swaps_made = 0;
 
-    // Perform a full grid sweep to identify and shift boundary sea points
+    // Execute full 2D spatial grid sweep across all rows (y) and columns (x)
     for (int y = 0; y < ny; ++y) {
       for (int x = 0; x < nx; ++x) {
         int idx = y * nx + x;
@@ -242,48 +252,53 @@ int refinePartitionsIteratively(int nx, int ny,
           continue;
         }
 
-        // Only move points away from partition p1 if p1 is currently overloaded
+        // --- Overloaded Partition Filter ------------------------------------
+        // Only shift boundary sea points away from partition p1 if p1 holds
+        // strictly more sea points than the floor of the target load.
         if (partition_counts[p1] <=
             static_cast<int>(std::floor(target_per_partition))) {
           continue;
         }
 
-        // Inspect 4-connected spatial neighbors for underloaded adjacent
-        // partitions
+        // --- Spatial 4-Neighbor Boundary Inspection -------------------------
+        // Inspect 4-connected adjacent sea cells (north, south, east, west)
         for (int k = 0; k < 4; ++k) {
           int nx_nbr = x + dx[k];
           int ny_nbr = y + dy[k];
 
           if (nx_nbr < 0 || nx_nbr >= nx || ny_nbr < 0 || ny_nbr >= ny) {
-            continue; // Out of bounds
+            continue; // Out of grid bounds
           }
 
           int nbr_idx = ny_nbr * nx + nx_nbr;
           if (land_sea_map[nbr_idx] <= 0) {
-            continue; // Land neighbor
+            continue; // Land point neighbor
           }
 
           int p2 = partition_map[nbr_idx];
           if (p2 < 1 || p2 > num_partitions || p2 == p1) {
-            continue; // Same partition or invalid ID
+            continue; // Ignore cells in same partition or invalid IDs
           }
 
-          // Reassign boundary point if adjacent partition p2 is underloaded
+          // --- Dynamic Load Reassignment ------------------------------------
+          // Reassign boundary point from p1 to adjacent partition p2 if p2
+          // is currently underloaded (holds fewer points than ceil(target)).
           if (partition_counts[p2] <
               static_cast<int>(std::ceil(target_per_partition))) {
             partition_map[idx] = p2;
             partition_counts[p1]--;
             partition_counts[p2]++;
             swaps_made++;
-            break; // Move to next grid point after successful swap
+            break; // Move to next grid cell after successful swap
           }
         }
       }
     }
 
-    // Convergence check: if no boundary points were reassigned during the full
-    // pass, optimal load balance across adjacent partition boundaries has
-    // converged.
+    // === Section: Iteration Convergence Determination =======================
+    // Convergence condition: if a complete sweep across the grid results in
+    // zero boundary sea point swaps (swaps_made == 0), the boundary assignments
+    // have stabilized and optimal load balance across partitions has converged.
     if (swaps_made == 0) {
       break;
     }
