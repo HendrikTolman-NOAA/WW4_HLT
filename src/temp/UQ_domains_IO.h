@@ -6,8 +6,8 @@
  * @file UQ_domains_IO.h
  * @brief NetCDF I/O routines for domain partitioning maps in WAVEWATCH IV
  * (WW4).
- * @details Provides functions to write and read UQ grid partitioning maps
- * in NetCDF format (.nc).
+ * @details Provides pure subroutines to write and read UQ grid partitioning
+ * maps in NetCDF format (.nc).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -20,7 +20,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-14
- * @date Last update : 2026-10-14
+ * @date Last update : 2026-10-16
  */
 
 #pragma once
@@ -33,11 +33,13 @@
 namespace ww4_utils {
 namespace UQ_utils {
 
+// --- writePartitionMapNetCDF ------------------------------------------------
 /**
  * @brief Writes a grid partitioning map and optional land-sea map to a NetCDF
  * file (.nc).
  * @details Encodes grid dimensions (nx, ny), metadata attributes, and
- * partitioning map data into a standard NetCDF format file.
+ * partitioning map data into a standard NetCDF format file as a pure
+ * subroutine.
  * @param filename Output NetCDF file path.
  * @param nx Number of longitudinal grid columns.
  * @param ny Number of latitudinal grid rows.
@@ -51,10 +53,12 @@ bool writePartitionMapNetCDF(std::string_view filename, int nx, int ny,
                              int num_partitions,
                              std::span<const int> land_sea_map = {});
 
+// --- readPartitionMapNetCDF -------------------------------------------------
 /**
  * @brief Reads a grid partitioning map from a NetCDF file (.nc).
  * @details Parses NetCDF binary file structure to extract grid dimensions (nx,
- * ny), number of partitions, and the 2D partition map array.
+ * ny), number of partitions, and the 2D partition map array as a pure
+ * subroutine.
  * @param filename Input NetCDF file path.
  * @param[out] nx Extracted number of longitudinal grid columns.
  * @param[out] ny Extracted number of latitudinal grid rows.

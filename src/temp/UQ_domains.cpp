@@ -6,7 +6,7 @@
  * @file UQ_domains.cpp
  * @brief Domain partitioning routines for ultimate quickest (UQ) grids in
  * WAVEWATCH IV (WW4).
- * @details Provides functions to partition global UQ structured grids into
+ * @details Provides pure subroutines to partition full UQ structured grids into
  * sub-domains based on active sea points (derived from WW3 ww3_gspl).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -20,7 +20,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-14
- * @date Last update : 2026-10-14
+ * @date Last update : 2026-10-16
  */
 
 #include "temp/UQ_domains.h"
@@ -35,6 +35,17 @@ namespace UQ_utils {
 
 namespace {
 
+// --- countSeaPointsInRect ---------------------------------------------------
+/**
+ * @brief Counts active sea points in a rectangular bounding box.
+ * @param x_min Minimum longitude index (0-based).
+ * @param x_max Maximum longitude index (0-based).
+ * @param y_min Minimum latitude index (0-based).
+ * @param y_max Maximum latitude index (0-based).
+ * @param nx Number of longitudinal grid columns.
+ * @param land_sea_map 2D land-sea mask span.
+ * @return Count of sea points (where land_sea_map > 0).
+ */
 int countSeaPointsInRect(int x_min, int x_max, int y_min, int y_max, int nx,
                          std::span<const int> land_sea_map) {
   int count = 0;
@@ -48,6 +59,19 @@ int countSeaPointsInRect(int x_min, int x_max, int y_min, int y_max, int nx,
   return count;
 }
 
+// --- recursiveBisectDomain --------------------------------------------------
+/**
+ * @brief Recursively bisects a domain bounding box into target sub-partitions.
+ * @param x_min Minimum longitude index (0-based).
+ * @param x_max Maximum longitude index (0-based).
+ * @param y_min Minimum latitude index (0-based).
+ * @param y_max Maximum latitude index (0-based).
+ * @param nx Number of longitudinal grid columns.
+ * @param land_sea_map 2D land-sea mask span.
+ * @param target_partitions Number of partitions to divide into.
+ * @param partition_start_id Starting partition ID for this sub-block.
+ * @param[out] partition_map Output partition map vector to update.
+ */
 void recursiveBisectDomain(int x_min, int x_max, int y_min, int y_max, int nx,
                            std::span<const int> land_sea_map,
                            int target_partitions, int partition_start_id,
@@ -134,7 +158,7 @@ void recursiveBisectDomain(int x_min, int x_max, int y_min, int y_max, int nx,
 
 } // namespace
 
-// --- partitionGlobalGrid -------------------------------------------------
+// --- partitionGlobalGrid ----------------------------------------------------
 
 std::vector<int> partitionGlobalGrid(int nx, int ny,
                                      std::span<const int> land_sea_map,
