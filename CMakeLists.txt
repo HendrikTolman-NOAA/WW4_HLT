@@ -14,7 +14,7 @@
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
 #@author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner
 #@date Initial : 2026-07-09
-#@date Last update : 2026-10-27
+#@date Last update : 2026-10-30
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -126,7 +126,7 @@ add_library(
     src/ww4_core/scheme_factory.cpp
     src/ww4_core/solver_UQ/solver_UQ_exec.cpp
     src/ww4_core/solver_UQ/solver_UQ_init.cpp
-    src/ww4_core/solver_UQ/utils_UQ_IO.cpp
+    src/ww4_core/solver_UQ/utils_UQ_IO/utils_UQ_IO.cpp
     src/ww4_core/solver_triangular/solver_triangular_exec.cpp
     src/ww4_core/solver_triangular/solver_triangular_init.cpp
     src/ww4_core/solver_SMC/solver_SMC_exec.cpp
