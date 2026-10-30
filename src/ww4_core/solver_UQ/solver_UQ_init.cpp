@@ -141,6 +141,8 @@ void solver_UQ_init(std::ostream &os) {
     }
   }
 
+  (void)fullGrid;
+
   // === Domain decomposition and partition data lifecycle ===================
   // Placeholder for grid partitioning and parallel sub-domain setup:
   // - Check runtime partition mode configuration (grid.partition.mode).
