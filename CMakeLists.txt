@@ -74,6 +74,18 @@ endif()
 if(NOT NETCDF_FOUND)
     find_path(NETCDF_INCLUDE_DIRS netcdf.h)
     find_library(NETCDF_LIBRARIES NAMES netcdf)
+    if(NETCDF_INCLUDE_DIRS AND NETCDF_LIBRARIES)
+        set(NETCDF_FOUND TRUE)
+    endif()
+endif()
+
+if(NOT NETCDF_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/externals/netcdf-c/CMakeLists.txt")
+    set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+    set(NC_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+    add_subdirectory(externals/netcdf-c EXCLUDE_FROM_ALL SYSTEM)
+    set(NETCDF_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/externals/netcdf-c/include" "${CMAKE_BINARY_DIR}/externals/netcdf-c/include")
+    set(NETCDF_LIBRARIES netcdf)
+    set(NETCDF_FOUND TRUE)
 endif()
 
 # Library: ww4_utils
@@ -118,8 +130,14 @@ add_library(
     src/ww4_core/source_terms/ww4_BT4/ww4_BT4.cpp
     src/ww4_core/wave_model_solver.cpp
 )
-target_include_directories(ww4_core PUBLIC src PRIVATE ${NETCDF_INCLUDE_DIRS})
-target_link_libraries(ww4_core PUBLIC ww4_utils PRIVATE ${NETCDF_LIBRARIES})
+target_include_directories(ww4_core PUBLIC src)
+target_link_libraries(ww4_core PUBLIC ww4_utils)
+if(NETCDF_INCLUDE_DIRS)
+    target_include_directories(ww4_core PRIVATE ${NETCDF_INCLUDE_DIRS})
+endif()
+if(NETCDF_LIBRARIES)
+    target_link_libraries(ww4_core PRIVATE ${NETCDF_LIBRARIES})
+endif()
 target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
