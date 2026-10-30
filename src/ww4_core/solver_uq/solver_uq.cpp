@@ -15,21 +15,29 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-30
  */
 
 #include "ww4_core/solver_uq/solver_uq.h"
 #include "ww4_core/scheme_factory.h"
+#include "ww4_core/solver_uq/utils_UQ_IO/UQ_read_grid.h"
 #include "ww4_core/w4core_init.h"
 #include <algorithm>
+#include <filesystem>
 
 namespace ww4_core {
 
 // --- w4core_init_uq ---------------------------------------------------------
-void w4core_init_uq(std::ostream &os) {
+void w4core_init_uq(std::ostream &os, std::string_view gridFile) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
     os << "    Initializing UQ regular grid solver" << std::endl;
+  }
+
+  if (!gridFile.empty() && std::filesystem::exists(gridFile)) {
+    ww4::io::UgridGrid ugrid;
+    const int status = ww4::io::UQ_read_grid(gridFile, ugrid);
+    static_cast<void>(status);
   }
 }
 
@@ -46,9 +54,8 @@ void SolverRectangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
 // --- solve ------------------------------------------------------------------
 void SolverRectangularGrid::solve(std::span<double> data) {
   // === Perform numerical propagation =======================================
-  std::for_each(data.begin(), data.end(), [](double &val) {
-    val *= 1.01; // Mock propagation effect
-  });
+  std::for_each(data.begin(), data.end(),
+                [](double &val) { val *= 1.01; }); // Mock propagation effect
 
   // === Call integrated source terms ==========================================
   if (sourceTerms_.empty()) {

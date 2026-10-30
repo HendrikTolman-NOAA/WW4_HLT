@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-30
  */
 
 #pragma once
@@ -25,6 +25,7 @@
 #include <iostream>
 #include <memory>
 #include <span>
+#include <string_view>
 #include <vector>
 
 namespace ww4_core {
@@ -34,12 +35,14 @@ namespace ww4_core {
  * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
  * solver.
  * @param os Output stream for logging.
+ * @param gridFile Path to NetCDF-UGRID grid file to read.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-30
  */
-void w4core_init_uq(std::ostream &os = std::cout);
+void w4core_init_uq(std::ostream &os = std::cout,
+                    std::string_view gridFile = "");
 
 // --- SolverRectangularGrid --------------------------------------------------
 /**
@@ -48,7 +51,7 @@ void w4core_init_uq(std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-30
  */
 class SolverRectangularGrid : public ISolver {
 public:

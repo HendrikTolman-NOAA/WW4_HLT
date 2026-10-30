@@ -3,7 +3,7 @@
 //+ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 //-- -- -- +
 //
-// @file utils_UQ_IO.cpp
+// @file UQ_read_grid.cpp
 // @brief NetCDF-UGRID 1.0 grid file reader implementation using netcdf-c for
 // WAVEWATCH IV.
 // @details Subroutine implementation for reading NetCDF-UGRID grid files in
@@ -21,7 +21,7 @@
 // @date Initial : 2026-10-27
 // @date Latest Update : 2026-10-30
 
-#include "ww4_core/solver_uq/utils_UQ_IO/utils_UQ_IO.h"
+#include "ww4_core/solver_uq/utils_UQ_IO/UQ_read_grid.h"
 
 #include <netcdf.h>
 
@@ -82,7 +82,7 @@ private:
  */
 bool check_nc_err(const int status, const std::string &msg) {
   if (status != NC_NOERR) {
-    std::cerr << "Error [readUQgrid]: " << msg << ": " << nc_strerror(status)
+    std::cerr << "Error [UQ_read_grid]: " << msg << ": " << nc_strerror(status)
               << "\n";
     return false;
   }
@@ -145,8 +145,8 @@ bool read_variable(const int ncid, const char *varname, std::vector<T> &vec,
   const int status = nc_inq_varid(ncid, varname, &varid);
   if (status != NC_NOERR) {
     if (required) {
-      std::cerr << "Error [readUQgrid]: Missing required variable '" << varname
-                << "': " << nc_strerror(status) << "\n";
+      std::cerr << "Error [UQ_read_grid]: Missing required variable '"
+                << varname << "': " << nc_strerror(status) << "\n";
     }
     return false;
   }
@@ -195,13 +195,13 @@ bool read_variable(const int ncid, const char *varname, std::vector<T> &vec,
 
 } // namespace
 
-int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
+int UQ_read_grid(const std::filesystem::path &filepath, UgridGrid &grid) {
   grid.clear();
 
   // Return code 1: File not found
   std::error_code ec;
   if (!std::filesystem::exists(filepath, ec) || ec) {
-    std::cerr << "Error [readUQgrid]: File does not exist: "
+    std::cerr << "Error [UQ_read_grid]: File does not exist: "
               << filepath.string() << "\n";
     return 1;
   }
@@ -210,7 +210,7 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
   const int open_status =
       nc_open(filepath.string().c_str(), NC_NOWRITE, &raw_ncid);
   if (open_status != NC_NOERR) {
-    std::cerr << "Error [readUQgrid]: Failed opening NetCDF file "
+    std::cerr << "Error [UQ_read_grid]: Failed opening NetCDF file "
               << filepath.string() << ": " << nc_strerror(open_status) << "\n";
     return 1;
   }
@@ -222,8 +222,8 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
     int dimid = -1;
     const int status = nc_inq_dimid(ncid, dimname, &dimid);
     if (status != NC_NOERR) {
-      std::cerr << "Error [readUQgrid]: Missing required dimension '" << dimname
-                << "': " << nc_strerror(status) << "\n";
+      std::cerr << "Error [UQ_read_grid]: Missing required dimension '"
+                << dimname << "': " << nc_strerror(status) << "\n";
       return false;
     }
     return check_nc_err(nc_inq_dimlen(ncid, dimid, &len),
@@ -236,7 +236,7 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
       !read_dim_len("nMesh2_node", grid.n_nodes) ||
       !read_dim_len("nMaxMesh2_face_nodes", grid.max_face_nodes)) {
     std::cerr
-        << "Error [readUQgrid]: Failed reading metadata dimensions from file "
+        << "Error [UQ_read_grid]: Failed reading metadata dimensions from file "
         << filepath.string() << "\n";
     grid.clear();
     return 2;
@@ -276,8 +276,9 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
       !read_variable(ncid, "grid_lat", grid.grid_lat, true) ||
       !read_variable(ncid, "grid_depth", grid.grid_depth, true) ||
       !read_variable(ncid, "grid_mask", grid.grid_mask, true)) {
-    std::cerr << "Error [readUQgrid]: Failed reading 2D grid arrays from file "
-              << filepath.string() << "\n";
+    std::cerr
+        << "Error [UQ_read_grid]: Failed reading 2D grid arrays from file "
+        << filepath.string() << "\n";
     grid.clear();
     return 3;
   }
@@ -293,8 +294,9 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
       !read_variable(ncid, "face_lat", grid.face_lat, true) ||
       !read_variable(ncid, "depth", grid.depth, true) ||
       !read_variable(ncid, "mask", grid.mask, true)) {
-    std::cerr << "Error [readUQgrid]: Failed reading 1D face arrays from file "
-              << filepath.string() << "\n";
+    std::cerr
+        << "Error [UQ_read_grid]: Failed reading 1D face arrays from file "
+        << filepath.string() << "\n";
     grid.clear();
     return 3;
   }
@@ -306,9 +308,9 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
   // Read 1D node coordinates
   if (!read_variable(ncid, "node_lon", grid.node_lon, true) ||
       !read_variable(ncid, "node_lat", grid.node_lat, true)) {
-    std::cerr
-        << "Error [readUQgrid]: Failed reading mesh node coordinates from file "
-        << filepath.string() << "\n";
+    std::cerr << "Error [UQ_read_grid]: Failed reading mesh node coordinates "
+                 "from file "
+              << filepath.string() << "\n";
     grid.clear();
     return 3;
   }
@@ -318,7 +320,7 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
   if (!read_variable(ncid, "face_node_connectivity",
                      grid.face_node_connectivity, true)) {
     std::cerr
-        << "Error [readUQgrid]: Failed reading connectivity array from file "
+        << "Error [UQ_read_grid]: Failed reading connectivity array from file "
         << filepath.string() << "\n";
     grid.clear();
     return 3;
@@ -349,6 +351,10 @@ int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
 
   // Return code 0: Success
   return 0;
+}
+
+int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
+  return UQ_read_grid(filepath, grid);
 }
 
 } // namespace ww4::io

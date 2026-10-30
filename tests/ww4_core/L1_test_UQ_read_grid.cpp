@@ -3,8 +3,8 @@
 //+ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 //-- -- -- +
 //
-// @file L1_test_utils_UQ_IO.cpp
-// @brief Unit tests for NetCDF-UGRID grid file reader module utils_UQ_IO.
+// @file L1_test_UQ_read_grid.cpp
+// @brief Unit tests for NetCDF-UGRID grid file reader module UQ_read_grid.
 // @details Tests the readUQgrid subroutine and UgridGrid container structure.
 // Internal helper functions: check_nc_err, read_all_global_attributes,
 // read_variable, constexpr, get, ncid_.
@@ -20,7 +20,7 @@
 // @date Initial : 2026-10-27
 // @date Latest Update : 2026-10-30
 
-#include "ww4_core/solver_uq/utils_UQ_IO/utils_UQ_IO.h"
+#include "ww4_core/solver_uq/utils_UQ_IO/UQ_read_grid.h"
 
 #include <gtest/gtest.h>
 #include <netcdf.h>
@@ -33,7 +33,7 @@
 
 namespace ww4::io {
 
-class UtilsUQIOTest : public ::testing::Test {
+class UQReadGridTest : public ::testing::Test {
 protected:
   void TearDown() override {
     std::error_code ec;
@@ -45,14 +45,14 @@ protected:
   }
 };
 
-TEST_F(UtilsUQIOTest, NonExistentFileReturnsStatus1) {
+TEST_F(UQReadGridTest, NonExistentFileReturnsStatus1) {
   UgridGrid grid;
   const int status = readUQgrid("test_non_existent.nc", grid);
   EXPECT_EQ(status, 1);
   EXPECT_EQ(grid.ny, 0u);
 }
 
-TEST_F(UtilsUQIOTest, InvalidNetCDFFileReturnsStatus1) {
+TEST_F(UQReadGridTest, InvalidNetCDFFileReturnsStatus1) {
   std::ofstream ofs("test_invalid.txt");
   ofs << "This is not a NetCDF file\n";
   ofs.close();
@@ -63,7 +63,7 @@ TEST_F(UtilsUQIOTest, InvalidNetCDFFileReturnsStatus1) {
   EXPECT_EQ(grid.nx, 0u);
 }
 
-TEST_F(UtilsUQIOTest, MissingDimensionsReturnsStatus2) {
+TEST_F(UQReadGridTest, MissingDimensionsReturnsStatus2) {
   const std::string filename = "test_missing_dims.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -80,7 +80,7 @@ TEST_F(UtilsUQIOTest, MissingDimensionsReturnsStatus2) {
   EXPECT_EQ(grid.n_faces, 0u);
 }
 
-TEST_F(UtilsUQIOTest, MissingRequiredVariablesReturnsStatus3) {
+TEST_F(UQReadGridTest, MissingRequiredVariablesReturnsStatus3) {
   const std::string filename = "test_missing_vars.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -102,7 +102,7 @@ TEST_F(UtilsUQIOTest, MissingRequiredVariablesReturnsStatus3) {
   EXPECT_EQ(grid.ny, 0u);
 }
 
-TEST_F(UtilsUQIOTest, ValidNetCDFUGridParsingSuccess) {
+TEST_F(UQReadGridTest, ValidNetCDFUGridParsingSuccess) {
   const std::string filename = "test_valid_ugrid.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -126,7 +126,7 @@ TEST_F(UtilsUQIOTest, ValidNetCDFUGridParsingSuccess) {
   const std::string bathy_source = "test_bathy";
   const std::string bound_source = "test_bound";
   const std::string conventions = "UGRID-1.0";
-  const std::string history = "Created by L1_test_utils_UQ_IO";
+  const std::string history = "Created by L1_test_UQ_read_grid";
 
   ASSERT_EQ(
       nc_put_att_text(ncid, NC_GLOBAL, "title", title.size(), title.c_str()),

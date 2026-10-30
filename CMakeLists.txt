@@ -102,7 +102,7 @@ add_library(
     src/ww4_core/w4core_finalize.cpp
     src/ww4_core/scheme_factory.cpp
     src/ww4_core/solver_uq/solver_uq.cpp
-    src/ww4_core/solver_uq/utils_UQ_IO/utils_UQ_IO.cpp
+    src/ww4_core/solver_uq/utils_UQ_IO/UQ_read_grid.cpp
     src/ww4_core/solver_triangular/solver_triangular.cpp
     src/ww4_core/solver_smc/solver_smc.cpp
     src/ww4_core/source_terms/compute_all_source_terms.cpp
@@ -186,7 +186,7 @@ if(WW4_ENABLE_TESTING)
     # Core tests
     ww4_add_test(test_scheme_factory tests/ww4_core/L1_test_scheme_factory.cpp ww4_core)
     ww4_add_test(test_solver_uq tests/ww4_core/L1_test_solver_uq.cpp ww4_core)
-    ww4_add_test(test_utils_UQ_IO tests/ww4_core/L1_test_utils_UQ_IO.cpp ww4_core)
+    ww4_add_test(test_UQ_read_grid tests/ww4_core/L1_test_UQ_read_grid.cpp ww4_core)
     ww4_add_test(test_solver_triangular tests/ww4_core/L1_test_solver_triangular.cpp ww4_core)
     ww4_add_test(test_solver_smc tests/ww4_core/L1_test_solver_smc.cpp ww4_core)
     ww4_add_test(test_ww4_standalone tests/ww4_core/L1_test_ww4_standalone.cpp ww4_core)

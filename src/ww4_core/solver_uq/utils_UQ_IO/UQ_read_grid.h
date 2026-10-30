@@ -3,10 +3,10 @@
 //+ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 //-- -- -- +
 //
-// @file utils_UQ_IO.h
+// @file UQ_read_grid.h
 // @brief NetCDF-UGRID 1.0 grid file reader subroutine interface for WAVEWATCH
 // IV.
-// @details Header declaring data structures and the readUQgrid subroutine for
+// @details Header declaring data structures and the UQ_read_grid subroutine for
 // reading NetCDF-UGRID grid files in WAVEWATCH IV.
 //
 // @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -20,8 +20,8 @@
 // @date Initial : 2026-10-27
 // @date Latest Update : 2026-10-30
 
-#ifndef WW4_UTILS_UQ_IO_H
-#define WW4_UTILS_UQ_IO_H
+#ifndef WW4_UQ_READ_GRID_H
+#define WW4_UQ_READ_GRID_H
 
 #include <cstdint>
 #include <filesystem>
@@ -165,9 +165,15 @@ struct UgridGrid {
  * @post On success (return code 0), `grid` fields are populated with file
  * contents. On failure, `grid` is cleared.
  */
+[[nodiscard]] int UQ_read_grid(const std::filesystem::path &filepath,
+                               UgridGrid &grid);
+
+/**
+ * @brief Subroutine alias for UQ_read_grid.
+ */
 [[nodiscard]] int readUQgrid(const std::filesystem::path &filepath,
                              UgridGrid &grid);
 
 } // namespace ww4::io
 
-#endif // WW4_UTILS_UQ_IO_H
+#endif // WW4_UQ_READ_GRID_H
