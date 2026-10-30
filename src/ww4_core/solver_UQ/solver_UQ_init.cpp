@@ -25,6 +25,7 @@
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/spatial_grid.h"
 #include "ww4_utils/ww4_run_config.h"
+#include "ww4_utils/ww4_std_out.h"
 #include <iostream>
 
 namespace ww4_core {
@@ -42,8 +43,16 @@ void solver_UQ_init(std::ostream &os) {
   }
 
   // === Spatial grid ingestion ===============================================
-  ww4_utils::FullGrid fullGrid;
-  solver_UQ_utils::readGridFileUQ(getRunConfig().gridFile, fullGrid, os);
+  ww4::io::UgridGrid ugrid;
+  const int gridStatus = ww4::io::readUQgrid(getRunConfig().gridFile, ugrid);
+  if (gridStatus != 0) {
+    // Explanatory comment preceding first use of __FILE__ and __LINE__
+    // Pass source location for error tracing
+    ww4_utils::ww4_std_out::extcde(
+        gridStatus, os,
+        "Failed reading UQ NetCDF-UGRID grid file: " + getRunConfig().gridFile,
+        __FILE__, __LINE__);
+  }
 
   // === Domain decomposition and partition data lifecycle ===================
   // Placeholder for grid partitioning and parallel sub-domain setup:

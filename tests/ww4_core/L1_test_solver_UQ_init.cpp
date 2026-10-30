@@ -20,6 +20,7 @@
  * @date Last update : 2026-10-26
  */
 
+#include "test_grid_helper.h"
 #include "ww4_core/solver_UQ/solver_UQ_init.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
@@ -35,10 +36,7 @@ TEST(SolverUQInitTest, BasicExecutionAndOutput) {
   getMutableRunConfig().gridFile = "my_uq_grid.nc";
   getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
 
-  {
-    std::ofstream g("my_uq_grid.nc");
-    g << "grid_name: my_uq_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
-  }
+  test_helpers::createDummyUgridFile("my_uq_grid.nc");
 
   EXPECT_NO_THROW(solver_UQ_init(ss));
   std::string output = ss.str();

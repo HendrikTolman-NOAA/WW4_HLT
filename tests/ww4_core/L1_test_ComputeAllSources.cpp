@@ -20,6 +20,7 @@
  * @date Last update : 2026-10-16
  */
 
+#include "test_grid_helper.h"
 #include "ww4_core/source_terms/ComputeAllSources/ComputeAllSources.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
@@ -32,8 +33,7 @@ class ComputeAllSourcesL1Test : public ::testing::Test {
 protected:
   void SetUp() override {
     resetInternalState();
-    std::ofstream g("test_grid.nc");
-    g << "grid_name: test_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
+    test_helpers::createDummyUgridFile("test_grid.nc");
   }
 
   void TearDown() override {

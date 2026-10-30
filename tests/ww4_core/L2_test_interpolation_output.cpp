@@ -17,6 +17,7 @@
  * @date Last update : 2026-06-18
  */
 
+#include "test_grid_helper.h"
 #include "ww4_core/w4core_finalize.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_core/w4core_wave.h"
@@ -32,8 +33,7 @@ protected:
   void SetUp() override {
     ww4_core::resetInternalState();
     ww4_utils::TimeManagement::reset();
-    std::ofstream g("test_grid.nc");
-    g << "grid_name: test_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
+    ww4_core::test_helpers::createDummyUgridFile("test_grid.nc");
   }
 
   void TearDown() override {

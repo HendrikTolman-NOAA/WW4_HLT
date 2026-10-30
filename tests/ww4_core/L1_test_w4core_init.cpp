@@ -18,6 +18,7 @@
  * @date Last update : 2026-10-26
  */
 
+#include "test_grid_helper.h"
 #include "ww4_core/solver_SMC/solver_SMC_exec.h"
 #include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/solver_UQ/solver_UQ_exec.h"
@@ -35,8 +36,7 @@ class W4CoreInitTest : public ::testing::Test {
 protected:
   void SetUp() override {
     resetInternalState();
-    std::ofstream g("test_grid.nc");
-    g << "grid_name: test_grid.nc\nnx: 10\nny: 10\nsx: 1.0\nsy: 1.0\n";
+    test_helpers::createDummyUgridFile("test_grid.nc");
   }
 
   void TearDown() override {
