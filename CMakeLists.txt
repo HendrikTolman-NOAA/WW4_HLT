@@ -66,6 +66,16 @@ else()
     message(FATAL_ERROR "yaml-cpp submodule not found in externals/yaml-cpp. Please run: git submodule update --init --recursive")
 endif()
 
+# Find NetCDF C library
+find_package(PkgConfig QUIET)
+if(PkgConfig_FOUND)
+    pkg_check_modules(NETCDF QUIET netcdf)
+endif()
+if(NOT NETCDF_FOUND)
+    find_path(NETCDF_INCLUDE_DIRS netcdf.h)
+    find_library(NETCDF_LIBRARIES NAMES netcdf)
+endif()
+
 # Library: ww4_utils
 add_library(
     ww4_utils
@@ -92,6 +102,7 @@ add_library(
     src/ww4_core/w4core_finalize.cpp
     src/ww4_core/scheme_factory.cpp
     src/ww4_core/solver_uq/solver_uq.cpp
+    src/ww4_core/solver_uq/utils_UQ_IO/utils_UQ_IO.cpp
     src/ww4_core/solver_triangular/solver_triangular.cpp
     src/ww4_core/solver_smc/solver_smc.cpp
     src/ww4_core/source_terms/compute_all_source_terms.cpp
@@ -107,8 +118,8 @@ add_library(
     src/ww4_core/source_terms/ww4_BT4/ww4_BT4.cpp
     src/ww4_core/wave_model_solver.cpp
 )
-target_include_directories(ww4_core PUBLIC src)
-target_link_libraries(ww4_core PUBLIC ww4_utils)
+target_include_directories(ww4_core PUBLIC src PRIVATE ${NETCDF_INCLUDE_DIRS})
+target_link_libraries(ww4_core PUBLIC ww4_utils PRIVATE ${NETCDF_LIBRARIES})
 target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
@@ -175,6 +186,7 @@ if(WW4_ENABLE_TESTING)
     # Core tests
     ww4_add_test(test_scheme_factory tests/ww4_core/L1_test_scheme_factory.cpp ww4_core)
     ww4_add_test(test_solver_uq tests/ww4_core/L1_test_solver_uq.cpp ww4_core)
+    ww4_add_test(test_utils_UQ_IO tests/ww4_core/L1_test_utils_UQ_IO.cpp ww4_core)
     ww4_add_test(test_solver_triangular tests/ww4_core/L1_test_solver_triangular.cpp ww4_core)
     ww4_add_test(test_solver_smc tests/ww4_core/L1_test_solver_smc.cpp ww4_core)
     ww4_add_test(test_ww4_standalone tests/ww4_core/L1_test_ww4_standalone.cpp ww4_core)
