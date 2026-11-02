@@ -60,9 +60,6 @@ void solver_UQ_init(std::ostream &os) {
     }
     // Explanatory comment preceding first use of __FILE__ and __LINE__
     // Pass source location for error tracing
-    if (getRunConfig().produceStdOut) {
-      ww4_utils::ww4_std_out::writeExtcdeOutput(os, errMsg, __FILE__, __LINE__);
-    }
     if (getRunConfig().produceLogFile && getLogFileStream().is_open()) {
       ww4_utils::ww4_std_out::writeExtcdeOutput(getLogFileStream(), errMsg,
                                                 __FILE__, __LINE__);
