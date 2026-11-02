@@ -17,11 +17,10 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-01
+ * @date Last update : 2026-10-28
  */
 
 #include "ww4_utils/ww4_run_config.h"
-#include "ww4_utils/ww4_standalone_config.h"
 #include "ww4_utils/ww4_std_out.h"
 #include <algorithm>
 #include <charconv>
@@ -288,6 +287,13 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     RunConfig config{};
 
+    // === Grid section ========================================================
+    if (const auto node = config_node["grid"]) {
+      if (node["grid_file"]) {
+        config.gridFile = cleanValue(node["grid_file"].as<std::string>());
+      }
+    }
+
     // === General section =====================================================
     if (const auto node = config_node["general"]) {
       if (node["calendar_type"]) {
@@ -320,6 +326,15 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
       if (node["time_step"]) {
         config.timeStep = node["time_step"].as<double>();
+      }
+      if (node["num_ranks"]) {
+        config.numRanks = node["num_ranks"].as<int>();
+      }
+      if (node["num_ranks_compute"]) {
+        config.numRanksCompute = node["num_ranks_compute"].as<int>();
+      }
+      if (node["actual_rank"]) {
+        config.actualRank = node["actual_rank"].as<int>();
       }
     }
 
@@ -521,7 +536,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // === Mandatory fields check ==============================================
-    if (config.solver == SolverType::Undefined ||
+    if (config.gridFile.empty() || config.solver == SolverType::Undefined ||
         config.inputDissipation == InputDissipationScheme::Undefined ||
         config.nonlinearInteractions == NonlinearScheme::Undefined ||
         config.linearInput == LinearInputScheme::Undefined ||
@@ -535,6 +550,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
             "invalid "
             "in configuration."
          << std::endl;
+      if (config.gridFile.empty())
+        os << "   Missing/invalid: grid -> grid_file" << std::endl;
       if (config.solver == SolverType::Undefined)
         os << "   Missing/invalid: physics -> solver" << std::endl;
       if (config.inputDissipation == InputDissipationScheme::Undefined)
@@ -569,6 +586,26 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
             "in configuration."
          << std::endl;
       ww4_std_out::extcde(1, os, "Missing or invalid mandatory time step.",
+                          __FILE__, __LINE__);
+    }
+
+    // === Rank configuration validation =======================================
+    if (config.numRanks <= 0 || config.numRanksCompute <= 0 ||
+        config.numRanksCompute > config.numRanks || config.actualRank < 0 ||
+        config.actualRank >= config.numRanks) {
+      os << "WW4 ERROR: Invalid rank configuration in general settings."
+         << std::endl;
+      if (config.numRanks <= 0)
+        os << "   Missing/invalid: general -> num_ranks" << std::endl;
+      if (config.numRanksCompute <= 0 ||
+          config.numRanksCompute > config.numRanks)
+        os << "   Missing/invalid: general -> num_ranks_compute" << std::endl;
+      if (config.actualRank < 0 || config.actualRank >= config.numRanks)
+        os << "   Missing/invalid: general -> actual_rank" << std::endl;
+
+      // An explanatory comment line must precede the first use of '__FILE__'
+      // and '__LINE__' Output error and terminate execution
+      ww4_std_out::extcde(1, os, "Missing or invalid rank configuration.",
                           __FILE__, __LINE__);
     }
 
@@ -676,6 +713,9 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Configuration settings :" << std::endl;
 
+  os << "\n     Grid file name           : "
+     << (config.gridFile.empty() ? "none" : config.gridFile) << std::endl;
+
   std::string solverStr = "undefined";
   if (config.solver == SolverType::UQ) {
     solverStr = "UQ (Ultimate Quickest)";
@@ -684,7 +724,7 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
   } else if (config.solver == SolverType::SMC) {
     solverStr = "SMC (Spherical Multiple-Cell)";
   }
-  os << "\n     Solver scheme            : " << solverStr << std::endl;
+  os << "     Solver scheme            : " << solverStr << std::endl;
 
   std::string lnStr = "undefined";
   if (config.linearInput == LinearInputScheme::DoNotUse) {
@@ -732,6 +772,10 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n     Time step                : " << config.timeStep << " s"
      << std::endl;
+  os << "     Number of ranks          : " << config.numRanks << std::endl;
+  os << "     Number of compute ranks  : " << config.numRanksCompute
+     << std::endl;
+  os << "     Actual rank              : " << config.actualRank << std::endl;
 
   os << "\n  Spectral space parameters :" << std::endl;
   os << "\n     Number of directions     : "

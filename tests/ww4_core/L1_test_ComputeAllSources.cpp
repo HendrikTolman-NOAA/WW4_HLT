@@ -1,9 +1,10 @@
+#include "ww4_core/solver_UQ/utils_UQ_IO/test_ugrid_helper.h"
 /**
  *       +--------------------------------------------------------+
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_compute_all_source_terms.cpp
+ * @file L1_test_ComputeAllSources.cpp
  * @brief Unit tests for physical source term calculations (ComputeAllSources).
  * @details Verifies the behavior and interface compliance of ComputeAllSources.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -17,10 +18,10 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-29
+ * @date Last update : 2026-10-16
  */
 
-#include "ww4_core/source_terms/compute_all_source_terms.h"
+#include "ww4_core/source_terms/ComputeAllSources/ComputeAllSources.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
 #include <gtest/gtest.h>
@@ -30,18 +31,24 @@ namespace ww4_core {
 
 class ComputeAllSourcesL1Test : public ::testing::Test {
 protected:
-  void SetUp() override { resetInternalState(); }
+  void SetUp() override {
+    resetInternalState();
+    ww4::test_helpers::createMinimalUgridFile("test_grid.nc", 10, 10);
+  }
 
   void TearDown() override {
     resetInternalState();
     std::remove("ww4_run_config.yaml");
     std::remove("ww4_log.txt");
+    std::remove("test_grid.nc");
   }
 
   void writeYaml(const std::string &inputDiss, const std::string &nlInter,
                  const std::string &linInput = "none",
                  const std::string &botFric = "none", bool sourceTerms = true) {
     std::ofstream runFile("ww4_run_config.yaml");
+    runFile << "grid:\n";
+    runFile << "  grid_file: test_grid.nc\n";
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";

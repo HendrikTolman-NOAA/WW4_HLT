@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-15
+ * @date Last update : 2026-10-28
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -30,11 +30,16 @@ using namespace ww4_utils;
 TEST(RunConfigTest, NonDefaultConfig) {
   const std::string filename = "test_run_nondefault.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: \"test_grid_nondefault.nc\"\n";
   file << "general:\n";
   file << "  calendar_type: \"NoLeap\"\n";
   file << "  produce_std_out: \"no\"\n";
   file << "  produce_log_file: \"no\"\n";
   file << "  time_step: 1800.0\n";
+  file << "  num_ranks: 12\n";
+  file << "  num_ranks_compute: 10\n";
+  file << "  actual_rank: 3\n";
   file << "physics:\n";
   file << "  solver: \"UQ\"\n";
   file << "  linear_input: \"LN1\"\n";
@@ -51,10 +56,14 @@ TEST(RunConfigTest, NonDefaultConfig) {
 
   const auto config = loadRunConfig(filename, std::cerr);
   ASSERT_TRUE(config.has_value());
+  EXPECT_EQ(config->gridFile, "test_grid_nondefault.nc");
   EXPECT_DOUBLE_EQ(config->timeStep, 1800.0);
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::NoLeap);
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_FALSE(config->produceLogFile);
+  EXPECT_EQ(config->numRanks, 12);
+  EXPECT_EQ(config->numRanksCompute, 10);
+  EXPECT_EQ(config->actualRank, 3);
   EXPECT_EQ(config->linearInput, LinearInputScheme::LN1);
   EXPECT_EQ(config->inputDissipation, InputDissipationScheme::ST1);
   EXPECT_EQ(config->nonlinearInteractions, NonlinearScheme::NL3);
@@ -70,11 +79,37 @@ TEST(RunConfigTest, NonDefaultConfig) {
   std::remove(filename.c_str());
 }
 
+TEST(RunConfigTest, GridFileMissingFailure) {
+  const std::string filename = "test_grid_missing.yaml";
+  std::ofstream file(filename);
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: UQ\n";
+  file << "  linear_input: LN1\n";
+  file << "  input_dissipation: ST4\n";
+  file << "  nonlinear_interactions: NL1\n";
+  file << "  bottom_friction: BT1\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file.close();
+
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing or invalid mandatory fields.");
+
+  std::remove(filename.c_str());
+}
+
 TEST(RunConfigTest, SolverSelectionParsing) {
   // Test UQ solver (capitalized)
   {
     const std::string filename = "test_solver_uq_cap.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -107,6 +142,8 @@ TEST(RunConfigTest, SolverSelectionParsing) {
   {
     const std::string filename = "test_solver_tri.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -140,6 +177,8 @@ TEST(RunConfigTest, SolverSelectionParsing) {
   {
     const std::string filename = "test_solver_smc.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -173,6 +212,8 @@ TEST(RunConfigTest, SolverSelectionParsing) {
   {
     const std::string filename = "test_solver_missing.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -198,6 +239,8 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
   {
     const std::string filename = "test_st1_nl1.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -226,6 +269,8 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
   {
     const std::string filename = "test_st4_nl3.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -252,6 +297,8 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
   {
     const std::string filename = "test_donotuse.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -278,6 +325,8 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
   {
     const std::string filename = "test_all_source_terms.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -306,6 +355,8 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
   {
     const std::string filename = "test_missing_input_diss.yaml";
     std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -337,6 +388,8 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
 
   const std::string filename = "test_run_homogeneous.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -395,6 +448,8 @@ TEST(RunConfigTest, SpectralSpaceParametersDefaults) {
 TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   const std::string filename = "test_spectral_custom.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -442,6 +497,8 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
 TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   const std::string filename = "test_spectral_invalid.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -468,6 +525,8 @@ TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
 TEST(RunConfigTest, ScreenOutputLevelConfig) {
   const std::string filename = "test_run_screen_level.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "  screen_output_level: summary\n";
@@ -500,6 +559,8 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
 TEST(RunConfigTest, OutputConfigParsing) {
   const std::string filename = "test_output_parsing.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -551,6 +612,8 @@ TEST(RunConfigTest, OutputConfigParsing) {
 TEST(RunConfigTest, OutputIntervalFailure) {
   const std::string filename = "test_output_interval_failure.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -607,6 +670,8 @@ TEST(RunConfigTest, ReportConfigWithOutputs) {
 TEST(RunConfigTest, NewFlagsConfig) {
   const std::string filename = "test_run_new_flags.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -672,6 +737,8 @@ TEST(RunConfigTest, RobustParsingConfig) {
   std::ofstream file(filename);
   file << "\n";
   file << "  # This is a comment\n";
+  file << "grid:\n";
+  file << "  grid_file : \"test_grid_robust.nc\"\n";
   file << "general:\n";
   file << "  calendar_type   :   \"NoLeap\"   # End of line comment\n";
   file << "  produce_std_out: yes\n";
@@ -756,6 +823,8 @@ TEST(RunConfigTest, ReportConfigStandard) {
 TEST(RunConfigTest, ApiOutputConfig) {
   const std::string filename = "test_api_output.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -852,6 +921,8 @@ TEST(RunConfigTest, MissingFileDefaults) {
 TEST(RunConfigTest, ThreeSixtyDayConfig) {
   const std::string filename = "test_run_360.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  calendar_type: \"ThreeSixtyDay\"\n";
   file << "  time_step: 3600.0\n";
@@ -883,6 +954,8 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
 TEST(RunConfigTest, PartialConfig) {
   const std::string filename = "test_run_partial.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  produce_std_out: \"no\"\n";
   file << "  time_step: 3600.0\n";
@@ -905,13 +978,105 @@ TEST(RunConfigTest, PartialConfig) {
   EXPECT_EQ(config->calendarType, TimeManagement::CalendarType::Standard);
   EXPECT_FALSE(config->produceStdOut);
   EXPECT_TRUE(config->produceLogFile);
+  EXPECT_EQ(config->numRanks, 6);
+  EXPECT_EQ(config->numRanksCompute, 5);
+  EXPECT_EQ(config->actualRank, 0);
 
   std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, RankConfigurationValidationFailure) {
+  // Case 1: num_ranks <= 0
+  {
+    const std::string filename = "test_invalid_num_ranks.yaml";
+    std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "  num_ranks: 0\n";
+    file << "physics:\n";
+    file << "  solver: UQ\n";
+    file << "  linear_input: LN1\n";
+    file << "  input_dissipation: ST4\n";
+    file << "  nonlinear_interactions: NL1\n";
+    file << "  bottom_friction: BT1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+                 "Missing or invalid rank configuration.");
+    std::remove(filename.c_str());
+  }
+
+  // Case 2: actual_rank >= num_ranks
+  {
+    const std::string filename = "test_invalid_actual_rank.yaml";
+    std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "  num_ranks: 4\n";
+    file << "  num_ranks_compute: 3\n";
+    file << "  actual_rank: 4\n";
+    file << "physics:\n";
+    file << "  solver: UQ\n";
+    file << "  linear_input: LN1\n";
+    file << "  input_dissipation: ST4\n";
+    file << "  nonlinear_interactions: NL1\n";
+    file << "  bottom_friction: BT1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+                 "Missing or invalid rank configuration.");
+    std::remove(filename.c_str());
+  }
+
+  // Case 3: num_ranks_compute > num_ranks
+  {
+    const std::string filename = "test_invalid_num_ranks_compute.yaml";
+    std::ofstream file(filename);
+    file << "grid:\n";
+    file << "  grid_file: test_grid.nc\n";
+    file << "general:\n";
+    file << "  time_step: 3600.0\n";
+    file << "  num_ranks: 4\n";
+    file << "  num_ranks_compute: 5\n";
+    file << "  actual_rank: 0\n";
+    file << "physics:\n";
+    file << "  solver: UQ\n";
+    file << "  linear_input: LN1\n";
+    file << "  input_dissipation: ST4\n";
+    file << "  nonlinear_interactions: NL1\n";
+    file << "  bottom_friction: BT1\n";
+    file << "forcing:\n";
+    file << "  water_levels: none\n";
+    file << "  currents: none\n";
+    file << "  winds: none\n";
+    file << "  ice_concentrations: none\n";
+    file.close();
+
+    EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+                 "Missing or invalid rank configuration.");
+    std::remove(filename.c_str());
+  }
 }
 
 TEST(RunConfigTest, TimeStepFailure) {
   const std::string filename = "test_run_time_step_failure.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: -1.0\n";
   file << "physics:\n";
@@ -952,6 +1117,8 @@ TEST(RunConfigTest, MandatoryFieldsFailure) {
 TEST(RunConfigTest, BottomDepthDefault) {
   const std::string filename = "test_run_bottom_depth_default.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -978,6 +1145,8 @@ TEST(RunConfigTest, BottomDepthDefault) {
 TEST(RunConfigTest, BottomDepthOtherOptions) {
   const std::string filename = "test_run_bottom_depth_none.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1004,6 +1173,8 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
 TEST(RunConfigTest, FromGridRejection) {
   const std::string filename = "test_run_from_grid_rejection.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1030,6 +1201,8 @@ TEST(RunConfigTest, FromGridRejection) {
 TEST(RunConfigTest, InputFieldOptionParsing) {
   const std::string filename = "test_input_parsing.yaml";
   std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";

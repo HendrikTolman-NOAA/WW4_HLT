@@ -3,10 +3,10 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file L1_test_solver_uq.cpp
- * @brief Unit tests for the UQ solver module.
+ * @file L1_test_solver_triangular_exec.cpp
+ * @brief Unit tests for the Triangular grid solver module.
  * @details Verifies initialization, adding source terms, and solver execution
- * for SolverRectangularGrid.
+ * for SolverTriangularGrid.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -18,29 +18,27 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-10-15
- * @date Last update : 2026-10-15
+ * @date Last update : 2026-10-26
  */
 
 #include "ww4_core/scheme_factory.h"
-#include "ww4_core/solver_uq/solver_uq.h"
+#include "ww4_core/solver_triangular/solver_triangular_exec.h"
+#include "ww4_core/solver_triangular/solver_triangular_init.h"
 #include <gtest/gtest.h>
 
 namespace ww4_core {
 
-TEST(SolverUQTest, BasicPropertiesAndInit) {
-  SolverRectangularGrid solver;
-  EXPECT_EQ(solver.getName(), "UQ");
+TEST(SolverTriangularTest, BasicPropertiesAndInit) {
+  SolverTriangularGrid solver;
+  EXPECT_EQ(solver.getName(), "Triangular");
 
-  testing::internal::CaptureStdout();
-  w4core_init_uq();
-  std::string output = testing::internal::GetCapturedStdout();
-  (void)output;
-
-  EXPECT_NO_THROW(solver.init());
+  EXPECT_EXIT(solver.init(), ::testing::ExitedWithCode(1),
+              "WW4 ERROR: Triangular unstructured grid reader not yet "
+              "implemented when reading bottom grid.");
 }
 
-TEST(SolverUQTest, SolveAndAddSourceTerm) {
-  SolverRectangularGrid solver;
+TEST(SolverTriangularTest, SolveAndAddSourceTerm) {
+  SolverTriangularGrid solver;
   std::vector<double> data = {1.0, 2.0, 3.0};
 
   // Execution without prior addSourceTerm triggers auto-creation of

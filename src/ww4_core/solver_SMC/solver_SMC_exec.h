@@ -3,7 +3,7 @@
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
  *       +--------------------------------------------------------+
  *
- * @file solver_smc.h
+ * @file solver_SMC_exec.h
  * @brief Header for the SMC grid solver stub.
  * @details Concrete implementation of the ISolver interface using the UK
  * MetOffice SMC grid scheme.
@@ -16,12 +16,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-26
  */
 
 #pragma once
 
 #include "ww4_core/solver.h"
+#include "ww4_core/solver_SMC/solver_SMC_init.h"
 #include "ww4_core/source_term.h"
 #include <iostream>
 #include <memory>
@@ -30,18 +31,6 @@
 
 namespace ww4_core {
 
-// --- w4core_init_smc --------------------------------------------------------
-/**
- * @brief Initialization routine for the Spherical Multiple-Cell (SMC) grid
- * solver.
- * @param os Output stream for logging.
- * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
- */
-void w4core_init_smc(std::ostream &os = std::cout);
-
 // --- SolverSMCGrid ----------------------------------------------------------
 /**
  * @class SolverSMCGrid
@@ -49,7 +38,7 @@ void w4core_init_smc(std::ostream &os = std::cout);
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Last update : 2026-10-22
  */
 class SolverSMCGrid : public ISolver {
 public:
