@@ -81,6 +81,7 @@ add_library(
     src/temp/UQ_domains.cpp
     src/temp/UQ_domains_IO.cpp
     src/temp/UQ_one_domain.cpp
+    src/temp/UQ_grid_mapping.cpp
 )
 target_include_directories(ww4_utils PUBLIC src)
 target_link_libraries(ww4_utils PRIVATE yaml-cpp)
@@ -176,6 +177,7 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_ww4_constants tests/ww4_utils/L1_test_ww4_constants.cpp ww4_utils)
     ww4_add_test(test_UQ_domains tests/ww4_utils/L1_test_UQ_domains.cpp ww4_utils)
     ww4_add_test(test_UQ_one_domain tests/ww4_utils/L1_test_UQ_one_domain.cpp ww4_utils)
+    ww4_add_test(test_UQ_grid_mapping tests/ww4_utils/L1_test_UQ_grid_mapping.cpp ww4_utils)
 
     # Core tests
     ww4_add_test(test_scheme_factory tests/ww4_core/L1_test_scheme_factory.cpp ww4_core)
