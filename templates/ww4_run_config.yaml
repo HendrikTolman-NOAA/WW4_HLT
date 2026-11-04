@@ -35,7 +35,17 @@ general:
   # "full"    : Standard full output for every step.
   screen_output_level: "summary"
 
-  # Mandatory model time step in seconds.
+  # Temporary YAML inputs for testing in-core MPI simulation setup:
+  # Total number of ranks (default: 6).
+  num_ranks: 6
+
+  # Number of compute ranks (must be less than or equal to num_ranks, default: 5).
+  num_ranks_compute: 5
+
+  # Actual rank ID for current process (default: 0).
+  actual_rank: 0
+
+  # Temporary mandatory model time step in seconds.
   # This parameter must be positive and non-zero.
   time_step: 3600.0
 
@@ -104,6 +114,19 @@ physics:
   # Mandatory bottom friction source term selection (no default).
   # Options: "none", "BT1", "BT4"
   bottom_friction: "BT1"
+
+grid:
+  # Mandatory grid input file name (no default).
+  grid_file: "ww4_grid_ugrid.nc"
+
+  # Option for optional printing of metadata from the grid file after reading.
+  # Options: "no" (default), "yes"
+  print_meta: "no"
+
+  # Option to save each consecutive map generated during the iterative
+  # domain decomposition development process to the partition output file.
+  # Options: "no" (default), "yes"
+  intermediate_maps: "no"
 
 forcing:
   # Mandatory input field options.
