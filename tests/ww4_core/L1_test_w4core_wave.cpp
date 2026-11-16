@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-07-09
- * @date Last update : 2026-10-26
+ * @date Initial: 2026-07-09
+ * @date Last update: 2026-10-26
  */
 
 #include "ww4_core/w4core_init.h"

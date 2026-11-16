@@ -16,8 +16,8 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
- * @date Initial, 2026-04-03
- * @date Last update : 2026-11-09
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-11-09
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -40,8 +40,8 @@ namespace {
  * @return A HomogeneousDataPoint if successful.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-28
  */
 std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
   if (s.empty())
@@ -100,8 +100,8 @@ std::optional<HomogeneousDataPoint> parseHomogeneousString(std::string_view s) {
  * @return The corresponding InputFieldOption.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-28
  */
 InputFieldOption parseInputOption(const std::string_view value,
                                   const bool allowFromGrid = false) {
@@ -128,8 +128,8 @@ InputFieldOption parseInputOption(const std::string_view value,
  * @return A string representation of the option.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-28
  */
 std::string inputOptionToString(const InputFieldOption option) {
   switch (option) {
@@ -155,8 +155,8 @@ std::string inputOptionToString(const InputFieldOption option) {
  * @param node The YAML node for the output type.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-28
  */
 void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
   if (!node)
@@ -188,8 +188,8 @@ void parseOutputConfig(OutputConfig &oc, const YAML::Node &node) {
  * @param os Output stream.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-28
  */
 void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
                          std::string_view /*fieldName*/, EchoOption option,
@@ -218,8 +218,8 @@ void echoHomogeneousData(const std::vector<HomogeneousDataPoint> &processed,
  * @param os The output stream to write to.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-10-01
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-10-01
  */
 void reportOutput(const OutputConfig &oc, const std::string_view label,
                   std::ostream &os) {
@@ -253,8 +253,8 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
  * @return A cleaned string view.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-28
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-28
  */
 std::string_view cleanValue(const std::string_view s) {
   const size_t start = s.find_first_not_of(" \t\r\n\"");
@@ -277,8 +277,8 @@ std::string_view cleanValue(const std::string_view s) {
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen
- * @date Initial, 2026-04-03
- * @date Last update : 2026-11-06
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-11-06
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
@@ -684,8 +684,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-03
- * @date Last update : 2026-11-06
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-11-06
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  General settings :" << std::endl;
