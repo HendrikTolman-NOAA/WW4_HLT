@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file UQ_read_grid.h
- * @brief NetCDF-UGRID 1.0 grid file reader function interface for WAVEWATCH
+ * @brief NetCDF-UGRID 1.0 grid file reader subroutine interface for WAVEWATCH
  * IV.
- * @details Header declaring data structures and the readUQgrid function for
+ * @details Header declaring data structures and the readUQgrid subroutine for
  * reading NetCDF-UGRID grid files in WAVEWATCH IV.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-10-27
- * @date Last update: 2026-11-16
+ * @date Last update: 2026-11-09
  */
 
 #pragma once
@@ -146,7 +146,7 @@ struct UgridGrid {
 };
 
 /**
- * @brief Function to read a WAVEWATCH IV NetCDF-UGRID 1.0 grid file using
+ * @brief Subroutine to read a WAVEWATCH IV NetCDF-UGRID 1.0 grid file using
  * netcdf-c API.
  *
  * @details Opens the NetCDF file specified by `filepath` in read-only mode

@@ -5,7 +5,7 @@
  *
  * @file UQ_write_partition.cpp
  * @brief NetCDF partition map writer implementation for WAVEWATCH IV UQ solver.
- * @details Functions to create and populate NetCDF partition map files with
+ * @details Subroutines to create and populate NetCDF partition map files with
  * full grid metadata and one or more partition maps.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-11-03
- * @date Last update: 2026-11-16
+ * @date Last update: 2026-11-09
  */
 
 #include "ww4_core/solver_UQ/utils_UQ_IO/UQ_write_partition.h"
