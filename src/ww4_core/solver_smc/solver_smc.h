@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Initial: 2026-09-15
+ * @date Last update: 2026-09-25
  */
 
 #pragma once
@@ -37,8 +37,8 @@ namespace ww4_core {
  * @param os Output stream for logging.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Initial: 2026-09-15
+ * @date Last update: 2026-09-25
  */
 void w4core_init_smc(std::ostream &os = std::cout);
 
@@ -48,8 +48,8 @@ void w4core_init_smc(std::ostream &os = std::cout);
  * @brief Implementation of the SMC grid solver stub.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-15
- * @date Last update : 2026-09-25
+ * @date Initial: 2026-09-15
+ * @date Last update: 2026-09-25
  */
 class SolverSMCGrid : public ISolver {
 public:

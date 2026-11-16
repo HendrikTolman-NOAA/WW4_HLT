@@ -14,8 +14,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-07-13
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-07-13
+ * @date Last update: 2026-09-29
  */
 
 #include <cstdlib>

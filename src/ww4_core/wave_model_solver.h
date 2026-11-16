@@ -14,8 +14,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
- * @date Last update : 2026-09-25
+ * @date Initial: 2026-06-24
+ * @date Last update: 2026-09-25
  */
 
 #pragma once
@@ -32,8 +32,8 @@ namespace ww4_core {
  * @brief Main engine for the wave model simulation solver.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
- * @date Last update : 2026-09-25
+ * @date Initial: 2026-06-24
+ * @date Last update: 2026-09-25
  */
 class WaveModelSolver {
 public:

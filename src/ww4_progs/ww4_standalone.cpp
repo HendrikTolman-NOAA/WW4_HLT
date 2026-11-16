@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-29
  * @note This program follows the structure of the stand-alone shell
  *       (ww3_shel.F90) in WAVEWATCH III.
  *       Original author of WW3 stand-alone shell: Hendrik L. Tolman.
@@ -40,8 +40,8 @@
  * @return Exit status code (0 for success, non-zero for failure).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-29
  */
 int main(int argc, char **argv) {
   try {

@@ -14,8 +14,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-25
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -61,8 +61,8 @@ void w4core_wave_smc(double timeStep, std::ostream &os = std::cout);
  * @param os Output stream for reporting.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-09-25
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-09-25
  */
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os);

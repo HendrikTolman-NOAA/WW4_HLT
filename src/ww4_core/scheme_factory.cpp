@@ -14,8 +14,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), EJ Rainville
- * @date Initial, 2026-06-24
- * @date Last update : 2026-10-16
+ * @date Initial: 2026-06-24
+ * @date Last update: 2026-10-16
  */
 
 // Scheme Selection and Source-Term Computation (Factory Pattern setup)
@@ -57,8 +57,8 @@ namespace ww4_core {
  * @return Unique pointer to created solver.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-06-24
+ * @date Last update: 2026-09-29
  */
 std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
   if (name == "SolverUQ") {
@@ -80,8 +80,8 @@ std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
  * @return Unique pointer to created source term.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-06-24
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-06-24
+ * @date Last update: 2026-09-29
  */
 std::unique_ptr<ISourceTerm>
 SchemeFactory::createSourceTerm(const std::string &name) {

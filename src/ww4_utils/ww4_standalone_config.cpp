@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
- * @date Initial, 2026-04-02
- * @date Last update : 2026-09-28
+ * @date Initial: 2026-04-02
+ * @date Last update: 2026-09-28
  */
 
 #include "ww4_utils/ww4_standalone_config.h"

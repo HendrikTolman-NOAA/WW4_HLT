@@ -14,8 +14,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-24
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-09-24
+ * @date Last update: 2026-09-29
  */
 
 #include "ww4_core/source_terms/ww4_NL2/ww4_NL2.h"
