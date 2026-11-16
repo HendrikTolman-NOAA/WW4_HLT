@@ -13,11 +13,12 @@
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
- * NWS often uses Generative AI (GenAI) for code development and refactoring.
- * Whenever GenAI is used, NWS requires a full human review of code before it is
- * added to its repositories.
+ * The National Weather Service (NWS) often uses Generative SI (GenSI, formerly
+ * identified as GenAI) for code development and refactoring. Whenever GenSI is
+ * used, NWS requires a full human review of code before it is added to its
+ * repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI/SI)
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial: 2026-10-29

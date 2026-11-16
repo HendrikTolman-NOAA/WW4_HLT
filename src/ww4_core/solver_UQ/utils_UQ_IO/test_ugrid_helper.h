@@ -7,10 +7,14 @@
  * @brief Helper function to create valid minimal NetCDF-UGRID files for
  * testing.
  * @copyright © 2026 National Weather Service, NOAA.
+ * The National Weather Service (NWS) often uses Generative SI (GenSI, formerly
+ * identified as GenAI) for code development and refactoring. Whenever GenSI is
+ * used, NWS requires a full human review of code before it is added to its
+ * repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI/SI)
  * @date Initial: 2026-10-30
- * @date Last update: 2026-11-09
+ * @date Last update: 2026-11-16
  */
 
 #pragma once
