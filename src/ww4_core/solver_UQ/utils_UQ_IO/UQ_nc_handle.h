@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-11-09
- * @date Last update: 2026-11-09
+ * @date Initial, 2026-11-09
+ * @date Last update : 2026-11-09
  */
 
 #pragma once
@@ -33,8 +33,8 @@ namespace ww4::io {
  * upon destruction or reassignment unless explicitly released.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-11-09
- * @date Last update: 2026-11-09
+ * @date Initial, 2026-11-09
+ * @date Last update : 2026-11-09
  */
 class NcHandle {
 public:

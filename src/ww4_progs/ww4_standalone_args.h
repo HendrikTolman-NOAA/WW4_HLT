@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-22
- * @date Last update: 2026-10-22
+ * @date Initial, 2026-10-22
+ * @date Last update : 2026-10-22
  */
 
 #pragma once
@@ -34,8 +34,8 @@ namespace ww4_progs {
  * @details Stores the start and end times for the simulation.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-22
- * @date Last update: 2026-10-22
+ * @date Initial, 2026-10-22
+ * @date Last update : 2026-10-22
  * @var StandaloneArgs::startTime
  * @brief Simulation start time.
  * @var StandaloneArgs::endTime

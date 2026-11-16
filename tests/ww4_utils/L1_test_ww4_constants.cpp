@@ -12,7 +12,7 @@
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
- * @date Initial: 2026-05-21
+ * @date 2026-05-21
  */
 
 #include "ww4_utils/ww4_constants.h"

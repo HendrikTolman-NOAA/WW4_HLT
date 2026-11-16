@@ -16,8 +16,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-01
- * @date Last update: 2026-09-28
+ * @date Initial, 2026-04-01
+ * @date Last update : 2026-09-28
  * @note Converted from WAVEWATCH III (ww3_shel.F90 and ww3_multi.F90).
  *       Original author: Hendrik L. Tolman.
  */
@@ -40,8 +40,8 @@ namespace ww4_logfile {
  * @brief Data structure for tabular log output tracking.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-01
- * @date Last update: 2026-09-28
+ * @date Initial, 2026-04-01
+ * @date Last update : 2026-09-28
  * @var LogTableData::wlUpdated
  * @brief Water level update flag.
  * @var LogTableData::cuUpdated

@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-23
- * @date Last update: 2026-11-09
+ * @date Initial, 2026-10-23
+ * @date Last update : 2026-11-09
  */
 
 #pragma once
@@ -36,8 +36,8 @@ namespace ww4_core {
  * @param[in,out] os Output stream for logging and screen messages.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-22
- * @date Last update: 2026-11-09
+ * @date Initial, 2026-10-22
+ * @date Last update : 2026-11-09
  */
 void solver_SMC_init(std::ostream &os = std::cout);
 

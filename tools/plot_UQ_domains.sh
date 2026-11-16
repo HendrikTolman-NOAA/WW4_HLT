@@ -20,8 +20,8 @@
 # NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
 # @author Main Author(s): Aldgisl (AI Persona), Hendrik Tolman
 # @author Contributors: Jules (Agentic AI)
-# @date Initial: 2026-11-04
-# @date Last update: 2026-11-06
+# @date Initial, 2026-11-04
+# @date Last update : 2026-11-06
 
 # Identify the repository root (parent of the directory containing this script)
 TOOLS_DIR=$(cd "$(dirname "$0")" && pwd)
