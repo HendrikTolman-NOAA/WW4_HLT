@@ -6,7 +6,7 @@
  * @file ww4_service.cpp
  * @brief Common mathematical and physical constants for WAVEWATCH IV
  *        and various service routines.
- * @details This source file holds subroutine codes. The constants
+ * @details This source file holds function codes. The constants
  *          are implemented as constexpr in ww4_constants.h.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -17,7 +17,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-04-10
- * @date Last update: 2026-10-01
+ * @date Last update: 2026-11-16
  */
 
 #include "ww4_utils/ww4_service.h"

@@ -6,7 +6,7 @@
  * @file UQ_one_domain.h
  * @brief Subdomain extraction routine for ultimate quickest (UQ) grids in
  * WAVEWATCH IV (WW4).
- * @details Provides a pure subroutine to extract a reduced grid domain
+ * @details Provides a pure function to extract a reduced grid domain
  * partition including halo cells and associated grid fields for a target
  * partition (derived from WW3 ww3_gspl).
  *
@@ -21,7 +21,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial: 2026-10-29
- * @date Last update: 2026-11-09
+ * @date Last update: 2026-11-16
  */
 
 #pragma once
@@ -35,7 +35,7 @@ namespace ww4_core::solver_UQ {
 // --- extractOneDomain -------------------------------------------------------
 /**
  * @brief Extracts a single reduced sub-domain partition grid with halo cells.
- * @details Pure subroutine that identifies the spatial bounding box of active
+ * @details Pure function that identifies the spatial bounding box of active
  * sea points assigned to target_partition in partition_map, expands the
  * bounding box by halo_width cells in all cardinal directions (clamped to
  * global grid boundaries or wrapped across 360-degree longitudinal boundary if
