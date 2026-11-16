@@ -6,7 +6,7 @@
  * @file UQ_domain_topology.h
  * @brief Internal domain topology and graph analysis tools for UQ grid
  * partitioning.
- * @details Provides subroutines for neighbor identification, disconnected piece
+ * @details Provides functions for neighbor identification, disconnected piece
  * detection, boundary extraction, protrusion cleanup, and grid extension
  * smoothing.
  *
@@ -21,7 +21,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial: 2026-11-09
- * @date Last update: 2026-11-09
+ * @date Last update: 2026-11-16
  */
 
 #pragma once
