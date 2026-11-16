@@ -5,7 +5,7 @@
  *
  * @file ww4_LN1.cpp
  * @brief Implementation of LN1 linear input source term calculations.
- * @details Concrete subroutine for LN1 linear input source terms.
+ * @details Concrete function for LN1 linear input source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -15,7 +15,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-09-24
- * @date Last update: 2026-09-29
+ * @date Last update: 2026-11-16
  */
 
 #include "ww4_core/source_terms/ww4_LN1/ww4_LN1.h"

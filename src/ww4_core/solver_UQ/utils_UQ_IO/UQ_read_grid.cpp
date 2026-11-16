@@ -6,7 +6,7 @@
  * @file UQ_read_grid.cpp
  * @brief NetCDF-UGRID 1.0 grid file reader implementation using netcdf-c for
  * WAVEWATCH IV.
- * @details Subroutine implementation for reading NetCDF-UGRID grid files in
+ * @details Function implementation for reading NetCDF-UGRID grid files in
  * WAVEWATCH IV. Checks for file existence (status 1), metadata parsing success
  * (status 2), and complete dataset reading (status 3).
  *
@@ -19,7 +19,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-10-27
- * @date Last update: 2026-11-09
+ * @date Last update: 2026-11-16
  */
 
 #include "ww4_core/solver_UQ/utils_UQ_IO/UQ_read_grid.h"
