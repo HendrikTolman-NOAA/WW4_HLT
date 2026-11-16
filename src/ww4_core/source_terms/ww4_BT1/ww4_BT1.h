@@ -14,8 +14,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-24
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-09-24
+ * @date Last update: 2026-09-29
  */
 
 #pragma once
@@ -31,8 +31,8 @@ namespace ww4_core {
  * @brief Implementation of BT1 bottom friction source terms.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-09-24
- * @date Last update : 2026-09-29
+ * @date Initial: 2026-09-24
+ * @date Last update: 2026-09-29
  */
 class SourceTermBT1 : public ISourceTerm {
 public:

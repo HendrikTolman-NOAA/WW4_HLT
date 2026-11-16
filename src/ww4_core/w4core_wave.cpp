@@ -14,8 +14,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-10-26
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -41,8 +41,8 @@ namespace ww4_core {
  * @param os Output stream.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-10-26
  */
 void solver_UQ_exec(double timeStep, std::ostream &os) {
   (void)timeStep;
@@ -60,8 +60,8 @@ void solver_UQ_exec(double timeStep, std::ostream &os) {
  * @param os Output stream.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-10-26
  */
 void solver_triangular_exec(double timeStep, std::ostream &os) {
   (void)timeStep;
@@ -79,8 +79,8 @@ void solver_triangular_exec(double timeStep, std::ostream &os) {
  * @param os Output stream.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-10-26
  */
 void solver_SMC_exec(double timeStep, std::ostream &os) {
   (void)timeStep;
@@ -102,8 +102,8 @@ void solver_SMC_exec(double timeStep, std::ostream &os) {
  * @param os Output stream for reporting.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Initial: 2026-04-03
+ * @date Last update: 2026-10-26
  */
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os) {

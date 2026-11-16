@@ -16,8 +16,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Hendrik L. Tolman, Jules (Agentic AI)
- * @date Initial, 2026-03-11
- * @date Last update : 2026-10-22
+ * @date Initial: 2026-03-11
+ * @date Last update: 2026-10-22
  */
 
 #include "ww4_utils/time_management.h"
