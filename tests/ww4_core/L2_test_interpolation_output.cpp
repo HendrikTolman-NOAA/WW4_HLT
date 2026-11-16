@@ -14,8 +14,8 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Contributors: Jules (Agentic AI)
- * @date 2026-05-01
- * @date Last update : 2026-06-18
+ * @date Initial: 2026-05-01
+ * @date Last update: 2026-06-18
  */
 
 #include "ww4_core/w4core_finalize.h"
