@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-11-04
- * @date Last update: 2026-11-04
+ * @date Initial, 2026-11-04
+ * @date Last update : 2026-11-04
  */
 
 #include "ww4_core/solver_UQ/utils_UQ_IO/test_ugrid_helper.h"

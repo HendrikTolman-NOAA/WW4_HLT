@@ -16,8 +16,8 @@
  * human review of code before it is added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 
 #pragma once
@@ -37,8 +37,8 @@ namespace ww4_utils {
  * @brief Spatial grid topology classifications in WAVEWATCH IV.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  * @var GridType::Undefined
  * @brief Grid type not yet set or defined.
  * @var GridType::Rectangular
@@ -60,8 +60,8 @@ enum class GridType { Undefined, Rectangular, Triangular, SMC };
  * SMC).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 struct SharedGridData {
   GridType gridType = GridType::Undefined;
@@ -152,8 +152,8 @@ struct SharedGridData {
  *          spatial step increments, and optional non-uniform spacing vectors.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 struct RectangularGridData {
   std::size_t nx = 0;
@@ -198,8 +198,8 @@ struct RectangularGridData {
  * neighbor relations, element areas, and edge lengths.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 struct TriangularGridData {
   std::string meshTopologyName;
@@ -278,8 +278,8 @@ struct TriangularGridData {
  * extents, and area factor.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 struct SMCCell {
   std::size_t cellId = 0;
@@ -300,8 +300,8 @@ struct SMCCell {
  *          transition linkages (i-face and j-face mapping tables).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 struct SMCGridData {
   std::size_t baseNx = 0;
@@ -360,8 +360,8 @@ using SpecificGridData = std::variant<std::monostate, RectangularGridData,
  *          for the complete spatial domain.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 struct FullGrid {
   SharedGridData shared;
@@ -495,8 +495,8 @@ struct FullGrid {
  *          counts, and local-to-global cell index mappings.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-21
- * @date Last update: 2026-10-21
+ * @date Initial, 2026-10-21
+ * @date Last update : 2026-10-21
  */
 struct LocalGridPartition {
   SharedGridData shared;

@@ -21,8 +21,8 @@
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-10-23
- * @date Last update: 2026-11-09
+ * @date Initial, 2026-10-23
+ * @date Last update : 2026-11-09
  */
 
 #include "ww4_core/solver_UQ/solver_UQ_init.h"

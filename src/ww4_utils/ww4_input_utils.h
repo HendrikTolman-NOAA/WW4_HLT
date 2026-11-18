@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-21
- * @date Last update: 2026-10-01
+ * @date Initial, 2026-04-21
+ * @date Last update : 2026-10-01
  */
 
 #pragma once
@@ -36,8 +36,8 @@ namespace ww4_utils {
  * @brief Types of model inputs for time management.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-21
- * @date Last update: 2026-09-28
+ * @date Initial, 2026-04-21
+ * @date Last update : 2026-09-28
  * @var InputType::WaterLevels
  * @brief Water levels input.
  * @var InputType::Currents
@@ -63,8 +63,8 @@ enum class InputType {
  * @brief Structure to hold time tags for model inputs.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-21
- * @date Last update: 2026-09-28
+ * @date Initial, 2026-04-21
+ * @date Last update : 2026-09-28
  * @var intTimeData::time1
  * @brief First time tag.
  * @var intTimeData::time2
@@ -84,8 +84,8 @@ struct intTimeData {
  * @brief Structure to hold model time and time step information.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-21
- * @date Last update: 2026-09-28
+ * @date Initial, 2026-04-21
+ * @date Last update : 2026-09-28
  * @var waveTimeData::timeStep
  * @brief Model time step.
  * @var waveTimeData::modelTime
@@ -117,8 +117,8 @@ struct waveTimeData {
  * @brief Tracking state for input interpolation reporting.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-21
- * @date Last update: 2026-09-28
+ * @date Initial, 2026-04-21
+ * @date Last update : 2026-09-28
  * @var InputUpdateState::lastWlTime1
  * @brief Last reported time1 for water levels.
  * @var InputUpdateState::lastWlTime2

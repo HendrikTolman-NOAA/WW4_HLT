@@ -15,8 +15,8 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-09
- * @date Last update: 2026-10-01
+ * @date Initial, 2026-04-09
+ * @date Last update : 2026-10-01
  */
 
 #pragma once
@@ -34,8 +34,8 @@ namespace ww4_utils {
  *          calculated from the dispersion relation.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-04-09
- * @date Last update: 2026-09-28
+ * @date Initial, 2026-04-09
+ * @date Last update : 2026-09-28
  * @var Dispersion::k
  * @brief Wavenumber (rad/m).
  * @var Dispersion::cg

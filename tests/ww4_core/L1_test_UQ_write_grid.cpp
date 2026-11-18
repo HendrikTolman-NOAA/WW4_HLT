@@ -15,8 +15,8 @@
  * human review of code before it is added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
- * @date Initial: 2026-11-03
- * @date Last update: 2026-11-03
+ * @date Initial, 2026-11-03
+ * @date Last update : 2026-11-03
  */
 
 #include "ww4_core/solver_UQ/utils_UQ_IO/UQ_write_grid.h"
