@@ -5,7 +5,7 @@
  *
  * @file UQ_read_partition.h
  * @brief NetCDF partition map reader tools for WAVEWATCH IV UQ solver.
- * @details Header declaring data structures and functions to read a NetCDF
+ * @details Header declaring data structures and subroutines to read a NetCDF
  * partition map file, with error capturing conforming to readUQgrid
  * conventions. If multiple partition maps are present in the file, outputs the
  * last map stored in the file.
@@ -19,7 +19,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-11-03
- * @date Last update: 2026-11-16
+ * @date Last update: 2026-11-09
  */
 
 #pragma once

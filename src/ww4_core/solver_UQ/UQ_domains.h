@@ -6,7 +6,7 @@
  * @file UQ_domains.h
  * @brief Domain partitioning routines for ultimate quickest (UQ) grids in
  * WAVEWATCH IV (WW4).
- * @details Provides pure functions to partition full UQ structured grids into
+ * @details Provides pure subroutines to partition full UQ structured grids into
  * sub-domains based on active sea points (derived from WW3 ww3_gspl).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -20,7 +20,7 @@
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial: 2026-10-14
- * @date Last update: 2026-11-16
+ * @date Last update: 2026-11-09
  */
 
 #pragma once
@@ -50,7 +50,7 @@ struct DomainPartition {
  * @brief Partitions a full UQ rectangular grid into sub-domains based on
  * active sea points.
  * @details Implements recursive bisection followed by iterative boundary
- * refinement (derived from WW3 ww3_gspl) as a pure function where all inputs
+ * refinement (derived from WW3 ww3_gspl) as a pure subroutine where all inputs
  * and outputs pass strictly through the function interface. Distributes sea
  * points evenly across target partitions while forming spatially contiguous
  * sub-domain blocks.

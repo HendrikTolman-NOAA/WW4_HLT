@@ -6,7 +6,7 @@
  * @file UQ_write_grid.cpp
  * @brief NetCDF-UGRID 1.0 grid file writer implementation using netcdf-c for
  * WAVEWATCH IV.
- * @details Function implementation for writing NetCDF-UGRID grid files in
+ * @details Subroutine implementation for writing NetCDF-UGRID grid files in
  * WAVEWATCH IV that conform to UGRID-1.0 and can be ingested by readUQgrid.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -18,7 +18,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)
  * @date Initial: 2026-11-03
- * @date Last update: 2026-11-16
+ * @date Last update: 2026-11-09
  */
 
 #include "ww4_core/solver_UQ/utils_UQ_IO/UQ_write_grid.h"
