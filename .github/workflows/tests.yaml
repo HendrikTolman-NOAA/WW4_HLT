@@ -21,7 +21,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -B build -S . -DCMAKE_CXX_COMPILER=g++-13 -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -S . -DCMAKE_CXX_COMPILER=g++-13 -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
       - name: Build
         run: |
