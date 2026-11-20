@@ -14,8 +14,8 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner, Kiro
- * (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
+ *                       Kiro (Agentic AI)
  * @date Initial, 2026-07-13
  * @date Last update : 2026-11-20
  */
@@ -71,6 +71,7 @@ TEST_F(WW4StandaloneL1Test, ValidArgsSucceeds) {
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n"
           << "  grid_file: \"test_grid.nc\"\n"
+          << "  grid_type: \"rectilinear\"\n"
           << "general:\n"
           << "  calendar_type: \"Standard\"\n"
           << "  produce_std_out: \"no\"\n"

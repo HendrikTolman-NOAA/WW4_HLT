@@ -15,9 +15,9 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
- *                       Ming Chen
+ *                       Ming Chen, Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-20
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -289,6 +289,16 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     // === Grid section ========================================================
     if (const auto node = config_node["grid"]) {
+      if (node["grid_type"]) {
+        const auto gridStr = cleanValue(node["grid_type"].as<std::string>());
+        if (gridStr == "rectilinear") {
+          config.gridType = GridType::Rectangular;
+        } else if (gridStr == "triangular") {
+          config.gridType = GridType::Triangular;
+        } else if (gridStr == "SMC") {
+          config.gridType = GridType::SMC;
+        }
+      }
       if (node["grid_file"]) {
         config.gridFile = cleanValue(node["grid_file"].as<std::string>());
       }
@@ -394,12 +404,16 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
       if (node["solver"]) {
         const auto solverStr = node["solver"].as<std::string>();
-        if (solverStr == "UQ") {
+        if (solverStr == "1UP") {
+          config.solver = SolverType::OneUP;
+        } else if (solverStr == "UQ") {
           config.solver = SolverType::UQ;
-        } else if (solverStr == "triangular") {
-          config.solver = SolverType::Triangular;
-        } else if (solverStr == "SMC") {
-          config.solver = SolverType::SMC;
+        } else if (solverStr == "implicit") {
+          config.solver = SolverType::Implicit;
+        } else if (solverStr == "explicit") {
+          config.solver = SolverType::Explicit;
+        } else if (solverStr == "UKMET") {
+          config.solver = SolverType::UKMET;
         }
       }
       if (node["input_dissipation"]) {
@@ -569,7 +583,13 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // === Mandatory fields check ==============================================
-    if (config.gridFile.empty() || config.solver == SolverType::Undefined ||
+    // A solver is only valid if it is available on the selected grid type
+    const bool solverInvalid =
+        config.solver == SolverType::Undefined ||
+        (config.gridType != GridType::Undefined &&
+         !isSolverAvailableOnGrid(config.gridType, config.solver));
+    if (config.gridType == GridType::Undefined || config.gridFile.empty() ||
+        solverInvalid ||
         config.inputDissipation == InputDissipationScheme::Undefined ||
         config.nonlinearInteractions == NonlinearScheme::Undefined ||
         config.linearInput == LinearInputScheme::Undefined ||
@@ -583,10 +603,16 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
             "invalid "
             "in configuration."
          << std::endl;
+      if (config.gridType == GridType::Undefined)
+        os << "   Missing/invalid: grid -> grid_type" << std::endl;
       if (config.gridFile.empty())
         os << "   Missing/invalid: grid -> grid_file" << std::endl;
       if (config.solver == SolverType::Undefined)
         os << "   Missing/invalid: physics -> solver" << std::endl;
+      else if (solverInvalid)
+        os << "   Missing/invalid: physics -> solver (not available for "
+              "selected grid -> grid_type)"
+           << std::endl;
       if (config.inputDissipation == InputDissipationScheme::Undefined)
         os << "   Missing/invalid: physics -> input_dissipation" << std::endl;
       if (config.nonlinearInteractions == NonlinearScheme::Undefined)
@@ -746,7 +772,16 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Configuration settings :" << std::endl;
 
-  os << "\n     Grid file name           : "
+  std::string gridTypeStr = "undefined";
+  if (config.gridType == GridType::Rectangular) {
+    gridTypeStr = "rectilinear (regular grid)";
+  } else if (config.gridType == GridType::Triangular) {
+    gridTypeStr = "triangular (unstructured grid)";
+  } else if (config.gridType == GridType::SMC) {
+    gridTypeStr = "SMC (Spherical Multiple-Cell)";
+  }
+  os << "\n     Grid type                : " << gridTypeStr << std::endl;
+  os << "     Grid file name           : "
      << (config.gridFile.empty() ? "none" : config.gridFile) << std::endl;
   os << "     Print grid metadata      : "
      << (config.printGridMeta ? "yes" : "no") << std::endl;
@@ -756,12 +791,16 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << (config.writeLocalGrid ? "yes" : "no") << std::endl;
 
   std::string solverStr = "undefined";
-  if (config.solver == SolverType::UQ) {
+  if (config.solver == SolverType::OneUP) {
+    solverStr = "1UP (first-order upwind)";
+  } else if (config.solver == SolverType::UQ) {
     solverStr = "UQ (Ultimate Quickest)";
-  } else if (config.solver == SolverType::Triangular) {
-    solverStr = "triangular (unstructured grid)";
-  } else if (config.solver == SolverType::SMC) {
-    solverStr = "SMC (Spherical Multiple-Cell)";
+  } else if (config.solver == SolverType::Implicit) {
+    solverStr = "implicit";
+  } else if (config.solver == SolverType::Explicit) {
+    solverStr = "explicit";
+  } else if (config.solver == SolverType::UKMET) {
+    solverStr = "UKMET (UK MetOffice)";
   }
   os << "     Solver scheme            : " << solverStr << std::endl;
 

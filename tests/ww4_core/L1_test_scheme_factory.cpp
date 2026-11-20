@@ -23,6 +23,7 @@
  */
 
 #include "ww4_core/scheme_factory.h"
+#include "ww4_utils/ww4_run_config.h"
 #include <gtest/gtest.h>
 #include <string>
 #include <utility>
@@ -114,6 +115,31 @@ TEST(SchemeFactoryTest, CreateSubSourceTerms) {
   auto bt4 = SchemeFactory::createSourceTerm("BT4");
   ASSERT_NE(bt4, nullptr);
   EXPECT_EQ(bt4->getName(), "BT4");
+}
+
+TEST(SchemeFactoryTest, GridSolverTableMatchesRunConfig) {
+  // The run-time configuration check (ww4_utils::isSolverAvailableOnGrid)
+  // must agree with the solvers each grid can create.
+  using ww4_utils::GridType;
+  using ww4_utils::SolverType;
+  const std::vector<std::pair<std::string, GridType>> grids = {
+      {"rectilinear", GridType::Rectangular},
+      {"triangular", GridType::Triangular},
+      {"SMC", GridType::SMC}};
+  const std::vector<std::pair<std::string, SolverType>> solvers = {
+      {"1UP", SolverType::OneUP},
+      {"UQ", SolverType::UQ},
+      {"implicit", SolverType::Implicit},
+      {"explicit", SolverType::Explicit},
+      {"UKMET", SolverType::UKMET}};
+  for (const auto &[gridName, gridType] : grids) {
+    const auto grid = SchemeFactory::createGrid(gridName);
+    for (const auto &[solverName, solverType] : solvers) {
+      EXPECT_EQ(grid->hasSolver(solverName),
+                ww4_utils::isSolverAvailableOnGrid(gridType, solverType))
+          << gridName << " / " << solverName;
+    }
+  }
 }
 
 TEST(SchemeFactoryTest, CreateUnknownGrid) {

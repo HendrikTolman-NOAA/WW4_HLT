@@ -46,6 +46,7 @@ protected:
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "grid:\n";
     runFile << "  grid_file: test_grid.nc\n";
+    runFile << "  grid_type: rectilinear\n";
     runFile << "general:\n";
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 1800.0\n";

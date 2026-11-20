@@ -53,9 +53,9 @@ ww4_utils::waveTimeData waveTimeData;
  * @param programName Name of the program to identify in output banners.
  * @param os Output stream for reporting.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  */
 void w4core_init(const ww4_utils::DateTime &startTime,
                  std::string_view programName, std::ostream &os) {
@@ -125,22 +125,24 @@ void w4core_init(const ww4_utils::DateTime &startTime,
                                    __FILE__, __LINE__);
   }
 
-  // === Initialize numerical solver ==========================================
-  switch (globalRunConfig.solver) {
-  case ww4_utils::SolverType::UQ:
+  // === Initialize grid (grid ingestion and domain decomposition) ===========
+  // The solver is selected per grid type; its availability on the selected
+  // grid has been verified when loading the run-time configuration.
+  switch (globalRunConfig.gridType) {
+  case ww4_utils::GridType::Rectangular:
     grid_rectilinear_init(os);
     break;
-  case ww4_utils::SolverType::Triangular:
+  case ww4_utils::GridType::Triangular:
     grid_triangular_init(os);
     break;
-  case ww4_utils::SolverType::SMC:
+  case ww4_utils::GridType::SMC:
     grid_SMC_init(os);
     break;
   default:
     // Explanatory comment preceding __FILE__ and __LINE__
-    // Terminate execution on invalid solver configuration
+    // Terminate execution on invalid grid type configuration
     ww4_utils::ww4_std_out::extcde(
-        1, os, "No numerical solver specified or unknown solver.", __FILE__,
+        1, os, "No grid type specified or unknown grid type.", __FILE__,
         __LINE__);
     break;
   }
