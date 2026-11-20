@@ -86,7 +86,7 @@ sequenceDiagram
     INIT->>UTILS: setCalendarType()
     INIT->>UTILS: ww4_input_update()
     INIT->>UTILS: writeInitialOutput()
-    Note over INIT: grid_<grid_type>_init()<br/>(rectilinear / triangular / SMC)
+    Note over INIT: grid_{grid_type}_init()<br/>(rectilinear / triangular / SMC)
     INIT->>UTILS: writeLogTableHeader()
 
     SA->>WAVE: w4core_wave(startTime, endTime)
@@ -96,7 +96,7 @@ sequenceDiagram
         WAVE->>UTILS: computeInputTimeStep()
         WAVE->>UTILS: computeOutputTimeStep()
         WAVE->>UTILS: updateOutputActualTimes()
-        Note over WAVE: Propagate Solution<br/>solver_<grid>_<solver>_exec()
+        Note over WAVE: Propagate Solution<br/>solver_{grid}_{solver}_exec()
     end
 
     SA->>FINL: w4core_finalize(endTime)
