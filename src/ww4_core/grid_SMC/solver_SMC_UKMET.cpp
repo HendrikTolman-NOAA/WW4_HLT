@@ -4,8 +4,10 @@
  *       +--------------------------------------------------------+
  *
  * @file solver_SMC_UKMET.cpp
- * @brief Implementation of the SMC grid solver execution.
- * @details Concrete implementation of the ISolver interface for SMC grids.
+ * @brief Implementation of the UKMET solver for the Spherical Multiple-Cell
+ * (SMC) grid.
+ * @details Propagation step for the UK MetOffice (UKMET) propagation scheme;
+ *          source terms via SolverBase.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -19,37 +21,19 @@
  */
 
 #include "ww4_core/grid_SMC/solver_SMC_UKMET.h"
-#include "ww4_core/grid_SMC/grid_SMC_init.h"
-#include "ww4_core/scheme_factory.h"
-#include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
-// --- init -------------------------------------------------------------------
-void SolverSMCGrid::init() { grid_SMC_init(); }
-
-// --- addSourceTerm ----------------------------------------------------------
-void SolverSMCGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
-  if (source) {
-    sourceTerms_.push_back(std::move(source));
-  }
-}
-
 // --- solve ------------------------------------------------------------------
-void SolverSMCGrid::solve(std::span<double> data) {
+void SolverSMCUKMET::solve(std::span<double> data) {
   // === Perform numerical propagation =======================================
   std::for_each(data.begin(), data.end(), [](double &val) {
     val *= 1.03; // Mock propagation effect
   });
 
   // === Call integrated source terms ==========================================
-  if (sourceTerms_.empty()) {
-    addSourceTerm(SchemeFactory::createSourceTerm("ComputeAllSources"));
-  }
-  for (auto &source : sourceTerms_) {
-    source->calculate(data);
-  }
+  applySourceTerms(data);
 }
 
 } // namespace ww4_core

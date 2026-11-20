@@ -4,8 +4,10 @@
  *       +--------------------------------------------------------+
  *
  * @file solver_rectilinear_UQ.h
- * @brief Header for the Ultimate Quickest (UQ) regular grid solver.
- * @details Concrete implementation of the ISolver interface using UQ dynamics.
+ * @brief UQ solver for the rectilinear grid.
+ * @details Concrete ISolver for the rectilinear grid using the Ultimate
+ *          Quickest (UQ) propagation scheme. Source terms are handled by
+ *          SolverBase.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -20,33 +22,26 @@
 
 #pragma once
 
-#include "ww4_core/grid_rectilinear/grid_rectilinear_init.h"
-#include "ww4_core/solver.h"
-#include "ww4_core/source_term.h"
-#include <iostream>
-#include <memory>
+#include "ww4_core/solver_base.h"
 #include <span>
-#include <vector>
+#include <string_view>
 
 namespace ww4_core {
 
-// --- SolverRectangularGrid --------------------------------------------------
+// --- SolverRectilinearUQ ----------------------------------------------------
 /**
- * @class SolverRectangularGrid
- * @brief Implementation of the UQ solver for regular grids.
- * @details Implements the ISolver lifecycle methods (init, solve,
- * addSourceTerm) for regular rectangular grids under the Ultimate Quickest
- * advection scheme.
+ * @class SolverRectilinearUQ
+ * @brief UQ solver for the rectilinear grid.
+ * @details Advances the model state on the rectilinear grid using the Ultimate
+ *          Quickest (UQ) propagation scheme (mock propagation placeholder),
+ *          then applies the shared source terms.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-20
  */
-class SolverRectangularGrid : public ISolver {
+class SolverRectilinearUQ : public SolverBase {
 public:
-  SolverRectangularGrid() = default;
-  ~SolverRectangularGrid() override = default;
-
   /**
    * @brief Retrieves the solver scheme name.
    * @return String view representing the solver name ("UQ").
@@ -56,25 +51,10 @@ public:
   }
 
   /**
-   * @brief Registers an external physical source term component.
-   * @param[in] source Unique pointer to an ISourceTerm implementation.
-   */
-  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
-
-  /**
-   * @brief Initializes the solver using grid_rectilinear_init.
-   */
-  void init() override;
-
-  /**
    * @brief Executes wave action propagation and evaluates source terms.
    * @param[in,out] data Span of wave action spectrum data values.
    */
   void solve(std::span<double> data) override;
-
-private:
-  /// Registered physical source terms evaluated during execution
-  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
 };
 
 } // namespace ww4_core

@@ -19,12 +19,12 @@
  * @date Last update : 2026-11-20
  */
 
+#include "ww4_core/grid_SMC/grid_SMC.h"
 #include "ww4_core/grid_SMC/grid_SMC_init.h"
-#include "ww4_core/grid_SMC/solver_SMC_UKMET.h"
+#include "ww4_core/grid_rectilinear/grid_rectilinear.h"
 #include "ww4_core/grid_rectilinear/grid_rectilinear_init.h"
-#include "ww4_core/grid_rectilinear/solver_rectilinear_UQ.h"
+#include "ww4_core/grid_triangular/grid_triangular.h"
 #include "ww4_core/grid_triangular/grid_triangular_init.h"
-#include "ww4_core/grid_triangular/solver_triangular_implicit.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
 #include <gtest/gtest.h>
@@ -143,17 +143,17 @@ TEST_F(W4CoreInitTest, SolverInitRoutines) {
       "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
       "grid.");
 
-  SolverRectangularGrid uq;
-  uq.init();
+  GridRectilinear rectilinear;
+  rectilinear.init(ss);
 
-  SolverTriangularGrid triangular;
-  EXPECT_EXIT(triangular.init(), ::testing::ExitedWithCode(1),
+  GridTriangular triangular;
+  EXPECT_EXIT(triangular.init(std::cerr), ::testing::ExitedWithCode(1),
               "WW4 ERROR: Triangular unstructured grid reader not yet "
               "implemented when reading bottom grid.");
 
-  SolverSMCGrid smc;
+  GridSMC smc;
   EXPECT_EXIT(
-      smc.init(), ::testing::ExitedWithCode(1),
+      smc.init(std::cerr), ::testing::ExitedWithCode(1),
       "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
       "grid.");
 }

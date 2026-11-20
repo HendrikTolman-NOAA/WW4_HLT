@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file solver_triangular_implicit.h
- * @brief Header for the triangular unstructured grid solver.
- * @details Concrete implementation of the ISolver interface using triangular
- * grid approach.
+ * @brief implicit solver for the triangular unstructured grid.
+ * @details Concrete ISolver for the triangular unstructured grid using the
+ *          implicit propagation scheme. Source terms are handled by SolverBase.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -21,60 +21,39 @@
 
 #pragma once
 
-#include "ww4_core/grid_triangular/grid_triangular_init.h"
-#include "ww4_core/solver.h"
-#include "ww4_core/source_term.h"
-#include <iostream>
-#include <memory>
+#include "ww4_core/solver_base.h"
 #include <span>
-#include <vector>
+#include <string_view>
 
 namespace ww4_core {
 
-// --- SolverTriangularGrid ---------------------------------------------------
+// --- SolverTriangularImplicit -----------------------------------------------
 /**
- * @class SolverTriangularGrid
- * @brief Implementation of the triangular unstructured grid solver.
- * @details Implements the ISolver lifecycle methods (init, solve,
- * addSourceTerm) for triangular unstructured grids.
+ * @class SolverTriangularImplicit
+ * @brief implicit solver for the triangular unstructured grid.
+ * @details Advances the model state on the triangular unstructured grid using
+ *          the implicit propagation scheme (mock propagation placeholder), then
+ *          applies the shared source terms.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-09-15
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-20
  */
-class SolverTriangularGrid : public ISolver {
+class SolverTriangularImplicit : public SolverBase {
 public:
-  SolverTriangularGrid() = default;
-  ~SolverTriangularGrid() override = default;
-
   /**
    * @brief Retrieves the solver scheme name.
-   * @return String view representing the solver name ("Triangular").
+   * @return String view representing the solver name ("implicit").
    */
   [[nodiscard]] std::string_view getName() const noexcept override {
-    return "Triangular";
+    return "implicit";
   }
-
-  /**
-   * @brief Registers an external physical source term component.
-   * @param[in] source Unique pointer to an ISourceTerm implementation.
-   */
-  void addSourceTerm(std::unique_ptr<ISourceTerm> source) override;
-
-  /**
-   * @brief Initializes the solver using grid_triangular_init.
-   */
-  void init() override;
 
   /**
    * @brief Executes wave action propagation and evaluates source terms.
    * @param[in,out] data Span of wave action spectrum data values.
    */
   void solve(std::span<double> data) override;
-
-private:
-  /// Registered physical source terms evaluated during execution
-  std::vector<std::unique_ptr<ISourceTerm>> sourceTerms_;
 };
 
 } // namespace ww4_core

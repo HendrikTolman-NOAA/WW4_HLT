@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file L1_test_solver_SMC_UKMET.cpp
- * @brief Unit tests for the SMC grid solver module.
- * @details Verifies initialization, adding source terms, and solver execution
- * for SolverSMCGrid.
+ * @brief Unit tests for the UKMET solver on the SMC grid.
+ * @details Verifies name, adding source terms, and solver execution
+ *          for SolverSMCUKMET.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -21,31 +21,32 @@
  * @date Last update : 2026-11-20
  */
 
-#include "ww4_core/grid_SMC/grid_SMC_init.h"
 #include "ww4_core/grid_SMC/solver_SMC_UKMET.h"
 #include "ww4_core/scheme_factory.h"
 #include <gtest/gtest.h>
+#include <vector>
 
 namespace ww4_core {
 
-TEST(SolverSMCTest, BasicPropertiesAndInit) {
-  SolverSMCGrid solver;
-  EXPECT_EQ(solver.getName(), "SMC");
-
-  EXPECT_EXIT(
-      solver.init(), ::testing::ExitedWithCode(1),
-      "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
-      "grid.");
+TEST(SolverSMCUKMETTest, BasicProperties) {
+  SolverSMCUKMET solver;
+  EXPECT_EQ(solver.getName(), "UKMET");
+  // Solver-specific initialization is a no-op; grid ingestion is done by the
+  // grid (SMC).
+  EXPECT_NO_THROW(solver.init());
 }
 
-TEST(SolverSMCTest, SolveAndAddSourceTerm) {
-  SolverSMCGrid solver;
+TEST(SolverSMCUKMETTest, SolveAndAddSourceTerm) {
+  SolverSMCUKMET solver;
   std::vector<double> data = {1.0, 2.0, 3.0};
 
   // Execution without prior addSourceTerm triggers auto-creation of
-  // ComputeAllSources
+  // ComputeAllSources (shared SolverBase behavior)
   solver.solve(data);
   EXPECT_GT(data[0], 1.0);
+
+  // Null source terms are ignored
+  EXPECT_NO_THROW(solver.addSourceTerm(nullptr));
 
   // Explicitly add source term and solve again
   auto source = SchemeFactory::createSourceTerm("ST1");

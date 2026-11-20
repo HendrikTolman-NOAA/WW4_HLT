@@ -4,8 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file solver_rectilinear_UQ.cpp
- * @brief Implementation of the UQ solver execution.
- * @details Concrete implementation of the ISolver interface for regular grids.
+ * @brief Implementation of the UQ solver for the rectilinear grid.
+ * @details Propagation step for the Ultimate Quickest (UQ) propagation scheme;
+ *          source terms via SolverBase.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -19,37 +20,19 @@
  */
 
 #include "ww4_core/grid_rectilinear/solver_rectilinear_UQ.h"
-#include "ww4_core/grid_rectilinear/grid_rectilinear_init.h"
-#include "ww4_core/scheme_factory.h"
-#include "ww4_core/w4core_init.h"
 #include <algorithm>
 
 namespace ww4_core {
 
-// --- init -------------------------------------------------------------------
-void SolverRectangularGrid::init() { grid_rectilinear_init(); }
-
-// --- addSourceTerm ----------------------------------------------------------
-void SolverRectangularGrid::addSourceTerm(std::unique_ptr<ISourceTerm> source) {
-  if (source) {
-    sourceTerms_.push_back(std::move(source));
-  }
-}
-
 // --- solve ------------------------------------------------------------------
-void SolverRectangularGrid::solve(std::span<double> data) {
+void SolverRectilinearUQ::solve(std::span<double> data) {
   // === Perform numerical propagation =======================================
   std::for_each(data.begin(), data.end(), [](double &val) {
     val *= 1.01; // Mock propagation effect
   });
 
   // === Call integrated source terms ==========================================
-  if (sourceTerms_.empty()) {
-    addSourceTerm(SchemeFactory::createSourceTerm("ComputeAllSources"));
-  }
-  for (auto &source : sourceTerms_) {
-    source->calculate(data);
-  }
+  applySourceTerms(data);
 }
 
 } // namespace ww4_core
