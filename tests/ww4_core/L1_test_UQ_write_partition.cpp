@@ -13,13 +13,13 @@
  * development and refactoring. Whenever GenAI is used, NWS requires a full
  * human review of code before it is added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-11-03
- * @date Last update : 2026-11-05
+ * @date Last update : 2026-11-20
  */
 
-#include "ww4_core/solver_UQ/utils_UQ_IO/UQ_read_partition.h"
-#include "ww4_core/solver_UQ/utils_UQ_IO/UQ_write_partition.h"
+#include "ww4_core/grid_rectilinear/utils_UQ_IO/UQ_read_partition.h"
+#include "ww4_core/grid_rectilinear/utils_UQ_IO/UQ_write_partition.h"
 #include <cstdio>
 #include <gtest/gtest.h>
 

@@ -13,18 +13,18 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
  */
 
 #include "ww4_core/w4core_init.h"
-#include "ww4_core/solver_SMC/solver_SMC_init.h"
-#include "ww4_core/solver_UQ/solver_UQ_init.h"
-#include "ww4_core/solver_triangular/solver_triangular_init.h"
+#include "ww4_core/grid_SMC/grid_SMC_init.h"
+#include "ww4_core/grid_rectilinear/grid_rectilinear_init.h"
+#include "ww4_core/grid_triangular/grid_triangular_init.h"
 #include "ww4_utils/time_management.h"
 #include "ww4_utils/ww4_input_utils.h"
 #include "ww4_utils/ww4_logfile.h"
@@ -128,13 +128,13 @@ void w4core_init(const ww4_utils::DateTime &startTime,
   // === Initialize numerical solver ==========================================
   switch (globalRunConfig.solver) {
   case ww4_utils::SolverType::UQ:
-    solver_UQ_init(os);
+    grid_rectilinear_init(os);
     break;
   case ww4_utils::SolverType::Triangular:
-    solver_triangular_init(os);
+    grid_triangular_init(os);
     break;
   case ww4_utils::SolverType::SMC:
-    solver_SMC_init(os);
+    grid_SMC_init(os);
     break;
   default:
     // Explanatory comment preceding __FILE__ and __LINE__

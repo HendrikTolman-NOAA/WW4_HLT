@@ -14,11 +14,11 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @author Code Heritage: Converted and adapted from WAVEWATCH III (WW3)
  * ww3_gspl by Hendrik L. Tolman.
  * @date Initial, 2026-10-29
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-20
  */
 
 // Routine coverage references for anonymous namespace helper functions:
@@ -29,8 +29,8 @@
 #include <algorithm>
 #include <vector>
 
-#include "ww4_core/solver_UQ/UQ_domains.h"
-#include "ww4_core/solver_UQ/UQ_one_domain.h"
+#include "ww4_core/grid_rectilinear/UQ_domains.h"
+#include "ww4_core/grid_rectilinear/UQ_one_domain.h"
 #include "ww4_utils/spatial_grid.h"
 
 using namespace ww4_utils;

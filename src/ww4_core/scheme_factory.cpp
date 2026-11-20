@@ -13,9 +13,9 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), EJ Rainville
+ * @author Contributors: Jules (Agentic AI), EJ Rainville, Kiro (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  */
 
 // Scheme Selection and Source-Term Computation (Factory Pattern setup)
@@ -24,9 +24,9 @@
 #include "ww4_core/source_terms/ComputeAllSources/ComputeAllSources.h"
 
 // Solver definitions
-#include "ww4_core/solver_SMC/solver_SMC_exec.h"
-#include "ww4_core/solver_UQ/solver_UQ_exec.h"
-#include "ww4_core/solver_triangular/solver_triangular_exec.h"
+#include "ww4_core/grid_SMC/solver_SMC_UKMET.h"
+#include "ww4_core/grid_rectilinear/solver_rectilinear_UQ.h"
+#include "ww4_core/grid_triangular/solver_triangular_implicit.h"
 
 // Source terms
 // --- Linear Input
