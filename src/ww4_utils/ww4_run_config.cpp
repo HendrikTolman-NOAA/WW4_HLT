@@ -15,9 +15,9 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
- *                       Ming Chen
+ *                       Ming Chen, Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-20
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -244,6 +244,96 @@ void reportOutput(const OutputConfig &oc, const std::string_view label,
   }
 }
 
+// --- parseGridType ----------------------------------------------------------
+/**
+ * @brief Map a grid -> grid_type configuration string to GridType.
+ * @param value Cleaned configuration string.
+ * @return Matching GridType, or GridType::Undefined if unknown.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Kiro (Agentic AI)
+ * @date Initial, 2026-11-20
+ * @date Last update : 2026-11-20
+ */
+GridType parseGridType(const std::string_view value) noexcept {
+  if (value == "rectilinear") {
+    return GridType::Rectangular;
+  }
+  if (value == "triangular") {
+    return GridType::Triangular;
+  }
+  if (value == "SMC") {
+    return GridType::SMC;
+  }
+  return GridType::Undefined;
+}
+
+// --- parseSolverType --------------------------------------------------------
+/**
+ * @brief Map a physics -> solver configuration string to SolverType.
+ * @param value Configuration string.
+ * @return Matching SolverType, or SolverType::Undefined if unknown.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Kiro (Agentic AI)
+ * @date Initial, 2026-11-20
+ * @date Last update : 2026-11-20
+ */
+SolverType parseSolverType(const std::string_view value) noexcept {
+  if (value == "1UP") {
+    return SolverType::OneUP;
+  }
+  if (value == "UQ") {
+    return SolverType::UQ;
+  }
+  if (value == "implicit") {
+    return SolverType::Implicit;
+  }
+  if (value == "explicit") {
+    return SolverType::Explicit;
+  }
+  if (value == "UKMET") {
+    return SolverType::UKMET;
+  }
+  return SolverType::Undefined;
+}
+
+// --- isGridSolverValid ------------------------------------------------------
+/**
+ * @brief Check that grid type and solver are set and compatible.
+ * @param config Run-time configuration.
+ * @return True if both are defined and the solver is available on the grid.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Kiro (Agentic AI)
+ * @date Initial, 2026-11-20
+ * @date Last update : 2026-11-20
+ */
+bool isGridSolverValid(const RunConfig &config) noexcept {
+  return isSolverAvailableOnGrid(config.gridType, config.solver);
+}
+
+// --- reportGridSolverIssues -------------------------------------------------
+/**
+ * @brief Write messages for missing or incompatible grid type and solver.
+ * @param config Run-time configuration.
+ * @param os Output stream for reporting.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Kiro (Agentic AI)
+ * @date Initial, 2026-11-20
+ * @date Last update : 2026-11-20
+ */
+void reportGridSolverIssues(const RunConfig &config, std::ostream &os) {
+  if (config.gridType == GridType::Undefined) {
+    os << "   Missing/invalid: grid -> grid_type" << std::endl;
+  }
+  if (config.solver == SolverType::Undefined) {
+    os << "   Missing/invalid: physics -> solver" << std::endl;
+  } else if (config.gridType != GridType::Undefined &&
+             !isSolverAvailableOnGrid(config.gridType, config.solver)) {
+    os << "   Missing/invalid: physics -> solver (not available for "
+          "selected grid -> grid_type)"
+       << std::endl;
+  }
+}
+
 } // namespace
 
 // --- cleanValue -------------------------------------------------------------
@@ -276,9 +366,9 @@ std::string_view cleanValue(const std::string_view s) {
  *         or std::nullopt if the file could not be opened.
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
- *                       Ming Chen
+ *                       Ming Chen, Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-06
+ * @date Last update : 2026-11-20
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
@@ -289,6 +379,10 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
 
     // === Grid section ========================================================
     if (const auto node = config_node["grid"]) {
+      if (node["grid_type"]) {
+        config.gridType =
+            parseGridType(cleanValue(node["grid_type"].as<std::string>()));
+      }
       if (node["grid_file"]) {
         config.gridFile = cleanValue(node["grid_file"].as<std::string>());
       }
@@ -394,13 +488,7 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       }
       if (node["solver"]) {
         const auto solverStr = node["solver"].as<std::string>();
-        if (solverStr == "UQ") {
-          config.solver = SolverType::UQ;
-        } else if (solverStr == "triangular") {
-          config.solver = SolverType::Triangular;
-        } else if (solverStr == "SMC") {
-          config.solver = SolverType::SMC;
-        }
+        config.solver = parseSolverType(solverStr);
       }
       if (node["input_dissipation"]) {
         const auto val = node["input_dissipation"].as<std::string>();
@@ -569,7 +657,8 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
     }
 
     // === Mandatory fields check ==============================================
-    if (config.gridFile.empty() || config.solver == SolverType::Undefined ||
+    // A solver is only valid if it is available on the selected grid type
+    if (!isGridSolverValid(config) || config.gridFile.empty() ||
         config.inputDissipation == InputDissipationScheme::Undefined ||
         config.nonlinearInteractions == NonlinearScheme::Undefined ||
         config.linearInput == LinearInputScheme::Undefined ||
@@ -583,10 +672,9 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
             "invalid "
             "in configuration."
          << std::endl;
+      reportGridSolverIssues(config, os);
       if (config.gridFile.empty())
         os << "   Missing/invalid: grid -> grid_file" << std::endl;
-      if (config.solver == SolverType::Undefined)
-        os << "   Missing/invalid: physics -> solver" << std::endl;
       if (config.inputDissipation == InputDissipationScheme::Undefined)
         os << "   Missing/invalid: physics -> input_dissipation" << std::endl;
       if (config.nonlinearInteractions == NonlinearScheme::Undefined)
@@ -683,9 +771,10 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
  * @param config The RunConfig structure to report.
  * @param os The output stream to write to (default: std::cout).
  * @author Main Author(s): Hendrik L. Tolman, Aldgisl (AI Persona)
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
+ *                       Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-06
+ * @date Last update : 2026-11-20
  */
 void reportRunConfig(const RunConfig &config, std::ostream &os) {
   os << "\n  General settings :" << std::endl;
@@ -746,7 +835,16 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
 
   os << "\n  Configuration settings :" << std::endl;
 
-  os << "\n     Grid file name           : "
+  std::string gridTypeStr = "undefined";
+  if (config.gridType == GridType::Rectangular) {
+    gridTypeStr = "rectilinear (regular grid)";
+  } else if (config.gridType == GridType::Triangular) {
+    gridTypeStr = "triangular (unstructured grid)";
+  } else if (config.gridType == GridType::SMC) {
+    gridTypeStr = "SMC (Spherical Multiple-Cell)";
+  }
+  os << "\n     Grid type                : " << gridTypeStr << std::endl;
+  os << "     Grid file name           : "
      << (config.gridFile.empty() ? "none" : config.gridFile) << std::endl;
   os << "     Print grid metadata      : "
      << (config.printGridMeta ? "yes" : "no") << std::endl;
@@ -756,12 +854,16 @@ void reportRunConfig(const RunConfig &config, std::ostream &os) {
      << (config.writeLocalGrid ? "yes" : "no") << std::endl;
 
   std::string solverStr = "undefined";
-  if (config.solver == SolverType::UQ) {
+  if (config.solver == SolverType::OneUP) {
+    solverStr = "1UP (first-order upwind)";
+  } else if (config.solver == SolverType::UQ) {
     solverStr = "UQ (Ultimate Quickest)";
-  } else if (config.solver == SolverType::Triangular) {
-    solverStr = "triangular (unstructured grid)";
-  } else if (config.solver == SolverType::SMC) {
-    solverStr = "SMC (Spherical Multiple-Cell)";
+  } else if (config.solver == SolverType::Implicit) {
+    solverStr = "implicit";
+  } else if (config.solver == SolverType::Explicit) {
+    solverStr = "explicit";
+  } else if (config.solver == SolverType::UKMET) {
+    solverStr = "UKMET (UK MetOffice)";
   }
   os << "     Solver scheme            : " << solverStr << std::endl;
 

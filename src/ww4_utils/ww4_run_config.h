@@ -15,13 +15,15 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner
+ * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
+ *                       Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-20
  */
 
 #pragma once
 
+#include "ww4_utils/spatial_grid.h"
 #include "ww4_utils/time_management.h"
 #include "ww4_utils/ww4_output_utils.h"
 #include <iostream>
@@ -34,19 +36,53 @@ namespace ww4_utils {
 // --- InputFieldOption -------------------------------------------------------
 /**
  * @enum SolverType
- * @brief Numerical solver options for WAVEWATCH IV.
+ * @brief Numerical solver options for WAVEWATCH IV (second selection stage).
+ * @details Each solver is only available on one grid type (GridType, see
+ *          spatial_grid.h), see isSolverAvailableOnGrid().
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @var SolverType::Undefined
  * @brief Mandatory solver selection not specified.
+ * @var SolverType::OneUP
+ * @brief Rectilinear grid solver using the first-order upwind (1UP) scheme.
  * @var SolverType::UQ
- * @brief Regular grid solver using Ultimate Quickest scheme.
- * @var SolverType::Triangular
- * @brief Triangular unstructured grid solver.
- * @var SolverType::SMC
- * @brief Spherical Multiple-Cell (SMC) grid solver.
+ * @brief Rectilinear grid solver using the Ultimate Quickest (UQ) scheme.
+ * @var SolverType::Implicit
+ * @brief Triangular grid solver using an implicit scheme.
+ * @var SolverType::Explicit
+ * @brief Triangular grid solver using an explicit scheme.
+ * @var SolverType::UKMET
+ * @brief SMC grid solver using the UK MetOffice (UKMET) scheme.
  */
-enum class SolverType { Undefined, UQ, Triangular, SMC };
+enum class SolverType { Undefined, OneUP, UQ, Implicit, Explicit, UKMET };
+
+// --- isSolverAvailableOnGrid ------------------------------------------------
+/**
+ * @brief Check if a numerical solver is available on a grid type.
+ * @details Mirrors IGrid::getSolverNames() in ww4_core; consistency is
+ *          verified in L1_test_scheme_factory.
+ * @param grid Selected grid type.
+ * @param solver Selected solver.
+ * @return True if the solver can be used on the grid type.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Kiro (Agentic AI)
+ * @date Initial, 2026-11-20
+ * @date Last update : 2026-11-20
+ */
+[[nodiscard]] constexpr bool isSolverAvailableOnGrid(GridType grid,
+                                                     SolverType solver) {
+  switch (grid) {
+  case GridType::Rectangular:
+    return solver == SolverType::OneUP || solver == SolverType::UQ;
+  case GridType::Triangular:
+    return solver == SolverType::Implicit || solver == SolverType::Explicit;
+  case GridType::SMC:
+    return solver == SolverType::UKMET;
+  case GridType::Undefined:
+    break;
+  }
+  return false;
+}
 
 /**
  * @enum InputDissipationScheme
@@ -255,6 +291,8 @@ struct HomogeneousDataPoint {
  * @brief Propagation flag in theta-direction.
  * @var RunConfig::propagateK
  * @brief Propagation flag in k-direction.
+ * @var RunConfig::gridType
+ * @brief Selected spatial grid type.
  * @var RunConfig::gridFile
  * @brief Grid file name.
  * @var RunConfig::printGridMeta
@@ -272,7 +310,7 @@ struct HomogeneousDataPoint {
  * @var RunConfig::sourceTerms
  * @brief Source terms flag.
  * @var RunConfig::solver
- * @brief Selected numerical solver type.
+ * @brief Selected numerical solver type (must be available on gridType).
  * @var RunConfig::waterLevels
  * @brief Water levels option.
  * @var RunConfig::currents
@@ -328,6 +366,7 @@ struct RunConfig {
   bool propagateK = true;
   bool sourceTerms = true;
 
+  GridType gridType = GridType::Undefined;
   std::string gridFile;
   bool printGridMeta = false;
   bool intermediateMaps = false;

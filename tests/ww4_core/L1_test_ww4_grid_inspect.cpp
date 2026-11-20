@@ -14,12 +14,12 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-11-04
- * @date Last update : 2026-11-04
+ * @date Last update : 2026-11-20
  */
 
-#include "ww4_core/solver_UQ/utils_UQ_IO/test_ugrid_helper.h"
+#include "ww4_core/grid_rectilinear/utils_UQ_IO/test_ugrid_helper.h"
 #include <cstdlib>
 #include <fstream>
 #include <gtest/gtest.h>

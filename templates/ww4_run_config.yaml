@@ -50,6 +50,15 @@ general:
   time_step: 3600.0
 
 grid:
+  # Mandatory grid type selection (no default). The grid type is selected
+  # first; the numerical solver (physics -> solver) must be available on it.
+  # Options:
+  #   "rectilinear" : Rectilinear (regular) grid      -> solvers "1UP", "UQ"
+  #   "triangular"  : Triangular unstructured grid    -> solvers "implicit",
+  #                                                      "explicit"
+  #   "SMC"         : Spherical Multiple-Cell grid    -> solver "UKMET"
+  grid_type: "rectilinear"
+
   # Mandatory grid input file name (no default).
   grid_file: "ww4_grid_ugrid.nc"
 
@@ -119,11 +128,13 @@ physics:
   # Options: "yes" (default), "no"
   # source_terms: "no"
 
-  # Mandatory numerical solver selection (no default).
-  # Options:
-  #   "UQ"         : Regular grid using the ULTIMATE QUICKEST (UQ) scheme
-  #   "triangular" : Triangular unstructured grid approach (TBD)
-  #   "SMC"        : Spherical Multiple-Cell (SMC) grid from UK MetOffice
+  # Mandatory numerical solver selection (no default). Available options
+  # depend on the selected grid type (grid -> grid_type):
+  #   rectilinear : "1UP"      : First-order upwind scheme
+  #                 "UQ"       : ULTIMATE QUICKEST (UQ) scheme
+  #   triangular  : "implicit" : Implicit scheme (TBD)
+  #                 "explicit" : Explicit scheme (TBD)
+  #   SMC         : "UKMET"    : SMC grid scheme from UK MetOffice
   solver: "UQ"
 
   # Mandatory linear input source term selection (no default).

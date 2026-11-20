@@ -1,4 +1,4 @@
-#include "ww4_core/solver_UQ/utils_UQ_IO/test_ugrid_helper.h"
+#include "ww4_core/grid_rectilinear/utils_UQ_IO/test_ugrid_helper.h"
 /**
  *       +--------------------------------------------------------+
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
@@ -14,17 +14,17 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  */
 
-#include "ww4_core/solver_SMC/solver_SMC_exec.h"
-#include "ww4_core/solver_SMC/solver_SMC_init.h"
-#include "ww4_core/solver_UQ/solver_UQ_exec.h"
-#include "ww4_core/solver_UQ/solver_UQ_init.h"
-#include "ww4_core/solver_triangular/solver_triangular_exec.h"
-#include "ww4_core/solver_triangular/solver_triangular_init.h"
+#include "ww4_core/grid_SMC/grid_SMC.h"
+#include "ww4_core/grid_SMC/grid_SMC_init.h"
+#include "ww4_core/grid_rectilinear/grid_rectilinear.h"
+#include "ww4_core/grid_rectilinear/grid_rectilinear_init.h"
+#include "ww4_core/grid_triangular/grid_triangular.h"
+#include "ww4_core/grid_triangular/grid_triangular_init.h"
 #include "ww4_core/w4core_init.h"
 #include <fstream>
 #include <gtest/gtest.h>
@@ -87,6 +87,7 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
   runFile << "  grid_file: test_grid.nc\n";
+  runFile << "  grid_type: rectilinear\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
@@ -131,29 +132,29 @@ TEST_F(W4CoreInitTest, SolverInitRoutines) {
   getMutableRunConfig().gridFile = "test_grid.nc";
   getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
 
-  solver_UQ_init(ss);
+  grid_rectilinear_init(ss);
   EXPECT_NE(ss.str().find("Processing the grid:"), std::string::npos);
 
-  EXPECT_EXIT(solver_triangular_init(std::cerr), ::testing::ExitedWithCode(1),
+  EXPECT_EXIT(grid_triangular_init(std::cerr), ::testing::ExitedWithCode(1),
               "WW4 ERROR: Triangular unstructured grid reader not yet "
               "implemented when reading bottom grid.");
 
   EXPECT_EXIT(
-      solver_SMC_init(std::cerr), ::testing::ExitedWithCode(1),
+      grid_SMC_init(std::cerr), ::testing::ExitedWithCode(1),
       "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
       "grid.");
 
-  SolverRectangularGrid uq;
-  uq.init();
+  GridRectilinear rectilinear;
+  rectilinear.init(ss);
 
-  SolverTriangularGrid triangular;
-  EXPECT_EXIT(triangular.init(), ::testing::ExitedWithCode(1),
+  GridTriangular triangular;
+  EXPECT_EXIT(triangular.init(std::cerr), ::testing::ExitedWithCode(1),
               "WW4 ERROR: Triangular unstructured grid reader not yet "
               "implemented when reading bottom grid.");
 
-  SolverSMCGrid smc;
+  GridSMC smc;
   EXPECT_EXIT(
-      smc.init(), ::testing::ExitedWithCode(1),
+      smc.init(std::cerr), ::testing::ExitedWithCode(1),
       "WW4 ERROR: SMC grid reader not yet implemented when reading bottom "
       "grid.");
 }
@@ -162,11 +163,12 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
   runFile << "  grid_file: test_grid.nc\n";
+  runFile << "  grid_type: triangular\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
-  runFile << "  solver: triangular\n";
+  runFile << "  solver: implicit\n";
   runFile << "  linear_input: LN1\n";
   runFile << "  input_dissipation: ST4\n";
   runFile << "  nonlinear_interactions: NL1\n";
@@ -190,11 +192,12 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   std::ofstream runFile2("ww4_run_config.yaml");
   runFile2 << "grid:\n";
   runFile2 << "  grid_file: test_grid.nc\n";
+  runFile2 << "  grid_type: SMC\n";
   runFile2 << "general:\n";
   runFile2 << "  calendar_type: Standard\n";
   runFile2 << "  time_step: 3600.0\n";
   runFile2 << "physics:\n";
-  runFile2 << "  solver: SMC\n";
+  runFile2 << "  solver: UKMET\n";
   runFile2 << "  linear_input: LN1\n";
   runFile2 << "  input_dissipation: ST4\n";
   runFile2 << "  nonlinear_interactions: NL1\n";

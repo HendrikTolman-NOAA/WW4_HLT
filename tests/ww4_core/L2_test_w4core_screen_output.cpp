@@ -1,4 +1,4 @@
-#include "ww4_core/solver_UQ/utils_UQ_IO/test_ugrid_helper.h"
+#include "ww4_core/grid_rectilinear/utils_UQ_IO/test_ugrid_helper.h"
 /**
  *       +--------------------------------------------------------+
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
@@ -13,8 +13,8 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Last update : 2026-06-18
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
+ * @date Last update : 2026-11-20
  */
 
 #include "ww4_core/w4core_finalize.h"
@@ -46,6 +46,7 @@ protected:
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "grid:\n";
     runFile << "  grid_file: test_grid.nc\n";
+    runFile << "  grid_type: rectilinear\n";
     runFile << "general:\n";
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 1800.0\n";

@@ -5,8 +5,9 @@
  *
  * @file L1_test_scheme_factory.cpp
  * @brief Unit tests for the SchemeFactory class.
- * @details Verifies the instantiation of numerical solvers and source term
- *          schemes using SchemeFactory.
+ * @details Verifies the two-stage instantiation of grids and numerical
+ *          solvers, and the instantiation of source term schemes using
+ *          SchemeFactory.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -16,32 +17,56 @@
  * added to its repositories.
  *
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-11-20
  */
 
 #include "ww4_core/scheme_factory.h"
+#include "ww4_utils/ww4_run_config.h"
 #include <gtest/gtest.h>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace ww4_core {
 
-TEST(SchemeFactoryTest, CreateSolverUQ) {
-  auto solver = SchemeFactory::createSolver("SolverUQ");
-  ASSERT_NE(solver, nullptr);
-  EXPECT_EQ(solver->getName(), "UQ");
+TEST(SchemeFactoryTest, CreateGrids) {
+  for (const std::string name : {"rectilinear", "triangular", "SMC"}) {
+    auto grid = SchemeFactory::createGrid(name);
+    ASSERT_NE(grid, nullptr);
+    EXPECT_EQ(grid->getName(), name);
+  }
 }
 
-TEST(SchemeFactoryTest, CreateSolverTriangular) {
-  auto solver = SchemeFactory::createSolver("SolverTriangular");
-  ASSERT_NE(solver, nullptr);
-  EXPECT_EQ(solver->getName(), "Triangular");
+TEST(SchemeFactoryTest, CreateSolversPerGrid) {
+  const std::vector<std::pair<std::string, std::string>> combinations = {
+      {"rectilinear", "1UP"},
+      {"rectilinear", "UQ"},
+      {"triangular", "implicit"},
+      {"triangular", "explicit"},
+      {"SMC", "UKMET"}};
+  for (const auto &[gridName, solverName] : combinations) {
+    // Two-stage selection through the grid object
+    auto grid = SchemeFactory::createGrid(gridName);
+    auto solver = grid->createSolver(solverName);
+    ASSERT_NE(solver, nullptr);
+    EXPECT_EQ(solver->getName(), solverName);
+
+    // Convenience function
+    auto solver2 = SchemeFactory::createSolver(gridName, solverName);
+    ASSERT_NE(solver2, nullptr);
+    EXPECT_EQ(solver2->getName(), solverName);
+  }
 }
 
-TEST(SchemeFactoryTest, CreateSolverSMC) {
-  auto solver = SchemeFactory::createSolver("SolverSMC");
-  ASSERT_NE(solver, nullptr);
-  EXPECT_EQ(solver->getName(), "SMC");
+TEST(SchemeFactoryTest, SolverNotAvailableOnGrid) {
+  EXPECT_THROW(SchemeFactory::createSolver("rectilinear", "implicit"),
+               std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("triangular", "UQ"),
+               std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("SMC", "1UP"),
+               std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateSourceComputeAllSources) {
@@ -92,8 +117,40 @@ TEST(SchemeFactoryTest, CreateSubSourceTerms) {
   EXPECT_EQ(bt4->getName(), "BT4");
 }
 
+TEST(SchemeFactoryTest, GridSolverTableMatchesRunConfig) {
+  // The run-time configuration check (ww4_utils::isSolverAvailableOnGrid)
+  // must agree with the solvers each grid can create.
+  using ww4_utils::GridType;
+  using ww4_utils::SolverType;
+  const std::vector<std::pair<std::string, GridType>> grids = {
+      {"rectilinear", GridType::Rectangular},
+      {"triangular", GridType::Triangular},
+      {"SMC", GridType::SMC}};
+  const std::vector<std::pair<std::string, SolverType>> solvers = {
+      {"1UP", SolverType::OneUP},
+      {"UQ", SolverType::UQ},
+      {"implicit", SolverType::Implicit},
+      {"explicit", SolverType::Explicit},
+      {"UKMET", SolverType::UKMET}};
+  for (const auto &[gridName, gridType] : grids) {
+    const auto grid = SchemeFactory::createGrid(gridName);
+    for (const auto &[solverName, solverType] : solvers) {
+      EXPECT_EQ(grid->hasSolver(solverName),
+                ww4_utils::isSolverAvailableOnGrid(gridType, solverType))
+          << gridName << " / " << solverName;
+    }
+  }
+}
+
+TEST(SchemeFactoryTest, CreateUnknownGrid) {
+  EXPECT_THROW(SchemeFactory::createGrid("UNKNOWN"), std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("UNKNOWN", "UQ"),
+               std::invalid_argument);
+}
+
 TEST(SchemeFactoryTest, CreateUnknownSolver) {
-  EXPECT_THROW(SchemeFactory::createSolver("UNKNOWN"), std::invalid_argument);
+  EXPECT_THROW(SchemeFactory::createSolver("rectilinear", "UNKNOWN"),
+               std::invalid_argument);
 }
 
 TEST(SchemeFactoryTest, CreateUnknownSource) {

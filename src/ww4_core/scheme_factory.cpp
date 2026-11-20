@@ -5,7 +5,7 @@
  *
  * @file scheme_factory.cpp
  * @brief Implementation of the scheme factory.
- * @details Handles the instantiation and assembly of model components.
+ * @details Handles the instantiation of model grids, solvers and source terms.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -13,9 +13,9 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI), EJ Rainville
+ * @author Contributors: Jules (Agentic AI), EJ Rainville, Kiro (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  */
 
 // Scheme Selection and Source-Term Computation (Factory Pattern setup)
@@ -23,10 +23,10 @@
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/source_terms/ComputeAllSources/ComputeAllSources.h"
 
-// Solver definitions
-#include "ww4_core/solver_SMC/solver_SMC_exec.h"
-#include "ww4_core/solver_UQ/solver_UQ_exec.h"
-#include "ww4_core/solver_triangular/solver_triangular_exec.h"
+// Grid definitions (each grid creates its own solvers)
+#include "ww4_core/grid_SMC/grid_SMC.h"
+#include "ww4_core/grid_rectilinear/grid_rectilinear.h"
+#include "ww4_core/grid_triangular/grid_triangular.h"
 
 // Source terms
 // --- Linear Input
@@ -50,27 +50,44 @@
 
 namespace ww4_core {
 
+// --- createGrid -------------------------------------------------------------
+/**
+ * @brief Instantiates a grid type by string name.
+ * @param name Name of requested grid type.
+ * @return Unique pointer to created grid.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Kiro (Agentic AI)
+ * @date Initial, 2026-11-20
+ * @date Last update : 2026-11-20
+ */
+std::unique_ptr<IGrid> SchemeFactory::createGrid(const std::string &name) {
+  if (name == "rectilinear") {
+    return std::make_unique<GridRectilinear>();
+  }
+  if (name == "triangular") {
+    return std::make_unique<GridTriangular>();
+  }
+  if (name == "SMC") {
+    return std::make_unique<GridSMC>();
+  }
+  throw std::invalid_argument("Unknown grid type: " + name);
+}
+
 // --- createSolver -----------------------------------------------------------
 /**
- * @brief Instantiates a solver scheme by string name.
- * @param name Name of requested solver.
+ * @brief Instantiates a solver for a grid type by string names.
+ * @param gridName Name of requested grid type.
+ * @param solverName Name of requested solver on that grid.
  * @return Unique pointer to created solver.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-06-24
- * @date Last update : 2026-10-16
+ * @date Last update : 2026-11-20
  */
-std::unique_ptr<ISolver> SchemeFactory::createSolver(const std::string &name) {
-  if (name == "SolverUQ") {
-    return std::make_unique<SolverRectangularGrid>();
-  }
-  if (name == "SolverTriangular") {
-    return std::make_unique<SolverTriangularGrid>();
-  }
-  if (name == "SolverSMC") {
-    return std::make_unique<SolverSMCGrid>();
-  }
-  throw std::invalid_argument("Unknown solver: " + name);
+std::unique_ptr<ISolver>
+SchemeFactory::createSolver(const std::string &gridName,
+                            const std::string &solverName) {
+  return createGrid(gridName)->createSolver(solverName);
 }
 
 // --- createSourceTerm -------------------------------------------------------

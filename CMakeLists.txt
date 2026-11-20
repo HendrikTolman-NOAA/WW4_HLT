@@ -12,9 +12,9 @@
 #of the National Weather Service.
 #NWS often uses Generative AI (GenAI) for code development and refactoring. Whenever GenAI is used, NWS requires a full human review of code before it is added to its repositories.
 #@author Main Author(s) : Aldgisl (AI Persona), Hendrik L. Tolman
-#@author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner
+#@author Contributors : Jules (Agentic AI), Kit Stokes, Jessica Meixner, Kiro (Agentic AI)
 #@date Initial : 2026-07-09
-#@date Last update : 2026-11-02
+#@date Last update : 2026-11-20
 
 cmake_minimum_required(VERSION 3.25)
 
@@ -139,19 +139,25 @@ add_library(
     src/ww4_core/w4core_wave.cpp
     src/ww4_core/w4core_finalize.cpp
     src/ww4_core/scheme_factory.cpp
-    src/ww4_core/solver_UQ/solver_UQ_exec.cpp
-    src/ww4_core/solver_UQ/solver_UQ_init.cpp
-    src/ww4_core/solver_UQ/UQ_domains.cpp
-    src/ww4_core/solver_UQ/UQ_domain_topology.cpp
-    src/ww4_core/solver_UQ/UQ_one_domain.cpp
-    src/ww4_core/solver_UQ/utils_UQ_IO/UQ_read_grid.cpp
-    src/ww4_core/solver_UQ/utils_UQ_IO/UQ_write_grid.cpp
-    src/ww4_core/solver_UQ/utils_UQ_IO/UQ_write_partition.cpp
-    src/ww4_core/solver_UQ/utils_UQ_IO/UQ_read_partition.cpp
-    src/ww4_core/solver_triangular/solver_triangular_exec.cpp
-    src/ww4_core/solver_triangular/solver_triangular_init.cpp
-    src/ww4_core/solver_SMC/solver_SMC_exec.cpp
-    src/ww4_core/solver_SMC/solver_SMC_init.cpp
+    src/ww4_core/solver_base.cpp
+    src/ww4_core/grid_rectilinear/grid_rectilinear.cpp
+    src/ww4_core/grid_rectilinear/grid_rectilinear_init.cpp
+    src/ww4_core/grid_rectilinear/solver_rectilinear_1UP.cpp
+    src/ww4_core/grid_rectilinear/solver_rectilinear_UQ.cpp
+    src/ww4_core/grid_rectilinear/UQ_domains.cpp
+    src/ww4_core/grid_rectilinear/UQ_domain_topology.cpp
+    src/ww4_core/grid_rectilinear/UQ_one_domain.cpp
+    src/ww4_core/grid_rectilinear/utils_UQ_IO/UQ_read_grid.cpp
+    src/ww4_core/grid_rectilinear/utils_UQ_IO/UQ_write_grid.cpp
+    src/ww4_core/grid_rectilinear/utils_UQ_IO/UQ_write_partition.cpp
+    src/ww4_core/grid_rectilinear/utils_UQ_IO/UQ_read_partition.cpp
+    src/ww4_core/grid_triangular/grid_triangular.cpp
+    src/ww4_core/grid_triangular/grid_triangular_init.cpp
+    src/ww4_core/grid_triangular/solver_triangular_implicit.cpp
+    src/ww4_core/grid_triangular/solver_triangular_explicit.cpp
+    src/ww4_core/grid_SMC/grid_SMC.cpp
+    src/ww4_core/grid_SMC/grid_SMC_init.cpp
+    src/ww4_core/grid_SMC/solver_SMC_UKMET.cpp
     src/ww4_core/source_terms/ComputeAllSources/ComputeAllSources.cpp
     src/ww4_core/source_terms/ww4_ST1/ww4_ST1.cpp
     src/ww4_core/source_terms/ww4_ST2/ww4_ST2.cpp
@@ -255,12 +261,17 @@ if(WW4_ENABLE_TESTING)
     ww4_add_test(test_UQ_write_grid tests/ww4_core/L1_test_UQ_write_grid.cpp ww4_core)
     ww4_add_test(test_UQ_write_partition tests/ww4_core/L1_test_UQ_write_partition.cpp ww4_core)
     ww4_add_test(test_UQ_read_partition tests/ww4_core/L1_test_UQ_read_partition.cpp ww4_core)
-    ww4_add_test(test_solver_UQ_exec tests/ww4_core/L1_test_solver_UQ_exec.cpp ww4_core)
-    ww4_add_test(test_solver_triangular_exec tests/ww4_core/L1_test_solver_triangular_exec.cpp ww4_core)
-    ww4_add_test(test_solver_SMC_exec tests/ww4_core/L1_test_solver_SMC_exec.cpp ww4_core)
-    ww4_add_test(test_solver_UQ_init tests/ww4_core/L1_test_solver_UQ_init.cpp ww4_core)
-    ww4_add_test(test_solver_triangular_init tests/ww4_core/L1_test_solver_triangular_init.cpp ww4_core)
-    ww4_add_test(test_solver_SMC_init tests/ww4_core/L1_test_solver_SMC_init.cpp ww4_core)
+    ww4_add_test(test_grid_rectilinear tests/ww4_core/L1_test_grid_rectilinear.cpp ww4_core)
+    ww4_add_test(test_grid_rectilinear_init tests/ww4_core/L1_test_grid_rectilinear_init.cpp ww4_core)
+    ww4_add_test(test_solver_rectilinear_1UP tests/ww4_core/L1_test_solver_rectilinear_1UP.cpp ww4_core)
+    ww4_add_test(test_solver_rectilinear_UQ tests/ww4_core/L1_test_solver_rectilinear_UQ.cpp ww4_core)
+    ww4_add_test(test_grid_triangular tests/ww4_core/L1_test_grid_triangular.cpp ww4_core)
+    ww4_add_test(test_grid_triangular_init tests/ww4_core/L1_test_grid_triangular_init.cpp ww4_core)
+    ww4_add_test(test_solver_triangular_implicit tests/ww4_core/L1_test_solver_triangular_implicit.cpp ww4_core)
+    ww4_add_test(test_solver_triangular_explicit tests/ww4_core/L1_test_solver_triangular_explicit.cpp ww4_core)
+    ww4_add_test(test_grid_SMC tests/ww4_core/L1_test_grid_SMC.cpp ww4_core)
+    ww4_add_test(test_grid_SMC_init tests/ww4_core/L1_test_grid_SMC_init.cpp ww4_core)
+    ww4_add_test(test_solver_SMC_UKMET tests/ww4_core/L1_test_solver_SMC_UKMET.cpp ww4_core)
     ww4_add_test(test_ww4_standalone_args tests/ww4_core/L1_test_ww4_standalone_args.cpp ww4_utils)
     target_sources(test_ww4_standalone_args PRIVATE src/ww4_progs/ww4_standalone_args.cpp)
     ww4_add_test(test_ww4_standalone tests/ww4_core/L1_test_ww4_standalone.cpp ww4_core)

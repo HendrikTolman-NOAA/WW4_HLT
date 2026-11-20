@@ -13,9 +13,9 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -30,65 +30,109 @@
 #include <chrono>
 #include <exception>
 #include <iostream>
+#include <string_view>
 #include <thread>
 
 namespace ww4_core {
 
-// --- solver_UQ_exec ---------------------------------------------------------
+namespace {
+// --- mockSolverExec ---------------------------------------------------------
 /**
- * @brief Solver routine for Ultimate Quickest (UQ) scheme on a regular grid.
- * @param timeStep Time step in seconds.
+ * @brief Placeholder execution shared by all solver routines.
+ * @param label Description of grid and solver for screen output.
  * @param os Output stream.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
- * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @author Contributors: Kiro (Agentic AI)
+ * @date Initial, 2026-11-20
+ * @date Last update : 2026-11-20
  */
-void solver_UQ_exec(double timeStep, std::ostream &os) {
-  (void)timeStep;
+void mockSolverExec(std::string_view label, std::ostream &os) {
   if (getRunConfig().produceStdOut &&
       getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Executing UQ regular grid solver" << std::endl;
+    os << "    Executing " << label << std::endl;
   }
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
+} // namespace
 
-// --- solver_triangular_exec -------------------------------------------------
+// --- solver_rectilinear_1UP_exec --------------------------------------------
 /**
- * @brief Solver routine for triangular unstructured grid approach.
+ * @brief Solver routine for the 1UP (first-order upwind) solver on the
+ * rectilinear grid.
  * @param timeStep Time step in seconds.
  * @param os Output stream.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  */
-void solver_triangular_exec(double timeStep, std::ostream &os) {
+void solver_rectilinear_1UP_exec(double timeStep, std::ostream &os) {
   (void)timeStep;
-  if (getRunConfig().produceStdOut &&
-      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Executing Triangular unstructured grid solver" << std::endl;
-  }
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  mockSolverExec("1UP solver on rectilinear grid", os);
 }
 
-// --- solver_SMC_exec --------------------------------------------------------
+// --- solver_rectilinear_UQ_exec ---------------------------------------------
 /**
- * @brief Solver routine for Spherical Multiple-Cell (SMC) grid solver.
+ * @brief Solver routine for the UQ (Ultimate Quickest) solver on the
+ * rectilinear grid.
  * @param timeStep Time step in seconds.
  * @param os Output stream.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  */
-void solver_SMC_exec(double timeStep, std::ostream &os) {
+void solver_rectilinear_UQ_exec(double timeStep, std::ostream &os) {
   (void)timeStep;
-  if (getRunConfig().produceStdOut &&
-      getRunConfig().screenOutputLevel == ww4_utils::ScreenOutputLevel::Full) {
-    os << "    Executing SMC grid solver" << std::endl;
-  }
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  mockSolverExec("UQ solver on rectilinear grid", os);
+}
+
+// --- solver_triangular_implicit_exec ----------------------------------------
+/**
+ * @brief Solver routine for the implicit solver on the triangular unstructured
+ * grid.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-11-20
+ */
+void solver_triangular_implicit_exec(double timeStep, std::ostream &os) {
+  (void)timeStep;
+  mockSolverExec("implicit solver on triangular grid", os);
+}
+
+// --- solver_triangular_explicit_exec ----------------------------------------
+/**
+ * @brief Solver routine for the explicit solver on the triangular unstructured
+ * grid.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-11-20
+ */
+void solver_triangular_explicit_exec(double timeStep, std::ostream &os) {
+  (void)timeStep;
+  mockSolverExec("explicit solver on triangular grid", os);
+}
+
+// --- solver_SMC_UKMET_exec --------------------------------------------------
+/**
+ * @brief Solver routine for the UKMET solver on the Spherical Multiple-Cell
+ * (SMC) grid.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
+ * @date Initial, 2026-04-03
+ * @date Last update : 2026-11-20
+ */
+void solver_SMC_UKMET_exec(double timeStep, std::ostream &os) {
+  (void)timeStep;
+  mockSolverExec("UKMET solver on SMC grid", os);
 }
 
 // --- w4core_wave ------------------------------------------------------------
@@ -101,9 +145,9 @@ void solver_SMC_exec(double timeStep, std::ostream &os) {
  * @param endTime Simulation end time.
  * @param os Output stream for reporting.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  */
 void w4core_wave(const ww4_utils::DateTime &startTime,
                  const ww4_utils::DateTime &endTime, std::ostream &os) {
@@ -213,14 +257,20 @@ void w4core_wave(const ww4_utils::DateTime &startTime,
       if (actualTimeStep > 0.0) {
         // === Propagate solution ============================================
         switch (getRunConfig().solver) {
+        case ww4_utils::SolverType::OneUP:
+          solver_rectilinear_1UP_exec(actualTimeStep, os);
+          break;
         case ww4_utils::SolverType::UQ:
-          solver_UQ_exec(actualTimeStep, os);
+          solver_rectilinear_UQ_exec(actualTimeStep, os);
           break;
-        case ww4_utils::SolverType::Triangular:
-          solver_triangular_exec(actualTimeStep, os);
+        case ww4_utils::SolverType::Implicit:
+          solver_triangular_implicit_exec(actualTimeStep, os);
           break;
-        case ww4_utils::SolverType::SMC:
-          solver_SMC_exec(actualTimeStep, os);
+        case ww4_utils::SolverType::Explicit:
+          solver_triangular_explicit_exec(actualTimeStep, os);
+          break;
+        case ww4_utils::SolverType::UKMET:
+          solver_SMC_UKMET_exec(actualTimeStep, os);
           break;
         default:
           // Explanatory comment preceding __FILE__ and __LINE__

@@ -15,15 +15,19 @@
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
- *                       Ming Chen
+ *                       Ming Chen, Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-20
  */
 
 #include "ww4_utils/ww4_run_config.h"
+#include <cstdio>
 #include <fstream>
 #include <gtest/gtest.h>
 #include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace ww4_utils;
 
@@ -32,6 +36,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: \"test_grid_nondefault.nc\"\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  calendar_type: \"NoLeap\"\n";
   file << "  produce_std_out: \"no\"\n";
@@ -87,6 +92,7 @@ TEST(RunConfigTest, MaxIterationsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "  max_iterations: 42\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
@@ -118,6 +124,7 @@ TEST(RunConfigTest, MaxIterationsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -148,6 +155,7 @@ TEST(RunConfigTest, ConvergenceCriterionParsing) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "  convergence_criterion: 1.10\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
@@ -179,6 +187,7 @@ TEST(RunConfigTest, PrintGridMetaParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -213,6 +222,7 @@ TEST(RunConfigTest, PrintGridMetaParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "  print_meta: \"no\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
@@ -248,6 +258,7 @@ TEST(RunConfigTest, PrintGridMetaParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "  print_meta: \"yes\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
@@ -280,6 +291,7 @@ TEST(RunConfigTest, WriteLocalGridParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -314,6 +326,7 @@ TEST(RunConfigTest, WriteLocalGridParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "  write_local_grid: \"yes\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
@@ -351,6 +364,7 @@ TEST(RunConfigTest, IntermediateMapsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -385,6 +399,7 @@ TEST(RunConfigTest, IntermediateMapsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "  intermediate_maps: \"yes\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
@@ -446,6 +461,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -463,11 +479,15 @@ TEST(RunConfigTest, SolverSelectionParsing) {
 
     const auto config = loadRunConfig(filename, std::cerr);
     ASSERT_TRUE(config.has_value());
+    EXPECT_EQ(config->gridType, GridType::Rectangular);
     EXPECT_EQ(config->solver, SolverType::UQ);
 
     std::stringstream ss;
     reportRunConfig(*config, ss);
     std::string output = ss.str();
+    EXPECT_NE(
+        output.find("Grid type                : rectilinear (regular grid)"),
+        std::string::npos);
     EXPECT_NE(output.find("Solver scheme            : UQ (Ultimate Quickest)"),
               std::string::npos);
 
@@ -480,10 +500,11 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: triangular\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: triangular\n";
+    file << "  solver: implicit\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -497,13 +518,16 @@ TEST(RunConfigTest, SolverSelectionParsing) {
 
     const auto config = loadRunConfig(filename, std::cerr);
     ASSERT_TRUE(config.has_value());
-    EXPECT_EQ(config->solver, SolverType::Triangular);
+    EXPECT_EQ(config->gridType, GridType::Triangular);
+    EXPECT_EQ(config->solver, SolverType::Implicit);
 
     std::stringstream ss;
     reportRunConfig(*config, ss);
     std::string output = ss.str();
     EXPECT_NE(output.find(
-                  "Solver scheme            : triangular (unstructured grid)"),
+                  "Grid type                : triangular (unstructured grid)"),
+              std::string::npos);
+    EXPECT_NE(output.find("Solver scheme            : implicit"),
               std::string::npos);
 
     std::remove(filename.c_str());
@@ -515,10 +539,11 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: SMC\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: SMC\n";
+    file << "  solver: UKMET\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -532,14 +557,17 @@ TEST(RunConfigTest, SolverSelectionParsing) {
 
     const auto config = loadRunConfig(filename, std::cerr);
     ASSERT_TRUE(config.has_value());
-    EXPECT_EQ(config->solver, SolverType::SMC);
+    EXPECT_EQ(config->gridType, GridType::SMC);
+    EXPECT_EQ(config->solver, SolverType::UKMET);
 
     std::stringstream ss;
     reportRunConfig(*config, ss);
     std::string output = ss.str();
     EXPECT_NE(
-        output.find("Solver scheme            : SMC (Spherical Multiple-Cell)"),
+        output.find("Grid type                : SMC (Spherical Multiple-Cell)"),
         std::string::npos);
+    EXPECT_NE(output.find("Solver scheme            : UKMET (UK MetOffice)"),
+              std::string::npos);
 
     std::remove(filename.c_str());
   }
@@ -550,6 +578,7 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -570,6 +599,115 @@ TEST(RunConfigTest, SolverSelectionParsing) {
   }
 }
 
+namespace {
+// Write a minimal valid configuration with the given grid section lines and
+// solver line (empty strings omit the entry).
+void writeGridSolverConfig(const std::string &filename,
+                           const std::string &gridType,
+                           const std::string &solver) {
+  std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_file: test_grid.nc\n";
+  if (!gridType.empty()) {
+    file << "  grid_type: " << gridType << "\n";
+  }
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  if (!solver.empty()) {
+    file << "  solver: " << solver << "\n";
+  }
+  file << "  linear_input: LN1\n";
+  file << "  input_dissipation: ST4\n";
+  file << "  nonlinear_interactions: NL1\n";
+  file << "  bottom_friction: BT1\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+}
+} // namespace
+
+TEST(RunConfigTest, GridAndSolverCombinations) {
+  struct Combination {
+    std::string grid;
+    std::string solver;
+    GridType gridType;
+    SolverType solverType;
+    std::string report;
+  };
+  const std::vector<Combination> valid = {
+      {"rectilinear", "1UP", GridType::Rectangular, SolverType::OneUP,
+       "Solver scheme            : 1UP (first-order upwind)"},
+      {"rectilinear", "UQ", GridType::Rectangular, SolverType::UQ,
+       "Solver scheme            : UQ (Ultimate Quickest)"},
+      {"triangular", "implicit", GridType::Triangular, SolverType::Implicit,
+       "Solver scheme            : implicit"},
+      {"triangular", "explicit", GridType::Triangular, SolverType::Explicit,
+       "Solver scheme            : explicit"},
+      {"SMC", "UKMET", GridType::SMC, SolverType::UKMET,
+       "Solver scheme            : UKMET (UK MetOffice)"}};
+  const std::string filename = "test_grid_solver_valid.yaml";
+  for (const auto &c : valid) {
+    writeGridSolverConfig(filename, c.grid, c.solver);
+    const auto config = loadRunConfig(filename, std::cerr);
+    ASSERT_TRUE(config.has_value()) << c.grid << " / " << c.solver;
+    EXPECT_EQ(config->gridType, c.gridType);
+    EXPECT_EQ(config->solver, c.solverType);
+    EXPECT_TRUE(isSolverAvailableOnGrid(config->gridType, config->solver));
+    std::stringstream ss;
+    reportRunConfig(*config, ss);
+    EXPECT_NE(ss.str().find(c.report), std::string::npos) << c.report;
+  }
+  std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, SolverNotAvailableOnGrid) {
+  const std::string filename = "test_grid_solver_invalid.yaml";
+  const std::vector<std::pair<std::string, std::string>> invalid = {
+      {"rectilinear", "implicit"}, {"triangular", "UQ"}, {"SMC", "1UP"}};
+  for (const auto &[grid, solver] : invalid) {
+    writeGridSolverConfig(filename, grid, solver);
+    EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+                 "not available for selected grid");
+  }
+  std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, MissingOrUnknownGridType) {
+  const std::string filename = "test_grid_type_missing.yaml";
+  writeGridSolverConfig(filename, "", "UQ");
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing/invalid: grid -> grid_type");
+
+  // Old-style solver names are no longer accepted
+  writeGridSolverConfig(filename, "triangular", "triangular");
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing/invalid: physics -> solver");
+
+  writeGridSolverConfig(filename, "regular", "UQ");
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing/invalid: grid -> grid_type");
+  std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, IsSolverAvailableOnGrid) {
+  static_assert(
+      isSolverAvailableOnGrid(GridType::Rectangular, SolverType::OneUP));
+  static_assert(isSolverAvailableOnGrid(GridType::Rectangular, SolverType::UQ));
+  static_assert(
+      isSolverAvailableOnGrid(GridType::Triangular, SolverType::Implicit));
+  static_assert(
+      isSolverAvailableOnGrid(GridType::Triangular, SolverType::Explicit));
+  static_assert(isSolverAvailableOnGrid(GridType::SMC, SolverType::UKMET));
+  static_assert(!isSolverAvailableOnGrid(GridType::SMC, SolverType::UQ));
+  static_assert(!isSolverAvailableOnGrid(GridType::Undefined, SolverType::UQ));
+  static_assert(
+      !isSolverAvailableOnGrid(GridType::Rectangular, SolverType::Undefined));
+  SUCCEED();
+}
+
 TEST(RunConfigTest, SourceTermOptionsParsing) {
   // Test ST1 and NL1 parsing
   {
@@ -577,6 +715,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -607,6 +746,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -635,6 +775,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -663,6 +804,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -693,6 +835,7 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
@@ -726,6 +869,7 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -786,6 +930,7 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -835,6 +980,7 @@ TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -863,6 +1009,7 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "  screen_output_level: summary\n";
@@ -897,6 +1044,7 @@ TEST(RunConfigTest, OutputConfigParsing) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -950,6 +1098,7 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1008,6 +1157,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1075,6 +1225,7 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "  # This is a comment\n";
   file << "grid:\n";
   file << "  grid_file : \"test_grid_robust.nc\"\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  calendar_type   :   \"NoLeap\"   # End of line comment\n";
   file << "  produce_std_out: yes\n";
@@ -1161,6 +1312,7 @@ TEST(RunConfigTest, ApiOutputConfig) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1259,6 +1411,7 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  calendar_type: \"ThreeSixtyDay\"\n";
   file << "  time_step: 3600.0\n";
@@ -1292,6 +1445,7 @@ TEST(RunConfigTest, PartialConfig) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  produce_std_out: \"no\"\n";
   file << "  time_step: 3600.0\n";
@@ -1328,6 +1482,7 @@ TEST(RunConfigTest, RankConfigurationValidationFailure) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "  num_ranks: 0\n";
@@ -1355,6 +1510,7 @@ TEST(RunConfigTest, RankConfigurationValidationFailure) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "  num_ranks: 4\n";
@@ -1384,6 +1540,7 @@ TEST(RunConfigTest, RankConfigurationValidationFailure) {
     std::ofstream file(filename);
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
+    file << "  grid_type: rectilinear\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "  num_ranks: 4\n";
@@ -1413,6 +1570,7 @@ TEST(RunConfigTest, TimeStepFailure) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: -1.0\n";
   file << "physics:\n";
@@ -1455,6 +1613,7 @@ TEST(RunConfigTest, BottomDepthDefault) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1483,6 +1642,7 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1511,6 +1671,7 @@ TEST(RunConfigTest, FromGridRejection) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1539,6 +1700,7 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   std::ofstream file(filename);
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
+  file << "  grid_type: rectilinear\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
