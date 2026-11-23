@@ -4,7 +4,8 @@
 #
 #@file CMakeLists.txt
 #@brief CMake build configuration for WAVEWATCH IV (WW4).
-#@details This file defines the project structure, dependencies (yaml-cpp, GTest),
+#@details This file defines the project structure, dependencies (yaml-cpp, NetCDF-C, GTest;
+#installed copies preferred, Git submodules as fallback),
 #and build targets for the WW4 libraries, standalone application, and tests.
 #
 #@copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -59,18 +60,86 @@ else()
     endif()
 endif()
 
+# ---------------------------------------------------------------------------
+# Third-party dependencies: yaml-cpp, NetCDF-C, GoogleTest
+#
+# WW4_DEPENDENCY_MODE controls where they come from:
+#   AUTO      (default) use installed copies (e.g. from environment modules) when
+#             CMake can find them, otherwise build the Git submodule in externals/.
+#   SYSTEM    only use installed copies; stop with an error if one is missing.
+#   SUBMODULE only use the submodules in externals/ (portable, ignores modules).
+#
+# With environment modules, make sure the module sets CMAKE_PREFIX_PATH or
+# <pkg>_ROOT (e.g. netCDF_ROOT, yaml-cpp_ROOT), or has its bin/ directory on PATH.
+# ---------------------------------------------------------------------------
+set(WW4_DEPENDENCY_MODE "AUTO" CACHE STRING "Source of third-party libraries: AUTO, SYSTEM or SUBMODULE")
+set_property(CACHE WW4_DEPENDENCY_MODE PROPERTY STRINGS AUTO SYSTEM SUBMODULE)
+option(WW4_AUTO_INIT_SUBMODULES "Run 'git submodule update --init' for a needed but empty submodule" ON)
+
+if(NOT WW4_DEPENDENCY_MODE MATCHES "^(AUTO|SYSTEM|SUBMODULE)$")
+    message(FATAL_ERROR "WW4_DEPENDENCY_MODE must be AUTO, SYSTEM or SUBMODULE (got '${WW4_DEPENDENCY_MODE}')")
+endif()
+
+# Ensure externals/<name> is populated, initializing the submodule if allowed.
+function(ww4_require_submodule name)
+    set(_dir "${CMAKE_SOURCE_DIR}/externals/${name}")
+    if(NOT EXISTS "${_dir}/CMakeLists.txt" AND WW4_AUTO_INIT_SUBMODULES AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+        find_package(Git QUIET)
+        if(GIT_FOUND)
+            message(STATUS "Initializing submodule externals/${name}")
+            execute_process(
+                COMMAND ${GIT_EXECUTABLE} submodule update --init -- externals/${name}
+                WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+                RESULT_VARIABLE _res
+                OUTPUT_QUIET ERROR_QUIET
+            )
+        endif()
+    endif()
+    if(NOT EXISTS "${_dir}/CMakeLists.txt")
+        message(FATAL_ERROR "${name} not found as an installed package and submodule externals/${name} is empty. "
+                            "Load the matching module, set CMAKE_PREFIX_PATH, or run: git submodule update --init --recursive")
+    endif()
+endfunction()
+
 # yaml-cpp for configuration parsing
-if(EXISTS "${CMAKE_SOURCE_DIR}/externals/yaml-cpp/CMakeLists.txt")
+set(WW4_YAML_TARGET "")
+if(NOT WW4_DEPENDENCY_MODE STREQUAL "SUBMODULE")
+    find_package(yaml-cpp QUIET CONFIG)
+    if(TARGET yaml-cpp::yaml-cpp)
+        set(WW4_YAML_TARGET yaml-cpp::yaml-cpp)
+    elseif(TARGET yaml-cpp)
+        set(WW4_YAML_TARGET yaml-cpp)
+    endif()
+    if(WW4_YAML_TARGET)
+        message(STATUS "Using installed yaml-cpp (${yaml-cpp_DIR})")
+    elseif(WW4_DEPENDENCY_MODE STREQUAL "SYSTEM")
+        message(FATAL_ERROR "WW4_DEPENDENCY_MODE=SYSTEM but yaml-cpp was not found. Load its module or set CMAKE_PREFIX_PATH.")
+    endif()
+endif()
+if(NOT WW4_YAML_TARGET)
+    ww4_require_submodule(yaml-cpp)
+    message(STATUS "Using yaml-cpp submodule in externals/yaml-cpp")
     set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
     set(YAML_CPP_INSTALL OFF CACHE BOOL "" FORCE)
     add_subdirectory(externals/yaml-cpp EXCLUDE_FROM_ALL SYSTEM)
-else()
-    message(FATAL_ERROR "yaml-cpp submodule not found in externals/yaml-cpp. Please run: git submodule update --init --recursive")
+    set(WW4_YAML_TARGET yaml-cpp)
 endif()
 
-# netcdf-c for NetCDF / UGRID file reading
-if(EXISTS "${CMAKE_SOURCE_DIR}/externals/netcdf-c/CMakeLists.txt")
+# NetCDF-C for NetCDF / UGRID file reading
+set(WW4_NETCDF_TARGET "")
+if(NOT WW4_DEPENDENCY_MODE STREQUAL "SUBMODULE")
+    find_package(netCDF QUIET CONFIG)
+    if(TARGET netCDF::netcdf)
+        set(WW4_NETCDF_TARGET netCDF::netcdf)
+        message(STATUS "Using installed netCDF (${netCDF_DIR})")
+    elseif(WW4_DEPENDENCY_MODE STREQUAL "SYSTEM")
+        message(FATAL_ERROR "WW4_DEPENDENCY_MODE=SYSTEM but netCDF was not found. Load its module or set CMAKE_PREFIX_PATH / netCDF_ROOT.")
+    endif()
+endif()
+if(NOT WW4_NETCDF_TARGET)
+    ww4_require_submodule(netcdf-c)
+    message(STATUS "Using NetCDF-C submodule in externals/netcdf-c")
     find_package(HDF5 QUIET COMPONENTS C)
     find_package(ZLIB QUIET)
 
@@ -100,7 +169,7 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/externals/netcdf-c/CMakeLists.txt")
     unset(ENABLE_TESTS CACHE)
     add_subdirectory(externals/netcdf-c EXCLUDE_FROM_ALL SYSTEM)
 
-    # Suppress warnings on netcdf-c targets in production mode
+    # Suppress warnings on NetCDF-C targets in production mode
     foreach(nc_target netcdf netcdf3 dispatch)
         if(TARGET ${nc_target})
             if(MSVC)
@@ -110,8 +179,7 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/externals/netcdf-c/CMakeLists.txt")
             endif()
         endif()
     endforeach()
-else()
-    message(FATAL_ERROR "netcdf-c submodule not found in externals/netcdf-c. Please run: git submodule update --init --recursive")
+    set(WW4_NETCDF_TARGET netcdf)
 endif()
 
 # Library: ww4_utils
@@ -128,7 +196,7 @@ add_library(
     src/ww4_utils/ww4_service.cpp
 )
 target_include_directories(ww4_utils PUBLIC src)
-target_link_libraries(ww4_utils PRIVATE yaml-cpp)
+target_link_libraries(ww4_utils PRIVATE ${WW4_YAML_TARGET})
 target_compile_options(ww4_utils PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_utils PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
@@ -172,7 +240,7 @@ add_library(
     src/ww4_core/wave_model_solver.cpp
 )
 target_include_directories(ww4_core PUBLIC src)
-target_link_libraries(ww4_core PUBLIC ww4_utils PUBLIC netcdf)
+target_link_libraries(ww4_core PUBLIC ww4_utils PUBLIC ${WW4_NETCDF_TARGET})
 target_compile_options(ww4_core PRIVATE ${WW4_COMMON_COMPILE_OPTIONS})
 target_link_options(ww4_core PRIVATE ${WW4_COMMON_LINK_OPTIONS})
 
@@ -204,18 +272,28 @@ set_target_properties(
 
 # Tests (skipped when WW4_ENABLE_TESTING is OFF for operational builds)
 if(WW4_ENABLE_TESTING)
-    if(EXISTS "${CMAKE_SOURCE_DIR}/externals/googletest/CMakeLists.txt")
+    set(WW4_GTEST_FROM_SUBMODULE OFF)
+    if(NOT WW4_DEPENDENCY_MODE STREQUAL "SUBMODULE")
+        find_package(GTest QUIET)
+        if(TARGET GTest::gtest_main)
+            message(STATUS "Using installed GoogleTest")
+        elseif(WW4_DEPENDENCY_MODE STREQUAL "SYSTEM")
+            message(FATAL_ERROR "WW4_DEPENDENCY_MODE=SYSTEM but GoogleTest was not found. Load its module or set CMAKE_PREFIX_PATH.")
+        endif()
+    endif()
+    if(NOT TARGET GTest::gtest_main)
+        ww4_require_submodule(googletest)
+        message(STATUS "Using googletest submodule in externals/googletest")
+        set(WW4_GTEST_FROM_SUBMODULE ON)
         # For Windows: Prevent overriding the parent project's compiler/linker settings
         set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
         set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
         set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
         add_subdirectory(externals/googletest EXCLUDE_FROM_ALL SYSTEM)
-    else()
-        message(FATAL_ERROR "googletest submodule not found in externals/googletest. Please run: git submodule update --init --recursive")
     endif()
 
     # Suppress warnings from GTest itself for Clang/IntelLLVM during compilation
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
+    if(WW4_GTEST_FROM_SUBMODULE AND (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM"))
         set(GTEST_SUPPRESS_FLAGS -Wno-unknown-warning-option -Wno-character-conversion)
         if(CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
             list(APPEND GTEST_SUPPRESS_FLAGS -diag-disable=10430)
