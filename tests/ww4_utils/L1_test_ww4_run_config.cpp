@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen, Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -37,6 +37,7 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "grid:\n";
   file << "  grid_file: \"test_grid_nondefault.nc\"\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: \"UQ\"\n";
   file << "general:\n";
   file << "  calendar_type: \"NoLeap\"\n";
   file << "  produce_std_out: \"no\"\n";
@@ -46,7 +47,6 @@ TEST(RunConfigTest, NonDefaultConfig) {
   file << "  num_ranks_compute: 10\n";
   file << "  actual_rank: 3\n";
   file << "physics:\n";
-  file << "  solver: \"UQ\"\n";
   file << "  linear_input: \"LN1\"\n";
   file << "  input_dissipation: \"ST1\"\n";
   file << "  nonlinear_interactions: \"NL3\"\n";
@@ -93,11 +93,11 @@ TEST(RunConfigTest, MaxIterationsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "  max_iterations: 42\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -125,10 +125,10 @@ TEST(RunConfigTest, MaxIterationsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -156,11 +156,11 @@ TEST(RunConfigTest, ConvergenceCriterionParsing) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "  convergence_criterion: 1.10\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -188,10 +188,10 @@ TEST(RunConfigTest, PrintGridMetaParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -223,11 +223,11 @@ TEST(RunConfigTest, PrintGridMetaParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "  print_meta: \"no\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -259,11 +259,11 @@ TEST(RunConfigTest, PrintGridMetaParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "  print_meta: \"yes\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -292,10 +292,10 @@ TEST(RunConfigTest, WriteLocalGridParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -327,11 +327,11 @@ TEST(RunConfigTest, WriteLocalGridParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "  write_local_grid: \"yes\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -365,10 +365,10 @@ TEST(RunConfigTest, IntermediateMapsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -400,11 +400,11 @@ TEST(RunConfigTest, IntermediateMapsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "  intermediate_maps: \"yes\"\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -436,7 +436,6 @@ TEST(RunConfigTest, GridFileMissingFailure) {
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -462,10 +461,10 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -501,10 +500,10 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: triangular\n";
+    file << "  solver: implicit\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: implicit\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -540,10 +539,10 @@ TEST(RunConfigTest, SolverSelectionParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: SMC\n";
+    file << "  solver: UKMET\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UKMET\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -600,23 +599,23 @@ TEST(RunConfigTest, SolverSelectionParsing) {
 }
 
 namespace {
-// Write a minimal valid configuration with the given grid section lines and
-// solver line (empty strings omit the entry).
+// Write a minimal valid configuration with the given grid type and solver in
+// the grid section (empty strings omit the entry).
 void writeGridSolverConfig(const std::string &filename,
                            const std::string &gridType,
                            const std::string &solver) {
   std::ofstream file(filename);
   file << "grid:\n";
-  file << "  grid_file: test_grid.nc\n";
   if (!gridType.empty()) {
     file << "  grid_type: " << gridType << "\n";
   }
-  file << "general:\n";
-  file << "  time_step: 3600.0\n";
-  file << "physics:\n";
   if (!solver.empty()) {
     file << "  solver: " << solver << "\n";
   }
+  file << "  grid_file: test_grid.nc\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "physics:\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -684,11 +683,41 @@ TEST(RunConfigTest, MissingOrUnknownGridType) {
   // Old-style solver names are no longer accepted
   writeGridSolverConfig(filename, "triangular", "triangular");
   EXPECT_DEATH(loadRunConfig(filename, std::cerr),
-               "Missing/invalid: physics -> solver");
+               "Missing/invalid: grid -> solver");
 
   writeGridSolverConfig(filename, "regular", "UQ");
   EXPECT_DEATH(loadRunConfig(filename, std::cerr),
                "Missing/invalid: grid -> grid_type");
+  std::remove(filename.c_str());
+}
+
+TEST(RunConfigTest, SolverInPhysicsSectionNotSupported) {
+  // The solver is selected in the grid section; physics -> solver is
+  // reported and the configuration is rejected.
+  const std::string filename = "test_solver_in_physics.yaml";
+  std::ofstream file(filename);
+  file << "grid:\n";
+  file << "  grid_type: rectilinear\n";
+  file << "  grid_file: test_grid.nc\n";
+  file << "general:\n";
+  file << "  time_step: 3600.0\n";
+  file << "physics:\n";
+  file << "  solver: UQ\n";
+  file << "  linear_input: LN1\n";
+  file << "  input_dissipation: ST4\n";
+  file << "  nonlinear_interactions: NL1\n";
+  file << "  bottom_friction: BT1\n";
+  file << "forcing:\n";
+  file << "  water_levels: none\n";
+  file << "  currents: none\n";
+  file << "  winds: none\n";
+  file << "  ice_concentrations: none\n";
+  file.close();
+
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Not supported: physics -> solver \\(use grid -> solver\\)");
+  EXPECT_DEATH(loadRunConfig(filename, std::cerr),
+               "Missing/invalid: grid -> solver");
   std::remove(filename.c_str());
 }
 
@@ -716,10 +745,10 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST1\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -747,10 +776,10 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: none\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL3\n";
@@ -776,10 +805,10 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: none\n";
     file << "  input_dissipation: none\n";
     file << "  nonlinear_interactions: none\n";
@@ -805,10 +834,10 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST1\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -836,10 +865,10 @@ TEST(RunConfigTest, SourceTermOptionsParsing) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  nonlinear_interactions: NL1\n";
     file << "  bottom_friction: BT1\n";
@@ -870,10 +899,10 @@ TEST(RunConfigTest, HomogeneousDataAndHelpers) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -931,10 +960,10 @@ TEST(RunConfigTest, SpectralSpaceParametersCustomYamlAndReport) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -981,10 +1010,10 @@ TEST(RunConfigTest, SpectralSpaceParametersValidationFailure) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1010,11 +1039,11 @@ TEST(RunConfigTest, ScreenOutputLevelConfig) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "  screen_output_level: summary\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1045,10 +1074,10 @@ TEST(RunConfigTest, OutputConfigParsing) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1099,10 +1128,10 @@ TEST(RunConfigTest, OutputIntervalFailure) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1158,6 +1187,7 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
@@ -1167,7 +1197,6 @@ TEST(RunConfigTest, NewFlagsConfig) {
   file << "  propagate_theta: no\n";
   file << "  propagate_k: no\n";
   file << "  source_terms: no\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1226,13 +1255,13 @@ TEST(RunConfigTest, RobustParsingConfig) {
   file << "grid:\n";
   file << "  grid_file : \"test_grid_robust.nc\"\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: \"UQ\"\n";
   file << "general:\n";
   file << "  calendar_type   :   \"NoLeap\"   # End of line comment\n";
   file << "  produce_std_out: yes\n";
   file << "  produce_log_file : \"no\"\n";
   file << "  time_step : 3600.0\n";
   file << "physics:\n";
-  file << "  solver: \"UQ\"\n";
   file << "  linear_input: \"LN1\"\n";
   file << "  input_dissipation: \"ST4\"\n";
   file << "  nonlinear_interactions: \"NL1\"\n";
@@ -1313,10 +1342,10 @@ TEST(RunConfigTest, ApiOutputConfig) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1412,11 +1441,11 @@ TEST(RunConfigTest, ThreeSixtyDayConfig) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  calendar_type: \"ThreeSixtyDay\"\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1446,11 +1475,11 @@ TEST(RunConfigTest, PartialConfig) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  produce_std_out: \"no\"\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1483,11 +1512,11 @@ TEST(RunConfigTest, RankConfigurationValidationFailure) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "  num_ranks: 0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -1511,13 +1540,13 @@ TEST(RunConfigTest, RankConfigurationValidationFailure) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "  num_ranks: 4\n";
     file << "  num_ranks_compute: 3\n";
     file << "  actual_rank: 4\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -1541,13 +1570,13 @@ TEST(RunConfigTest, RankConfigurationValidationFailure) {
     file << "grid:\n";
     file << "  grid_file: test_grid.nc\n";
     file << "  grid_type: rectilinear\n";
+    file << "  solver: UQ\n";
     file << "general:\n";
     file << "  time_step: 3600.0\n";
     file << "  num_ranks: 4\n";
     file << "  num_ranks_compute: 5\n";
     file << "  actual_rank: 0\n";
     file << "physics:\n";
-    file << "  solver: UQ\n";
     file << "  linear_input: LN1\n";
     file << "  input_dissipation: ST4\n";
     file << "  nonlinear_interactions: NL1\n";
@@ -1571,10 +1600,10 @@ TEST(RunConfigTest, TimeStepFailure) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: -1.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1614,10 +1643,10 @@ TEST(RunConfigTest, BottomDepthDefault) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1643,10 +1672,10 @@ TEST(RunConfigTest, BottomDepthOtherOptions) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1672,10 +1701,10 @@ TEST(RunConfigTest, FromGridRejection) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";
@@ -1701,10 +1730,10 @@ TEST(RunConfigTest, InputFieldOptionParsing) {
   file << "grid:\n";
   file << "  grid_file: test_grid.nc\n";
   file << "  grid_type: rectilinear\n";
+  file << "  solver: UQ\n";
   file << "general:\n";
   file << "  time_step: 3600.0\n";
   file << "physics:\n";
-  file << "  solver: UQ\n";
   file << "  linear_input: LN1\n";
   file << "  input_dissipation: ST4\n";
   file << "  nonlinear_interactions: NL1\n";

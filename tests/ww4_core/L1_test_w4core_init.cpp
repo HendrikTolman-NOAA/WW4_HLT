@@ -88,11 +88,11 @@ TEST_F(W4CoreInitTest, W4CoreInitAndReset) {
   runFile << "grid:\n";
   runFile << "  grid_file: test_grid.nc\n";
   runFile << "  grid_type: rectilinear\n";
+  runFile << "  solver: UQ\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
-  runFile << "  solver: UQ\n";
   runFile << "  linear_input: LN1\n";
   runFile << "  input_dissipation: ST4\n";
   runFile << "  nonlinear_interactions: NL1\n";
@@ -164,11 +164,11 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   runFile << "grid:\n";
   runFile << "  grid_file: test_grid.nc\n";
   runFile << "  grid_type: triangular\n";
+  runFile << "  solver: implicit\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
-  runFile << "  solver: implicit\n";
   runFile << "  linear_input: LN1\n";
   runFile << "  input_dissipation: ST4\n";
   runFile << "  nonlinear_interactions: NL1\n";
@@ -193,11 +193,11 @@ TEST_F(W4CoreInitTest, InitWithTriangularAndSMC) {
   runFile2 << "grid:\n";
   runFile2 << "  grid_file: test_grid.nc\n";
   runFile2 << "  grid_type: SMC\n";
+  runFile2 << "  solver: UKMET\n";
   runFile2 << "general:\n";
   runFile2 << "  calendar_type: Standard\n";
   runFile2 << "  time_step: 3600.0\n";
   runFile2 << "physics:\n";
-  runFile2 << "  solver: UKMET\n";
   runFile2 << "  linear_input: LN1\n";
   runFile2 << "  input_dissipation: ST4\n";
   runFile2 << "  nonlinear_interactions: NL1\n";

@@ -17,7 +17,7 @@
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen, Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_utils/ww4_run_config.h"
@@ -269,13 +269,13 @@ GridType parseGridType(const std::string_view value) noexcept {
 
 // --- parseSolverType --------------------------------------------------------
 /**
- * @brief Map a physics -> solver configuration string to SolverType.
+ * @brief Map a grid -> solver configuration string to SolverType.
  * @param value Configuration string.
  * @return Matching SolverType, or SolverType::Undefined if unknown.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Kiro (Agentic AI)
  * @date Initial, 2026-11-20
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 SolverType parseSolverType(const std::string_view value) noexcept {
   if (value == "1UP") {
@@ -318,17 +318,17 @@ bool isGridSolverValid(const RunConfig &config) noexcept {
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Kiro (Agentic AI)
  * @date Initial, 2026-11-20
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 void reportGridSolverIssues(const RunConfig &config, std::ostream &os) {
   if (config.gridType == GridType::Undefined) {
     os << "   Missing/invalid: grid -> grid_type" << std::endl;
   }
   if (config.solver == SolverType::Undefined) {
-    os << "   Missing/invalid: physics -> solver" << std::endl;
+    os << "   Missing/invalid: grid -> solver" << std::endl;
   } else if (config.gridType != GridType::Undefined &&
              !isSolverAvailableOnGrid(config.gridType, config.solver)) {
-    os << "   Missing/invalid: physics -> solver (not available for "
+    os << "   Missing/invalid: grid -> solver (not available for "
           "selected grid -> grid_type)"
        << std::endl;
   }
@@ -368,7 +368,7 @@ std::string_view cleanValue(const std::string_view s) {
  * @author Contributors: Jules (Agentic AI), Kit Stokes, Jessica Meixner,
  *                       Ming Chen, Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 std::optional<RunConfig> loadRunConfig(const std::string_view filename,
                                        std::ostream &os) noexcept {
@@ -382,6 +382,10 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
       if (node["grid_type"]) {
         config.gridType =
             parseGridType(cleanValue(node["grid_type"].as<std::string>()));
+      }
+      if (node["solver"]) {
+        config.solver =
+            parseSolverType(cleanValue(node["solver"].as<std::string>()));
       }
       if (node["grid_file"]) {
         config.gridFile = cleanValue(node["grid_file"].as<std::string>());
@@ -487,8 +491,9 @@ std::optional<RunConfig> loadRunConfig(const std::string_view filename,
         config.sourceTerms = (node["source_terms"].as<std::string>() == "yes");
       }
       if (node["solver"]) {
-        const auto solverStr = node["solver"].as<std::string>();
-        config.solver = parseSolverType(solverStr);
+        // Solver selection moved to the grid section (grid -> solver)
+        os << "   Not supported: physics -> solver (use grid -> solver)"
+           << std::endl;
       }
       if (node["input_dissipation"]) {
         const auto val = node["input_dissipation"].as<std::string>();

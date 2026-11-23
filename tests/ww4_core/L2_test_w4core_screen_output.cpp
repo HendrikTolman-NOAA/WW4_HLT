@@ -47,12 +47,12 @@ protected:
     runFile << "grid:\n";
     runFile << "  grid_file: test_grid.nc\n";
     runFile << "  grid_type: rectilinear\n";
+    runFile << "  solver: UQ\n";
     runFile << "general:\n";
     runFile << "  calendar_type: Standard\n";
     runFile << "  time_step: 1800.0\n";
     runFile << "  screen_output_level: " << screenLevel << "\n";
     runFile << "physics:\n";
-    runFile << "  solver: UQ\n";
     runFile << "  linear_input: LN1\n";
     runFile << "  input_dissipation: ST4\n";
     runFile << "  nonlinear_interactions: NL1\n";

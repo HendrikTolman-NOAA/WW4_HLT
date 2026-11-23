@@ -43,7 +43,8 @@ protected:
 
   void writeYaml(const std::string &content) {
     std::ofstream ofs("ww4_run_config.yaml");
-    ofs << "grid:\n  grid_type: rectilinear\n  grid_file: test_grid.nc\n"
+    ofs << "grid:\n  grid_type: rectilinear\n  solver: UQ\n  grid_file: "
+           "test_grid.nc\n"
         << content;
     ofs.close();
   }
@@ -54,7 +55,6 @@ TEST_F(W4CoreHomInputTest, ValidHomogeneousInput) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -101,7 +101,6 @@ TEST_F(W4CoreHomInputTest, SummaryEcho) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -134,7 +133,6 @@ TEST_F(W4CoreHomInputTest, MultipleFields) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -178,7 +176,6 @@ TEST_F(W4CoreHomInputTest, BackwardTimeStamps) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -204,7 +201,6 @@ TEST_F(W4CoreHomInputTest, MissingDataForHomogeneousField) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -227,7 +223,6 @@ TEST_F(W4CoreHomInputTest, IceConcentrationRange) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -253,7 +248,6 @@ TEST_F(W4CoreHomInputTest, WindsParameterCount) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -279,7 +273,6 @@ TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1

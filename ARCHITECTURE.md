@@ -117,13 +117,13 @@ sequenceDiagram
 
 ## Runtime Grid and Solver Selection
 
-WW4 uses an integrated **Strategy** and **Factory** design pattern with a two-stage selection. The user first selects a grid type (`grid -> grid_type` in `ww4_run_config.yaml`), and then a numerical solver that is available on that grid (`physics -> solver`). Invalid combinations (for example `rectilinear` with `implicit`) are rejected when the run-time configuration is loaded. To support complex interleaving of physics and dynamics (e.g., implicit sub-stepping), physical source terms are managed and called directly by the **Solver**, using a single approach shared by all solvers (`SolverBase`).
+WW4 uses an integrated **Strategy** and **Factory** design pattern with a two-stage selection. The user first selects a grid type (`grid -> grid_type` in `ww4_run_config.yaml`), and then, directly below it in the same `grid` section, a numerical solver that is available on that grid (`grid -> solver`). Invalid combinations (for example `rectilinear` with `implicit`) are rejected when the run-time configuration is loaded. To support complex interleaving of physics and dynamics (e.g., implicit sub-stepping), physical source terms are managed and called directly by the **Solver**, using a single approach shared by all solvers (`SolverBase`).
 
 ### Model option selection
 
 ```mermaid
 flowchart TD
-    CFG["ww4_run_config.yaml<br/>grid:&nbsp;grid_type<br/>physics:&nbsp;solver"] --> G{"1.&nbsp;Grid&nbsp;type<br/>SchemeFactory::createGrid"}
+    CFG["ww4_run_config.yaml<br/>grid:<br/>&nbsp;&nbsp;grid_type<br/>&nbsp;&nbsp;solver"] --> G{"1.&nbsp;Grid&nbsp;type<br/>SchemeFactory::createGrid"}
 
     G -- rectilinear --> GR["GridRectilinear"]
     G -- triangular --> GT["GridTriangular"]
@@ -146,6 +146,15 @@ flowchart TD
     CAS --> ID["Input&nbsp;&&nbsp;dissipation<br/>ST1&nbsp;/&nbsp;ST2&nbsp;/&nbsp;ST4&nbsp;/&nbsp;ST6"]
     CAS --> NL["Nonlinear&nbsp;interactions<br/>NL1&nbsp;/&nbsp;NL2&nbsp;/&nbsp;NL3"]
     CAS --> BT["Bottom&nbsp;friction<br/>BT1&nbsp;/&nbsp;BT4"]
+```
+
+Both options are in the `grid` section of `ww4_run_config.yaml`, with `solver` directly after `grid_type`:
+
+```yaml
+grid:
+  grid_type: "rectilinear"
+  solver: "UQ"
+  grid_file: "ww4_grid_ugrid.nc"
 ```
 
 | `grid_type`   | Grid class         | `solver`   | Solver class               |

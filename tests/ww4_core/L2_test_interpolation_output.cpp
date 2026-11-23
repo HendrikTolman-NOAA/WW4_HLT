@@ -46,7 +46,8 @@ protected:
 
   void writeYaml(const std::string &content) {
     std::ofstream ofs("ww4_run_config.yaml");
-    ofs << "grid:\n  grid_type: rectilinear\n  grid_file: test_grid.nc\n"
+    ofs << "grid:\n  grid_type: rectilinear\n  solver: UQ\n  grid_file: "
+           "test_grid.nc\n"
         << content;
     ofs.close();
   }
@@ -67,7 +68,6 @@ TEST_F(InterpolationOutputTest, RedundantOutputCheck) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
