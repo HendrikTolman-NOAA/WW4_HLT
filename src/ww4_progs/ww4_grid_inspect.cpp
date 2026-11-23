@@ -33,9 +33,9 @@
  * @param argv Command line argument values.
  * @return Exit status code (0 for success, non-zero for failure).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-11-04
- * @date Last update : 2026-11-04
+ * @date Last update : 2026-11-23
  */
 int main(int argc, char **argv) {
   try {

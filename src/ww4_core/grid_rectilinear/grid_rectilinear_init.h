@@ -34,9 +34,9 @@ namespace ww4_core {
  * with halo cells, and sets up inter-rank halo communication structures.
  * @param[in,out] os Output stream for logging and screen messages.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-10-22
- * @date Last update : 2026-11-09
+ * @date Last update : 2026-11-23
  */
 void grid_rectilinear_init(std::ostream &os = std::cout);
 
