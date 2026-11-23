@@ -1,4 +1,4 @@
-#include "ww4_core/grid_rectilinear/utils_UQ_IO/test_ugrid_helper.h"
+#include "ww4_core/grid_rectilinear/utils_rectilinear_IO/test_ugrid_helper.h"
 /**
  *       +--------------------------------------------------------+
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
@@ -22,12 +22,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_core/grid_rectilinear/grid_rectilinear_init.h"
-#include "ww4_core/grid_rectilinear/utils_UQ_IO/UQ_read_partition.h"
-#include "ww4_core/grid_rectilinear/utils_UQ_IO/UQ_write_partition.h"
+#include "ww4_core/grid_rectilinear/utils_rectilinear_IO/rectilinear_read_partition.h"
+#include "ww4_core/grid_rectilinear/utils_rectilinear_IO/rectilinear_write_partition.h"
 #include "ww4_core/w4core_init.h"
 #include "ww4_utils/ww4_logfile.h"
 #include <filesystem>

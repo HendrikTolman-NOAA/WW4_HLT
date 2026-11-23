@@ -2,7 +2,7 @@
 
 *Last updated: November 20, 2026*
 
-This document describes the domain decomposition architecture, initial partitioning, integrated iterative refinement loop, and convergence criteria for regular structured (UQ) grids in WAVEWATCH IV (`src/ww4_core/grid_rectilinear/UQ_domains.cpp`).
+This document describes the domain decomposition architecture, initial partitioning, integrated iterative refinement loop, and convergence criteria for regular structured (UQ) grids in WAVEWATCH IV (`src/ww4_core/grid_rectilinear/rectilinear_domains.cpp`).
 
 ---
 

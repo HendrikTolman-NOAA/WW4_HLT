@@ -18,11 +18,11 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Kiro (Agentic AI)
  * @date Initial, 2026-11-20
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_core/grid_rectilinear/grid_rectilinear.h"
-#include "ww4_core/grid_rectilinear/utils_UQ_IO/test_ugrid_helper.h"
+#include "ww4_core/grid_rectilinear/utils_rectilinear_IO/test_ugrid_helper.h"
 #include "ww4_core/scheme_factory.h"
 #include "ww4_core/w4core_init.h"
 #include <gtest/gtest.h>

@@ -16,13 +16,13 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Kiro (Agentic AI)
  * @date Initial, 2026-11-20
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_core/grid_rectilinear/grid_rectilinear.h"
 #include "ww4_core/grid_rectilinear/grid_rectilinear_init.h"
-#include "ww4_core/grid_rectilinear/solver_rectilinear_1UP.h"
-#include "ww4_core/grid_rectilinear/solver_rectilinear_UQ.h"
+#include "ww4_core/grid_rectilinear/solver_1UP/solver_rectilinear_1UP.h"
+#include "ww4_core/grid_rectilinear/solver_UQ/solver_rectilinear_UQ.h"
 #include <stdexcept>
 #include <string>
 

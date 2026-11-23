@@ -18,10 +18,10 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-10-15
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
-#include "ww4_core/grid_triangular/solver_triangular_implicit.h"
+#include "ww4_core/grid_triangular/solver_implicit/solver_triangular_implicit.h"
 #include "ww4_core/scheme_factory.h"
 #include <gtest/gtest.h>
 #include <vector>

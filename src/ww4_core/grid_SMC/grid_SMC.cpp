@@ -16,12 +16,12 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Kiro (Agentic AI)
  * @date Initial, 2026-11-20
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_core/grid_SMC/grid_SMC.h"
 #include "ww4_core/grid_SMC/grid_SMC_init.h"
-#include "ww4_core/grid_SMC/solver_SMC_UKMET.h"
+#include "ww4_core/grid_SMC/solver_UKMET/solver_SMC_UKMET.h"
 #include <stdexcept>
 #include <string>
 
