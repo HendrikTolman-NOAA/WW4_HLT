@@ -1,4 +1,4 @@
-#include "ww4_core/solver_UQ/utils_UQ_IO/test_ugrid_helper.h"
+#include "ww4_core/grid_rectilinear/utils_rectilinear_IO/test_ugrid_helper.h"
 /**
  *       +--------------------------------------------------------+
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
@@ -12,9 +12,9 @@
  * NWS often uses Generative AI (GenAI) for code development and refactoring.
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date 2026-05-01
- * @date Last update : 2026-06-08
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_core/w4core_init.h"
@@ -43,7 +43,9 @@ protected:
 
   void writeYaml(const std::string &content) {
     std::ofstream ofs("ww4_run_config.yaml");
-    ofs << "grid:\n  grid_file: test_grid.nc\n" << content;
+    ofs << "grid:\n  grid_type: rectilinear\n  solver: UQ\n  grid_file: "
+           "test_grid.nc\n"
+        << content;
     ofs.close();
   }
 };
@@ -53,7 +55,6 @@ TEST_F(W4CoreHomInputTest, ValidHomogeneousInput) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -100,7 +101,6 @@ TEST_F(W4CoreHomInputTest, SummaryEcho) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -133,7 +133,6 @@ TEST_F(W4CoreHomInputTest, MultipleFields) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -177,7 +176,6 @@ TEST_F(W4CoreHomInputTest, BackwardTimeStamps) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -203,7 +201,6 @@ TEST_F(W4CoreHomInputTest, MissingDataForHomogeneousField) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -226,7 +223,6 @@ TEST_F(W4CoreHomInputTest, IceConcentrationRange) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -252,7 +248,6 @@ TEST_F(W4CoreHomInputTest, WindsParameterCount) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1
@@ -278,7 +273,6 @@ TEST_F(W4CoreHomInputTest, BottomDepthHomogeneous) {
   calendar_type: Standard
   time_step: 3600.0
 physics:
-  solver: UQ
   linear_input: LN1
   input_dissipation: ST4
   nonlinear_interactions: NL1

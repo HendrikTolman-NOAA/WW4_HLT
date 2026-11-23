@@ -1,4 +1,4 @@
-#include "ww4_core/solver_UQ/utils_UQ_IO/test_ugrid_helper.h"
+#include "ww4_core/grid_rectilinear/utils_rectilinear_IO/test_ugrid_helper.h"
 /**
  *       +--------------------------------------------------------+
  *       | WAVEWATCH IV, open source, code management by NOAA/NWS |
@@ -14,15 +14,16 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-07-09
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-23
  */
 
 #include "ww4_core/w4core_init.h"
 #include "ww4_core/w4core_wave.h"
 #include <fstream>
 #include <gtest/gtest.h>
+#include <sstream>
 
 namespace ww4_core {
 
@@ -43,19 +44,22 @@ protected:
 
 TEST_F(W4CoreWaveL1Test, BasicWaveExecution) {
   // Explicit reference to solver call routines for coverage check:
-  // solver_UQ_exec
-  // solver_triangular_exec
-  // solver_SMC_exec
+  // solver_rectilinear_1UP_exec
+  // solver_rectilinear_UQ_exec
+  // solver_triangular_implicit_exec
+  // solver_triangular_explicit_exec
+  // solver_SMC_UKMET_exec
 
   // Create dummy run configuration file
   std::ofstream runFile("ww4_run_config.yaml");
   runFile << "grid:\n";
   runFile << "  grid_file: test_grid.nc\n";
+  runFile << "  grid_type: rectilinear\n";
+  runFile << "  solver: UQ\n";
   runFile << "general:\n";
   runFile << "  calendar_type: Standard\n";
   runFile << "  time_step: 3600.0\n";
   runFile << "physics:\n";
-  runFile << "  solver: UQ\n";
   runFile << "  linear_input: LN1\n";
   runFile << "  input_dissipation: ST4\n";
   runFile << "  nonlinear_interactions: NL1\n";
@@ -83,10 +87,11 @@ TEST_F(W4CoreWaveL1Test, WaveExecutionTriangularAndSMC) {
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "grid:\n";
     runFile << "  grid_file: test_grid.nc\n";
+    runFile << "  grid_type: triangular\n";
+    runFile << "  solver: implicit\n";
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";
-    runFile << "  solver: triangular\n";
     runFile << "  linear_input: LN1\n";
     runFile << "  input_dissipation: ST4\n";
     runFile << "  nonlinear_interactions: NL1\n";
@@ -111,10 +116,11 @@ TEST_F(W4CoreWaveL1Test, WaveExecutionTriangularAndSMC) {
     std::ofstream runFile("ww4_run_config.yaml");
     runFile << "grid:\n";
     runFile << "  grid_file: test_grid.nc\n";
+    runFile << "  grid_type: SMC\n";
+    runFile << "  solver: UKMET\n";
     runFile << "general:\n";
     runFile << "  time_step: 3600.0\n";
     runFile << "physics:\n";
-    runFile << "  solver: SMC\n";
     runFile << "  linear_input: LN1\n";
     runFile << "  input_dissipation: ST4\n";
     runFile << "  nonlinear_interactions: NL1\n";
@@ -132,6 +138,29 @@ TEST_F(W4CoreWaveL1Test, WaveExecutionTriangularAndSMC) {
                 "WW4 ERROR: SMC grid reader not yet implemented when reading "
                 "bottom grid.");
   }
+}
+
+TEST_F(W4CoreWaveL1Test, SolverExecRoutines) {
+  getMutableRunConfig().produceStdOut = true;
+  getMutableRunConfig().screenOutputLevel = ww4_utils::ScreenOutputLevel::Full;
+
+  std::ostringstream ss;
+  solver_rectilinear_1UP_exec(1.0, ss);
+  solver_rectilinear_UQ_exec(1.0, ss);
+  solver_triangular_implicit_exec(1.0, ss);
+  solver_triangular_explicit_exec(1.0, ss);
+  solver_SMC_UKMET_exec(1.0, ss);
+
+  const std::string out = ss.str();
+  EXPECT_NE(out.find("Executing 1UP solver on rectilinear grid"),
+            std::string::npos);
+  EXPECT_NE(out.find("Executing UQ solver on rectilinear grid"),
+            std::string::npos);
+  EXPECT_NE(out.find("Executing implicit solver on triangular grid"),
+            std::string::npos);
+  EXPECT_NE(out.find("Executing explicit solver on triangular grid"),
+            std::string::npos);
+  EXPECT_NE(out.find("Executing UKMET solver on SMC grid"), std::string::npos);
 }
 
 } // namespace ww4_core

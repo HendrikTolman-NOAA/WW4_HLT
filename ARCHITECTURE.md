@@ -2,17 +2,26 @@
 
 ### Key Components
 
-1.  **ISolver**: The primary integration strategy. It defines the contract for numerical solvers that combine dynamics (propagation) and physics (source terms) to advance the model state.
-2.  **ISourceTerm**: The physical strategy interface for WAVEWATCH IV sub-source terms.
-3.  **Source Term Implementations**:
-    - **ComputeAllSources**: Unified routine called directly by each solver. Manages and executes physical `ISourceTerm` sub-source terms instantiated via `SchemeFactory`.
+Model options are selected in two stages: first a **grid type**, then a **numerical solver** that is available on that grid. All solvers on all grids share one source term approach.
+
+1.  **IGrid**: The grid strategy interface (first selection stage). A grid owns grid ingestion and domain decomposition (`init`) and acts as the factory for the solvers available on it (`getSolverNames`, `hasSolver`, `createSolver`).
+2.  **Grids (`GridRectilinear`, `GridTriangular`, `GridSMC`)**: Concrete grid types (`grid_type` = `rectilinear`, `triangular`, `SMC`).
+3.  **ISolver**: The integration strategy interface (second selection stage). It defines the contract for numerical solvers that combine dynamics (propagation) and physics (source terms) to advance the model state.
+4.  **Solvers**: Concrete numerical solvers per grid:
+    - Rectilinear grid: `SolverRectilinear1UP` (`1UP`) and `SolverRectilinearUQ` (`UQ`).
+    - Triangular grid: `SolverTriangularImplicit` (`implicit`) and `SolverTriangularExplicit` (`explicit`).
+    - SMC grid: `SolverSMCUKMET` (`UKMET`).
+5.  **SolverBase**: Common base class of all solvers. Holds the single, shared source term approach: registered `ISourceTerm` objects are evaluated in order during `solve`, with `ComputeAllSources` used if none were registered.
+6.  **ISourceTerm**: The physical strategy interface for WAVEWATCH IV sub-source terms.
+7.  **Source Term Implementations** (unchanged, independent of grid and solver):
+    - **ComputeAllSources**: Unified routine called by every solver through `SolverBase`. Manages and executes physical `ISourceTerm` sub-source terms instantiated via `SchemeFactory`.
     - **Linear Input**: `SourceTermLN1` (LN1).
     - **Input and Dissipation**: `SourceTermST1` (ST1), `SourceTermST2` (ST2), `SourceTermST4` (ST4), and `SourceTermST6` (ST6).
     - **Nonlinear Interactions**: `SourceTermNL1` (NL1), `SourceTermNL2` (NL2), and `SourceTermNL3` (NL3).
     - **Bottom Friction**: `SourceTermBT1` (BT1) and `SourceTermBT4` (BT4).
-4.  **Solvers (`SolverUQ`, `SolverTriangular`, `SolverSMC`)**: Concrete numerical solvers (Ultimate Quickest regular grid, Triangular unstructured grid, and SMC grid) that directly invoke `ComputeAllSources` during their `solve` phase.
-5.  **SchemeFactory**: Responsible for instantiating individual model components (solvers and source terms).
-6.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
+8.  **SchemeFactory**: Instantiates model components: `createGrid(grid)`, `createSolver(grid, solver)` (shorthand for `createGrid(grid)->createSolver(solver)`), and `createSourceTerm(name)`.
+9.  **WaveModelSolver**: The high-level orchestrator solver. It manages the simulation loop and triggers the configured solver at each time step.
+
 This document describes the high-level architecture of WAVEWATCH IV (WW4) using a Mermaid diagram.
 
 ## Component Diagram
@@ -77,6 +86,7 @@ sequenceDiagram
     INIT->>UTILS: setCalendarType()
     INIT->>UTILS: ww4_input_update()
     INIT->>UTILS: writeInitialOutput()
+    Note over INIT: grid_{grid_type}_init()<br/>(rectilinear / triangular / SMC)
     INIT->>UTILS: writeLogTableHeader()
 
     SA->>WAVE: w4core_wave(startTime, endTime)
@@ -86,7 +96,7 @@ sequenceDiagram
         WAVE->>UTILS: computeInputTimeStep()
         WAVE->>UTILS: computeOutputTimeStep()
         WAVE->>UTILS: updateOutputActualTimes()
-        Note over WAVE: Propagate Solution
+        Note over WAVE: Propagate Solution<br/>solver_{grid}_{solver}_exec()
     end
 
     SA->>FINL: w4core_finalize(endTime)
@@ -105,9 +115,105 @@ sequenceDiagram
     - `HDF5`: Optional dependency for NetCDF-4 support in `netcdf-c`.
     - `ZLIB`: Optional compression library dependency for NetCDF-4 support in `netcdf-c`.
 
-## Integrated Runtime Solver Selection
+## Runtime Grid and Solver Selection
 
-WW4 uses an integrated **Strategy** and **Factory** design pattern. To support complex interleaving of physics and dynamics (e.g., implicit sub-stepping), physical source terms are managed and called directly by a **Solver**.
+WW4 uses an integrated **Strategy** and **Factory** design pattern with a two-stage selection. The user first selects a grid type (`grid -> grid_type` in `ww4_run_config.yaml`), and then, directly below it in the same `grid` section, a numerical solver that is available on that grid (`grid -> solver`). Invalid combinations (for example `rectilinear` with `implicit`) are rejected when the run-time configuration is loaded. To support complex interleaving of physics and dynamics (e.g., implicit sub-stepping), physical source terms are managed and called directly by the **Solver**, using a single approach shared by all solvers (`SolverBase`).
+
+### Model option selection
+
+```mermaid
+flowchart TD
+    CFG["ww4_run_config.yaml<br/>grid:<br/>&nbsp;&nbsp;grid_type<br/>&nbsp;&nbsp;solver"] --> G{"1.&nbsp;Grid&nbsp;type<br/>SchemeFactory::createGrid"}
+
+    G -- rectilinear --> GR["GridRectilinear"]
+    G -- triangular --> GT["GridTriangular"]
+    G -- SMC --> GS["GridSMC"]
+
+    GR --> SR{"2.&nbsp;Solver<br/>IGrid::createSolver"}
+    GT --> ST{"2.&nbsp;Solver<br/>IGrid::createSolver"}
+    GS --> SS{"2.&nbsp;Solver<br/>IGrid::createSolver"}
+
+    SR -- 1UP --> S1["SolverRectilinear1UP"]
+    SR -- UQ --> S2["SolverRectilinearUQ"]
+    ST -- implicit --> S3["SolverTriangularImplicit"]
+    ST -- explicit --> S4["SolverTriangularExplicit"]
+    SS -- UKMET --> S5["SolverSMCUKMET"]
+
+    S1 & S2 & S3 & S4 & S5 --> SB["SolverBase<br/><i>single&nbsp;shared&nbsp;source&nbsp;term&nbsp;approach</i>"]
+
+    SB --> CAS["ComputeAllSources"]
+    CAS --> LN["Linear&nbsp;input<br/>LN1"]
+    CAS --> ID["Input&nbsp;&&nbsp;dissipation<br/>ST1&nbsp;/&nbsp;ST2&nbsp;/&nbsp;ST4&nbsp;/&nbsp;ST6"]
+    CAS --> NL["Nonlinear&nbsp;interactions<br/>NL1&nbsp;/&nbsp;NL2&nbsp;/&nbsp;NL3"]
+    CAS --> BT["Bottom&nbsp;friction<br/>BT1&nbsp;/&nbsp;BT4"]
+```
+
+Both options are in the `grid` section of `ww4_run_config.yaml`, with `solver` directly after `grid_type`:
+
+```yaml
+grid:
+  grid_type: "rectilinear"
+  solver: "UQ"
+  grid_file: "ww4_grid_ugrid.nc"
+```
+
+| `grid_type`   | Grid class         | `solver`   | Solver class               |
+|---------------|--------------------|------------|----------------------------|
+| `rectilinear` | `GridRectilinear`  | `1UP`      | `SolverRectilinear1UP`     |
+| `rectilinear` | `GridRectilinear`  | `UQ`       | `SolverRectilinearUQ`      |
+| `triangular`  | `GridTriangular`   | `implicit` | `SolverTriangularImplicit` |
+| `triangular`  | `GridTriangular`   | `explicit` | `SolverTriangularExplicit` |
+| `SMC`         | `GridSMC`          | `UKMET`    | `SolverSMCUKMET`           |
+
+### Source layout
+
+The directory structure follows the factory scheme: one directory per grid type, and under each grid one directory per solver. Code shared by all solvers of a grid (grid ingestion, domain decomposition, grid I/O) sits at the grid level.
+
+```mermaid
+graph LR
+    CORE["src/ww4_core/<br/><i>grid.h,&nbsp;solver.h,&nbsp;solver_base,<br/>scheme_factory</i>"]
+
+    CORE --> GR["grid_rectilinear/<br/><i>grid_rectilinear,&nbsp;grid_rectilinear_init,<br/>rectilinear_domains,&nbsp;rectilinear_domain_topology,<br/>rectilinear_one_domain</i>"]
+    CORE --> GT["grid_triangular/<br/><i>grid_triangular,&nbsp;grid_triangular_init</i>"]
+    CORE --> GS["grid_SMC/<br/><i>grid_SMC,&nbsp;grid_SMC_init</i>"]
+    CORE --> ST["source_terms/<br/><i>ComputeAllSources,<br/>LN1,&nbsp;ST*,&nbsp;NL*,&nbsp;BT*</i>"]
+
+    GR --> GRIO["utils_rectilinear_IO/<br/><i>grid&nbsp;and&nbsp;partition&nbsp;NetCDF&nbsp;I/O</i>"]
+    GR --> S1["solver_1UP/<br/><i>solver_rectilinear_1UP</i>"]
+    GR --> S2["solver_UQ/<br/><i>solver_rectilinear_UQ</i>"]
+    GT --> S3["solver_implicit/<br/><i>solver_triangular_implicit</i>"]
+    GT --> S4["solver_explicit/<br/><i>solver_triangular_explicit</i>"]
+    GS --> S5["solver_UKMET/<br/><i>solver_SMC_UKMET</i>"]
+```
+
+```text
+src/ww4_core/
+├── grid.h                       IGrid interface (grid type + solver factory)
+├── solver.h                     ISolver interface
+├── solver_base.{h,cpp}          SolverBase (shared source term approach)
+├── scheme_factory.{h,cpp}       createGrid / createSolver / createSourceTerm
+├── grid_rectilinear/
+│   ├── grid_rectilinear.{h,cpp}                 GridRectilinear
+│   ├── grid_rectilinear_init.{h,cpp}            grid ingestion and domain decomposition
+│   ├── rectilinear_domains.{h,cpp}              domain partitioning
+│   ├── rectilinear_domain_topology.{h,cpp}      domain neighbors and refinement tools
+│   ├── rectilinear_one_domain.{h,cpp}           local domain extraction with halo
+│   ├── utils_rectilinear_IO/                    grid and partition NetCDF I/O
+│   ├── solver_1UP/solver_rectilinear_1UP.{h,cpp}  SolverRectilinear1UP
+│   └── solver_UQ/solver_rectilinear_UQ.{h,cpp}    SolverRectilinearUQ
+├── grid_triangular/
+│   ├── grid_triangular.{h,cpp}                            GridTriangular
+│   ├── grid_triangular_init.{h,cpp}                       grid ingestion (placeholder)
+│   ├── solver_implicit/solver_triangular_implicit.{h,cpp}  SolverTriangularImplicit
+│   └── solver_explicit/solver_triangular_explicit.{h,cpp}  SolverTriangularExplicit
+├── grid_SMC/
+│   ├── grid_SMC.{h,cpp}                         GridSMC
+│   ├── grid_SMC_init.{h,cpp}                    grid ingestion (placeholder)
+│   └── solver_UKMET/solver_SMC_UKMET.{h,cpp}    SolverSMCUKMET
+└── source_terms/                   ComputeAllSources and LN1, ST*, NL*, BT*
+```
+
+### Class diagram
 
 ```mermaid
 classDiagram
@@ -120,35 +226,81 @@ classDiagram
         +getData() span~const double~
     }
 
+    class SchemeFactory {
+        +createGrid(string grid) unique_ptr~IGrid~
+        +createSolver(string grid, string solver) unique_ptr~ISolver~
+        +createSourceTerm(string name) unique_ptr~ISourceTerm~
+    }
+
+    class IGrid {
+        <<interface>>
+        +getName() string_view
+        +getSolverNames() span~const string_view~
+        +hasSolver(string_view name) bool
+        +init(ostream os)
+        +createSolver(string_view name) unique_ptr~ISolver~
+    }
+
+    namespace Grids {
+        class GridRectilinear {
+            +solverNames = 1UP, UQ
+        }
+        class GridTriangular {
+            +solverNames = implicit, explicit
+        }
+        class GridSMC {
+            +solverNames = UKMET
+        }
+    }
+
     class ISolver {
         <<interface>>
         +getName() string_view
         +addSourceTerm(unique_ptr~ISourceTerm~ source)
+        +init()
         +solve(span~double~ data)
+    }
+
+    class SolverBase {
+        <<abstract>>
+        -vector~unique_ptr~ISourceTerm~~ sourceTerms_
+        +addSourceTerm(unique_ptr~ISourceTerm~ source)
+        #applySourceTerms(span~double~ data)
+    }
+
+    namespace RectilinearSolvers {
+        class SolverRectilinear1UP {
+            +getName() 1UP
+            +solve(span~double~ data)
+        }
+        class SolverRectilinearUQ {
+            +getName() UQ
+            +solve(span~double~ data)
+        }
+    }
+
+    namespace TriangularSolvers {
+        class SolverTriangularImplicit {
+            +getName() implicit
+            +solve(span~double~ data)
+        }
+        class SolverTriangularExplicit {
+            +getName() explicit
+            +solve(span~double~ data)
+        }
+    }
+
+    namespace SMCSolvers {
+        class SolverSMCUKMET {
+            +getName() UKMET
+            +solve(span~double~ data)
+        }
     }
 
     class ISourceTerm {
         <<interface>>
         +getName() string_view
         +calculate(span~double~ data)
-    }
-
-    class SolverUQ {
-        +getName() string_view
-        +addSourceTerm(unique_ptr~ISourceTerm~ source)
-        +solve(span~double~ data)
-    }
-
-    class SolverTriangular {
-        +getName() string_view
-        +addSourceTerm(unique_ptr~ISourceTerm~ source)
-        +solve(span~double~ data)
-    }
-
-    class SolverSMC {
-        +getName() string_view
-        +addSourceTerm(unique_ptr~ISourceTerm~ source)
-        +solve(span~double~ data)
     }
 
     class ComputeAllSources {
@@ -161,89 +313,43 @@ classDiagram
         +calculate(span~double~ data)
     }
 
-    namespace LinearInput {
-        class SourceTermLN1 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
+    class SubSourceTerms {
+        <<group>>
+        LN1
+        ST1, ST2, ST4, ST6
+        NL1, NL2, NL3
+        BT1, BT4
     }
 
-    namespace InputAndDissipation {
-        class SourceTermST1 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-        class SourceTermST2 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-        class SourceTermST4 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-        class SourceTermST6 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-    }
-
-    namespace NonlinearInteractions {
-        class SourceTermNL1 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-        class SourceTermNL2 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-        class SourceTermNL3 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-    }
-
-    namespace BottomFriction {
-        class SourceTermBT1 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-        class SourceTermBT4 {
-            +getName() string_view
-            +calculate(span~double~ data)
-        }
-    }
-
-    class SchemeFactory {
-        +createSolver(string name) unique_ptr~ISolver~
-        +createSourceTerm(string name) unique_ptr~ISourceTerm~
-    }
+    SchemeFactory ..> IGrid : 1. createGrid
+    IGrid <|-- GridRectilinear
+    IGrid <|-- GridTriangular
+    IGrid <|-- GridSMC
+    GridRectilinear ..> SolverRectilinear1UP : 2. creates
+    GridRectilinear ..> SolverRectilinearUQ : 2. creates
+    GridTriangular ..> SolverTriangularImplicit : 2. creates
+    GridTriangular ..> SolverTriangularExplicit : 2. creates
+    GridSMC ..> SolverSMCUKMET : 2. creates
 
     WaveModelSolver o-- ISolver : orchestrates
-    ISolver <|-- SolverUQ
-    ISolver <|-- SolverTriangular
-    ISolver <|-- SolverSMC
-    SolverUQ --> ComputeAllSources : calls
-    SolverTriangular --> ComputeAllSources : calls
-    SolverSMC --> ComputeAllSources : calls
-    ISourceTerm <|-- ComputeAllSources
-    ISourceTerm <|-- SourceTermLN1
-    ISourceTerm <|-- SourceTermST1
-    ISourceTerm <|-- SourceTermST2
-    ISourceTerm <|-- SourceTermST4
-    ISourceTerm <|-- SourceTermST6
-    ISourceTerm <|-- SourceTermNL1
-    ISourceTerm <|-- SourceTermNL2
-    ISourceTerm <|-- SourceTermNL3
-    ISourceTerm <|-- SourceTermBT1
-    ISourceTerm <|-- SourceTermBT4
-    ComputeAllSources o-- ISourceTerm : manages & calls
-    SchemeFactory ..> ISolver : creates
-    SchemeFactory ..> ISourceTerm : creates
+    ISolver <|-- SolverBase
+    SolverBase <|-- SolverRectilinear1UP
+    SolverBase <|-- SolverRectilinearUQ
+    SolverBase <|-- SolverTriangularImplicit
+    SolverBase <|-- SolverTriangularExplicit
+    SolverBase <|-- SolverSMCUKMET
 
-    SourceTermLN1 .. SourceTermST1
-    SourceTermST6 .. SourceTermNL1
-    SourceTermNL3 .. SourceTermBT1
+    SolverBase o-- ISourceTerm : manages & calls
+    SolverBase --> ComputeAllSources : default
+    SchemeFactory ..> ISourceTerm : createSourceTerm
+    ISourceTerm <|-- ComputeAllSources
+    ISourceTerm <|-- SubSourceTerms
+    ComputeAllSources o-- SubSourceTerms : manages & calls
 ```
+
+The source term classes (`SourceTermLN1`, `SourceTermST1`, `SourceTermST2`, `SourceTermST4`, `SourceTermST6`, `SourceTermNL1`, `SourceTermNL2`, `SourceTermNL3`, `SourceTermBT1`, `SourceTermBT4`) each implement `ISourceTerm` (`getName()`, `calculate(span<double>)`) and are grouped as `SubSourceTerms` above for readability. They are not affected by the grid and solver selection.
+
+> **Current state of run-time dispatch:** `w4core_init` and `w4core_wave` dispatch on the `RunConfig` enums (`GridType`, `SolverType`) to `grid_<grid>_init()` and the mock `solver_<grid>_<solver>_exec()` routines. The `SchemeFactory` / `IGrid` / `ISolver` objects implement the same two-stage selection and are used by `WaveModelSolver`; wiring them into `w4core_init` / `w4core_wave` is a follow-up step. The run-time check `ww4_utils::isSolverAvailableOnGrid()` and `IGrid::hasSolver()` are kept consistent by a unit test.
 
 ## Integrated Ingestion & Runtime Factory Architecture
 
@@ -256,17 +362,23 @@ sequenceDiagram
     participant Factory as SchemeFactory
     participant Loader as IGridDataLoader (NetCDF / Zarr)
     participant Grid as SpatialGrid
-    participant Solver as ISolver (Rectangular / Triangular / SMC)
+    participant GridObj as IGrid (Rectilinear / Triangular / SMC)
+    participant Solver as ISolver (1UP / UQ / implicit / explicit / UKMET)
     participant Sources as ComputeAllSources
 
     Note over Config, Loader: Model Execution (C++20 Core)
-    Config->>Init: loadRunConfig() [solver = UQ / triangular / SMC]
-    Init->>Factory: createSolver("SolverUQ" / "SolverTriangular" / "SolverSMC")
-    Factory-->>Init: std::unique_ptr<ISolver> (SolverRectangularGrid / SolverTriangularGrid / SolverSMCGrid)
+    Config->>Init: loadRunConfig() [grid_type = rectilinear / triangular / SMC]<br/>[solver = 1UP, UQ / implicit, explicit / UKMET]
+    Note over Config, Init: isSolverAvailableOnGrid(grid_type, solver)
+    Init->>Factory: 1. createGrid("rectilinear" / "triangular" / "SMC")
+    Factory-->>Init: std::unique_ptr<IGrid> (GridRectilinear / GridTriangular / GridSMC)
 
-    Init->>Loader: loadGridGeometry() & loadTopobathy()
+    Init->>GridObj: init()
+    GridObj->>Loader: loadGridGeometry() & loadTopobathy()
     Loader->>Grid: Populate SpatialGrid (Unified Topobathy, Coordinates, Topology)
-    Init->>Solver: init(SpatialGrid)
+
+    Init->>GridObj: 2. createSolver("1UP" / "UQ" / "implicit" / "explicit" / "UKMET")
+    GridObj-->>Init: std::unique_ptr<ISolver>
+    Init->>Solver: init()
 
     loop Physical Sub-Source Terms
         Init->>Factory: createSourceTerm("ST4" / "NL1" / "BT1" / etc.)
@@ -277,9 +389,9 @@ sequenceDiagram
     Note over Init, Solver: Initialization Complete
 
     loop Numerical Loop (w4core_wave)
-        Solver->>Sources: ComputeAllSources(spectralData, topobathySpan)
-        Sources-->>Solver: Updated Source Increments
         Note over Solver: Propagate Solution across Grid Topology
+        Solver->>Sources: SolverBase::applySourceTerms() → ComputeAllSources
+        Sources-->>Solver: Updated Source Increments
     end
 ```
 
@@ -298,7 +410,7 @@ graph TD
     subgraph PartMap ["Partitioning Lifecycle"]
         PM_CHK{"partition_map.nc<br/>exists?"}
         PM_READ["Read&nbsp;Precomputed<br/>partition_map.nc"]
-        PM_GEN["Generate&nbsp;Internal&nbsp;Partition<br/><i>(solver&nbsp;specific)</i>"]
+        PM_GEN["Generate&nbsp;Internal&nbsp;Partition<br/><i>(grid&nbsp;specific)</i>"]
         PM_WRITE["Export partition_map.nc<br/><i>(writePartitionMapNetCDF)</i>"]
 
         PM_CHK -- Yes --> PM_READ
@@ -338,4 +450,4 @@ graph TD
 2. **`LocalGridPartition` (Sub-Domain Compute Grid):**
    * Encapsulates the local rank's sub-mesh ($nx_{\text{local}}, ny_{\text{local}}$ or $n_{\text{local}}$), including surrounding halo/ghost cells required for stencil flux calculations across sub-domain boundaries.
    * Contains local coordinate vectors, local topobathy contiguous buffers, halo exchange communication tables, and `local_to_global_map`.
-   * **Solver Independence:** `ISolver` implementations (`SolverRectangularGrid`, `SolverTriangularGrid`, `SolverSMCGrid`) and physical source terms (`ComputeAllSources`) operate *strictly* on `LocalGridPartition` views (`std::span<const double>`). Numerical solvers are completely agnostic to whether execution is single-process or multi-node MPI!
+   * **Solver Independence:** `ISolver` implementations (`SolverRectilinear1UP`, `SolverRectilinearUQ`, `SolverTriangularImplicit`, `SolverTriangularExplicit`, `SolverSMCUKMET`) and physical source terms (`ComputeAllSources`) operate *strictly* on `LocalGridPartition` views (`std::span<const double>`). Numerical solvers are completely agnostic to whether execution is single-process or multi-node MPI!

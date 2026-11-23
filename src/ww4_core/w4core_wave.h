@@ -13,9 +13,9 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-04-03
- * @date Last update : 2026-10-26
+ * @date Last update : 2026-11-20
  * @note The architectural design of this routine follows the structure of
  *       the multi-grid shell (ww3_multi.F90) in WAVEWATCH III.
  *       Original author of WW3 multi-grid shell: Hendrik L. Tolman.
@@ -32,25 +32,46 @@ namespace ww4_core {
 
 // --- Solver Sub-Routines ----------------------------------------------------
 /**
- * @brief Solver routine for Ultimate Quickest (UQ) scheme on a regular grid.
+ * @brief Solver routine for the 1UP (first-order upwind) solver on the
+ * rectilinear grid.
  * @param timeStep Time step in seconds.
  * @param os Output stream.
  */
-void solver_UQ_exec(double timeStep, std::ostream &os = std::cout);
+void solver_rectilinear_1UP_exec(double timeStep, std::ostream &os = std::cout);
 
 /**
- * @brief Solver routine for triangular unstructured grid approach.
+ * @brief Solver routine for the UQ (Ultimate Quickest) solver on the
+ * rectilinear grid.
  * @param timeStep Time step in seconds.
  * @param os Output stream.
  */
-void solver_triangular_exec(double timeStep, std::ostream &os = std::cout);
+void solver_rectilinear_UQ_exec(double timeStep, std::ostream &os = std::cout);
 
 /**
- * @brief Solver routine for Spherical Multiple-Cell (SMC) grid solver.
+ * @brief Solver routine for the implicit solver on the triangular unstructured
+ * grid.
  * @param timeStep Time step in seconds.
  * @param os Output stream.
  */
-void solver_SMC_exec(double timeStep, std::ostream &os = std::cout);
+void solver_triangular_implicit_exec(double timeStep,
+                                     std::ostream &os = std::cout);
+
+/**
+ * @brief Solver routine for the explicit solver on the triangular unstructured
+ * grid.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ */
+void solver_triangular_explicit_exec(double timeStep,
+                                     std::ostream &os = std::cout);
+
+/**
+ * @brief Solver routine for the UKMET solver on the Spherical Multiple-Cell
+ * (SMC) grid.
+ * @param timeStep Time step in seconds.
+ * @param os Output stream.
+ */
+void solver_SMC_UKMET_exec(double timeStep, std::ostream &os = std::cout);
 
 // --- w4core_wave ------------------------------------------------------------
 /**

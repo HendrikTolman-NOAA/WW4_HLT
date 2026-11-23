@@ -14,12 +14,12 @@
  * Whenever GenAI is used, NWS requires a full human review of code before it is
  * added to its repositories.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-11-04
- * @date Last update : 2026-11-04
+ * @date Last update : 2026-11-23
  */
 
-#include "ww4_core/solver_UQ/utils_UQ_IO/UQ_read_grid.h"
+#include "ww4_core/grid_rectilinear/utils_rectilinear_IO/rectilinear_read_grid.h"
 #include "ww4_utils/ww4_std_out.h"
 #include <exception>
 #include <filesystem>
@@ -33,9 +33,9 @@
  * @param argv Command line argument values.
  * @return Exit status code (0 for success, non-zero for failure).
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
- * @author Contributors: Jules (Agentic AI)
+ * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-11-04
- * @date Last update : 2026-11-04
+ * @date Last update : 2026-11-23
  */
 int main(int argc, char **argv) {
   try {
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     ww4::io::UgridGrid ugrid;
 
     // Attempt to read the file (all data)
-    int status = ww4::io::readUQgrid(gridFile, ugrid);
+    int status = ww4::io::readRectilinearGrid(gridFile, ugrid);
 
     // Error processing
     if (status != 0) {
