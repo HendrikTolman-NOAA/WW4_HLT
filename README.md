@@ -22,11 +22,12 @@ WAVEWATCH IV uses a standard CMake build system (v3.25+). All compilation is loc
 
 ### 1. Cloning the Repository and Git Submodules
 
-WAVEWATCH IV treats third-party dependencies (`yaml-cpp` and `googletest`) as Git submodules located within the `externals/` directory rather than requiring system-installed packages or external downloads:
+WAVEWATCH IV depends on `yaml-cpp`, `netCDF` and (for tests) `GoogleTest`. These are available as Git submodules in the `externals/` directory:
 - `externals/yaml-cpp` (version 0.8.0) - Configuration file parsing
+- `externals/netcdf-c` - NetCDF-C / UGRID file reading
 - `externals/googletest` (version 1.14.0) - C++ unit testing framework (included when `WW4_ENABLE_TESTING=ON`)
 
-CMake integrates these submodules directly into the build system using `add_subdirectory`, building them in-tree from source. This ensures self-contained, reproducible, and offline-friendly builds without external system library requirements.
+By default (`-DWW4_DEPENDENCY_MODE=AUTO`), CMake first looks for installed copies, such as those provided by environment modules, and builds the submodule in-tree only for libraries it does not find. Use `-DWW4_DEPENDENCY_MODE=SYSTEM` to require installed libraries (e.g. operations), or `-DWW4_DEPENDENCY_MODE=SUBMODULE` to always build the submodules (self-contained and offline-friendly). See `externals/README.md` for details.
 
 When cloning the repository, include submodules using:
 ```bash
@@ -93,6 +94,15 @@ WW4 supports standard CMake build configuration flags:
   cmake --build build_ops
   ```
 
+- **Dependency Source (`-DWW4_DEPENDENCY_MODE=AUTO|SYSTEM|SUBMODULE`):** Controls where `yaml-cpp`, `NetCDF-C` and `GoogleTest` come from. `AUTO` (default) uses installed libraries (e.g. from environment modules) when CMake finds them and otherwise builds the Git submodules. `SYSTEM` requires installed libraries and fails if one is missing. `SUBMODULE` always builds the submodules.
+  ```bash
+  # Require libraries from loaded modules (e.g. operations):
+  cmake -B build_ops -S . -DWW4_DEPENDENCY_MODE=SYSTEM
+  # Always build the bundled submodules:
+  cmake -B build -S . -DWW4_DEPENDENCY_MODE=SUBMODULE
+  ```
+  If a needed submodule is empty, CMake initializes it automatically; disable this with `-DWW4_AUTO_INIT_SUBMODULES=OFF`.
+
 ### 4. Building the Project
 
 Standard development build (includes tests):
@@ -110,6 +120,10 @@ For operational environments, testing dependencies and test executables can be c
 ```bash
 cmake -B build_ops -S . -DWW4_ENABLE_TESTING=OFF
 cmake --build build_ops
+```
+To also require the libraries from the loaded environment modules (`yaml-cpp`, `NetCDF-C`) instead of the bundled submodules, add `-DWW4_DEPENDENCY_MODE=SYSTEM`:
+```bash
+cmake -B build_ops -S . -DWW4_ENABLE_TESTING=OFF -DWW4_DEPENDENCY_MODE=SYSTEM
 ```
 When `WW4_ENABLE_TESTING=OFF`, GoogleTest dependencies and test targets are completely skipped during build configuration and execution.
 
