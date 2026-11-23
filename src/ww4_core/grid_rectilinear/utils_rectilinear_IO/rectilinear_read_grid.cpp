@@ -138,7 +138,8 @@ bool read_variable(const int ncid, const char *varname, std::vector<T> &vec) {
 
 } // namespace
 
-int readUQgrid(const std::filesystem::path &filepath, UgridGrid &grid) {
+int readRectilinearGrid(const std::filesystem::path &filepath,
+                        UgridGrid &grid) {
   grid.clear();
 
   // Return code 1: File not found

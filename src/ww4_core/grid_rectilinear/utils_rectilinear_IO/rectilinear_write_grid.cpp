@@ -7,7 +7,8 @@
  * @brief NetCDF-UGRID 1.0 grid file writer implementation using netcdf-c for
  * WAVEWATCH IV.
  * @details Subroutine implementation for writing NetCDF-UGRID grid files in
- * WAVEWATCH IV that conform to UGRID-1.0 and can be ingested by readUQgrid.
+ * WAVEWATCH IV that conform to UGRID-1.0 and can be ingested by
+ * readRectilinearGrid.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -46,8 +47,9 @@ bool check_nc_write_err(const int status) { return (status == NC_NOERR); }
 
 } // namespace
 
-// --- writeUQgrid ------------------------------------------------------------
-int writeUQgrid(const std::filesystem::path &filepath, const UgridGrid &grid) {
+// --- writeRectilinearGrid ---------------------------------------------------
+int writeRectilinearGrid(const std::filesystem::path &filepath,
+                         const UgridGrid &grid) {
   if (grid.nx == 0 || grid.ny == 0) {
     return 1;
   }

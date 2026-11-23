@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_domains.cpp
- * @brief Domain partitioning routines for ultimate quickest (UQ) grids in
+ * @brief Domain partitioning routines for rectilinear grids in
  * WAVEWATCH IV (WW4).
- * @details Provides pure subroutines to partition full UQ structured grids into
+ * @details Provides pure subroutines to partition full rectilinear grids into
  * sub-domains based on active sea points (derived from WW3 ww3_gspl).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -36,7 +36,7 @@
 #include <span>
 #include <vector>
 
-namespace ww4_core::solver_UQ {
+namespace ww4_core::grid_rectilinear {
 
 namespace {
 
@@ -1300,4 +1300,4 @@ partitionGlobalGrid(int nx, int ny, std::span<const int> land_sea_map,
   return partition_map;
 }
 
-} // namespace ww4_core::solver_UQ
+} // namespace ww4_core::grid_rectilinear

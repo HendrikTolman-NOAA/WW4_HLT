@@ -4,8 +4,8 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_domain_topology.cpp
- * @brief Implementation of domain topology and graph analysis tools for UQ
- * partitioning.
+ * @brief Implementation of domain topology and graph analysis tools for
+ * rectilinear grid partitioning.
  * @details Implements routines for neighbor identification, disconnected piece
  * detection, boundary extraction, protrusion cleanup, and grid extension
  * smoothing.
@@ -34,7 +34,7 @@
 #include <span>
 #include <vector>
 
-namespace ww4_core::solver_UQ {
+namespace ww4_core::grid_rectilinear {
 
 // --- determineDomainNeighbors -----------------------------------------------
 /**
@@ -1011,4 +1011,4 @@ cleanSingleProtrudingPoints(int nx, int ny, std::span<const int> land_sea_map,
   return total_cleaned;
 }
 
-} // namespace ww4_core::solver_UQ
+} // namespace ww4_core::grid_rectilinear

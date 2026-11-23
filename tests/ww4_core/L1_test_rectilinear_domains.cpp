@@ -4,7 +4,7 @@
  *       +--------------------------------------------------------+
  *
  * @file L1_test_rectilinear_domains.cpp
- * @brief Unit tests for UQ domain partitioning routines.
+ * @brief Unit tests for rectilinear grid domain partitioning routines.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -39,9 +39,9 @@
 #include "ww4_core/grid_rectilinear/rectilinear_domains.h"
 
 using namespace ww4_utils;
-using namespace ww4_utils::UQ_utils;
+using namespace ww4_utils::rectilinear_utils;
 
-TEST(UQDomainsTest, PartitionGlobalGridBasic) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridBasic) {
   int nx = 10;
   int ny = 10;
   std::vector<int> land_sea_map(nx * ny, 1); // All sea points
@@ -75,7 +75,7 @@ TEST(UQDomainsTest, PartitionGlobalGridBasic) {
   EXPECT_EQ(assigned_partitions.size(), static_cast<size_t>(num_partitions));
 }
 
-TEST(UQDomainsTest, PartitionGlobalGridSinglePartition) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridSinglePartition) {
   int nx = 6;
   int ny = 6;
   std::vector<int> land_sea_map(nx * ny, 1);
@@ -95,7 +95,7 @@ TEST(UQDomainsTest, PartitionGlobalGridSinglePartition) {
   }
 }
 
-TEST(UQDomainsTest, PartitionGlobalGridAllLand) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridAllLand) {
   int nx = 5;
   int ny = 5;
   std::vector<int> land_sea_map(nx * ny, 0);
@@ -110,7 +110,7 @@ TEST(UQDomainsTest, PartitionGlobalGridAllLand) {
   }
 }
 
-TEST(UQDomainsTest, PartitionGlobalGridInvalidInputs) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridInvalidInputs) {
   std::vector<int> ls_map(10, 1);
   EXPECT_TRUE(partitionGlobalGrid(-1, 5, ls_map, 2).empty());
   EXPECT_TRUE(partitionGlobalGrid(5, -1, ls_map, 2).empty());
@@ -119,7 +119,7 @@ TEST(UQDomainsTest, PartitionGlobalGridInvalidInputs) {
   EXPECT_TRUE(partitionGlobalGrid(5, 5, std::span<const int>{}, 2).empty());
 }
 
-TEST(UQDomainsTest, PartitionGlobalGridIterativeRefinement) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridIterativeRefinement) {
   int nx = 8;
   int ny = 8;
   std::vector<int> land_sea_map(nx * ny, 1);
@@ -169,7 +169,7 @@ TEST(UQDomainsTest, PartitionGlobalGridIterativeRefinement) {
   EXPECT_EQ(sum_counts, total_sea);
 }
 
-TEST(UQDomainsTest, PartitionGlobalGridZeroIterations) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridZeroIterations) {
   int nx = 6;
   int ny = 6;
   std::vector<int> land_sea_map(nx * ny, 1);
@@ -191,7 +191,7 @@ TEST(UQDomainsTest, PartitionGlobalGridZeroIterations) {
 }
 
 // --- InitialDiagnosticsAndSorting -------------------------------------------
-TEST(UQDomainsTest, InitialDiagnosticsAndSorting) {
+TEST(RectilinearDomainsTest, InitialDiagnosticsAndSorting) {
   // Test that initial bisection sorts domains descending by number of wet
   // points
   const int nx = 12;
@@ -228,7 +228,7 @@ TEST(UQDomainsTest, InitialDiagnosticsAndSorting) {
 }
 
 // --- SmallestDomainIsolatedRebalance ----------------------------------------
-TEST(UQDomainsTest, SmallestDomainIsolatedRebalance) {
+TEST(RectilinearDomainsTest, SmallestDomainIsolatedRebalance) {
   // Create a grid with an isolated small basin and a large connected sea area
   // Columns 0..2 are sea (width 3, height 4 = 12 cells), column 3 is land
   // barrier Columns 4..15 are sea (width 12, height 8 = 96 cells)
@@ -267,7 +267,7 @@ TEST(UQDomainsTest, SmallestDomainIsolatedRebalance) {
 }
 
 // --- LargestDomainIsolatedSplitMerge ----------------------------------------
-TEST(UQDomainsTest, LargestDomainIsolatedSplitMerge) {
+TEST(RectilinearDomainsTest, LargestDomainIsolatedSplitMerge) {
   // Setup a grid with an isolated large basin (columns 0..6) and an adjacent
   // sea area split into smaller domains (columns 8..15), separated by land at
   // x=7.
@@ -298,7 +298,7 @@ TEST(UQDomainsTest, LargestDomainIsolatedSplitMerge) {
 }
 
 // --- SequentialRankedBoundaryExchanges --------------------------------------
-TEST(UQDomainsTest, SequentialRankedBoundaryExchanges) {
+TEST(RectilinearDomainsTest, SequentialRankedBoundaryExchanges) {
   // Test sequential boundary exchanges between adjacent ranked domains at the
   // longest contiguous line of points on their border
   const int nx = 14;
@@ -331,7 +331,7 @@ TEST(UQDomainsTest, SequentialRankedBoundaryExchanges) {
 }
 
 // --- ConvergenceCriteriaEvaluation ------------------------------------------
-TEST(UQDomainsTest, ConvergenceCriteriaEvaluation) {
+TEST(RectilinearDomainsTest, ConvergenceCriteriaEvaluation) {
   // Verify refinement terminates when largest domain is < 5% larger than
   // target
   const int nx = 12;
@@ -365,7 +365,7 @@ TEST(UQDomainsTest, ConvergenceCriteriaEvaluation) {
 
 // --- PartitionGlobalGridExcludedPointsTest ----------------------------------
 // Tests isWetPoint logic ensuring excluded points (value 3) receive partition 0
-TEST(UQDomainsTest, PartitionGlobalGridExcludedPoints) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridExcludedPoints) {
   const int nx = 6;
   const int ny = 6;
   std::vector<int> land_sea_map(nx * ny, 1); // Wet sea points
@@ -401,7 +401,7 @@ TEST(UQDomainsTest, PartitionGlobalGridExcludedPoints) {
   }
 }
 
-TEST(UQDomainsTest, PartitionGlobalGridConsecutiveMapRecording) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridConsecutiveMapRecording) {
   int nx = 8;
   int ny = 8;
   std::vector<int> land_sea_map(nx * ny, 1);
@@ -435,7 +435,7 @@ TEST(UQDomainsTest, PartitionGlobalGridConsecutiveMapRecording) {
   }
 }
 
-TEST(UQDomainsTest, ReassignDisconnectedPieces) {
+TEST(RectilinearDomainsTest, ReassignDisconnectedPieces) {
   // Create a grid where a partition has a small piece disconnected from its
   // bulk and adjacent to neighboring partitions.
   int nx = 10;
@@ -465,7 +465,7 @@ TEST(UQDomainsTest, ReassignDisconnectedPieces) {
   }
 }
 
-TEST(UQDomainsTest, CleanSingleProtrudingPoints) {
+TEST(RectilinearDomainsTest, CleanSingleProtrudingPoints) {
   // Test cleanup of single protruding points on outer boundaries
   int nx = 8;
   int ny = 8;
@@ -491,7 +491,7 @@ TEST(UQDomainsTest, CleanSingleProtrudingPoints) {
   }
 }
 
-TEST(UQDomainsTest, CleanNarrowLineProtrusions) {
+TEST(RectilinearDomainsTest, CleanNarrowLineProtrusions) {
   // Create a grid and test that narrow lines (1 or 2 points wide) protruding
   // into adjacent partitions are smoothed/reassigned without issue.
   int nx = 10;
@@ -514,7 +514,7 @@ TEST(UQDomainsTest, CleanNarrowLineProtrusions) {
   EXPECT_GT(counts[2], 0);
 }
 
-TEST(UQDomainsTest, SplitIsolatedOverloadedPartition) {
+TEST(RectilinearDomainsTest, SplitIsolatedOverloadedPartition) {
   // Setup a grid with an isolated large basin and an adjacent sea area split
   // into two smaller partitions.
   int nx = 12;
@@ -552,7 +552,7 @@ TEST(UQDomainsTest, SplitIsolatedOverloadedPartition) {
   }
 }
 
-TEST(UQDomainsTest, PreventCreationOfNewIsolatedPartitionOnMerge) {
+TEST(RectilinearDomainsTest, PreventCreationOfNewIsolatedPartitionOnMerge) {
   // Setup a grid with three separate sea basins isolated from each other
   int nx = 15;
   int ny = 5;
@@ -580,7 +580,7 @@ TEST(UQDomainsTest, PreventCreationOfNewIsolatedPartitionOnMerge) {
   }
 }
 
-TEST(UQDomainsTest, PeriodicDisconnectedCleanupPreservesContiguity) {
+TEST(RectilinearDomainsTest, PeriodicDisconnectedCleanupPreservesContiguity) {
   // Test that running refinement with intermediate map recording preserves
   // contiguity and does not fragment into multiple disconnected components
   int nx = 20;
@@ -613,7 +613,7 @@ TEST(UQDomainsTest, PeriodicDisconnectedCleanupPreservesContiguity) {
   }
 }
 
-TEST(UQDomainsTest, PartitionGlobalGridGlobalClosed) {
+TEST(RectilinearDomainsTest, PartitionGlobalGridGlobalClosed) {
   // Setup a 360-degree global grid with 12 columns, 6 rows
   int nx = 12;
   int ny = 6;

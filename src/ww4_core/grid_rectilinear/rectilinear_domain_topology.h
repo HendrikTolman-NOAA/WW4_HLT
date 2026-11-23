@@ -4,8 +4,8 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_domain_topology.h
- * @brief Internal domain topology and graph analysis tools for UQ grid
- * partitioning.
+ * @brief Internal domain topology and graph analysis tools for rectilinear
+ * grid partitioning.
  * @details Provides subroutines for neighbor identification, disconnected piece
  * detection, boundary extraction, protrusion cleanup, and grid extension
  * smoothing.
@@ -30,7 +30,7 @@
 #include <span>
 #include <vector>
 
-namespace ww4_core::solver_UQ {
+namespace ww4_core::grid_rectilinear {
 
 // --- isWetPoint -------------------------------------------------------------
 /**
@@ -164,4 +164,4 @@ int cleanSingleProtrudingPoints(int nx, int ny,
                                 std::vector<int> &partition_map,
                                 bool is_global = false);
 
-} // namespace ww4_core::solver_UQ
+} // namespace ww4_core::grid_rectilinear

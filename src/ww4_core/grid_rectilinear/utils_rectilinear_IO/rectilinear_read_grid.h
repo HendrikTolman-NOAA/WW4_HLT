@@ -6,8 +6,8 @@
  * @file rectilinear_read_grid.h
  * @brief NetCDF-UGRID 1.0 grid file reader subroutine interface for WAVEWATCH
  * IV.
- * @details Header declaring data structures and the readUQgrid subroutine for
- * reading NetCDF-UGRID grid files in WAVEWATCH IV.
+ * @details Header declaring data structures and the readRectilinearGrid
+ * subroutine for reading NetCDF-UGRID grid files in WAVEWATCH IV.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -165,8 +165,8 @@ struct UgridGrid {
  * @post On success (return code 0), `grid` fields are populated with file
  * contents. On failure, `grid` is cleared.
  */
-[[nodiscard]] int readUQgrid(const std::filesystem::path &filepath,
-                             UgridGrid &grid);
+[[nodiscard]] int readRectilinearGrid(const std::filesystem::path &filepath,
+                                      UgridGrid &grid);
 
 // --- printGridMetadata ------------------------------------------------------
 /**

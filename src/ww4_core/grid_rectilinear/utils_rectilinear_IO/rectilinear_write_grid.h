@@ -7,7 +7,7 @@
  * @brief NetCDF-UGRID 1.0 grid file writer subroutine interface for WAVEWATCH
  * IV.
  * @details Header declaring subroutine for writing NetCDF-UGRID grid files in
- * WAVEWATCH IV that can subsequently be read by readUQgrid.
+ * WAVEWATCH IV that can subsequently be read by readRectilinearGrid.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -28,7 +28,7 @@
 
 namespace ww4::io {
 
-// --- writeUQgrid ------------------------------------------------------------
+// --- writeRectilinearGrid ---------------------------------------------------
 /**
  * @brief Subroutine to write a WAVEWATCH IV NetCDF-UGRID 1.0 grid file using
  * netcdf-c API.
@@ -47,9 +47,9 @@ namespace ww4::io {
  * or definition failure, 3 = data writing failure).
  * @pre `grid.nx` and `grid.ny` must be greater than zero, and 2D arrays must
  * match `nx * ny`.
- * @post A valid NetCDF-UGRID file readable by `readUQgrid` is created.
+ * @post A valid NetCDF-UGRID file readable by `readRectilinearGrid` is created.
  */
-[[nodiscard]] int writeUQgrid(const std::filesystem::path &filepath,
-                              const UgridGrid &grid);
+[[nodiscard]] int writeRectilinearGrid(const std::filesystem::path &filepath,
+                                       const UgridGrid &grid);
 
 } // namespace ww4::io

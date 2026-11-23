@@ -4,7 +4,8 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_nc_handle.h
- * @brief RAII wrapper for NetCDF file handles in WAVEWATCH IV UQ I/O.
+ * @brief RAII wrapper for NetCDF file handles in WAVEWATCH IV rectilinear grid
+ * I/O.
  * @details Ensures exception-safe closing of NetCDF dataset handles (ncid).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric

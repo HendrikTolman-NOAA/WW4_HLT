@@ -4,10 +4,11 @@
  *       +--------------------------------------------------------+
  *
  * @file L1_test_rectilinear_write_grid.cpp
- * @brief Level 1 unit tests for NetCDF-UGRID grid writer module (writeUQgrid).
+ * @brief Level 1 unit tests for NetCDF-UGRID grid writer module
+ * (writeRectilinearGrid).
  * @details Tests writing NetCDF-UGRID grid files using netcdf-c API, verifying
- *          round-trip readability with readUQgrid, optional variables, and
- * error codes.
+ *          round-trip readability with readRectilinearGrid, optional variables,
+ * and error codes.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the
  * National Weather Service. NWS often uses Generative AI (GenAI) for code
@@ -25,24 +26,24 @@
 
 using namespace ww4::io;
 
-TEST(UQWriteGridTest, InvalidDimensionsReturnOne) {
+TEST(RectilinearWriteGridTest, InvalidDimensionsReturnOne) {
   UgridGrid grid;
   grid.nx = 0;
   grid.ny = 5;
-  EXPECT_EQ(writeUQgrid("invalid_dim.nc", grid), 1);
+  EXPECT_EQ(writeRectilinearGrid("invalid_dim.nc", grid), 1);
 
   grid.nx = 5;
   grid.ny = 0;
-  EXPECT_EQ(writeUQgrid("invalid_dim.nc", grid), 1);
+  EXPECT_EQ(writeRectilinearGrid("invalid_dim.nc", grid), 1);
 
   // Mismatched vector sizes
   grid.nx = 2;
   grid.ny = 2;
   grid.grid_lon.resize(3); // should be 4
-  EXPECT_EQ(writeUQgrid("invalid_dim.nc", grid), 1);
+  EXPECT_EQ(writeRectilinearGrid("invalid_dim.nc", grid), 1);
 }
 
-TEST(UQWriteGridTest, RoundTripMinimalGrid) {
+TEST(RectilinearWriteGridTest, RoundTripMinimalGrid) {
   const std::string filename = "test_roundtrip_minimal.nc";
   UgridGrid orig;
   orig.nx = 3;
@@ -62,11 +63,11 @@ TEST(UQWriteGridTest, RoundTripMinimalGrid) {
   orig.conventions = "UGRID-1.0";
   orig.history = "2026-11-03 created";
 
-  int write_status = writeUQgrid(filename, orig);
+  int write_status = writeRectilinearGrid(filename, orig);
   ASSERT_EQ(write_status, 0);
 
   UgridGrid loaded;
-  int read_status = readUQgrid(filename, loaded);
+  int read_status = readRectilinearGrid(filename, loaded);
   ASSERT_EQ(read_status, 0);
 
   EXPECT_EQ(loaded.nx, orig.nx);
@@ -91,7 +92,7 @@ TEST(UQWriteGridTest, RoundTripMinimalGrid) {
   std::remove(filename.c_str());
 }
 
-TEST(UQWriteGridTest, RoundTripWithObstructionsAndCustomAttrs) {
+TEST(RectilinearWriteGridTest, RoundTripWithObstructionsAndCustomAttrs) {
   const std::string filename = "test_roundtrip_obs.nc";
   UgridGrid orig;
   orig.nx = 2;
@@ -106,11 +107,11 @@ TEST(UQWriteGridTest, RoundTripWithObstructionsAndCustomAttrs) {
   orig.grid_ObsY = {0.5f, 0.6f, 0.7f, 0.8f};
   orig.global_attrs["institution"] = "NOAA NWS NCEP";
 
-  int write_status = writeUQgrid(filename, orig);
+  int write_status = writeRectilinearGrid(filename, orig);
   ASSERT_EQ(write_status, 0);
 
   UgridGrid loaded;
-  int read_status = readUQgrid(filename, loaded);
+  int read_status = readRectilinearGrid(filename, loaded);
   ASSERT_EQ(read_status, 0);
 
   EXPECT_TRUE(loaded.has_obsx);
@@ -122,7 +123,7 @@ TEST(UQWriteGridTest, RoundTripWithObstructionsAndCustomAttrs) {
   std::remove(filename.c_str());
 }
 
-TEST(UQWriteGridTest, UnwritablePathReturnsOne) {
+TEST(RectilinearWriteGridTest, UnwritablePathReturnsOne) {
   UgridGrid grid;
   grid.nx = 2;
   grid.ny = 2;
@@ -132,9 +133,10 @@ TEST(UQWriteGridTest, UnwritablePathReturnsOne) {
   grid.grid_mask = {1, 1, 1, 1};
 
   // Try writing to an invalid / impossible path
-  int status = writeUQgrid("/non_existent_dir_xyz/test_invalid.nc", grid);
+  int status =
+      writeRectilinearGrid("/non_existent_dir_xyz/test_invalid.nc", grid);
   EXPECT_NE(status, 0);
 }
 
 // References to function names for ww4_test_check.py routine coverage:
-// writeUQgrid check_nc_write_err get ncid_
+// writeRectilinearGrid check_nc_write_err get ncid_

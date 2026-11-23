@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_read_partition.h
- * @brief NetCDF partition map reader tools for WAVEWATCH IV UQ solver.
+ * @brief NetCDF partition map reader tools for WAVEWATCH IV rectilinear grids.
  * @details Header declaring data structures and subroutines to read a NetCDF
- * partition map file, with error capturing conforming to readUQgrid
+ * partition map file, with error capturing conforming to readRectilinearGrid
  * conventions. If multiple partition maps are present in the file, outputs the
  * last map stored in the file.
  *
@@ -100,10 +100,10 @@ struct PartitionMapData {
   }
 };
 
-// --- readUQpartitionMapNetCDF -----------------------------------------------
+// --- readRectilinearPartitionMapNetCDF --------------------------------------
 /**
  * @brief Reads partition map metadata and the last partition map from a NetCDF
- * file for the UQ solver.
+ * file for the rectilinear grid.
  *
  * @details Opens the file at `filepath` using netcdf-c API, verifies existence
  * (status 1 on missing/unopenable file), parses dimensions `ny`, `nx`, and
@@ -122,12 +122,12 @@ struct PartitionMapData {
  * failure, `part_data` is cleared.
  */
 [[nodiscard]] int
-readUQpartitionMapNetCDF(const std::filesystem::path &filepath,
-                         PartitionMapData &part_data);
+readRectilinearPartitionMapNetCDF(const std::filesystem::path &filepath,
+                                  PartitionMapData &part_data);
 
 // --- readPartitionMapNetCDF -------------------------------------------------
 /**
- * @brief Backward-compatible alias for readUQpartitionMapNetCDF.
+ * @brief Backward-compatible alias for readRectilinearPartitionMapNetCDF.
  *
  * @param[in]  filepath  Path to the NetCDF file to read.
  * @param[out] part_data Container populated with metadata, partition count,
@@ -136,7 +136,7 @@ readUQpartitionMapNetCDF(const std::filesystem::path &filepath,
  */
 inline int readPartitionMapNetCDF(const std::filesystem::path &filepath,
                                   PartitionMapData &part_data) {
-  return readUQpartitionMapNetCDF(filepath, part_data);
+  return readRectilinearPartitionMapNetCDF(filepath, part_data);
 }
 
 } // namespace ww4::io

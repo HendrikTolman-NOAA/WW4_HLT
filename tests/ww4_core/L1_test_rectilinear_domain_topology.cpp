@@ -4,7 +4,8 @@
  *       +--------------------------------------------------------+
  *
  * @file L1_test_rectilinear_domain_topology.cpp
- * @brief Unit tests for UQ domain topology and graph analysis routines.
+ * @brief Unit tests for rectilinear grid domain topology and graph analysis
+ * routines.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -33,9 +34,9 @@
 
 #include "ww4_core/grid_rectilinear/rectilinear_domain_topology.h"
 
-using namespace ww4_core::solver_UQ;
+using namespace ww4_core::grid_rectilinear;
 
-TEST(UQDomainTopologyTest, IsWetPointCheck) {
+TEST(RectilinearDomainTopologyTest, IsWetPointCheck) {
   EXPECT_FALSE(isWetPoint(0));  // Land
   EXPECT_TRUE(isWetPoint(1));   // Active sea point
   EXPECT_TRUE(isWetPoint(2));   // Boundary point
@@ -43,7 +44,7 @@ TEST(UQDomainTopologyTest, IsWetPointCheck) {
   EXPECT_FALSE(isWetPoint(-1)); // Inactive/ice point
 }
 
-TEST(UQDomainTopologyTest, DetermineNeighborsAndResort) {
+TEST(RectilinearDomainTopologyTest, DetermineNeighborsAndResort) {
   int nx = 4;
   int ny = 4;
   std::vector<int> mask(nx * ny, 1);
@@ -66,7 +67,7 @@ TEST(UQDomainTopologyTest, DetermineNeighborsAndResort) {
   EXPECT_EQ(counts[4], 4);
 }
 
-TEST(UQDomainTopologyTest, ReassignDisconnectedPieces) {
+TEST(RectilinearDomainTopologyTest, ReassignDisconnectedPieces) {
   int nx = 5;
   int ny = 5;
   std::vector<int> mask(nx * ny, 1);
@@ -84,7 +85,7 @@ TEST(UQDomainTopologyTest, ReassignDisconnectedPieces) {
   EXPECT_EQ(part_map[4 * nx + 4], 2);
 }
 
-TEST(UQDomainTopologyTest, DealWithSmallGridExtensions) {
+TEST(RectilinearDomainTopologyTest, DealWithSmallGridExtensions) {
   int nx = 5;
   int ny = 5;
   std::vector<int> mask(nx * ny, 1);
@@ -99,7 +100,7 @@ TEST(UQDomainTopologyTest, DealWithSmallGridExtensions) {
   EXPECT_EQ(part_map[2 * nx + 2], 2);
 }
 
-TEST(UQDomainTopologyTest, ExtractBoundaryLine) {
+TEST(RectilinearDomainTopologyTest, ExtractBoundaryLine) {
   int nx = 4;
   int ny = 4;
   std::vector<int> mask(nx * ny, 1);
@@ -110,7 +111,7 @@ TEST(UQDomainTopologyTest, ExtractBoundaryLine) {
   EXPECT_EQ(line.size(), 4u);
 }
 
-TEST(UQDomainTopologyTest, CleanSingleProtrudingPoints) {
+TEST(RectilinearDomainTopologyTest, CleanSingleProtrudingPoints) {
   int nx = 5;
   int ny = 5;
   std::vector<int> mask(nx * ny, 1);

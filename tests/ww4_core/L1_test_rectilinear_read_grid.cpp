@@ -4,7 +4,8 @@
  *       +--------------------------------------------------------+
  *
  * @file L1_test_rectilinear_read_grid.cpp
- * @brief Level 1 unit tests for NetCDF-UGRID grid reader module (readUQgrid).
+ * @brief Level 1 unit tests for NetCDF-UGRID grid reader module
+(readRectilinearGrid).
  * @details Tests reading NetCDF-UGRID grid files using netcdf-c API, verifying
  *          status codes (0=success, 1=not found, 2=metadata error, 3=data
  * error), and variable / attribute ingestion.
@@ -27,15 +28,15 @@
 
 using namespace ww4::io;
 
-TEST(UQReadGridTest, FileNotFoundReturnsOne) {
+TEST(RectilinearReadGridTest, FileNotFoundReturnsOne) {
   UgridGrid grid;
-  int status = readUQgrid("non_existent_grid_file.nc", grid);
+  int status = readRectilinearGrid("non_existent_grid_file.nc", grid);
   EXPECT_EQ(status, 1);
   EXPECT_EQ(grid.nx, 0u);
   EXPECT_EQ(grid.ny, 0u);
 }
 
-TEST(UQReadGridTest, InvalidMetadataDimensionsReturnsTwo) {
+TEST(RectilinearReadGridTest, InvalidMetadataDimensionsReturnsTwo) {
   const std::string filename = "test_invalid_metadata.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -49,14 +50,14 @@ TEST(UQReadGridTest, InvalidMetadataDimensionsReturnsTwo) {
   ASSERT_EQ(nc_close(ncid), NC_NOERR);
 
   UgridGrid grid;
-  int status = readUQgrid(filename, grid);
+  int status = readRectilinearGrid(filename, grid);
   EXPECT_EQ(status, 2);
   EXPECT_EQ(grid.nx, 0u);
 
   std::remove(filename.c_str());
 }
 
-TEST(UQReadGridTest, MissingDataVariablesReturnsThree) {
+TEST(RectilinearReadGridTest, MissingDataVariablesReturnsThree) {
   const std::string filename = "test_missing_data_vars.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -74,14 +75,14 @@ TEST(UQReadGridTest, MissingDataVariablesReturnsThree) {
   ASSERT_EQ(nc_close(ncid), NC_NOERR);
 
   UgridGrid grid;
-  int status = readUQgrid(filename, grid);
+  int status = readRectilinearGrid(filename, grid);
   EXPECT_EQ(status, 3);
   EXPECT_EQ(grid.nx, 0u);
 
   std::remove(filename.c_str());
 }
 
-TEST(UQReadGridTest, ValidUgridFileSuccess) {
+TEST(RectilinearReadGridTest, ValidUgridFileSuccess) {
   const std::string filename = "test_valid_ugrid.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -240,7 +241,7 @@ TEST(UQReadGridTest, ValidUgridFileSuccess) {
   ASSERT_EQ(nc_close(ncid), NC_NOERR);
 
   UgridGrid grid;
-  int status = readUQgrid(filename, grid);
+  int status = readRectilinearGrid(filename, grid);
   EXPECT_EQ(status, 0);
 
   EXPECT_EQ(grid.nx, nx);
@@ -281,7 +282,7 @@ TEST(UQReadGridTest, ValidUgridFileSuccess) {
   std::remove(filename.c_str());
 }
 
-TEST(UQReadGridTest, PrintGridMetadataOutputsCorrectInformation) {
+TEST(RectilinearReadGridTest, PrintGridMetadataOutputsCorrectInformation) {
   UgridGrid grid;
   grid.nx = 10;
   grid.ny = 5;
@@ -331,5 +332,5 @@ TEST(UQReadGridTest, PrintGridMetadataOutputsCorrectInformation) {
 }
 
 // References to function names for ww4_test_check.py routine coverage:
-// readUQgrid check_nc_err read_all_global_attributes read_variable clear get
-// ncid_ constexpr printGridMetadata
+// readRectilinearGrid check_nc_err read_all_global_attributes read_variable
+// clear get ncid_ constexpr printGridMetadata

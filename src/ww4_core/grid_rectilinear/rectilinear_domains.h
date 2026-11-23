@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_domains.h
- * @brief Domain partitioning routines for ultimate quickest (UQ) grids in
+ * @brief Domain partitioning routines for rectilinear grids in
  * WAVEWATCH IV (WW4).
- * @details Provides pure subroutines to partition full UQ structured grids into
+ * @details Provides pure subroutines to partition full rectilinear grids into
  * sub-domains based on active sea points (derived from WW3 ww3_gspl).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -29,7 +29,7 @@
 #include <span>
 #include <vector>
 
-namespace ww4_core::solver_UQ {
+namespace ww4_core::grid_rectilinear {
 
 // --- DomainPartition --------------------------------------------------------
 /**
@@ -47,7 +47,7 @@ struct DomainPartition {
 
 // --- partitionGlobalGrid ----------------------------------------------------
 /**
- * @brief Partitions a full UQ rectangular grid into sub-domains based on
+ * @brief Partitions a full rectilinear grid into sub-domains based on
  * active sea points.
  * @details Implements recursive bisection followed by iterative boundary
  * refinement (derived from WW3 ww3_gspl) as a pure subroutine where all inputs
@@ -122,10 +122,10 @@ std::vector<int> partitionGlobalGrid(
     std::function<void(std::span<const int>)> map_recorder = nullptr,
     double convergence_criterion = 1.05);
 
-} // namespace ww4_core::solver_UQ
+} // namespace ww4_core::grid_rectilinear
 
-namespace ww4_utils::UQ_utils {
+namespace ww4_utils::rectilinear_utils {
 // Backward-compatibility namespace alias
-using ww4_core::solver_UQ::DomainPartition;
-using ww4_core::solver_UQ::partitionGlobalGrid;
-} // namespace ww4_utils::UQ_utils
+using ww4_core::grid_rectilinear::DomainPartition;
+using ww4_core::grid_rectilinear::partitionGlobalGrid;
+} // namespace ww4_utils::rectilinear_utils

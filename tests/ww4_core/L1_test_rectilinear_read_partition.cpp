@@ -26,14 +26,14 @@
 
 using namespace ww4::io;
 
-TEST(UQReadPartitionTest, FileNotFoundReturnsOne) {
+TEST(RectilinearReadPartitionTest, FileNotFoundReturnsOne) {
   PartitionMapData data;
   EXPECT_EQ(readPartitionMapNetCDF("non_existent_part_file.nc", data), 1);
   EXPECT_EQ(data.nx, 0u);
   EXPECT_EQ(data.ny, 0u);
 }
 
-TEST(UQReadPartitionTest, CorruptMetadataReturnsTwo) {
+TEST(RectilinearReadPartitionTest, CorruptMetadataReturnsTwo) {
   const std::string filename = "test_corrupt_read_part_meta.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -48,7 +48,7 @@ TEST(UQReadPartitionTest, CorruptMetadataReturnsTwo) {
   std::remove(filename.c_str());
 }
 
-TEST(UQReadPartitionTest, MissingVariableReturnsThree) {
+TEST(RectilinearReadPartitionTest, MissingVariableReturnsThree) {
   const std::string filename = "test_corrupt_read_part_var.nc";
   int ncid = -1;
   ASSERT_EQ(nc_create(filename.c_str(), NC_CLOBBER, &ncid), NC_NOERR);
@@ -70,7 +70,7 @@ TEST(UQReadPartitionTest, MissingVariableReturnsThree) {
   std::remove(filename.c_str());
 }
 
-TEST(UQReadPartitionTest, ReadsLastMapAndMetadata) {
+TEST(RectilinearReadPartitionTest, ReadsLastMapAndMetadata) {
   const std::string filename = "test_read_evolution_part.nc";
   UgridGrid grid;
   grid.nx = 4;
@@ -99,7 +99,7 @@ TEST(UQReadPartitionTest, ReadsLastMapAndMetadata) {
   EXPECT_EQ(closePartitionMapFile(ncid), 0);
 
   PartitionMapData read_data;
-  int read_status = readUQpartitionMapNetCDF(filename, read_data);
+  int read_status = readRectilinearPartitionMapNetCDF(filename, read_data);
   ASSERT_EQ(read_status, 0);
 
   EXPECT_EQ(read_data.num_maps, 2u);
@@ -132,5 +132,5 @@ TEST(UQReadPartitionTest, ReadsLastMapAndMetadata) {
 }
 
 // References to function names for ww4_test_check.py routine coverage:
-// readUQpartitionMapNetCDF readPartitionMapNetCDF clear check_nc_read_err
-// read_all_partition_global_attributes get ncid_
+// readRectilinearPartitionMapNetCDF readPartitionMapNetCDF clear
+// check_nc_read_err read_all_partition_global_attributes get ncid_

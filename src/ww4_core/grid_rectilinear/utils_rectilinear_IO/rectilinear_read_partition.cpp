@@ -4,9 +4,10 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_read_partition.cpp
- * @brief NetCDF partition map reader implementation for WAVEWATCH IV UQ solver.
+ * @brief NetCDF partition map reader implementation for WAVEWATCH IV
+ * rectilinear grids.
  * @details Implementation of reading partition map metadata and data slices
- * using netcdf-c API, with error codes mirroring readUQgrid.
+ * using netcdf-c API, with error codes mirroring readRectilinearGrid.
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
@@ -84,9 +85,9 @@ read_all_partition_global_attributes(const int ncid) {
 
 } // namespace
 
-// --- readUQpartitionMapNetCDF -----------------------------------------------
-int readUQpartitionMapNetCDF(const std::filesystem::path &filepath,
-                             PartitionMapData &part_data) {
+// --- readRectilinearPartitionMapNetCDF --------------------------------------
+int readRectilinearPartitionMapNetCDF(const std::filesystem::path &filepath,
+                                      PartitionMapData &part_data) {
   part_data.clear();
 
   // Return code 1: File not found or failed opening

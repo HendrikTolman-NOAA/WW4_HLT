@@ -4,7 +4,8 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_write_partition.cpp
- * @brief NetCDF partition map writer implementation for WAVEWATCH IV UQ solver.
+ * @brief NetCDF partition map writer implementation for WAVEWATCH IV
+ * rectilinear grids.
  * @details Subroutines to create and populate NetCDF partition map files with
  * full grid metadata and one or more partition maps.
  *
@@ -44,10 +45,10 @@ bool check_nc_part_err(const int status) { return (status == NC_NOERR); }
 
 } // namespace
 
-// --- openUQpartitionMapFile -------------------------------------------------
-int openUQpartitionMapFile(const std::filesystem::path &filepath,
-                           const UgridGrid &grid, int num_partitions,
-                           int &ncid) {
+// --- openRectilinearPartitionMapFile ----------------------------------------
+int openRectilinearPartitionMapFile(const std::filesystem::path &filepath,
+                                    const UgridGrid &grid, int num_partitions,
+                                    int &ncid) {
   ncid = -1;
   if (grid.nx == 0 || grid.ny == 0 || num_partitions <= 0) {
     return 2;
@@ -165,9 +166,10 @@ int openUQpartitionMapFile(const std::filesystem::path &filepath,
   return 0;
 }
 
-// --- writeSingleUQpartitionMap ----------------------------------------------
-int writeSingleUQpartitionMap(int ncid, std::span<const int32_t> partition_map,
-                              std::size_t &map_index) {
+// --- writeSingleRectilinearPartitionMap -------------------------------------
+int writeSingleRectilinearPartitionMap(int ncid,
+                                       std::span<const int32_t> partition_map,
+                                       std::size_t &map_index) {
   if (ncid < 0) {
     return 3;
   }
@@ -206,27 +208,29 @@ int writeSingleUQpartitionMap(int ncid, std::span<const int32_t> partition_map,
   return 0;
 }
 
-// --- closeUQpartitionMapFile ------------------------------------------------
-int closeUQpartitionMapFile(int ncid) {
+// --- closeRectilinearPartitionMapFile ---------------------------------------
+int closeRectilinearPartitionMapFile(int ncid) {
   if (ncid < 0) {
     return 0;
   }
   return nc_close(ncid);
 }
 
-// --- writeUQpartitionMapNetCDF ----------------------------------------------
-int writeUQpartitionMapNetCDF(const std::filesystem::path &filepath,
-                              const UgridGrid &grid, int num_partitions,
-                              std::span<const int32_t> partition_map) {
+// --- writeRectilinearPartitionMapNetCDF -------------------------------------
+int writeRectilinearPartitionMapNetCDF(const std::filesystem::path &filepath,
+                                       const UgridGrid &grid,
+                                       int num_partitions,
+                                       std::span<const int32_t> partition_map) {
   int ncid = -1;
-  int status = openUQpartitionMapFile(filepath, grid, num_partitions, ncid);
+  int status =
+      openRectilinearPartitionMapFile(filepath, grid, num_partitions, ncid);
   if (status != 0) {
     return status;
   }
 
   std::size_t map_idx = 0;
-  status = writeSingleUQpartitionMap(ncid, partition_map, map_idx);
-  const int close_status = closeUQpartitionMapFile(ncid);
+  status = writeSingleRectilinearPartitionMap(ncid, partition_map, map_idx);
+  const int close_status = closeRectilinearPartitionMapFile(ncid);
   if (status == 0 && close_status != 0) {
     return 3;
   }

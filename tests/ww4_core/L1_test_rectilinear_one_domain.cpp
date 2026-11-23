@@ -4,7 +4,7 @@
  *       +--------------------------------------------------------+
  *
  * @file L1_test_rectilinear_one_domain.cpp
- * @brief Unit tests for UQ single subdomain extraction routine
+ * @brief Unit tests for rectilinear grid single subdomain extraction routine
  * (extractOneDomain).
  *
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
@@ -34,9 +34,9 @@
 #include "ww4_utils/spatial_grid.h"
 
 using namespace ww4_utils;
-using namespace ww4_core::solver_UQ;
+using namespace ww4_core::grid_rectilinear;
 
-TEST(UQOneDomainTest, ExtractOneDomainBasic) {
+TEST(RectilinearOneDomainTest, ExtractOneDomainBasic) {
   int nx = 10;
   int ny = 10;
   FullGrid full;
@@ -134,7 +134,7 @@ TEST(UQOneDomainTest, ExtractOneDomainBasic) {
   }
 }
 
-TEST(UQOneDomainTest, ExtractOneDomain2DCoordinates) {
+TEST(RectilinearOneDomainTest, ExtractOneDomain2DCoordinates) {
   int nx = 6;
   int ny = 6;
   FullGrid full;
@@ -183,7 +183,7 @@ TEST(UQOneDomainTest, ExtractOneDomain2DCoordinates) {
   }
 }
 
-TEST(UQOneDomainTest, ExtractOneDomainHaloClamping) {
+TEST(RectilinearOneDomainTest, ExtractOneDomainHaloClamping) {
   int nx = 8;
   int ny = 8;
   FullGrid full;
@@ -204,7 +204,7 @@ TEST(UQOneDomainTest, ExtractOneDomainHaloClamping) {
   EXPECT_EQ(red.localToGlobalMap.back(), static_cast<std::size_t>(nx * ny - 1));
 }
 
-TEST(UQOneDomainTest, ExtractOneDomainGlobalClosedWrapping) {
+TEST(RectilinearOneDomainTest, ExtractOneDomainGlobalClosedWrapping) {
   int nx = 10;
   int ny = 4;
   FullGrid full;
@@ -262,7 +262,7 @@ TEST(UQOneDomainTest, ExtractOneDomainGlobalClosedWrapping) {
   }
 }
 
-TEST(UQOneDomainTest, ExtractOneDomainInvalidPartitionOrGrid) {
+TEST(RectilinearOneDomainTest, ExtractOneDomainInvalidPartitionOrGrid) {
   FullGrid full;
   full.nx = 5;
   full.ny = 5;

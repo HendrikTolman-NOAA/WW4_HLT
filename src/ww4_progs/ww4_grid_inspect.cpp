@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     ww4::io::UgridGrid ugrid;
 
     // Attempt to read the file (all data)
-    int status = ww4::io::readUQgrid(gridFile, ugrid);
+    int status = ww4::io::readRectilinearGrid(gridFile, ugrid);
 
     // Error processing
     if (status != 0) {

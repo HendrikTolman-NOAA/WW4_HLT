@@ -4,10 +4,10 @@
  *       +--------------------------------------------------------+
  *
  * @file grid_rectilinear_init.cpp
- * @brief Implementation of the UQ regular grid solver initialization routine.
- * @details Reads NetCDF-UGRID grid geometry and metadata using readUQgrid,
- *          captures grid metadata, and prepares domain decomposition partition
- * structures.
+ * @brief Implementation of the rectilinear grid initialization routine.
+ * @details Reads NetCDF-UGRID grid geometry and metadata using
+ * readRectilinearGrid, captures grid metadata, and prepares domain
+ * decomposition partition structures.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -162,7 +162,8 @@ loadOrGeneratePartitionMap(const ww4::io::UgridGrid &ugrid,
   }
 
   ww4::io::PartitionMapData partData;
-  int partStatus = ww4::io::readUQpartitionMapNetCDF(partFilePath, partData);
+  int partStatus =
+      ww4::io::readRectilinearPartitionMapNetCDF(partFilePath, partData);
 
   if (partStatus == 0) {
     const std::size_t exp_faces =
@@ -233,14 +234,14 @@ loadOrGeneratePartitionMap(const ww4::io::UgridGrid &ugrid,
     std::function<void(std::span<const int>)> recorder = nullptr;
 
     if (getRunConfig().intermediateMaps) {
-      static_cast<void>(ww4::io::openUQpartitionMapFile(
+      static_cast<void>(ww4::io::openRectilinearPartitionMapFile(
           partFilePath, ugrid, getRunConfig().numRanksCompute, ncid));
       if (ncid >= 0) {
         recorder = [&](std::span<const int> curMap) {
           std::vector<int32_t> map32(curMap.begin(), curMap.end());
           if (lastWrittenMap.empty() || lastWrittenMap != map32) {
-            int write_status =
-                ww4::io::writeSingleUQpartitionMap(ncid, map32, map_index);
+            int write_status = ww4::io::writeSingleRectilinearPartitionMap(
+                ncid, map32, map_index);
             if (write_status == 0) {
               lastWrittenMap = std::move(map32);
             }
@@ -249,7 +250,7 @@ loadOrGeneratePartitionMap(const ww4::io::UgridGrid &ugrid,
       }
     }
 
-    partitionMap = ww4_core::solver_UQ::partitionGlobalGrid(
+    partitionMap = ww4_core::grid_rectilinear::partitionGlobalGrid(
         static_cast<int>(ugrid.nx), static_cast<int>(ugrid.ny),
         fullGrid.landMask, getRunConfig().numRanksCompute,
         getRunConfig().maxIterations, nullptr, isGlobal, recorder,
@@ -261,11 +262,11 @@ loadOrGeneratePartitionMap(const ww4::io::UgridGrid &ugrid,
       if (getRunConfig().intermediateMaps) {
         if (ncid >= 0) {
           if (lastWrittenMap.empty() || lastWrittenMap != map32) {
-            static_cast<void>(
-                ww4::io::writeSingleUQpartitionMap(ncid, map32, map_index));
+            static_cast<void>(ww4::io::writeSingleRectilinearPartitionMap(
+                ncid, map32, map_index));
             lastWrittenMap = map32;
           }
-          static_cast<void>(ww4::io::closeUQpartitionMapFile(ncid));
+          static_cast<void>(ww4::io::closeRectilinearPartitionMapFile(ncid));
 
           const std::string writeMsg =
               "Writing partition file with " + std::to_string(map_index) +
@@ -278,7 +279,7 @@ loadOrGeneratePartitionMap(const ww4::io::UgridGrid &ugrid,
           }
         }
       } else {
-        int writeStatus = ww4::io::writeUQpartitionMapNetCDF(
+        int writeStatus = ww4::io::writeRectilinearPartitionMapNetCDF(
             partFilePath, ugrid, getRunConfig().numRanksCompute, map32);
         if (writeStatus == 0) {
           const std::string writeMsg =
@@ -292,7 +293,7 @@ loadOrGeneratePartitionMap(const ww4::io::UgridGrid &ugrid,
         }
       }
     } else if (ncid >= 0) {
-      static_cast<void>(ww4::io::closeUQpartitionMapFile(ncid));
+      static_cast<void>(ww4::io::closeRectilinearPartitionMapFile(ncid));
     }
   } else {
     partitionMap.assign(partData.partition_map.begin(),
@@ -483,7 +484,8 @@ void exportLocalDomainGrid(const ww4_utils::LocalGridPartition &localPartition,
     }
   }
 
-  const int writeStatus = ww4::io::writeUQgrid(localGridPath, localUgrid);
+  const int writeStatus =
+      ww4::io::writeRectilinearGrid(localGridPath, localUgrid);
   if (writeStatus == 0) {
     const std::string localPathStr = localGridPath.string();
     if (getRunConfig().produceStdOut) {
@@ -517,7 +519,7 @@ void grid_rectilinear_init(std::ostream &os) {
   ww4::io::UgridGrid ugrid;
 
   // Attempt to read the file (all data)
-  int status = ww4::io::readUQgrid(getRunConfig().gridFile, ugrid);
+  int status = ww4::io::readRectilinearGrid(getRunConfig().gridFile, ugrid);
 
   // Error processing
   if (status != 0) {
@@ -570,7 +572,7 @@ void grid_rectilinear_init(std::ostream &os) {
 
   std::vector<int> slicedPartitionMap;
   ww4_utils::LocalGridPartition localPartition =
-      ww4_core::solver_UQ::extractOneDomain(
+      ww4_core::grid_rectilinear::extractOneDomain(
           fullGrid, partitionMap, targetDomainId, defaultHaloWidth,
           rectData.isGlobal, &slicedPartitionMap);
 

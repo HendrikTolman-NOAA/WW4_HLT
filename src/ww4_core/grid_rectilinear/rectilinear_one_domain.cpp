@@ -4,7 +4,7 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_one_domain.cpp
- * @brief Subdomain extraction routine for ultimate quickest (UQ) grids in
+ * @brief Subdomain extraction routine for rectilinear grids in
  * WAVEWATCH IV (WW4).
  * @details Extracts a reduced grid domain partition including halo cells and
  * associated grid fields for a target partition (derived from WW3 ww3_gspl).
@@ -31,7 +31,7 @@
 #include <span>
 #include <vector>
 
-namespace ww4_core::solver_UQ {
+namespace ww4_core::grid_rectilinear {
 
 // --- extractOneDomain -------------------------------------------------------
 
@@ -285,4 +285,4 @@ extractOneDomain(const ww4_utils::FullGrid &full_grid,
   return localPartition;
 }
 
-} // namespace ww4_core::solver_UQ
+} // namespace ww4_core::grid_rectilinear

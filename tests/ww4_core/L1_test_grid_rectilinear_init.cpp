@@ -5,7 +5,7 @@
  *       +--------------------------------------------------------+
  *
  * @file L1_test_grid_rectilinear_init.cpp
- * @brief Unit tests for the UQ solver initialization module.
+ * @brief Unit tests for the rectilinear grid initialization module.
  * @details Verifies grid_rectilinear_init execution.
  *
  * Routine coverage references for anonymous namespace helper functions:
@@ -38,7 +38,7 @@
 
 namespace ww4_core {
 
-TEST(SolverUQInitTest, BasicExecutionAndOutput) {
+TEST(GridRectilinearInitTest, BasicExecutionAndOutput) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -61,7 +61,7 @@ TEST(SolverUQInitTest, BasicExecutionAndOutput) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, OutputWithoutMetadataWhenDisabled) {
+TEST(GridRectilinearInitTest, OutputWithoutMetadataWhenDisabled) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -82,7 +82,7 @@ TEST(SolverUQInitTest, OutputWithoutMetadataWhenDisabled) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, AbortsWhenFileNotFound) {
+TEST(GridRectilinearInitTest, AbortsWhenFileNotFound) {
   resetInternalState();
   getMutableRunConfig().produceStdOut = true;
   getMutableRunConfig().gridFile = "non_existent_grid_file.nc";
@@ -93,7 +93,7 @@ TEST(SolverUQInitTest, AbortsWhenFileNotFound) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, AbortsWhenMetadataInvalid) {
+TEST(GridRectilinearInitTest, AbortsWhenMetadataInvalid) {
   resetInternalState();
   const std::string filename = "test_bad_metadata.nc";
   int ncid = -1;
@@ -115,7 +115,7 @@ TEST(SolverUQInitTest, AbortsWhenMetadataInvalid) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, AbortsWhenDataVariablesMissing) {
+TEST(GridRectilinearInitTest, AbortsWhenDataVariablesMissing) {
   resetInternalState();
   const std::string filename = "test_bad_data_vars.nc";
   int ncid = -1;
@@ -142,7 +142,8 @@ TEST(SolverUQInitTest, AbortsWhenDataVariablesMissing) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, PartitionFileNotFoundLogsErrorAndComputesPartitions) {
+TEST(GridRectilinearInitTest,
+     PartitionFileNotFoundLogsErrorAndComputesPartitions) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -178,7 +179,7 @@ TEST(SolverUQInitTest, PartitionFileNotFoundLogsErrorAndComputesPartitions) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, PartitionFileExistsAndLoadsSuccessfully) {
+TEST(GridRectilinearInitTest, PartitionFileExistsAndLoadsSuccessfully) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -191,9 +192,9 @@ TEST(SolverUQInitTest, PartitionFileExistsAndLoadsSuccessfully) {
   }
 
   ww4::io::UgridGrid ugrid;
-  ASSERT_EQ(ww4::io::readUQgrid("my_uq_grid_withpart.nc", ugrid), 0);
+  ASSERT_EQ(ww4::io::readRectilinearGrid("my_uq_grid_withpart.nc", ugrid), 0);
   std::vector<int32_t> partMap(10 * 10, 1);
-  ASSERT_EQ(ww4::io::writeUQpartitionMapNetCDF(
+  ASSERT_EQ(ww4::io::writeRectilinearPartitionMapNetCDF(
                 "my_uq_grid_withpart.partitions.nc", ugrid, 1, partMap),
             0);
 
@@ -210,7 +211,7 @@ TEST(SolverUQInitTest, PartitionFileExistsAndLoadsSuccessfully) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest,
+TEST(GridRectilinearInitTest,
      PartitionCountMismatchLogsErrorAndRegeneratesPartitions) {
   resetInternalState();
   std::ostringstream ss;
@@ -224,10 +225,10 @@ TEST(SolverUQInitTest,
   }
 
   ww4::io::UgridGrid ugrid;
-  ASSERT_EQ(ww4::io::readUQgrid("my_uq_grid_mismatch.nc", ugrid), 0);
+  ASSERT_EQ(ww4::io::readRectilinearGrid("my_uq_grid_mismatch.nc", ugrid), 0);
   std::vector<int32_t> partMap(10 * 10, 1);
   // File created with 2 partitions, but user request is 4
-  ASSERT_EQ(ww4::io::writeUQpartitionMapNetCDF(
+  ASSERT_EQ(ww4::io::writeRectilinearPartitionMapNetCDF(
                 "my_uq_grid_mismatch.partitions.nc", ugrid, 2, partMap),
             0);
 
@@ -248,7 +249,7 @@ TEST(SolverUQInitTest,
 
   // Check that the new partition file was updated with 4 partitions
   ww4::io::PartitionMapData updatedPart;
-  ASSERT_EQ(ww4::io::readUQpartitionMapNetCDF(
+  ASSERT_EQ(ww4::io::readRectilinearPartitionMapNetCDF(
                 "my_uq_grid_mismatch.partitions.nc", updatedPart),
             0);
   EXPECT_EQ(updatedPart.num_partitions, 4);
@@ -258,7 +259,8 @@ TEST(SolverUQInitTest,
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, PartitionMetadataMismatchLogsErrorAndRegenerates) {
+TEST(GridRectilinearInitTest,
+     PartitionMetadataMismatchLogsErrorAndRegenerates) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -270,11 +272,11 @@ TEST(SolverUQInitTest, PartitionMetadataMismatchLogsErrorAndRegenerates) {
 
   // Read grid, then modify an attribute before writing partition file
   ww4::io::UgridGrid ugrid;
-  ASSERT_EQ(ww4::io::readUQgrid("my_uq_grid_metadiff.nc", ugrid), 0);
+  ASSERT_EQ(ww4::io::readRectilinearGrid("my_uq_grid_metadiff.nc", ugrid), 0);
   ugrid.title = "Different Title";
 
   std::vector<int32_t> partMap(10 * 10, 1);
-  ASSERT_EQ(ww4::io::writeUQpartitionMapNetCDF(
+  ASSERT_EQ(ww4::io::writeRectilinearPartitionMapNetCDF(
                 "my_uq_grid_metadiff.partitions.nc", ugrid, 1, partMap),
             0);
 
@@ -288,7 +290,7 @@ TEST(SolverUQInitTest, PartitionMetadataMismatchLogsErrorAndRegenerates) {
 
   // Check that the partition file was updated with original grid title
   ww4::io::PartitionMapData updatedPart;
-  ASSERT_EQ(ww4::io::readUQpartitionMapNetCDF(
+  ASSERT_EQ(ww4::io::readRectilinearPartitionMapNetCDF(
                 "my_uq_grid_metadiff.partitions.nc", updatedPart),
             0);
   EXPECT_EQ(updatedPart.title, "my_uq_grid_metadiff.nc");
@@ -298,7 +300,8 @@ TEST(SolverUQInitTest, PartitionMetadataMismatchLogsErrorAndRegenerates) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, PartitionDimensionsMismatchLogsErrorAndRegenerates) {
+TEST(GridRectilinearInitTest,
+     PartitionDimensionsMismatchLogsErrorAndRegenerates) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -311,13 +314,13 @@ TEST(SolverUQInitTest, PartitionDimensionsMismatchLogsErrorAndRegenerates) {
   // Create partition file with 8x8 instead of 10x10
   ww4::io::UgridGrid ugrid8;
   ww4::test_helpers::createMinimalUgridFile("temp_8x8.nc", 8, 8);
-  ASSERT_EQ(ww4::io::readUQgrid("temp_8x8.nc", ugrid8), 0);
+  ASSERT_EQ(ww4::io::readRectilinearGrid("temp_8x8.nc", ugrid8), 0);
   std::remove("temp_8x8.nc");
 
   // Keep title matching so title doesn't trigger it, but dimensions do
   ugrid8.title = "Minimal UGRID Grid";
   std::vector<int32_t> partMap8(8 * 8, 1);
-  ASSERT_EQ(ww4::io::writeUQpartitionMapNetCDF(
+  ASSERT_EQ(ww4::io::writeRectilinearPartitionMapNetCDF(
                 "my_uq_grid_dimdiff.partitions.nc", ugrid8, 1, partMap8),
             0);
 
@@ -331,7 +334,7 @@ TEST(SolverUQInitTest, PartitionDimensionsMismatchLogsErrorAndRegenerates) {
 
   // Verify updated partition has 10x10
   ww4::io::PartitionMapData updatedPart;
-  ASSERT_EQ(ww4::io::readUQpartitionMapNetCDF(
+  ASSERT_EQ(ww4::io::readRectilinearPartitionMapNetCDF(
                 "my_uq_grid_dimdiff.partitions.nc", updatedPart),
             0);
   EXPECT_EQ(updatedPart.nx, 10u);
@@ -342,7 +345,7 @@ TEST(SolverUQInitTest, PartitionDimensionsMismatchLogsErrorAndRegenerates) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, PartitionFileCorruptedLogsErrorAndDoesNotAbort) {
+TEST(GridRectilinearInitTest, PartitionFileCorruptedLogsErrorAndDoesNotAbort) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -379,7 +382,7 @@ TEST(SolverUQInitTest, PartitionFileCorruptedLogsErrorAndDoesNotAbort) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, IntermediateMapsWritesMultipleMaps) {
+TEST(GridRectilinearInitTest, IntermediateMapsWritesMultipleMaps) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -399,8 +402,8 @@ TEST(SolverUQInitTest, IntermediateMapsWritesMultipleMaps) {
 
   // Read partition file to verify maps
   ww4::io::PartitionMapData readData;
-  ASSERT_EQ(ww4::io::readUQpartitionMapNetCDF("my_uq_grid_interm.partitions.nc",
-                                              readData),
+  ASSERT_EQ(ww4::io::readRectilinearPartitionMapNetCDF(
+                "my_uq_grid_interm.partitions.nc", readData),
             0);
   EXPECT_EQ(readData.num_partitions, 4);
   EXPECT_GE(readData.num_maps, 1u);
@@ -410,7 +413,7 @@ TEST(SolverUQInitTest, IntermediateMapsWritesMultipleMaps) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, NoHistogramFinalDomainSizes) {
+TEST(GridRectilinearInitTest, NoHistogramFinalDomainSizes) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -437,7 +440,7 @@ TEST(SolverUQInitTest, NoHistogramFinalDomainSizes) {
   resetInternalState();
 }
 
-TEST(SolverUQInitTest, WriteLocalGridGeneratesLocalUgridFile) {
+TEST(GridRectilinearInitTest, WriteLocalGridGeneratesLocalUgridFile) {
   resetInternalState();
   std::ostringstream ss;
   getMutableRunConfig().produceStdOut = true;
@@ -457,7 +460,8 @@ TEST(SolverUQInitTest, WriteLocalGridGeneratesLocalUgridFile) {
 
   // Read the generated local domain file and verify its contents
   ww4::io::UgridGrid localUgrid;
-  int readStatus = ww4::io::readUQgrid("my_local_test.part000.nc", localUgrid);
+  int readStatus =
+      ww4::io::readRectilinearGrid("my_local_test.part000.nc", localUgrid);
   EXPECT_EQ(readStatus, 0);
   EXPECT_GT(localUgrid.nx, 0u);
   EXPECT_GT(localUgrid.ny, 0u);

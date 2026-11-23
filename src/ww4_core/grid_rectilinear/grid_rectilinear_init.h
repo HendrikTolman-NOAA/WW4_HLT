@@ -4,9 +4,9 @@
  *       +--------------------------------------------------------+
  *
  * @file grid_rectilinear_init.h
- * @brief Header for the Ultimate Quickest (UQ) regular grid solver
- * initialization.
- * @details Defines the initialization routine for the UQ regular grid solver.
+ * @brief Header for the rectilinear grid initialization.
+ * @details Defines the grid ingestion and domain decomposition routine for the
+ *          rectilinear grid, shared by all rectilinear grid solvers.
  * @copyright © 2026 National Weather Service, National Oceanic and Atmospheric
  * Administration. WAVEWATCH IV (TM) and WW4 (TM) are trademarks of the National
  * Weather Service.
@@ -16,7 +16,7 @@
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI), Kiro (Agentic AI)
  * @date Initial, 2026-10-23
- * @date Last update : 2026-11-20
+ * @date Last update : 2026-11-23
  */
 
 #pragma once
@@ -27,12 +27,11 @@ namespace ww4_core {
 
 // --- grid_rectilinear_init --------------------------------------------------
 /**
- * @brief Initialization routine for the Ultimate Quickest (UQ) regular grid
- * solver.
- * @details Reads NetCDF-UGRID grid geometry and metadata using readUQgrid,
- * captures grid metadata, computes or reads domain decomposition partition
- * structures, extracts the local domain partition grid with halo cells, and
- * sets up inter-rank halo communication structures.
+ * @brief Initialization routine for the rectilinear grid (all solvers).
+ * @details Reads NetCDF-UGRID grid geometry and metadata using
+ * readRectilinearGrid, captures grid metadata, computes or reads domain
+ * decomposition partition structures, extracts the local domain partition grid
+ * with halo cells, and sets up inter-rank halo communication structures.
  * @param[in,out] os Output stream for logging and screen messages.
  * @author Main Author(s): Aldgisl (AI Persona), Hendrik L. Tolman
  * @author Contributors: Jules (Agentic AI)

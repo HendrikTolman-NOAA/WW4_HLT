@@ -25,7 +25,7 @@
 
 using namespace ww4::io;
 
-TEST(UQWritePartitionTest, OneShotWrite) {
+TEST(RectilinearWritePartitionTest, OneShotWrite) {
   const std::string filename = "test_write_oneshot_part.nc";
   UgridGrid grid;
   grid.nx = 3;
@@ -43,12 +43,12 @@ TEST(UQWritePartitionTest, OneShotWrite) {
   const int num_partitions = 2;
   const std::vector<int32_t> partition_map = {1, 1, 2, 1, 2, 2};
 
-  int status =
-      writeUQpartitionMapNetCDF(filename, grid, num_partitions, partition_map);
+  int status = writeRectilinearPartitionMapNetCDF(
+      filename, grid, num_partitions, partition_map);
   ASSERT_EQ(status, 0);
 
   PartitionMapData read_data;
-  status = readUQpartitionMapNetCDF(filename, read_data);
+  status = readRectilinearPartitionMapNetCDF(filename, read_data);
   ASSERT_EQ(status, 0);
   EXPECT_EQ(read_data.nx, 3u);
   EXPECT_EQ(read_data.ny, 2u);
@@ -60,7 +60,7 @@ TEST(UQWritePartitionTest, OneShotWrite) {
   std::remove(filename.c_str());
 }
 
-TEST(UQWritePartitionTest, IncrementalMultipleMaps) {
+TEST(RectilinearWritePartitionTest, IncrementalMultipleMaps) {
   const std::string filename = "test_write_evolution_part.nc";
   UgridGrid grid;
   grid.nx = 4;
@@ -71,7 +71,7 @@ TEST(UQWritePartitionTest, IncrementalMultipleMaps) {
   const int num_partitions = 3;
   int ncid = -1;
   int open_status =
-      openUQpartitionMapFile(filename, grid, num_partitions, ncid);
+      openRectilinearPartitionMapFile(filename, grid, num_partitions, ncid);
   ASSERT_EQ(open_status, 0);
   ASSERT_GE(ncid, 0);
 
@@ -80,43 +80,44 @@ TEST(UQWritePartitionTest, IncrementalMultipleMaps) {
   std::vector<int32_t> map_stage2 = {1, 1, 1, 2, 2, 3, 3, 3};
 
   std::size_t map_idx = 0;
-  EXPECT_EQ(writeSingleUQpartitionMap(ncid, map_stage0, map_idx), 0);
+  EXPECT_EQ(writeSingleRectilinearPartitionMap(ncid, map_stage0, map_idx), 0);
   EXPECT_EQ(map_idx, 1u);
 
-  EXPECT_EQ(writeSingleUQpartitionMap(ncid, map_stage1, map_idx), 0);
+  EXPECT_EQ(writeSingleRectilinearPartitionMap(ncid, map_stage1, map_idx), 0);
   EXPECT_EQ(map_idx, 2u);
 
-  EXPECT_EQ(writeSingleUQpartitionMap(ncid, map_stage2, map_idx), 0);
+  EXPECT_EQ(writeSingleRectilinearPartitionMap(ncid, map_stage2, map_idx), 0);
   EXPECT_EQ(map_idx, 3u);
 
-  EXPECT_EQ(closeUQpartitionMapFile(ncid), 0);
+  EXPECT_EQ(closeRectilinearPartitionMapFile(ncid), 0);
 
   PartitionMapData read_data;
-  int read_status = readUQpartitionMapNetCDF(filename, read_data);
+  int read_status = readRectilinearPartitionMapNetCDF(filename, read_data);
   ASSERT_EQ(read_status, 0);
   EXPECT_EQ(read_data.partition_map, map_stage2);
 
   std::remove(filename.c_str());
 }
 
-TEST(UQWritePartitionTest, ErrorHandlingInWriter) {
+TEST(RectilinearWritePartitionTest, ErrorHandlingInWriter) {
   UgridGrid grid;
   grid.nx = 0;
   grid.ny = 0;
   int ncid = -1;
-  EXPECT_EQ(openUQpartitionMapFile("test_err.nc", grid, 2, ncid), 2);
+  EXPECT_EQ(openRectilinearPartitionMapFile("test_err.nc", grid, 2, ncid), 2);
 
   grid.nx = 2;
   grid.ny = 2;
-  EXPECT_EQ(openUQpartitionMapFile("test_err.nc", grid, 0, ncid), 2);
+  EXPECT_EQ(openRectilinearPartitionMapFile("test_err.nc", grid, 0, ncid), 2);
 
   std::vector<int32_t> pmap = {1, 2, 1, 2};
   std::size_t idx = 0;
-  EXPECT_EQ(writeSingleUQpartitionMap(-1, pmap, idx), 3);
-  EXPECT_EQ(closeUQpartitionMapFile(-1), 0);
+  EXPECT_EQ(writeSingleRectilinearPartitionMap(-1, pmap, idx), 3);
+  EXPECT_EQ(closeRectilinearPartitionMapFile(-1), 0);
 }
 
 // References to function names for ww4_test_check.py routine coverage:
 // openPartitionMapFile writeSinglePartitionMap closePartitionMapFile
-// writePartitionMapNetCDF check_nc_part_err openUQpartitionMapFile
-// writeSingleUQpartitionMap closeUQpartitionMapFile writeUQpartitionMapNetCDF
+// writePartitionMapNetCDF check_nc_part_err openRectilinearPartitionMapFile
+// writeSingleRectilinearPartitionMap closeRectilinearPartitionMapFile
+// writeRectilinearPartitionMapNetCDF

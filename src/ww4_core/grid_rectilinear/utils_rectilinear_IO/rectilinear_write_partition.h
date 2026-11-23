@@ -4,7 +4,7 @@
  *       +--------------------------------------------------------+
  *
  * @file rectilinear_write_partition.h
- * @brief NetCDF partition map writer tools for WAVEWATCH IV UQ solver.
+ * @brief NetCDF partition map writer tools for WAVEWATCH IV rectilinear grids.
  * @details Header declaring subroutines to open a NetCDF partition map file,
  * populate metadata from the full grid and partition configuration, and
  * incrementally write one or more partition maps to document map evolution.
@@ -30,10 +30,10 @@
 
 namespace ww4::io {
 
-// --- openUQpartitionMapFile -------------------------------------------------
+// --- openRectilinearPartitionMapFile ----------------------------------------
 /**
  * @brief Creates a new NetCDF partition map file and writes header and grid
- * metadata for the UQ solver.
+ * metadata for the rectilinear grid.
  *
  * @details Creates a NetCDF file at `filepath` with an unlimited dimension
  * `n_partition_maps`, along with spatial grid dimensions `ny` and `nx`. Writes
@@ -49,43 +49,43 @@ namespace ww4::io {
  * @return int Status code (0 = success, 1 = file creation failure, 2 = metadata
  * or definition failure).
  */
-[[nodiscard]] int openUQpartitionMapFile(const std::filesystem::path &filepath,
-                                         const UgridGrid &grid,
-                                         int num_partitions, int &ncid);
+[[nodiscard]] int
+openRectilinearPartitionMapFile(const std::filesystem::path &filepath,
+                                const UgridGrid &grid, int num_partitions,
+                                int &ncid);
 
-// --- writeSingleUQpartitionMap ----------------------------------------------
+// --- writeSingleRectilinearPartitionMap -------------------------------------
 /**
  * @brief Appends a single partition map to an open partition map NetCDF file
- * for the UQ solver.
+ * for the rectilinear grid.
  *
  * @details Writes a 2D partition map array of size `ny * nx` into the open
  * NetCDF dataset at the record position designated by `map_index`. Upon
  * successful write, increments `map_index`.
  *
  * @param[in]     ncid          Open NetCDF file ID (from
- * openUQpartitionMapFile).
+ * openRectilinearPartitionMapFile).
  * @param[in]     partition_map 2D partition ID slice (size ny * nx).
  * @param[in,out] map_index     Zero-based record index to write; incremented on
  *                              success.
  * @return int Status code (0 = success, 3 = data writing failure).
  */
-[[nodiscard]] int
-writeSingleUQpartitionMap(int ncid, std::span<const int32_t> partition_map,
-                          std::size_t &map_index);
+[[nodiscard]] int writeSingleRectilinearPartitionMap(
+    int ncid, std::span<const int32_t> partition_map, std::size_t &map_index);
 
-// --- closeUQpartitionMapFile ------------------------------------------------
+// --- closeRectilinearPartitionMapFile ---------------------------------------
 /**
- * @brief Closes an open partition map NetCDF file for the UQ solver.
+ * @brief Closes an open partition map NetCDF file for the rectilinear grid.
  *
  * @param[in] ncid Open NetCDF file ID.
  * @return int Status code (0 = success, non-zero on netcdf error).
  */
-[[nodiscard]] int closeUQpartitionMapFile(int ncid);
+[[nodiscard]] int closeRectilinearPartitionMapFile(int ncid);
 
-// --- writeUQpartitionMapNetCDF ----------------------------------------------
+// --- writeRectilinearPartitionMapNetCDF -------------------------------------
 /**
  * @brief Convenience one-shot routine to write a partition map file with a
- * single map for the UQ solver.
+ * single map for the rectilinear grid.
  *
  * @param[in] filepath       Destination file path.
  * @param[in] grid           UgridGrid structure providing metadata and
@@ -96,32 +96,32 @@ writeSingleUQpartitionMap(int ncid, std::span<const int32_t> partition_map,
  * 3 = data write failure).
  */
 [[nodiscard]] int
-writeUQpartitionMapNetCDF(const std::filesystem::path &filepath,
-                          const UgridGrid &grid, int num_partitions,
-                          std::span<const int32_t> partition_map);
+writeRectilinearPartitionMapNetCDF(const std::filesystem::path &filepath,
+                                   const UgridGrid &grid, int num_partitions,
+                                   std::span<const int32_t> partition_map);
 
 // Backward-compatible inline wrappers:
 inline int openPartitionMapFile(const std::filesystem::path &filepath,
                                 const UgridGrid &grid, int num_partitions,
                                 int &ncid) {
-  return openUQpartitionMapFile(filepath, grid, num_partitions, ncid);
+  return openRectilinearPartitionMapFile(filepath, grid, num_partitions, ncid);
 }
 
 inline int writeSinglePartitionMap(int ncid,
                                    std::span<const int32_t> partition_map,
                                    std::size_t &map_index) {
-  return writeSingleUQpartitionMap(ncid, partition_map, map_index);
+  return writeSingleRectilinearPartitionMap(ncid, partition_map, map_index);
 }
 
 inline int closePartitionMapFile(int ncid) {
-  return closeUQpartitionMapFile(ncid);
+  return closeRectilinearPartitionMapFile(ncid);
 }
 
 inline int writePartitionMapNetCDF(const std::filesystem::path &filepath,
                                    const UgridGrid &grid, int num_partitions,
                                    std::span<const int32_t> partition_map) {
-  return writeUQpartitionMapNetCDF(filepath, grid, num_partitions,
-                                   partition_map);
+  return writeRectilinearPartitionMapNetCDF(filepath, grid, num_partitions,
+                                            partition_map);
 }
 
 } // namespace ww4::io
