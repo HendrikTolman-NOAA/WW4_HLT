@@ -158,6 +158,25 @@ flowchart TD
 
 ### Source layout
 
+The directory structure follows the factory scheme: one directory per grid type, and under each grid one directory per solver. Code shared by all solvers of a grid (grid ingestion, domain decomposition, grid I/O) sits at the grid level.
+
+```mermaid
+graph LR
+    CORE["src/ww4_core/<br/><i>grid.h,&nbsp;solver.h,&nbsp;solver_base,<br/>scheme_factory</i>"]
+
+    CORE --> GR["grid_rectilinear/<br/><i>grid_rectilinear,&nbsp;grid_rectilinear_init,<br/>rectilinear_domains,&nbsp;rectilinear_domain_topology,<br/>rectilinear_one_domain</i>"]
+    CORE --> GT["grid_triangular/<br/><i>grid_triangular,&nbsp;grid_triangular_init</i>"]
+    CORE --> GS["grid_SMC/<br/><i>grid_SMC,&nbsp;grid_SMC_init</i>"]
+    CORE --> ST["source_terms/<br/><i>ComputeAllSources,<br/>LN1,&nbsp;ST*,&nbsp;NL*,&nbsp;BT*</i>"]
+
+    GR --> GRIO["utils_rectilinear_IO/<br/><i>grid&nbsp;and&nbsp;partition&nbsp;NetCDF&nbsp;I/O</i>"]
+    GR --> S1["solver_1UP/<br/><i>solver_rectilinear_1UP</i>"]
+    GR --> S2["solver_UQ/<br/><i>solver_rectilinear_UQ</i>"]
+    GT --> S3["solver_implicit/<br/><i>solver_triangular_implicit</i>"]
+    GT --> S4["solver_explicit/<br/><i>solver_triangular_explicit</i>"]
+    GS --> S5["solver_UKMET/<br/><i>solver_SMC_UKMET</i>"]
+```
+
 ```text
 src/ww4_core/
 ├── grid.h                       IGrid interface (grid type + solver factory)
@@ -165,21 +184,23 @@ src/ww4_core/
 ├── solver_base.{h,cpp}          SolverBase (shared source term approach)
 ├── scheme_factory.{h,cpp}       createGrid / createSolver / createSourceTerm
 ├── grid_rectilinear/
-│   ├── grid_rectilinear.{h,cpp}         GridRectilinear
-│   ├── grid_rectilinear_init.{h,cpp}    grid ingestion and domain decomposition
-│   ├── solver_rectilinear_1UP.{h,cpp}   SolverRectilinear1UP
-│   ├── solver_rectilinear_UQ.{h,cpp}    SolverRectilinearUQ
-│   ├── UQ_domains / UQ_domain_topology / UQ_one_domain   domain decomposition
-│   └── utils_UQ_IO/                     grid and partition NetCDF I/O
+│   ├── grid_rectilinear.{h,cpp}                 GridRectilinear
+│   ├── grid_rectilinear_init.{h,cpp}            grid ingestion and domain decomposition
+│   ├── rectilinear_domains.{h,cpp}              domain partitioning
+│   ├── rectilinear_domain_topology.{h,cpp}      domain neighbors and refinement tools
+│   ├── rectilinear_one_domain.{h,cpp}           local domain extraction with halo
+│   ├── utils_rectilinear_IO/                    grid and partition NetCDF I/O
+│   ├── solver_1UP/solver_rectilinear_1UP.{h,cpp}  SolverRectilinear1UP
+│   └── solver_UQ/solver_rectilinear_UQ.{h,cpp}    SolverRectilinearUQ
 ├── grid_triangular/
-│   ├── grid_triangular.{h,cpp}             GridTriangular
-│   ├── grid_triangular_init.{h,cpp}        grid ingestion (placeholder)
-│   ├── solver_triangular_implicit.{h,cpp}  SolverTriangularImplicit
-│   └── solver_triangular_explicit.{h,cpp}  SolverTriangularExplicit
+│   ├── grid_triangular.{h,cpp}                            GridTriangular
+│   ├── grid_triangular_init.{h,cpp}                       grid ingestion (placeholder)
+│   ├── solver_implicit/solver_triangular_implicit.{h,cpp}  SolverTriangularImplicit
+│   └── solver_explicit/solver_triangular_explicit.{h,cpp}  SolverTriangularExplicit
 ├── grid_SMC/
-│   ├── grid_SMC.{h,cpp}            GridSMC
-│   ├── grid_SMC_init.{h,cpp}       grid ingestion (placeholder)
-│   └── solver_SMC_UKMET.{h,cpp}    SolverSMCUKMET
+│   ├── grid_SMC.{h,cpp}                         GridSMC
+│   ├── grid_SMC_init.{h,cpp}                    grid ingestion (placeholder)
+│   └── solver_UKMET/solver_SMC_UKMET.{h,cpp}    SolverSMCUKMET
 └── source_terms/                   ComputeAllSources and LN1, ST*, NL*, BT*
 ```
 
